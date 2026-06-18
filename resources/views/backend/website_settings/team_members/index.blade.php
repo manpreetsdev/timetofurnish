@@ -6,7 +6,7 @@
         <div class="col">
             <h1 class="h3">{{ translate('Team Members') }}</h1>
         </div>
-        <div class="col text-end">
+        <div class="col text-end" style="text-align:end;">
             @can('add_website_page')
             <a href="{{ route('team-members.create') }}" class="btn" style="background:#685b4e;color:#ffffff;border-radius:24px;padding:10px 22px;border:1px solid #685b4e;">{{ translate('Add Team Member') }}</a>
             @endcan
@@ -34,14 +34,14 @@
             </div>
             <div class="col-3">
                 <input type="hidden" name="status" value="0">
-                <div class="form-check form-switch theme-switch">
+                <div class="form-check form-switch theme-switch" style="display:flex;align-items:center;gap:8px;">
                     <input class="form-check-input" type="checkbox" id="teamPageStatus" name="status" value="1" {{ $team_page_status == 1 ? 'checked' : '' }} onchange="this.form.submit()">
                     <label class="form-check-label ms-2" for="teamPageStatus" style="color:#39322a;">{{ $team_page_status == 1 ? translate('Enabled') : translate('Disabled') }}</label>
-                
+
                  <span class="team_badge" style="background: #dacbbc; color: #39322a;">{{ $team_page_status == 1 ? translate('Visible on frontend') : translate('Hidden from frontend') }}</span>
             </div>
             </div>
-         
+
         </form>
     </div>
 </div>

@@ -77,10 +77,14 @@
     }
 }
 
+
+
 @media (max-width: 767.98px) {
     .product-listing-page {
         padding-top: 18px !important;
     }
+
+
 
     .product-listing-page .container {
         padding-left: 14px !important;
@@ -159,7 +163,8 @@
         margin-bottom: 6px !important;
     }
 
-    .product-listing-page .modern-product-title a {
+    .product-listing-page .modern-product-title a,
+    .modern-product-title a {
         display: block !important;
         font-size: 10.5px !important;
         line-height: 1.3 !important;
@@ -201,6 +206,7 @@
     .product-listing-page .modern-card-actions-bottom {
         gap: 0 !important;
         flex: 0 0 20% !important;
+        flex-wrap: nowrap !important;
     }
 
     .product-listing-page .modern-card-actions-bottom .modern-action-btn,
@@ -2590,11 +2596,6 @@ span.badge.badge-primary.badge-circle.position-absolute {
     height: 140px !important;
 }
 
-@media (min-width: 768px) {
-    .modern-product-img-wrap {
-        height: 160px !important;
-    }
-}
 
 /* 2. Modern Product Card Title Spacing (Centered) */
 .modern-product-title {
@@ -2624,7 +2625,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
     margin-top: 0 !important;
     display: flex !important;
     flex-direction: row !important;
-    /* Horizontal layout for prices */
+    flex-wrap: wrap !important;
     align-items: center !important;
     justify-content: start !important;
     text-align: center !important;
@@ -2648,7 +2649,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 16px !important;
+    gap: 5px !important;
     /* Spacious gap for easy tapping */
     width: 100% !important;
 }
@@ -4559,6 +4560,71 @@ img[style*="float: right"] {
 .breadcrumbfont {
     font-size: 22px;
 }
+
 .aiz-sidebar left c-scrollbar {
-	    box-shadow: 0 8px 25px rgb(65 61 61 / 20%) !important;
+    box-shadow: 0 8px 25px rgb(65 61 61 / 20%) !important;
+}
+
+
+@media only screen and (max-width: 767.98px) {
+    .modern-product-img-wrap {
+        height: 94px !important;
+        border-radius: 9px !important;
+    }
+
+    .modern-product-card {
+        border-radius: 11px !important;
+        padding: 6px !important;
+    }
+
+    .modern-product-title a {
+        font-size: 10.5px !important;
+    }
+
+    .modern-card-bottom-row {
+        min-height: 28px !important;
+        margin-top: auto !important;
+        padding-top: 6px !important;
+        gap: 5px !important;
+        padding: 0px 10px;
+    }
+
+    .product-listing-page .modern-price-wrap,
+    .product-listing-page .modern-price-wrap .text-primary,
+    .product-listing-page .modern-price-wrap span {
+        flex-wrap: wrap !important;
+    }
+
+    .modern-price-wrap {
+        font-size: 9.6px !important;
+        line-height: 1.35 !important;
+        flex: 0 0 87%;
+        text-align: left !important;
+    }
+
+    .modern-card-actions-bottom {
+        gap: 0px !important;
+        flex: 0 0 12%;
+        flex-direction: column;
+    }
+
+    .product-listing-page .modern-card-actions-bottom {
+        flex-wrap: wrap !important;
+    }
+
+    .modern-card-actions-bottom .modern-action-btn,
+    .modern-card-actions-bottom .wishlist-btn,
+    .modern-card-actions-bottom .cart-btn {
+        width: 18px !important;
+        height: 18px !important;
+    }
+
+    .modern-card-actions-bottom svg {
+        width: 14px !important;
+        height: 14px !important;
+    }
+
+    .aiz-card-box .disc-amount {
+        opacity: 1 !important;
+    }
 }
