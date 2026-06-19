@@ -10062,7 +10062,7 @@ input[type="number"] {
 .aiz-file-box .card-file .card-body {
     position: absolute;
     width: calc(100% - 16px);
-    bottom: 5px;
+    bottom: -5px;
     left: 8px;
 }
 
@@ -14443,7 +14443,7 @@ Time To Furnish - Admin Sidebar (Brand Match)
 /* Dropdown arrow */
 .aiz-side-nav-wrap .aiz-side-nav-arrow {
     opacity: 0.4;
-	margin-right:20px;
+    margin-right: 20px;
 }
 
 /* Clear Cache button */

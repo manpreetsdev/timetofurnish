@@ -1,23 +1,431 @@
 @extends('seller.layouts.app')
 
 @section('panel_content')
+    <style>
+        .seller-order-detail {
+            --order-accent: #685b4e;
+            --order-accent-dark: #51463c;
+            --order-border: #e9e6e2;
+            --order-soft: #fbfbfa;
+            --order-soft-2: #f6f5f3;
+            --order-muted: #76716b;
+            color: var(--brown);
+            padding-top: 16px;
+        }
 
-    <div class="card">
-        <div class="card-header">
-            <h1 class="h2 fs-16 mb-0">{{ translate('Order Details') }}</h1>
+        .seller-order-detail .detail-hero,
+        .seller-order-detail .detail-card {
+            background: #fff;
+            border: 1px solid var(--order-border);
+            border-radius: 8px;
+            box-shadow: 0 4px 14px rgba(57, 50, 42, 0.04);
+        }
+
+        .seller-order-detail .detail-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px 22px;
+            margin-bottom: 16px;
+        }
+
+        .seller-order-detail .detail-eyebrow {
+            margin-bottom: 6px;
+            color: var(--order-muted);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .seller-order-detail .detail-title {
+            margin: 0;
+            color: var(--brown);
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .seller-order-detail .detail-subtitle {
+            margin: 6px 0 0;
+            color: var(--order-muted);
+            font-size: 13px;
+        }
+
+        .seller-order-detail .detail-header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .seller-order-detail .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: 42px;
+            padding: 9px 14px;
+            color: #685b4e !important;
+            background: #fff;
+            border: 1px solid var(--order-border);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .seller-order-detail .back-button:hover,
+        .seller-order-detail .back-button:focus {
+            color: #fff !important;
+            background: #685b4e;
+            border-color: #685b4e;
+            text-decoration: none;
+        }
+
+        .seller-order-detail .detail-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            color: #685b4e;
+            background: #fff;
+            border: 1px solid var(--order-border);
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .seller-order-detail .detail-card {
+            overflow: hidden;
+        }
+
+        .seller-order-detail .detail-card-body {
+            padding: 20px;
+        }
+
+        .seller-order-detail .status-grid,
+        .seller-order-detail .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .seller-order-detail .status-panel,
+        .seller-order-detail .info-panel,
+        .seller-order-detail .totals-panel {
+            background: #fff;
+            border: 1px solid var(--order-border);
+            border-radius: 8px;
+        }
+
+        .seller-order-detail .status-panel,
+        .seller-order-detail .info-panel {
+            padding: 16px;
+        }
+
+        .seller-order-detail .panel-title {
+            margin: 0 0 12px;
+            color: var(--brown);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .seller-order-detail .detail-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--order-muted);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .seller-order-detail .form-control {
+            height: 44px;
+            padding: 9px 14px;
+            color: var(--brown);
+            border-color: var(--order-border);
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .seller-order-detail .form-control:focus {
+            border-color: #685b4e;
+            box-shadow: 0 0 0 .18rem rgba(104, 91, 78, 0.10);
+        }
+
+        .seller-order-detail .bootstrap-select {
+            width: 100% !important;
+            height: 44px !important;
+        }
+
+        .seller-order-detail .bootstrap-select.form-control {
+            padding: 0 !important;
+            border: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .seller-order-detail .bootstrap-select > .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 44px;
+            min-height: 44px;
+            margin: 0 !important;
+            padding: 9px 14px;
+            color: #685b4e !important;
+            background: #fff !important;
+            border: 1px solid var(--order-border) !important;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: none !important;
+        }
+
+        .seller-order-detail .bootstrap-select > .dropdown-toggle:hover,
+        .seller-order-detail .bootstrap-select > .dropdown-toggle:focus,
+        .seller-order-detail .bootstrap-select.show > .dropdown-toggle {
+            color: #685b4e !important;
+            background: #fff !important;
+            border-color: #685b4e !important;
+        }
+
+        .seller-order-detail .bootstrap-select .filter-option {
+            position: static;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0;
+        }
+
+        .seller-order-detail .bootstrap-select .filter-option-inner,
+        .seller-order-detail .bootstrap-select .filter-option-inner-inner {
+            width: 100%;
+            color: #685b4e !important;
+        }
+
+        .seller-order-detail .bootstrap-select .dropdown-toggle::after {
+            margin-left: auto;
+            border-top-color: #685b4e !important;
+        }
+
+        .seller-order-detail .dropdown-menu {
+            padding: 8px;
+            background: #fff !important;
+            border: 1px solid var(--order-border);
+            border-radius: 6px;
+            box-shadow: 0 12px 28px rgba(57, 50, 42, 0.10);
+        }
+
+        .seller-order-detail .dropdown-item {
+            padding: 10px 12px;
+            color: var(--order-muted) !important;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .seller-order-detail .dropdown-item:hover,
+        .seller-order-detail .dropdown-item:focus,
+        .seller-order-detail .dropdown-item.active {
+            color: #685b4e !important;
+            background: var(--order-soft-2) !important;
+        }
+
+        .seller-order-detail address {
+            margin: 0;
+            color: var(--order-muted);
+            line-height: 1.7;
+            font-weight: 600;
+        }
+
+        .seller-order-detail address strong,
+        .seller-order-detail .text-main {
+            color: var(--brown) !important;
+            font-weight: 800;
+        }
+
+        .seller-order-detail .summary-table {
+            width: 100%;
+        }
+
+        .seller-order-detail .summary-table td {
+            padding: 8px 0;
+            color: var(--order-muted);
+            border: 0;
+            font-weight: 600;
+        }
+
+        .seller-order-detail .summary-table td:last-child {
+            color: var(--brown);
+            font-weight: 800;
+        }
+
+        .seller-order-detail .badge {
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-weight: 800;
+        }
+
+        .seller-order-detail .badge-success {
+            color: #2f6b45;
+            background: rgba(47, 107, 69, .12);
+        }
+
+        .seller-order-detail .badge-info {
+            color: #685b4e;
+            background: #fff;
+        }
+
+        .seller-order-detail .items-section-title {
+            margin: 6px 0 14px;
+            color: var(--brown);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .seller-order-detail .items-table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            border: 1px solid var(--order-border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .seller-order-detail .items-table thead th {
+            color: var(--order-muted);
+            background: #fff;
+            border: 0;
+            border-bottom: 1px solid var(--order-border);
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .seller-order-detail .items-table tbody td {
+            padding: 14px 12px;
+            color: var(--brown);
+            border-color: var(--order-border);
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        .seller-order-detail .product-thumb {
+            width: 58px;
+            height: 58px;
+            object-fit: cover;
+            border: 1px solid var(--order-border);
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        .seller-order-detail .product-name {
+            color: var(--brown) !important;
+            font-weight: 800;
+        }
+
+        .seller-order-detail .addon-list {
+            margin: 6px 0 0;
+            padding-left: 18px;
+            color: var(--order-muted);
+        }
+
+        .seller-order-detail .totals-wrap {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 18px;
+        }
+
+        .seller-order-detail .totals-panel {
+            width: min(100%, 390px);
+            padding: 14px 16px;
+            background: #fff;
+        }
+
+        .seller-order-detail .totals-panel .table {
+            margin: 0;
+        }
+
+        .seller-order-detail .totals-panel td {
+            padding: 8px 0;
+            border: 0;
+        }
+
+        .seller-order-detail .total-row td {
+            padding-top: 12px;
+            color: var(--brown);
+            border-top: 1px solid var(--order-border);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .seller-order-detail .btn-light {
+            color: #685b4e;
+            background: #fff;
+            border: 1px solid var(--order-border);
+            border-radius: 6px;
+        }
+
+        @media (max-width: 991.98px) {
+            .seller-order-detail .status-grid,
+            .seller-order-detail .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .seller-order-detail .detail-hero {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 14px;
+            }
+
+            .seller-order-detail .detail-title {
+                font-size: 21px;
+            }
+
+            .seller-order-detail .detail-card-body {
+                padding: 14px;
+            }
+
+            .seller-order-detail .detail-header-actions,
+            .seller-order-detail .detail-chip {
+                width: 100%;
+            }
+
+            .seller-order-detail .totals-wrap {
+                justify-content: stretch;
+            }
+        }
+    </style>
+
+    <div class="seller-order-detail">
+        <div class="detail-hero">
+            <div>
+                <div class="detail-eyebrow">{{ translate('Seller Order') }}</div>
+                <h1 class="detail-title">{{ translate('Order Details') }}</h1>
+                <p class="detail-subtitle">{{ translate('Review customer details, ordered items, totals and fulfillment status.') }}</p>
+            </div>
+            <div class="detail-header-actions">
+                <a href="{{ route('seller.orders.index') }}" class="back-button">
+                    <i class="las la-arrow-left"></i>
+                    <span>{{ translate('Back') }}</span>
+                </a>
+                <span class="detail-chip"><i class="las la-hashtag"></i>{{ $order->code }}</span>
+                <span class="detail-chip"><i class="las la-calendar"></i>{{ date('d-m-Y h:i A', $order->date) }}</span>
+            </div>
         </div>
 
-        <div class="card-body">
-            <div class="row gutters-5">
-                <div class="col text-md-left text-center">
-                </div>
+        <div class="card detail-card">
+        <div class="card-body detail-card-body">
                 @php
                     $delivery_status = $order->delivery_status;
                     $payment_status = $order->orderDetails->where('seller_id', Auth::user()->id)->first()->payment_status;
                 @endphp
                 @if (get_setting('product_manage_by_admin') == 0)
-                    <div class="col-md-3 ml-auto">
-                        <label for="update_payment_status">{{ translate('Payment Status') }}</label>
+                    <div class="status-grid">
+                    <div class="status-panel">
+                        <label class="detail-label" for="update_payment_status">{{ translate('Payment Status') }}</label>
                         @if (($order->payment_type == 'cash_on_delivery' || (addon_is_activated('offline_payment') == 1 && $order->manual_payment == 1)) && $payment_status == 'unpaid')
                             <select class="form-control aiz-selectpicker" data-minimum-results-for-search="Infinity"
                                 id="update_payment_status">
@@ -30,8 +438,8 @@
                             <input type="text" class="form-control" value="{{ translate($payment_status) }}" disabled>
                         @endif
                     </div>
-                    <div class="col-md-3 ml-auto">
-                        <label for="update_delivery_status">{{ translate('Delivery Status') }}</label>
+                    <div class="status-panel">
+                        <label class="detail-label" for="update_delivery_status">{{ translate('Delivery Status') }}</label>
                         @if ($delivery_status != 'delivered' && $delivery_status != 'cancelled')
                             <select class="form-control aiz-selectpicker" data-minimum-results-for-search="Infinity"
                                 id="update_delivery_status">
@@ -52,10 +460,11 @@
                             <input type="text" class="form-control" value="{{ translate(ucfirst(str_replace('_', ' ', $delivery_status))) }}" disabled>
                         @endif
                     </div>
+                    </div>
                 @endif
-            </div>
-            <div class="row gutters-5 mt-2">
-                <div class="col text-md-left text-center">
+            <div class="info-grid">
+                <div class="info-panel">
+                    <h5 class="panel-title">{{ translate('Shipping Address') }}</h5>
                     @if(json_decode($order->shipping_address))
                         <address>
                             <strong class="text-main">
@@ -91,15 +500,16 @@
                                 height="100"></a>
                     @endif
                 </div>
-                <div class="col-md-4 ml-auto">
-                    <table>
+                <div class="info-panel">
+                    <h5 class="panel-title">{{ translate('Order Summary') }}</h5>
+                    <table class="summary-table">
                         <tbody>
                             <tr>
-                                <td class="text-main text-bold">{{ translate('Order #') }}</td>
-                                <td class="text-info text-bold text-right">{{ $order->code }}</td>
+                                <td>{{ translate('Order #') }}</td>
+                                <td class="text-right">{{ $order->code }}</td>
                             </tr>
                             <tr>
-                                <td class="text-main text-bold">{{ translate('Order Status') }}</td>
+                                <td>{{ translate('Order Status') }}</td>
                                 <td class="text-right">
                                     @if ($delivery_status == 'delivered')
                                         <span
@@ -111,23 +521,23 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-main text-bold">{{ translate('Order Date') }}</td>
+                                <td>{{ translate('Order Date') }}</td>
                                 <td class="text-right">{{ date('d-m-Y h:i A', $order->date) }}</td>
                             </tr>
                             <tr>
-                                <td class="text-main text-bold">{{ ('Total Amount') }}</td>
+                                <td>{{ ('Total Amount') }}</td>
                                 <td class="text-right">
                                     {{ single_price($order->grand_total) }}
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-main text-bold">{{ translate('Payment method') }}</td>
+                                <td>{{ translate('Payment method') }}</td>
                                 <td class="text-right">
                                     {{ translate(ucfirst(str_replace('_', ' ', $order->payment_type))) }}</td>
                             </tr>
 
                             <tr>
-                                <td class="text-main text-bold">{{ translate('Additional Info') }}</td>
+                                <td>{{ translate('Additional Info') }}</td>
                                 @php
                                     $additionalInfo = json_decode($order->additional_info, true);
                                     $additionalNote = is_array($additionalInfo)
@@ -141,10 +551,10 @@
                 </div>
             </div>
 
-            <hr class="new-section-sm bord-no">
+            <h5 class="items-section-title">{{ translate('Ordered Items') }}</h5>
             <div class="row">
                 <div class="col-lg-12 table-responsive">
-                    <table class="table-bordered aiz-table invoice-summary table">
+                    <table class="aiz-table invoice-summary table items-table">
                         <thead>
                             <tr class="bg-trans-dark">
                                 <th data-breakpoints="lg" class="min-col">#</th>
@@ -167,11 +577,11 @@
                                     <td>
                                         @if ($orderDetail->product != null && $orderDetail->product->auction_product == 0)
                                             <a href="{{ route('product', $orderDetail->product->slug) }}"
-                                                target="_blank"><img height="50"
+                                                target="_blank"><img class="product-thumb"
                                                     src="{{ uploaded_asset($orderDetail->product->thumbnail_img) }}"></a>
                                         @elseif ($orderDetail->product != null && $orderDetail->product->auction_product == 1)
                                             <a href="{{ route('auction-product', $orderDetail->product->slug) }}"
-                                                target="_blank"><img height="50"
+                                                target="_blank"><img class="product-thumb"
                                                     src="{{ uploaded_asset($orderDetail->product->thumbnail_img) }}"></a>
                                         @else
                                             <strong>{{ translate('N/A') }}</strong>
@@ -181,7 +591,7 @@
                                         @if ($orderDetail->product != null && $orderDetail->product->auction_product == 0)
                                             <strong><a href="{{ route('product', $orderDetail->product->slug) }}"
                                                     target="_blank"
-                                                    class="text-muted">{{ $orderDetail->product->getTranslation('name') }}</a></strong>
+                                                    class="product-name">{{ $orderDetail->product->getTranslation('name') }}</a></strong>
                                             <small>{{ $orderDetail->variation }}</small>
 									@php
     $addons = null;
@@ -196,7 +606,7 @@
 @if (!empty($addons))
     <br>
     
-    <ul style="margin:0; padding-left:15px;">
+    <ul class="addon-list">
         @foreach ($addons as $addon)
             <li>
                 {{ $addon['name'] ?? '' }}
@@ -212,7 +622,7 @@
                                         @elseif ($orderDetail->product != null && $orderDetail->product->auction_product == 1)
                                             <strong><a href="{{ route('auction-product', $orderDetail->product->slug) }}"
                                                     target="_blank"
-                                                    class="text-muted">{{ $orderDetail->product->getTranslation('name') }}</a></strong>
+                                                    class="product-name">{{ $orderDetail->product->getTranslation('name') }}</a></strong>
                                         @else
                                             <strong>{{ translate('Product Unavailable') }}</strong>
                                         @endif
@@ -247,7 +657,8 @@
                     </table>
                 </div>
             </div>
-            <div class="clearfix float-right">
+            <div class="totals-wrap">
+                <div class="totals-panel">
                 <table class="table">
                     <tbody>
                         <tr>
@@ -259,7 +670,7 @@
                             </td>
                         </tr>
                        {{-- @if($order->igst)
-                        <tr>
+                        <tr class="total-row">
                             <td>
                                 <strong class="text-muted">{{ translate('IGST') }} <small>(18%)</small> :</strong>
                             </td>
@@ -319,10 +730,12 @@
                     <a href="{{ route('seller.invoice.download', $order->id) }}" type="button"
                         class="btn btn-icon btn-light"><i class="las la-print"></i></a>
                 </div>
+                @endif
+                </div>
             </div>
-            @endif
 
         </div>
+    </div>
     </div>
 @endsection
 

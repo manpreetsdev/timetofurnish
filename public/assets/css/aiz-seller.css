@@ -8949,7 +8949,7 @@ input[type="number"] {
 .aiz-file-box .card-file .card-body {
     position: absolute;
     width: calc(100% - 16px);
-    bottom: 5px;
+    bottom: -5px;
     left: 8px;
 }
 

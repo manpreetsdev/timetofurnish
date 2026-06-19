@@ -2265,7 +2265,8 @@ span.badge.badge-primary.badge-circle.position-absolute {
 /* Option Active/Selected State - eliminating legacy harsh black */
 .bootstrap-select .dropdown-menu li.selected a,
 .bootstrap-select .dropdown-menu li.active a,
-.bootstrap-select .dropdown-menu li.selected.active a {
+.bootstrap-select .dropdown-menu li.selected.active a,
+.bootstrap-select .dropdown-menu li.selected.active a span {
     background-color: #685b4e !important;
     color: #ffffff !important;
     font-weight: 600 !important;
