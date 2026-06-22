@@ -1356,6 +1356,11 @@
                                        <span class="aiz-side-nav-text  text">{{translate('Pages')}}</span>
                                    </a>
                                </li>
+                               <li class="aiz-side-nav-item">
+                                   <a href="{{ route('homepage-reviews.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['homepage-reviews.index', 'homepage-reviews.create', 'homepage-reviews.edit'])}}">
+                                       <span class="aiz-side-nav-text  text">{{translate('Homepage Reviews')}}</span>
+                                   </a>
+                               </li>
                            @endcan
                            <li class="aiz-side-nav-item">
                                <a href="{{ route('team-members.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['team-members.index', 'team-members.create', 'team-members.edit'])}}">
