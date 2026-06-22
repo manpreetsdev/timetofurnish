@@ -630,6 +630,8 @@
         </section>
     @endif
 
+    @include('frontend.partials.homepage_reviews')
+
 @endsection
 
 @section('script')

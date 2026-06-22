@@ -176,6 +176,7 @@
         color: #685b4e !important;
         background: var(--white) !important;
         border-color: #685b4e !important;
+        justify-content: space-between !important;
     }
 
     .seller-uploads-page .bootstrap-select .dropdown-toggle .filter-option-inner-inner {
@@ -445,6 +446,7 @@
         .seller-uploads-page .uploads-toolbar .dropdown,
         .seller-uploads-page .uploads-toolbar .bootstrap-select {
             width: 100% !important;
+            justify-content: space-between;
         }
 
         .seller-uploads-page .uploads-search-action .btn {

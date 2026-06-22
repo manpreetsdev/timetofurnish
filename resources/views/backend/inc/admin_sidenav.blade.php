@@ -90,8 +90,32 @@
         .adminsidebar .aiz-sidebar-overlay {
             background: rgba(58, 36, 16, 0.22);
         }
+		.sidebar-logo {
+    border-bottom: 1px solid #E8DFD4;
+    margin-bottom: 15px;
+}
+
+.sidebar-logo img {
+    max-width: 160px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+		.iteamset{
+			Height: 10rem ;
+    Display : block ;
+     Background : transparent;
+			width:100% ;
+		}
     </style>
     <div class="aiz-sidebar left c-scrollbar ">
+		
+    {{-- Logo --}}
+<div class="sidebar-logo text-center py-3">
+    <a href="{{ route('admin.dashboard') }}">
+        <img src="{{ asset('public/assets/img/logoT.png') }}" alt="Time To Furnish Logo">
+    </a>
+</div>
 
         <div class="aiz-side-nav-wrap">
             <div class="px-3 mb-3 position-relative">
@@ -1545,6 +1569,26 @@
                         </ul>
                     </li>
 @endcanany
+						   {{--copy start --}} 
+						    @can ('uploaded_files')
+                <li class="aiz-side-nav-item  iteamset">
+                  
+					
+                </li>
+@endcan
+						    @can ('uploaded_files')
+                <li class="aiz-side-nav-item">
+                 
+                </li>
+@endcan
+						    @can ('uploaded_files')
+                <li class="aiz-side-nav-item">
+                   
+                </li>
+@endcan
+						   {{--copy end--}}
+
+						
                            @endcanany
                            @canany(['shipping_configuration','shipping_country_setting','manage_shipping_states','manage_shipping_cities','manage_zones','manage_carriers'])
                                {{--<li class="aiz-side-nav-item">
@@ -1706,5 +1750,8 @@
             </ul><!-- .aiz-side-nav -->
         </div><!-- .aiz-side-nav-wrap -->
     </div><!-- .aiz-sidebar -->
-    <div class="aiz-sidebar-overlay"></div>
+    <div class="aiz-sidebar-overlay">
+	</div>
 </div><!-- .aiz-sidebar -->
+
+

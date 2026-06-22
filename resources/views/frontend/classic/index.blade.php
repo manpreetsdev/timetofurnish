@@ -662,5 +662,6 @@
         </section>
     @endif
 
-@endsection
+    @include('frontend.partials.homepage_reviews')
 
+@endsection

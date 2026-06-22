@@ -51,6 +51,7 @@ use App\Http\Controllers\ProductAddonGlobalController;
 use App\Http\Controllers\ProductServicesController;
 use App\Http\Controllers\ShippingChargeController;
 use App\Http\Controllers\OfferController;
+use App\Http\Controllers\HomepageReviewController;
 /*
   |--------------------------------------------------------------------------
   | Admin Routes
@@ -330,6 +331,12 @@ Route::resource('sellers', SellerController::class);
             Route::get('/custom-pages/edit/{id}', 'edit')->name('custom-pages.edit');
             Route::get('/custom-pages/destroy/{id}', 'destroy')->name('custom-pages.destroy');
         });
+
+        // Homepage Reviews
+        Route::resource('homepage-reviews', HomepageReviewController::class);
+        Route::post('/homepage-reviews/update_status', [HomepageReviewController::class, 'updateStatus'])->name('homepage-reviews.update_status');
+        Route::post('/homepage-reviews/update_settings', [HomepageReviewController::class, 'updateSettings'])->name('homepage-reviews.update_settings');
+        Route::get('/homepage-reviews/{id}/duplicate', [HomepageReviewController::class, 'duplicate'])->name('homepage-reviews.duplicate');
     });
 
     // Staff Roles

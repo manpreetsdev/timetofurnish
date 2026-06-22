@@ -2295,8 +2295,8 @@ hr {
 
 .gutters-16>.col,
 .gutters-16>[class*="col-"] {
-    padding-right: 5px;
-    padding-left: 5px;
+    padding-right: 16px;
+    padding-left: 16px;
 }
 
 .gutters-17 {
@@ -8655,16 +8655,14 @@ input[type="number"] {
 }
 
 .aiz-side-nav-list .aiz-side-nav-arrow {
-    display: -webkit-box;
-    display: -ms-flexbox;
+    position: relative;
+    width: 24px;
+    min-width: 24px;
+    margin-left: auto;
+    flex-shrink: 0;
     display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
-    -webkit-box-pack: end;
-    -ms-flex-pack: end;
-    justify-content: flex-end;
-    font-size: 80%;
+    justify-content: center;
 }
 
 
@@ -8673,16 +8671,21 @@ input[type="number"] {
 }
 
 .aiz-side-nav-list .aiz-side-nav-arrow::after {
-    content: "\f106";
-    font-family: "Line Awesome Free";
-    font-weight: 900;
-    -webkit-transition: all 0.3s ease;
-    transition: all 0.3s ease;
-    color: #000000 !important;
+    content: "+" !important;
+    font-family: inherit !important;
+    font-size: 18px;
+    font-weight: 400;
+    color: #8A7B6A !important;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -45%) !important;
+    transition: none !important;
 }
 
 [dir="rtl"] .aiz-side-nav-list .aiz-side-nav-arrow::after {
-    content: "\f106";
+    content: "-" !important;
 }
 
 .aiz-side-nav-list [aria-expanded="true"] .aiz-side-nav-arrow::after {
@@ -8988,7 +8991,10 @@ input[type="number"] {
     -webkit-transform: translateX(0);
 }
 
-
+.aiz-card-box .disc-amount {
+    margin-right: -37%;
+    opacity: 0 !important;
+}
 
 .aiz-card-box:hover .disc-amount {
     margin-right: 0;
@@ -9886,7 +9892,10 @@ input[type="number"] {
         height: auto;
     }
 
-
+    .aiz-card-box .disc-amount {
+        margin-right: -60%;
+        opacity: 0 !important;
+    }
 
     .px-xs-0 {
         padding-left: 0 !important;
@@ -10062,7 +10071,7 @@ input[type="number"] {
 .aiz-file-box .card-file .card-body {
     position: absolute;
     width: calc(100% - 16px);
-    bottom: -5px;
+    bottom: 5px;
     left: 8px;
 }
 
@@ -14342,8 +14351,7 @@ Time To Furnish - Admin Sidebar (Brand Match)
 .aiz-side-nav-wrap {
     background: #FAF9F6 !important;
     padding: 14px 0 28px !important;
-    height: auto !important;
-    overflow-y: auto !important;
+
 }
 
 .aiz-side-nav-wrap::-webkit-scrollbar {
@@ -14382,9 +14390,14 @@ Time To Furnish - Admin Sidebar (Brand Match)
 /* Menu links */
 .aiz-side-nav-wrap .aiz-side-nav-link {
     color: #3D3429 !important;
-    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center;
+    width: calc(100% - 20px) !important;
+    /* 10px left + 10px right margin ke hisaab se */
     margin: 2px 10px !important;
     padding: 10px 14px !important;
+    border-radius: 10px !important;
+    box-sizing: border-box !important;
     font-size: 14px !important;
     font-weight: 500 !important;
     transition: all 0.2s ease !important;
@@ -14394,6 +14407,17 @@ Time To Furnish - Admin Sidebar (Brand Match)
 .aiz-side-nav-wrap .aiz-side-nav-link:hover {
     background: #F0E8DF !important;
     color: #1A1A1A !important;
+    border-radius: 10px !important;
+    width: calc(100% - 20px) !important;
+
+    box-sizing: border-box !important;
+}
+
+.aiz-side-nav-wrap .aiz-side-nav-item.mm-active>.aiz-side-nav-link,
+.aiz-side-nav-wrap .aiz-side-nav-link.active {
+    border-radius: 10px !important;
+    width: calc(100% - 20px) !important;
+
 }
 
 /* Active */
@@ -14443,7 +14467,7 @@ Time To Furnish - Admin Sidebar (Brand Match)
 /* Dropdown arrow */
 .aiz-side-nav-wrap .aiz-side-nav-arrow {
     opacity: 0.4;
-    margin-right: 20px;
+    margin-right: 10px;
 }
 
 /* Clear Cache button */
@@ -14495,9 +14519,7 @@ header .btn-outline-primary:hover,
 }
 
 /* Bottom spacing */
-.adminsidebar .aiz-side-nav-list {
-    padding-bottom: 20px !important;
-}
+.adminsidebar .aiz-side-nav-list {}
 
 .adminsidebar .aiz-side-nav-item {
     position: relative !important;
@@ -14507,6 +14529,55 @@ header .btn-outline-primary:hover,
 .adminsidebar .aiz-side-nav-link {
     width: 100% !important;
     box-sizing: border-box !important;
+}
+
+/* =============================================
+   Sidebar scroll + page scroll lock fix
+   Add at END of admin sidebar CSS
+============================================= */
+
+/* Sidebar ke andar scroll proper rahe */
+.adminsidebar .aiz-sidebar.left,
+.adminsidebar .aiz-side-nav-wrap {}
+
+/* Optional scrollbar style */
+.adminsidebar .aiz-sidebar.left::-webkit-scrollbar,
+.adminsidebar .aiz-side-nav-wrap::-webkit-scrollbar {
+    width: 5px;
+}
+
+.adminsidebar .aiz-sidebar.left::-webkit-scrollbar-thumb,
+.adminsidebar .aiz-side-nav-wrap::-webkit-scrollbar-thumb {
+    background: #D4C4B0;
+    border-radius: 10px;
+}
+
+/* IMPORTANT:
+   AIZ jab mobile sidebar open karta hai to body/html par side-menu-open lagti hai
+   us time niche wala page scroll band */
+html.side-menu-open,
+body.side-menu-open {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
+/* Main content/dashboard scroll lock */
+body.side-menu-open .aiz-main-content,
+body.side-menu-open .aiz-content-wrapper,
+body.side-menu-open .aiz-main-wrapper,
+body.side-menu-open #main-content {
+    overflow: hidden !important;
+    height: calc(100vh - 0px) !important;
+}
+
+/* Strong mobile lock */
+@media (max-width: 991px) {
+    body.side-menu-open {
+        position: fixed !important;
+        width: 100% !important;
+        left: 0;
+        right: 0;
+    }
 }
 
 /* ==========================================
@@ -14529,7 +14600,7 @@ header .btn-outline-primary:hover,
 }
 
 .aiz-topbar .btn-soft-blue span {
-    color: #1c1c1c !important;
+    color: #000 !important;
 }
 
 .aiz-topbar .btn-soft-blue svg path {
@@ -14674,4 +14745,151 @@ canvas {
 
 .text {
     margin-left: 26px !important;
+}
+
+.aiz-side-nav-list metismenu {
+    padding-bottom: 100px !important;
+}
+
+/* =====================================================
+   MOBILE DASHBOARD FIXES
+   Time To Furnish Admin Panel
+===================================================== */
+@media (max-width: 767px) {
+
+    /* =========================
+       MAIN CONTENT SPACING
+    ========================== */
+    .aiz-main-content {
+        padding: 0 !important;
+    }
+
+    .aiz-main-content .px-15px.px-lg-25px {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    /* =========================
+       OUTER DASHBOARD WRAPPER
+    ========================== */
+    .aiz-main-content .col-lg-6 {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+        padding-left: 10 !important;
+        padding-right: 10 !important;
+    }
+
+    /* =========================
+       TOP 4 STATS ROW
+    ========================== */
+    .aiz-main-content .col-lg-6>.row.gutters-10 {
+        margin-left: -4px !important;
+        margin-right: -4px !important;
+    }
+
+    .aiz-main-content .col-lg-6>.row.gutters-10>.col-6 {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+        margin-bottom: 8px !important;
+    }
+
+    /* =========================
+       TOP STAT CARDS
+    ========================== */
+    .aiz-main-content .col-lg-6>.row.gutters-10>.col-6>[class*="bg-grad-"] {
+        height: 120px !important;
+        min-height: 120px !important;
+        max-height: 120px !important;
+        border-radius: 18px !important;
+        position: relative !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        padding: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* Text wrapper inside stat cards */
+    .aiz-main-content .col-lg-6>.row.gutters-10>.col-6>[class*="bg-grad-"] .px-3.pt-3 {
+        padding: 12px 12px 0 !important;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Stat card labels */
+    .aiz-main-content .col-lg-6>.row.gutters-10>.col-6>[class*="bg-grad-"] h6,
+    .aiz-main-content .col-lg-6>.row.gutters-10>.col-6>[class*="bg-grad-"] .fs-15 {
+        font-size: 12px !important;
+        line-height: 1.3 !important;
+        margin-bottom: 4px !important;
+        font-weight: 500 !important;
+    }
+
+    /* Stat card numbers */
+    .aiz-main-content .col-lg-6>.row.gutters-10>.col-6>[class*="bg-grad-"] h1,
+    .aiz-main-content .col-lg-6>.row.gutters-10>.col-6>[class*="bg-grad-"] h2,
+    .aiz-main-content .col-lg-6>.row.gutters-10>.col-6>[class*="bg-grad-"] .h1 {
+        font-size: 24px !important;
+        line-height: 1 !important;
+        margin-bottom: 0 !important;
+        font-weight: 700 !important;
+    }
+
+    /* SVG wave at bottom of stat cards */
+    .aiz-main-content .col-lg-6>.row.gutters-10>.col-6>[class*="bg-grad-"] svg {
+        position: absolute !important;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 24px !important;
+        z-index: 1;
+    }
+
+    /* =========================
+       PRODUCTS / SELLERS CHART CARDS
+    ========================== */
+    .aiz-main-content .card {
+        border-radius: 18px !important;
+        overflow: hidden !important;
+        margin-bottom: 12px !important;
+    }
+
+    .aiz-main-content .card-header {
+        padding: 12px 14px !important;
+        min-height: auto !important;
+    }
+
+    .aiz-main-content .card-header h5,
+    .aiz-main-content .card-header .h6 {
+        font-size: 15px !important;
+        margin-bottom: 0 !important;
+        font-weight: 600 !important;
+    }
+
+    .aiz-main-content .card-body {
+        padding: 12px !important;
+    }
+
+    /* Chart canvas / chart area */
+    .aiz-main-content .card canvas,
+    .aiz-main-content .card svg {
+        max-height: 180px !important;
+        width: 100% !important;
+    }
+
+    /* =========================
+       BOTTOM WHITE FOOTER STRIP
+    ========================== */
+    .bg-white.text-center.py-3.px-15px.px-lg-25px.mt-auto {
+        padding: 10px !important;
+        font-size: 12px !important;
+    }
+}
+
+.aiz-side-nav-list metismenu {
+    padding-bottom: 100px !important;
 }

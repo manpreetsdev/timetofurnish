@@ -4629,3 +4629,55 @@ img[style*="float: right"] {
         opacity: 1 !important;
     }
 }
+
+@media (max-width: 767px) {
+
+    .top-products-slider-wrap {
+        position: relative !important;
+        width: 100% !important;
+        display: block !important;
+    }
+
+    .top-products-arrow {
+        position: absolute !important;
+        top: 15px !important;
+        /* title ke niche */
+        width: 28px !important;
+        height: 28px !important;
+        z-index: 99999 !important;
+        background: #fff !important;
+        border: 1px solid #999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .top-products-prev {
+        left: 0 !important;
+    }
+
+    .top-products-next {
+        right: 0 !important;
+        left: auto !important;
+
+    }
+
+    .top-products-arrow top-products-next {
+        margin-left: 215px;
+    }
+
+    /* Slider ko arrows ke niche push karo */
+    #top-products-slider {
+        padding-top: 40px !important;
+    }
+}
+
+.top-products-slider-wrap {
+    min-width: 100% !important;
+}
+
+.aiz-side-nav-wrap {
+    padding: 15px 0;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    height: 100vh !important;
+}

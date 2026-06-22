@@ -651,6 +651,7 @@
         @endif
     @endif
 
+    @include('frontend.partials.homepage_reviews')
 
 @endsection
 
