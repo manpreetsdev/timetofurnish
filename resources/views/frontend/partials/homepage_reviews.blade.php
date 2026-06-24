@@ -25,6 +25,7 @@
                 .aiz-carousel .slick-prev{
                     left:-60px;
                 }
+                
                 .aiz-carousel .slick-next{
                     right:-60px;
                 }
@@ -247,37 +248,37 @@
                         height: 36px !important;
                     }
                     .reviewer-name {
-                        font-size: 13px !important;
+                        font-size: 12px !important;
                     }
                     .review-relative-date {
-                        font-size: 10px;
+                        font-size: 9px;
                     }
                     .review-rating {
                         font-size: 0.82rem;
                         line-height: 1;
                     }
                     .purchased-text {
-                        font-size: 11px;
+                        font-size: 9.5px;
                         margin-bottom: 0.3rem;
                         letter-spacing: 0.3px;
                     }
                     .review-content {
-                        font-size: 13px;
+                        font-size: 12px;
                         margin-bottom: 0.18rem;
                         line-height: 1.3;
                     }
                     .review-read-more-btn {
-                        font-size: 11px;
+                        font-size: 10.5px;
                     }
                     .review-card-divider {
                         padding-top: 0.65rem;
                     }
                     .category-badge {
-                        font-size: 9px;
+                        font-size: 8.5px;
                         padding: 4px 10px;
                     }
                     .helpful-votes {
-                        font-size: 10px;
+                        font-size: 9px;
                     }
                     .homepage-reviews-slider .slick-slide {
                         padding: 7px 7px;
@@ -302,6 +303,22 @@
                         font-size: 12px !important;
                     }
                 }
+
+                @media (max-width: 767.98px) {
+                    .homepage-reviews-section .container {
+                        padding-left: 15px !important;
+                        padding-right: 0 !important;
+                    }
+                    .homepage-reviews-header {
+                        margin-left: -15px !important;
+                        margin-right: 0 !important;
+                        padding-left: 15px;
+                        padding-right: 15px;
+                    }
+                    .homepage-reviews-slider .slick-slide:last-child {
+                        padding-right: 20px !important;
+                    }
+                }
             </style>
 
             @if ($desktop_slider == 1)
@@ -311,13 +328,13 @@
                      data-xxl-items="3"
                      data-xl-items="3"
                      data-lg-items="2"
-                     data-md-items="1.5"
-                     data-sm-items="1"
-                     data-xs-items="1"
+                     data-md-items="2"
+                     data-sm-items="1.5"
+                     data-xs-items="1.5"
                      data-arrows="true"
                      data-dots="true"
                      data-autoplay="true"
-                     data-infinite="true">
+                     data-infinite="false">
                     @foreach ($homepage_reviews as $review)
                         <div class="carousel-box">
                             @include('frontend.partials.homepage_review_card', ['review' => $review])
@@ -343,8 +360,8 @@
                     <div class="aiz-carousel homepage-reviews-slider arrow-inactive-none"
                          data-items="2"
                          data-md-items="1.5"
-                         data-sm-items="1"
-                         data-xs-items="1"
+                         data-sm-items="1.5"
+                         data-xs-items="1.5"
                          data-arrows="true"
                          data-dots="true"
                          data-autoplay="true"

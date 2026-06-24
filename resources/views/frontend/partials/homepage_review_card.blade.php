@@ -16,7 +16,7 @@
     $category_tag = $review->category_tag ?: $categories[$product_index];
     $helpful_votes = ($review->id * 7 + 3) % 20 + 4; // realistic counts (e.g. 4 to 23)
     $review_text_plain = trim(strip_tags((string) $review->review_text));
-    $needs_read_more = \Illuminate\Support\Str::length($review_text_plain) > 90;
+    $needs_read_more = \Illuminate\Support\Str::length($review_text_plain) > 30;
     $review_text_id = 'review-text-' . $review->id;
 @endphp
 
@@ -52,13 +52,22 @@
                         <h5 class="reviewer-name mb-0 font-weight-700" style="font-size: 15px; line-height: 1.2; margin-bottom: 2px; color: #39322a;">{{ $review->name }}</h5>
                      <!-- Stars Rating -->
             <div class="review-rating">
-                @for ($i = 0; $i < 5; $i++)
-                    @if ($i < $review->rating)
-                        <i class="las la-star"></i>
-                    @else
-                        <i class="lar la-star text-muted" style="opacity: 0.4;"></i>
-                    @endif
-                @endfor
+                <span class="d-none d-md-inline-block">
+                    @for ($i = 0; $i < 5; $i++)
+                        @if ($i < $review->rating)
+                            <i class="las la-star"></i>
+                        @else
+                            <i class="lar la-star text-muted" style="opacity: 0.4;"></i>
+                        @endif
+                    @endfor
+                </span>
+                <span class="d-inline-flex d-md-none align-items-center">
+                    <span class="rating-point-val mr-1 font-weight-700" style="color: #c5a059;">{{ floatval($review->rating) }}</span>
+                    <i class="las la-star text-warning" style="color: #c5a059 !important; font-size: 13px;"></i>
+                    <span class="rating-count-text ml-1" style="color: #8c7e70; font-size: 10px; font-weight: 500;">
+                        {{ $review->rating == 1 ? translate('review') : translate('reviews') }}
+                    </span>
+                </span>
             </div>
                     </div>
                 </div>
