@@ -13,6 +13,94 @@ use Illuminate\Support\Facades\Validator;
 
 class AizUploadController extends Controller
 {
+    /**
+     * Default extension to upload type map used as fallback.
+     */
+    private function defaultUploadTypes(): array
+    {
+        return [
+            'jpg' => 'image',
+            'jpeg' => 'image',
+            'png' => 'image',
+            'svg' => 'image',
+            'webp' => 'image',
+            'gif' => 'image',
+            'mp4' => 'video',
+            'mpg' => 'video',
+            'mpeg' => 'video',
+            'webm' => 'video',
+            'ogg' => 'video',
+            'avi' => 'video',
+            'mov' => 'video',
+            'flv' => 'video',
+            'swf' => 'video',
+            'mkv' => 'video',
+            'wmv' => 'video',
+            'wma' => 'audio',
+            'aac' => 'audio',
+            'wav' => 'audio',
+            'mp3' => 'audio',
+            'zip' => 'archive',
+            'rar' => 'archive',
+            '7z' => 'archive',
+            'doc' => 'document',
+            'txt' => 'document',
+            'docx' => 'document',
+            'pdf' => 'document',
+            'csv' => 'document',
+            'xml' => 'document',
+            'ods' => 'document',
+            'xlr' => 'document',
+            'xls' => 'document',
+            'xlsx' => 'document',
+        ];
+    }
+
+    /**
+     * Build extension => type map from admin setting, with a safe fallback.
+     */
+    private function getConfiguredUploadTypes(): array
+    {
+        $defaultTypes = $this->defaultUploadTypes();
+        $configured = trim((string) get_setting('aiz_upload_allowed_types', ''));
+
+        if ($configured === '') {
+            return $defaultTypes;
+        }
+
+        $allowedTypes = ['image', 'video', 'audio', 'archive', 'document'];
+        $tokens = preg_split('/[\r\n,]+/', $configured);
+        $parsed = [];
+
+        foreach ($tokens as $token) {
+            $token = trim($token);
+            if ($token === '') {
+                continue;
+            }
+
+            $parts = explode(':', $token, 2);
+            $extension = strtolower(trim($parts[0]));
+            if (!preg_match('/^[a-z0-9]+$/', $extension)) {
+                continue;
+            }
+
+            if (count($parts) === 2) {
+                $mappedType = strtolower(trim($parts[1]));
+            } else {
+                // Allow shorthand syntax like "jpg, jpeg, png" using default type mapping.
+                $mappedType = $defaultTypes[$extension] ?? null;
+            }
+
+            if (!$mappedType || !in_array($mappedType, $allowedTypes, true)) {
+                continue;
+            }
+
+            $parsed[$extension] = $mappedType;
+        }
+
+        return !empty($parsed) ? $parsed : $defaultTypes;
+    }
+
     public function index(Request $request)
     {
 
@@ -66,49 +154,16 @@ class AizUploadController extends Controller
     }
     public function upload(Request $request)
     {
+        $maxMb = (int) get_setting('max_upload_file_size', 5); // default 5 MB
+        $maxKb = $maxMb * 1024; // Laravel 'max' rule expects kilobytes
         $validator = Validator::make($request->all(), [
-            'aiz_file' => 'max:4000', // Maximum file size in kilobytes (500 KB in this example)
+            'aiz_file' => 'max:' . $maxKb, // Maximum file size in kilobytes
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()->first('aiz_file')], 400);
         }
-        $type = array(
-            "jpg" => "image",
-            "jpeg" => "image",
-            "png" => "image",
-            "svg" => "image",
-            "webp" => "image",
-            "gif" => "image",
-            "mp4" => "video",
-            "mpg" => "video",
-            "mpeg" => "video",
-            "webm" => "video",
-            "ogg" => "video",
-            "avi" => "video",
-            "mov" => "video",
-            "flv" => "video",
-            "swf" => "video",
-            "mkv" => "video",
-            "wmv" => "video",
-            "wma" => "audio",
-            "aac" => "audio",
-            "wav" => "audio",
-            "mp3" => "audio",
-            "zip" => "archive",
-            "rar" => "archive",
-            "7z" => "archive",
-            "doc" => "document",
-            "txt" => "document",
-            "docx" => "document",
-            "pdf" => "document",
-            "csv" => "document",
-            "xml" => "document",
-            "ods" => "document",
-            "xlr" => "document",
-            "xls" => "document",
-            "xlsx" => "document"
-        );
+        $type = $this->getConfiguredUploadTypes();
 
         if ($request->hasFile('aiz_file')) {
             $upload = new Upload;
@@ -146,8 +201,8 @@ class AizUploadController extends Controller
                 }
 
 
-				$path = $request->file('aiz_file')->store('uploads/all', 'local');
-				$size = $request->file('aiz_file')->getSize();
+                $path = $request->file('aiz_file')->store('uploads/all', 'local');
+                $size = $request->file('aiz_file')->getSize();
 
                 // Return MIME type ala mimetype extension
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -275,7 +330,7 @@ class AizUploadController extends Controller
     {
         $ids = collect($request->input('ids', []))
             ->filter()
-            ->map(fn ($id) => (int) $id)
+            ->map(fn($id) => (int) $id)
             ->unique()
             ->values();
 

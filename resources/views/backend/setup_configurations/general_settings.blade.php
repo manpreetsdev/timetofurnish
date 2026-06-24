@@ -76,6 +76,22 @@
                                 <div class="file-preview box sm"></div>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-from-label">{{translate('Max upload file size (MB)')}}</label>
+                            <div class="col-sm-9">
+                                <input type="hidden" name="types[]" value="max_upload_file_size">
+                                <input type="number" name="max_upload_file_size" class="form-control" min="1" step="1" value="{{ get_setting('max_upload_file_size', 5) }}">
+                                <small class="text-muted">{{ translate('Maximum upload file size in megabytes for the AIZ uploader. Default: 5 MB') }}</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-from-label">{{ translate('Allowed upload file types') }}</label>
+                            <div class="col-sm-9">
+                                <input type="hidden" name="types[]" value="aiz_upload_allowed_types">
+                                <textarea name="aiz_upload_allowed_types" class="form-control" rows="3" placeholder="jpg:image, jpeg:image, png:image, mp4:video, mp3:audio, zip:archive, pdf:document">{{ get_setting('aiz_upload_allowed_types', 'jpg:image, jpeg:image, png:image, svg:image, webp:image, gif:image, mp4:video, mpg:video, mpeg:video, webm:video, ogg:video, avi:video, mov:video, flv:video, swf:video, mkv:video, wmv:video, wma:audio, aac:audio, wav:audio, mp3:audio, zip:archive, rar:archive, 7z:archive, doc:document, txt:document, docx:document, pdf:document, csv:document, xml:document, ods:document, xlr:document, xls:document, xlsx:document') }}</textarea>
+                                <small class="text-muted">{{ translate('Use comma separated values in ext:type format. Example: jpg:image, jpeg:image, png:image, mp4:video. Allowed types: image, video, audio, archive, document.') }}</small>
+                            </div>
+                        </div>
                         <div class="text-right">
     						<button type="submit" class="btn btn-primary">{{ translate('Update') }}</button>
     					</div>

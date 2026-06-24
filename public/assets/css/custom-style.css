@@ -7,6 +7,10 @@
     padding-bottom: 25px;
 }
 
+body {
+    font-family: 'DM Serif Display', serif !important;
+}
+
 /* Category/search product listing: match the polished home product-card rhythm */
 .product-listing-page .product-listing-grid {
     align-items: stretch !important;

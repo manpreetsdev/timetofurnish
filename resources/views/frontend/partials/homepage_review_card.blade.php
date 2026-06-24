@@ -1,7 +1,7 @@
 @php
     // Populate realistic custom fields to match theme design
     $products = [
-        'Luxury Bed Set', 'Corner Sofa Suite', 'Dining Table Set', 
+        'Luxury Bed Set', 'Corner Sofa Suite', 'Dining Table Set',
         'Modern Armchair', 'Velvet Dressing Table', 'Oak Coffee Table',
         'Leather Lounge Chair', 'Wooden Wardrobe', 'Minimalist Bookshelf'
     ];
@@ -10,11 +10,14 @@
         'Office Space', 'Bedroom Decor', 'Living Room Set',
         'Lounge Chairs', 'Storage Solutions', 'Study Room'
     ];
-    
+
     $product_index = $review->id % count($products);
     $purchased_product = $products[$product_index];
     $category_tag = $review->category_tag ?: $categories[$product_index];
     $helpful_votes = ($review->id * 7 + 3) % 20 + 4; // realistic counts (e.g. 4 to 23)
+    $review_text_plain = trim(strip_tags((string) $review->review_text));
+    $needs_read_more = \Illuminate\Support\Str::length($review_text_plain) > 90;
+    $review_text_id = 'review-text-' . $review->id;
 @endphp
 
 @if ($review->type == 'image')
@@ -34,10 +37,10 @@
         <div class="review-quote-icon">
             <i class="las la-quote-right"></i>
         </div>
-        
+
         <div>
             <!-- User Profile Header -->
-            <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center justify-content-between mb-3 ">
                 <div class="d-flex align-items-center">
                     <img class="reviewer-avatar lazyload mr-3"
                          src="{{ static_asset('assets/img/avatar-place.png') }}"
@@ -47,6 +50,16 @@
                          style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(104, 91, 78, 0.15); margin-right: 12px; transition: all 0.3s ease;">
                     <div>
                         <h5 class="reviewer-name mb-0 font-weight-700" style="font-size: 15px; line-height: 1.2; margin-bottom: 2px; color: #39322a;">{{ $review->name }}</h5>
+                     <!-- Stars Rating -->
+            <div class="review-rating">
+                @for ($i = 0; $i < 5; $i++)
+                    @if ($i < $review->rating)
+                        <i class="las la-star"></i>
+                    @else
+                        <i class="lar la-star text-muted" style="opacity: 0.4;"></i>
+                    @endif
+                @endfor
+            </div>
                     </div>
                 </div>
                 <span class="review-relative-date fs-11" style="color: #8c7e70;">
@@ -58,16 +71,7 @@
                 </span>
             </div>
 
-            <!-- Stars Rating -->
-            <div class="review-rating">
-                @for ($i = 0; $i < 5; $i++)
-                    @if ($i < $review->rating)
-                        <i class="las la-star"></i>
-                    @else
-                        <i class="lar la-star text-muted" style="opacity: 0.4;"></i>
-                    @endif
-                @endfor
-            </div>
+
 
             <!-- Purchased Item Details -->
             <div class="purchased-text">
@@ -76,7 +80,15 @@
 
             <!-- Review Text Content -->
             <div class="review-content">
-                "{{ $review->review_text }}"
+                <span id="{{ $review_text_id }}" class="review-content-text">"{{ $review->review_text }}"</span>
+                @if ($needs_read_more)
+                    <button type="button"
+                            class="review-read-more-btn"
+                            data-target="{{ $review_text_id }}"
+                            aria-expanded="false">
+                        {{ translate('Read More') }}
+                    </button>
+                @endif
             </div>
         </div>
 

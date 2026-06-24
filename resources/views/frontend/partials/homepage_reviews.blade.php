@@ -5,16 +5,16 @@
 @endphp
 
 @if ($section_status == 1 && count($homepage_reviews) > 0)
-    <section class="py-6 py-md-7 position-relative" style="background-image: url('{{ static_asset('assets/img/reviews_bg_luxury.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 600px; overflow: hidden; border-top: 1px solid #f2ebe1; border-bottom: 1px solid #f2ebe1;">
+    <section class="homepage-reviews-section py-5 py-md-6 position-relative" style="background-image: url('{{ static_asset('assets/img/reviews_bg_luxury.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; overflow: hidden; border-top: 1px solid #f2ebe1; border-bottom: 1px solid #f2ebe1;">
         <!-- Warm Beige overlay to match base theme color (#685b4e) instead of dark grey -->
         <div class="position-absolute" style="top:0; left:0; right:0; bottom:0; background: linear-gradient(180deg, rgba(251, 249, 246, 0.86) 0%, rgba(243, 236, 228, 0.84) 100%); z-index: 1;"></div>
-        
+
         <div class="container position-relative" style="z-index: 2;">
             <!-- Section Header -->
-            <div class="row justify-content-center mb-5 text-center">
+            <div class="row justify-content-center mb-4 mb-md-1 text-center homepage-reviews-header">
                 <div class="col-lg-6">
                     <span class="d-inline-block text-uppercase fw-600 tracking-wider fs-11 mb-2" style="letter-spacing: 2px; color: #a18a68 !important;">{{ translate('Testimonials') }}</span>
-                    <h2 class="fs-24 fs-md-36 fw-700 mb-3" style="color: #39322a;">{{ translate('What Our Clients Say') }}</h2>
+                    <h2 class="fs-24 fs-md-36 fw-700 mb-3" style="color: #39322a;">{{ translate('What Our Customers Says') }}</h2>
                     <p class="opacity-70 fs-14" style="margin-bottom: 20px; color: #5d5247;">{{ translate('Real experiences shared by our happy customers.') }}</p>
                     <div class="mx-auto" style="width: 50px; height: 3px; background-color: #685b4e; border-radius: 2px;"></div>
                 </div>
@@ -22,14 +22,23 @@
 
             <!-- Custom Glassmorphism Testimonial Style (Warm Light Theme) -->
             <style>
+                .aiz-carousel .slick-prev{
+                    left:-60px;
+                }
+                .aiz-carousel .slick-next{
+                    right:-60px;
+                }
+                .homepage-reviews-section {
+                    min-height: 430px;
+                }
                 .review-card {
                     background: rgba(255, 255, 255, 0.72);
                     backdrop-filter: blur(16px);
                     -webkit-backdrop-filter: blur(16px);
                     border: 1px solid rgba(104, 91, 78, 0.12);
                     border-radius: 20px;
-                    padding: 2.25rem 2rem;
-                    min-height: 320px;
+                    padding: 1.5rem 1.4rem;
+                    min-height: 190px;
                     display: flex;
                     flex-direction: column;
                     justify-content: space-between;
@@ -58,7 +67,6 @@
                 .review-rating {
                     color: #c5a059;
                     font-size: 1rem;
-                    margin-bottom: 1rem;
                 }
                 .purchased-text {
                     font-size: 0.85rem;
@@ -70,11 +78,32 @@
                 }
                 .review-content {
                     font-size: 0.925rem;
-                    line-height: 1.6;
+                    line-height: 1.45;
                     color: #4a433c;
-                    flex-grow: 1;
-                    margin-bottom: 1.5rem;
+                    margin-bottom: 0.4rem;
                     font-style: normal;
+                }
+                .review-content-text {
+                    display: block;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+                .review-content-text.is-expanded {
+                    white-space: normal;
+                    overflow: visible;
+                }
+                .review-read-more-btn {
+                    background: transparent;
+                    border: 0;
+                    padding: 0;
+                    margin-top: 2px;
+                    color: #685b4e;
+                    font-size: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    line-height: 1.2;
+                    text-decoration: underline;
                 }
                 .reviewer-avatar {
                     border: 2px solid rgba(104, 91, 78, 0.15);
@@ -178,6 +207,101 @@
                     opacity: 0.9;
                     font-size: 10px;
                 }
+                @media (max-width: 991.98px) {
+                    .homepage-reviews-section {
+                        min-height: auto;
+                        padding-top: 1rem !important;
+                        padding-bottom: 1rem !important;
+                    }
+                    .homepage-reviews-header {
+                        margin-bottom: 0.75rem !important;
+                    }
+                    .homepage-reviews-header span {
+                        font-size: 10px !important;
+                        margin-bottom: 0.2rem !important;
+                    }
+                    .homepage-reviews-header h2 {
+                        font-size: 24px !important;
+                        margin-bottom: 0.35rem !important;
+                        line-height: 1.15;
+                        font-family: 'DM Serif Display', serif !important;
+                        font-weight: 500 !important;
+                    }
+                    .homepage-reviews-header p {
+                        font-size: 14px !important;
+                        margin-bottom: 0.45rem !important;
+                        line-height: 1.35;
+                    }
+                    .review-card {
+                        min-height: 165px;
+                        padding: 0.95rem 0.85rem;
+                        border-radius: 14px;
+                    }
+                    .review-quote-icon {
+                        font-size: 3.1rem;
+                        bottom: 56px;
+                        right: 14px;
+                    }
+                    .reviewer-avatar {
+                        width: 36px !important;
+                        height: 36px !important;
+                    }
+                    .reviewer-name {
+                        font-size: 13px !important;
+                    }
+                    .review-relative-date {
+                        font-size: 10px;
+                    }
+                    .review-rating {
+                        font-size: 0.82rem;
+                        line-height: 1;
+                    }
+                    .purchased-text {
+                        font-size: 11px;
+                        margin-bottom: 0.3rem;
+                        letter-spacing: 0.3px;
+                    }
+                    .review-content {
+                        font-size: 13px;
+                        margin-bottom: 0.18rem;
+                        line-height: 1.3;
+                    }
+                    .review-read-more-btn {
+                        font-size: 11px;
+                    }
+                    .review-card-divider {
+                        padding-top: 0.65rem;
+                    }
+                    .category-badge {
+                        font-size: 9px;
+                        padding: 4px 10px;
+                    }
+                    .helpful-votes {
+                        font-size: 10px;
+                    }
+                    .homepage-reviews-slider .slick-slide {
+                        padding: 7px 7px;
+                    }
+                    .homepage-reviews-slider .slick-list {
+                        margin: 0 -7px;
+                    }
+                    .homepage-reviews-slider .slick-dots {
+                        bottom: -18px;
+                    }
+                }
+
+                @media (max-width: 575.98px) {
+                    .homepage-reviews-section {
+                        padding-top: 0.75rem !important;
+                        padding-bottom: 0.75rem !important;
+                    }
+                    .homepage-reviews-header h2 {
+                        font-size: 21px !important;
+                    }
+                    .homepage-reviews-header p {
+                        font-size: 12px !important;
+                    }
+                }
             </style>
 
             @if ($desktop_slider == 1)
@@ -202,7 +326,7 @@
                 </div>
             @else
                 <!-- Grid on Desktop, Slider on Mobile -->
-                
+
                 <!-- Desktop Grid View (Visible on Large Screens) -->
                 <div class="d-none d-lg-block">
                     <div class="row row-cols-1 row-cols-lg-3 gutters-16 justify-content-center">
@@ -235,4 +359,23 @@
             @endif
         </div>
     </section>
+
+    <script>
+        document.addEventListener('click', function (event) {
+            var toggleButton = event.target.closest('.review-read-more-btn');
+            if (!toggleButton) {
+                return;
+            }
+
+            var targetId = toggleButton.getAttribute('data-target');
+            var targetText = document.getElementById(targetId);
+            if (!targetText) {
+                return;
+            }
+
+            var isExpanded = targetText.classList.toggle('is-expanded');
+            toggleButton.textContent = isExpanded ? '{{ translate('Read Less') }}' : '{{ translate('Read More') }}';
+            toggleButton.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+        });
+    </script>
 @endif
