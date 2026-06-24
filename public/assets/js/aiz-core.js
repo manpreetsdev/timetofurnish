@@ -1222,10 +1222,26 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                         'X-CSRF-TOKEN': AIZ.data.csrf,
                     },
                 });
-                uppy.on("upload-success", function () {
+                uppy.on("upload-success", function (file, response) {
+                    if (response.body && response.body.id) {
+                        if (!AIZ.uploader.data.multiple) {
+                            AIZ.uploader.data.selectedFiles = [];
+                            AIZ.uploader.data.selectedFilesObject = [];
+                        }
+                        if (!AIZ.uploader.data.selectedFiles.includes(response.body.id)) {
+                            AIZ.uploader.data.selectedFiles.push(response.body.id);
+                            AIZ.uploader.data.selectedFilesObject.push(response.body);
+                        }
+                        AIZ.uploader.updateUploaderSelected();
+                    }
                     AIZ.uploader.getAllUploads(
                         AIZ.data.appUrl + "/aiz-uploader/get-uploaded-files"
                     );
+                });
+                uppy.on("complete", function (result) {
+                    if (result.successful && result.successful.length > 0) {
+                        $('.nav-tabs a[href="#aiz-select-file"]').tab('show');
+                    }
                 });
             }
         },
