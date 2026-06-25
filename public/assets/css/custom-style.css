@@ -4474,7 +4474,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
     }
 
     .email_input_footer {
-        flex: 0 0 80%;
+        flex: 0 0 70%;
     }
 
     .footer-newsletter-row .footer-social {
@@ -4498,7 +4498,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
     .footer_submit_btn {
         height: 42.2px !important;
         min-width: 42.2px !important;
-        flex: 0 0 20% !important;
+        flex: 0 0 30% !important;
     }
 
     .footer-newsletter-row {

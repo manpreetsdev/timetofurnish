@@ -27,13 +27,13 @@
                         @csrf
                         <div class="position-relative newsletter-form-wrap">
                             <input type="email" class="form-control w-100 email_input_footer"
-                                placeholder="{{ translate('Your Email Address') }}" name="email" required
+                                placeholder="{{ translate('Your Email') }}" name="email" required
                                 style="padding: 12px 160px 12px 24px; border-radius:50px; background: #fff; border:1.5px solid #eadfd3; color:#39322a;">
                             <button type="submit"
                                 class="btn footer_submit_btn borderbtn position-absolute d-flex align-items-center justify-content-center"
                                 style="right: 4px; top: 4px; bottom: 4px; min-width: 130px; border-radius: 50px; background:#685b4e; color:#fff; border:none;">
-                                <span class="d-sm-block d-none d-lg-block">{{ translate('Subscribe') }}</span>
-                                <i class="las la-arrow-right d-sm-none" style="font-size: 20px;"></i>
+                                <span class="d-sm-block  d-lg-block">{{ translate('Subscribe') }}</span>
+                                <!-- <i class="las la-arrow-right d-sm-none" style="font-size: 20px;"></i> -->
                             </button>
                         </div>
                     </form>
