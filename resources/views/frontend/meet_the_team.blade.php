@@ -169,7 +169,7 @@
                 </div>
             </div>
 
-            <div class="row g-4" style="row-gao:20px;">
+            <div class="row g-4" style="row-gap:20px;">
                 @foreach($team_members as $member)
                     <div class="col-12 col-md-6 col-lg-4">
                         <article class="team-card text-center">
