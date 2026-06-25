@@ -132,14 +132,16 @@ class TeamController extends Controller
             'banner_title' => 'nullable|string|max:255',
             'banner_subtitle' => 'nullable|string|max:1000',
             'banner_description' => 'nullable|string|max:2000',
-            'banner_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
-            'card_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'banner_image' => 'nullable|string|max:255',
+            'card_image' => 'nullable|string|max:255',
         ]);
 
         $settings = [
             'team_members_banner_title' => $request->banner_title,
             'team_members_banner_subtitle' => $request->banner_subtitle,
-            'team_members_banner_description' => $request->banner_description,
+            'team_members_banner_desc' => $request->banner_description,
+            'team_members_banner_image' => $request->banner_image,
+            'team_members_card_image' => $request->card_image,
         ];
 
         foreach ($settings as $type => $value) {
@@ -147,54 +149,6 @@ class TeamController extends Controller
                 'type' => $type,
             ], [
                 'value' => $value,
-            ]);
-        }
-
-        if ($request->hasFile('banner_image')) {
-            $file = $request->file('banner_image');
-            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\.\-]/', '-', $file->getClientOriginalName());
-            if (! file_exists(public_path('uploads/team'))) {
-                mkdir(public_path('uploads/team'), 0755, true);
-            }
-            $file->move(public_path('uploads/team'), $filename);
-            BusinessSetting::updateOrCreate([
-                'type' => 'team_members_banner_image',
-            ], [
-                'value' => 'uploads/team/' . $filename,
-            ]);
-        } elseif ($request->has('remove_banner_image')) {
-            $bannerImage = BusinessSetting::where('type', 'team_members_banner_image')->first();
-            if ($bannerImage && $bannerImage->value && file_exists(public_path($bannerImage->value))) {
-                unlink(public_path($bannerImage->value));
-            }
-            BusinessSetting::updateOrCreate([
-                'type' => 'team_members_banner_image',
-            ], [
-                'value' => '',
-            ]);
-        }
-
-        if ($request->hasFile('card_image')) {
-            $file = $request->file('card_image');
-            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\.\-]/', '-', $file->getClientOriginalName());
-            if (! file_exists(public_path('uploads/team'))) {
-                mkdir(public_path('uploads/team'), 0755, true);
-            }
-            $file->move(public_path('uploads/team'), $filename);
-            BusinessSetting::updateOrCreate([
-                'type' => 'team_members_card_image',
-            ], [
-                'value' => 'uploads/team/' . $filename,
-            ]);
-        } elseif ($request->has('remove_card_image')) {
-            $cardImage = BusinessSetting::where('type', 'team_members_card_image')->first();
-            if ($cardImage && $cardImage->value && file_exists(public_path($cardImage->value))) {
-                unlink(public_path($cardImage->value));
-            }
-            BusinessSetting::updateOrCreate([
-                'type' => 'team_members_card_image',
-            ], [
-                'value' => '',
             ]);
         }
 

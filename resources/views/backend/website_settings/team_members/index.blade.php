@@ -64,33 +64,29 @@
                 </div>
                 <div class="col-12">
                     <label class="form-label fw-600">{{ translate('Banner Description') }}</label>
-                    <textarea name="banner_description" class="form-control" rows="4" placeholder="{{ translate('Enter banner description') }}">{{ old('banner_description', get_setting('team_members_banner_description')) }}</textarea>
+                    <textarea name="banner_description" class="form-control" rows="4" placeholder="{{ translate('Enter banner description') }}">{{ old('banner_description', get_setting('team_members_banner_desc')) }}</textarea>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-600">{{ translate('Banner Image') }}</label>
-                    <input type="file" name="banner_image" class="form-control" style="border-color: #685b4e;">
-                    @if(get_setting('team_members_banner_image'))
-                        <div class="mt-3 position-relative d-inline-block">
-                            <img src="{{ asset(get_setting('team_members_banner_image')) }}" class="img-fluid rounded" style="max-height: 120px; width: auto;" alt="Banner Image">
-                            <button type="button" class="btn btn-sm position-absolute top-0 end-0" style="background: rgba(57,50,42,0.95); color: #dacbbc; border: none; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;" onclick="document.getElementById('remove_banner_image').value='1'; this.closest('.position-relative').style.display='none';">
-                                <i class="las la-times"></i>
-                            </button>
+                    <div class="input-group" data-toggle="aizuploader" data-type="image">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse') }}</div>
                         </div>
-                    @endif
-                    <input type="hidden" name="remove_banner_image" id="remove_banner_image" value="0">
+                        <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                        <input type="hidden" name="banner_image" value="{{ get_setting('team_members_banner_image') }}" class="selected-files">
+                    </div>
+                    <div class="file-preview box"></div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-600">{{ translate('Default card image') }}</label>
-                    <input type="file" name="card_image" class="form-control" style="border-color: #685b4e;">
-                    @if(get_setting('team_members_card_image'))
-                        <div class="mt-3 position-relative d-inline-block">
-                            <img src="{{ asset(get_setting('team_members_card_image')) }}" class="img-fluid rounded" style="max-height: 120px; width: auto;" alt="Card Image">
-                            <button type="button" class="btn btn-sm position-absolute top-0 end-0" style="background: rgba(57,50,42,0.95); color: #dacbbc; border: none; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;" onclick="document.getElementById('remove_card_image').value='1'; this.closest('.position-relative').style.display='none';">
-                                <i class="las la-times"></i>
-                            </button>
+                    <div class="input-group" data-toggle="aizuploader" data-type="image">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse') }}</div>
                         </div>
-                    @endif
-                    <input type="hidden" name="remove_card_image" id="remove_card_image" value="0">
+                        <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                        <input type="hidden" name="card_image" value="{{ get_setting('team_members_card_image') }}" class="selected-files">
+                    </div>
+                    <div class="file-preview box"></div>
                 </div>
                 <div class="col-12 text-end">
                     <button type="submit" class="btn" style="background: #685b4e; color: #ffffff; border: 1px solid #685b4e;">{{ translate('Save Team Page Settings') }}</button>

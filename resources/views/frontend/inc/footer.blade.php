@@ -198,6 +198,12 @@
                                 Career
                             </a>
                         </li>
+                        <li class="mb-2 pb-2 active">
+                            <a href="{{ route('meet.the.team') }}"
+                                class="fs-13 text-light text-sm-secondary animate-underline-white">
+                                Meet Our Team
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -397,6 +403,12 @@
                             <a href="{{ route('career') }}"
                                 class="fs-13 text-light text-sm-secondary animate-underline-white">
                                 Career
+                            </a>
+                        </li>
+                         <li class="mb-2 pb-2 active">
+                            <a href="{{ route('meet.the.team') }}"
+                                class="fs-13 text-light text-sm-secondary animate-underline-white">
+                                Meet Our Team
                             </a>
                         </li>
                     </ul>

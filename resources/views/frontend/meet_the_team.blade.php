@@ -6,11 +6,16 @@
 @section('content')
 <?php
     $bannerImage = get_setting('team_members_banner_image');
-    $bannerBg = $bannerImage ? asset($bannerImage) : asset('assets/img/team/team-banner.png');
+    if ($bannerImage) {
+        $bannerBg = is_numeric($bannerImage) ? uploaded_asset($bannerImage) : asset($bannerImage);
+    } else {
+        $bannerBg = asset('assets/img/team/team-banner.png');
+    }
     $bannerTitle = get_setting('team_members_banner_title', translate('Meet Our Team'));
     $bannerSubtitle = get_setting('team_members_banner_subtitle', translate('Discover the team members who design, build, and support your products. Each profile includes a short introduction so your visitors can get to know the people behind the brand.'));
-    $bannerDescription = get_setting('team_members_banner_description', '');
-    $cardFallback = get_setting('team_members_card_image');
+    $bannerDescription = get_setting('team_members_banner_desc', '');
+    $cardFallbackSetting = get_setting('team_members_card_image');
+    $cardFallback = $cardFallbackSetting ? (is_numeric($cardFallbackSetting) ? uploaded_asset($cardFallbackSetting) : asset($cardFallbackSetting)) : null;
 ?>
 
 <style>
@@ -71,7 +76,7 @@
     }
 
     .team-card {
-        background: #f3ede5;
+        background: ;
         color: #3f342a;
         border: 1px solid #e2d6c8;
         border-radius: 16px;
@@ -134,7 +139,7 @@
 </style>
 
 <div class="team-page">
-    <section class="team-hero" style="background-image: linear-gradient(rgba(86, 74, 63, 0.9), rgba(104, 91, 78, 0.92)), url('{{ $bannerBg }}'); background-size: cover; background-position: center;">
+    <section class="team-hero" style="background-image: linear-gradient(rgb(86 74 63 / 49%), rgba(104, 91, 78, 0.92)), url('{{ $bannerBg }}'); background-size: cover; background-position: center;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-9 col-xl-8">
@@ -164,14 +169,14 @@
                 </div>
             </div>
 
-            <div class="row g-4">
+            <div class="row g-4" style="row-gao:20px;">
                 @foreach($team_members as $member)
                     <div class="col-12 col-md-6 col-lg-4">
                         <article class="team-card text-center">
                             @if($member->photo)
                                 <div class="team-avatar" style="background-image: url('{{ asset($member->photo) }}');"></div>
                             @elseif($cardFallback)
-                                <div class="team-avatar" style="background-image: url('{{ asset($cardFallback) }}');"></div>
+                                <div class="team-avatar" style="background-image: url('{{ $cardFallback }}');"></div>
                             @else
                                 <div class="team-avatar-placeholder">{{ strtoupper(substr($member->name, 0, 1)) }}</div>
                             @endif
