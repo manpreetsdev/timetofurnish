@@ -3346,7 +3346,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
     height: 8px !important;
     padding: 0 !important;
     border-radius: 50% !important;
-    background: #dbd0c5 !important;
+    background: #a79c92 !important;
     /* light beige */
     border: none !important;
     transition: all 0.3s ease !important;
@@ -4430,7 +4430,6 @@ span.badge.badge-primary.badge-circle.position-absolute {
     background: #ffffff !important;
     color: #39322a !important;
     border: 1.5px solid #eadfd3 !important;
-    min-height: 56px;
     box-shadow: 0 8px 18px rgba(104, 91, 78, 0.06);
     transition: all 0.3s ease;
 }
@@ -4473,6 +4472,38 @@ span.badge.badge-primary.badge-circle.position-absolute {
         justify-content: flex-start;
         width: 100% !important;
     }
+
+    .email_input_footer {
+        flex: 0 0 80%;
+    }
+
+    .footer-newsletter-row .footer-social {
+        flex-wrap: wrap !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+    }
+
+    .footer-social-list {
+        width: 70% !important;
+        flex: 0 0 70% !important;
+        justify-content: end !important;
+    }
+
+
+    .socal_sec_label {
+        flex: 0 0 30% !important;
+        width: 30% !important;
+    }
+
+    .footer_submit_btn {
+        height: 42.2px !important;
+        min-width: 42.2px !important;
+        flex: 0 0 20% !important;
+    }
+
+    .footer-newsletter-row {
+        row-gap: 0 !important;
+    }
 }
 
 @media (max-width: 575.98px) {
@@ -4483,18 +4514,16 @@ span.badge.badge-primary.badge-circle.position-absolute {
 
     .newsletter-form-wrap {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         gap: 10px;
     }
 
     .newsletter-form-wrap input[type="email"] {
-        min-height: 50px;
         padding: 13px 18px !important;
     }
 
     .newsletter-form-wrap .btn {
         position: static !important;
-        min-height: 48px;
         width: 100%;
     }
 

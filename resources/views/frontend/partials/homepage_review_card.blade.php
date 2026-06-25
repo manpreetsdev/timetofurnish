@@ -64,9 +64,9 @@
                 <span class="d-inline-flex d-md-none align-items-center">
                     <span class="rating-point-val mr-1 font-weight-700" style="color: #c5a059;">{{ floatval($review->rating) }}</span>
                     <i class="las la-star text-warning" style="color: #c5a059 !important; font-size: 13px;"></i>
-                    <span class="rating-count-text ml-1" style="color: #8c7e70; font-size: 10px; font-weight: 500;">
+                    <!-- <span class="rating-count-text ml-1" style="color: #8c7e70; font-size: 10px; font-weight: 500;">
                         {{ $review->rating == 1 ? translate('review') : translate('reviews') }}
-                    </span>
+                    </span> -->
                 </span>
             </div>
                     </div>

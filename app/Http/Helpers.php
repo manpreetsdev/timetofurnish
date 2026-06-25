@@ -3481,3 +3481,117 @@ if (!function_exists('sync_cart_prices')) {
         }
     }
 }
+
+if (!function_exists('default_upload_types')) {
+    function default_upload_types(): array
+    {
+        return [
+            'jpg' => 'image',
+            'jpeg' => 'image',
+            'png' => 'image',
+            'svg' => 'image',
+            'webp' => 'image',
+            'gif' => 'image',
+            'mp4' => 'video',
+            'mpg' => 'video',
+            'mpeg' => 'video',
+            'webm' => 'video',
+            'ogg' => 'video',
+            'avi' => 'video',
+            'mov' => 'video',
+            'flv' => 'video',
+            'swf' => 'video',
+            'mkv' => 'video',
+            'wmv' => 'video',
+            'wma' => 'audio',
+            'aac' => 'audio',
+            'wav' => 'audio',
+            'mp3' => 'audio',
+            'zip' => 'archive',
+            'rar' => 'archive',
+            '7z' => 'archive',
+            'doc' => 'document',
+            'txt' => 'document',
+            'docx' => 'document',
+            'pdf' => 'document',
+            'csv' => 'document',
+            'xml' => 'document',
+            'ods' => 'document',
+            'xlr' => 'document',
+            'xls' => 'document',
+            'xlsx' => 'document',
+        ];
+    }
+}
+
+if (!function_exists('get_configured_upload_types')) {
+    function get_configured_upload_types(): array
+    {
+        $defaultTypes = default_upload_types();
+        $configured = trim((string) get_setting('aiz_upload_allowed_types', ''));
+
+        if ($configured === '') {
+            return $defaultTypes;
+        }
+
+        $allowedTypes = ['image', 'video', 'audio', 'archive', 'document'];
+        $tokens = preg_split('/[\r\n,]+/', $configured);
+        $parsed = [];
+
+        foreach ($tokens as $token) {
+            $token = trim($token);
+            if ($token === '') {
+                continue;
+            }
+
+            $parts = explode(':', $token, 2);
+            $extension = strtolower(trim($parts[0]));
+            if (!preg_match('/^[a-z0-9]+$/', $extension)) {
+                continue;
+            }
+
+            if (count($parts) === 2) {
+                $mappedType = strtolower(trim($parts[1]));
+            } else {
+                $mappedType = $defaultTypes[$extension] ?? null;
+            }
+
+            if (!$mappedType || !in_array($mappedType, $allowedTypes, true)) {
+                continue;
+            }
+
+            $parsed[$extension] = $mappedType;
+        }
+
+        return !empty($parsed) ? $parsed : $defaultTypes;
+    }
+}
+
+if (!function_exists('validate_uploaded_file')) {
+    function validate_uploaded_file($file, &$error_message = null): bool
+    {
+        if (!$file) {
+            $error_message = translate('Upload file is missing');
+            return false;
+        }
+
+        // 1. Validate file size
+        $maxMb = (int) get_setting('max_upload_file_size', 5); // default 5 MB
+        $maxBytes = $maxMb * 1024 * 1024;
+        if ($file->getSize() > $maxBytes) {
+            $error_message = translate('File size exceeds the maximum limit of ') . $maxMb . 'MB';
+            return false;
+        }
+
+        // 2. Validate file extension/type
+        $extension = strtolower($file->getClientOriginalExtension());
+        $configuredTypes = get_configured_upload_types();
+        if (!isset($configuredTypes[$extension])) {
+            $error_message = translate('The file extension ') . $extension . translate(' is not allowed.');
+            return false;
+        }
+
+        return true;
+    }
+}
+

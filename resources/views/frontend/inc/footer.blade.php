@@ -26,13 +26,13 @@
                     <form method="POST" action="{{ route('subscribers.store') }}">
                         @csrf
                         <div class="position-relative newsletter-form-wrap">
-                            <input type="email" class="form-control w-100"
+                            <input type="email" class="form-control w-100 email_input_footer"
                                 placeholder="{{ translate('Your Email Address') }}" name="email" required
                                 style="padding: 12px 160px 12px 24px; border-radius:50px; background: #fff; border:1.5px solid #eadfd3; color:#39322a;">
                             <button type="submit"
-                                class="btn borderbtn position-absolute d-flex align-items-center justify-content-center"
+                                class="btn footer_submit_btn borderbtn position-absolute d-flex align-items-center justify-content-center"
                                 style="right: 4px; top: 4px; bottom: 4px; min-width: 130px; border-radius: 50px; background:#685b4e; color:#fff; border:none;">
-                                <span class="d-sm-block ">{{ translate('Subscribe') }}</span>
+                                <span class="d-sm-block d-none d-lg-block">{{ translate('Subscribe') }}</span>
                                 <i class="las la-arrow-right d-sm-none" style="font-size: 20px;"></i>
                             </button>
                         </div>
@@ -47,7 +47,7 @@
             <div class="col-lg-5 footer-social">
                 <!-- Social -->
                 @if (get_setting('show_social_links'))
-                    <h5 class="fs-14 fw-700 text-secondary text-right text-uppercase mt-3 mt-lg-0">
+                    <h5 class="fs-14 fw-700 text-secondary text-right text-uppercase mt-3 mt-lg-0 socal_sec_label">
                         {{ translate('Follow Us') }}</h5>
                     <ul class="list-inline social footer-social-list mb-0 justify-content-right ">
                         @if (!empty(get_setting('facebook_link')))

@@ -9,7 +9,7 @@
         <!-- Warm Beige overlay to match base theme color (#685b4e) instead of dark grey -->
         <div class="position-absolute" style="top:0; left:0; right:0; bottom:0; background: linear-gradient(180deg, rgba(251, 249, 246, 0.86) 0%, rgba(243, 236, 228, 0.84) 100%); z-index: 1;"></div>
 
-        <div class="container position-relative" style="z-index: 2;">
+        <div class="container position-relative home_review_container" style="z-index: 2;">
             <!-- Section Header -->
             <div class="row justify-content-center mb-4 mb-md-1 text-center homepage-reviews-header">
                 <div class="col-lg-6">
@@ -233,6 +233,10 @@
                         margin-bottom: 0.45rem !important;
                         line-height: 1.35;
                     }
+                    .home_review_container{
+                        padding-right:10px  !important;
+                        padding-left:10px  !important;
+                    }
                     .review-card {
                         min-height: 165px;
                         padding: 0.95rem 0.85rem;
@@ -281,7 +285,10 @@
                         font-size: 9px;
                     }
                     .homepage-reviews-slider .slick-slide {
-                        padding: 7px 7px;
+                        padding: 7px 2px;
+                    }
+                    .homepage-reviews-slider .slick-track{
+                        padding-top:5px;
                     }
                     .homepage-reviews-slider .slick-list {
                         margin: 0 -7px;
@@ -302,22 +309,21 @@
                     .homepage-reviews-header p {
                         font-size: 12px !important;
                     }
+                    .review-card-divider {
+        flex-wrap: nowrap !important;
+        flex-direction: column;
+        gap: 10px !important;
+    }
                 }
 
                 @media (max-width: 767.98px) {
-                    .homepage-reviews-section .container {
-                        padding-left: 15px !important;
-                        padding-right: 0 !important;
-                    }
+                    
                     .homepage-reviews-header {
-                        margin-left: -15px !important;
                         margin-right: 0 !important;
                         padding-left: 15px;
                         padding-right: 15px;
                     }
-                    .homepage-reviews-slider .slick-slide:last-child {
-                        padding-right: 20px !important;
-                    }
+                    
                 }
             </style>
 
@@ -329,8 +335,8 @@
                      data-xl-items="3"
                      data-lg-items="2"
                      data-md-items="2"
-                     data-sm-items="1.5"
-                     data-xs-items="1.5"
+                     data-sm-items="2"
+                     data-xs-items="2"
                      data-arrows="true"
                      data-dots="true"
                      data-autoplay="true"
