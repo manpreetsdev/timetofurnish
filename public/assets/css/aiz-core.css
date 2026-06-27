@@ -10076,7 +10076,7 @@ input[type="number"] {
 }
 
 [data-selected="true"] .aiz-uploader-select {
-    border-color: #007bff;
+    border-color: #685c4e !important;
     background: rgba(0, 123, 255, 0.05);
 }
 
