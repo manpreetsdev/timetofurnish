@@ -135,7 +135,6 @@
         justify-content: center;
         padding: 30px 0px 14px;
         background:#685c4e29;
-        border-bottom: 1px solid rgba(79, 69, 60, 0.08);
     }
 
     .intro-hero::after {
@@ -223,6 +222,25 @@
         border-radius: 999px;
         background: linear-gradient(90deg, rgba(79, 69, 60, 0.12), rgba(79, 69, 60, 0.35), rgba(79, 69, 60, 0.12));
     }
+    .bottom-line::before {
+        content: '';
+        display: block;
+        width: 72px;
+        height: 3px;
+        margin: 0 auto 20px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, rgba(79, 69, 60, 0.12), rgba(79, 69, 60, 0.35), rgba(79, 69, 60, 0.12));
+    }
+     .top-line::after {
+        content: '';
+        display: block;
+        width: 72px;
+        height: 3px;
+        margin:20px auto 20px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, rgba(79, 69, 60, 0.12), rgba(79, 69, 60, 0.35), rgba(79, 69, 60, 0.12));
+    }
+
 
     .intro-message-body {
         color: #4c433b;
@@ -495,9 +513,8 @@
                 <div class="intro-hero">
                     <div class="intro-hero-copy">
                         <!-- <div class="eyebrow">{{ translate('Managing Director') }}</div> -->
-                        <h3>{{ translate('A Message from our Managing Director') }}</h3>
-                        <hr style="border-color:#d6d0c8 !important;">
-                        <h3>{{ translate('Mrs H Kaur') }}</h3>
+                        <h3 class="top-line">{{ translate('A Message from our Managing Director') }}</h3>
+                        <h3 class="top-line">{{ translate('Mrs H Kaur') }}</h3>
                         <!-- <p>{{ $introSubtitle }}</p> -->
                     </div>
                 </div>
@@ -505,7 +522,7 @@
                 <div class="intro-body">
                     <!-- <div class="intro-body-title">{{ translate('Full Message') }}</div> -->
                     <p class="intro-body-subtitle">{{ translate('Welcome to Time To Furnish.') }}</p>
-                    <div class="intro-message">
+                    <div class="intro-message bottom-line">
                         <div class="intro-message-body">{!! nl2br(e($introBody)) !!}</div>
                     </div>
                     <div class="signature-block">{{ $introSignature }}</div>
