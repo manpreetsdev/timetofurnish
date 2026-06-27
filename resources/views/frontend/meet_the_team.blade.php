@@ -516,7 +516,6 @@
                 <div class="col-xl-9 col-lg-10 text-center">
                     <p class="section-kicker">{{ translate('Meet our dedicated team') }}</p>
                     <h2 class="section-title">{{ translate('Team Members') }}</h2>
-                    <p class="section-subtitle">{{ translate('Simple cards with the key details visible on every screen size.') }}</p>
                 </div>
             </div>
 
