@@ -133,10 +133,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 30px 24px 14px;
-        background:
-            radial-gradient(circle at top, rgba(223, 210, 195, 0.62), transparent 28%),
-            linear-gradient(180deg, #f5ecdf 0%, #efe3d2 100%);
+        padding: 30px 0px 14px;
+        background:#685c4e29;
         border-bottom: 1px solid rgba(79, 69, 60, 0.08);
     }
 
@@ -144,16 +142,14 @@
         content: '';
         position: absolute;
         inset: 0;
-        background:
-            radial-gradient(circle at center, rgba(255, 255, 255, 0.42), transparent 58%),
-            linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0));
         pointer-events: none;
     }
 
     .intro-hero-copy {
         position: relative;
         z-index: 1;
-        max-width: 780px;
+        max-width: 100%;
+    width: 100%;
         text-align: center;
         color: var(--team-primary-dark);
     }
@@ -191,7 +187,7 @@
 
     .intro-body {
         padding: 28px 28px 32px;
-        background: linear-gradient(180deg, #ffffff 0%, #fcfaf6 100%);
+        background:#685c4e29;
     }
 
     .intro-body-title {
@@ -499,7 +495,9 @@
                 <div class="intro-hero">
                     <div class="intro-hero-copy">
                         <!-- <div class="eyebrow">{{ translate('Managing Director') }}</div> -->
-                        <h3>{{ translate('Welcome from Mrs. H. Kaur') }}</h3>
+                        <h3>{{ translate('A Message from our Managing Director') }}</h3>
+                        <hr style="border-color:#d6d0c8 !important;">
+                        <h3>{{ translate('Mrs H Kaur') }}</h3>
                         <!-- <p>{{ $introSubtitle }}</p> -->
                     </div>
                 </div>
