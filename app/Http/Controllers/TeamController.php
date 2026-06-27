@@ -41,7 +41,7 @@ class TeamController extends Controller
             'designation' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255|unique:team_members,email',
             'bio' => 'nullable|string|max:2000',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo' => 'nullable',
             'department_sort_order' => 'nullable|integer|min:0',
             'sort_order' => 'nullable|integer|min:0',
         ]);
@@ -52,19 +52,10 @@ class TeamController extends Controller
         $team_member->designation = $request->designation;
         $team_member->email = $request->email;
         $team_member->bio = $request->bio;
+        $team_member->photo = $request->photo;
         $team_member->department_sort_order = $request->department_sort_order ?? 0;
         $team_member->sort_order = $request->sort_order ?? 0;
         $team_member->is_active = $request->has('is_active') ? 1 : 0;
-
-        if ($request->hasFile('photo')) {
-            $file = $request->file('photo');
-            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\.\-]/', '-', $file->getClientOriginalName());
-            if (! file_exists(public_path('uploads/team'))) {
-                mkdir(public_path('uploads/team'), 0755, true);
-            }
-            $file->move(public_path('uploads/team'), $filename);
-            $team_member->photo = 'uploads/team/' . $filename;
-        }
 
         $team_member->save();
 
@@ -88,7 +79,7 @@ class TeamController extends Controller
             'designation' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255|unique:team_members,email,' . $team_member->id,
             'bio' => 'nullable|string|max:2000',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo' => 'nullable',
             'department_sort_order' => 'nullable|integer|min:0',
             'sort_order' => 'nullable|integer|min:0',
         ]);
@@ -98,19 +89,10 @@ class TeamController extends Controller
         $team_member->designation = $request->designation;
         $team_member->email = $request->email;
         $team_member->bio = $request->bio;
+        $team_member->photo = $request->photo ?: $team_member->photo;
         $team_member->department_sort_order = $request->department_sort_order ?? 0;
         $team_member->sort_order = $request->sort_order ?? 0;
         $team_member->is_active = $request->has('is_active') ? 1 : 0;
-
-        if ($request->hasFile('photo')) {
-            $file = $request->file('photo');
-            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\.\-]/', '-', $file->getClientOriginalName());
-            if (! file_exists(public_path('uploads/team'))) {
-                mkdir(public_path('uploads/team'), 0755, true);
-            }
-            $file->move(public_path('uploads/team'), $filename);
-            $team_member->photo = 'uploads/team/' . $filename;
-        }
 
         $team_member->save();
 

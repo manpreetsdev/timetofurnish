@@ -46,8 +46,15 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-from-label">{{ translate('Profile Photo') }}</label>
                 <div class="col-sm-10">
-                    <input type="file" name="photo" class="form-control">
-                    <small class="text-muted">{{ translate('Optional. JPG, PNG, WEBP.') }}</small>
+                    <div class="input-group" data-toggle="aizuploader" data-type="image">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse') }}</div>
+                        </div>
+                        <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                        <input type="hidden" name="photo" class="selected-files">
+                    </div>
+                    <div class="file-preview box sm"></div>
+                    <small class="text-muted">{{ translate('Choose from uploaded files or upload a new image. JPG, PNG, WEBP.') }}</small>
                 </div>
             </div>
             <div class="form-group row">

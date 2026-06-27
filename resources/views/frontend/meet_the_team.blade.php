@@ -296,6 +296,14 @@
         box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35), 0 10px 22px rgba(79, 69, 60, 0.08);
     }
 
+    .team-member-monogram img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
+    }
+
     .team-member-heading {
         min-width: 0;
         width: 100%;
@@ -524,14 +532,22 @@
                         @php
                             $initial = strtoupper(substr($member->name, 0, 1));
                             $bio = $member->bio ?: translate('No biography added yet.');
+                            $photoUrl = null;
+                            if ($member->photo) {
+                                if (is_numeric($member->photo)) {
+                                    $photoUrl = uploaded_asset($member->photo);
+                                } elseif (file_exists(public_path($member->photo))) {
+                                    $photoUrl = asset($member->photo);
+                                }
+                            }
                         @endphp
                         <div class="col-12 col-md-6 col-lg-4">
                             <article class="team-member-card h-100">
                                 <div class="team-member-card-inner">
                                     <div class="team-member-header">
                                             <div class="team-member-monogram">
-                                                @if($member->photo)
-                                                    <img src="{{ asset($member->photo) }}" alt="{{ $member->name }}" class="img-fluid rounded-circle">
+                                                @if($photoUrl)
+                                                    <img src="{{ $photoUrl }}" alt="{{ $member->name }}" class="img-fluid rounded-circle">
                                                 @else
                                                     {{ $initial }}
                                                 @endif
@@ -563,15 +579,29 @@
                         data-sm-items="2" data-xs-items="1" data-arrows="false"
                         data-dots="true" data-infinite="false" data-autoplay="false">
                         @foreach($team_members as $member)
-                            @php
-                                $initial = strtoupper(substr($member->name, 0, 1));
-                                $bio = $member->bio ?: translate('No biography added yet.');
-                            @endphp
+                        @php
+                            $initial = strtoupper(substr($member->name, 0, 1));
+                            $bio = $member->bio ?: translate('No biography added yet.');
+                            $photoUrl = null;
+                            if ($member->photo) {
+                                if (is_numeric($member->photo)) {
+                                    $photoUrl = uploaded_asset($member->photo);
+                                } elseif (file_exists(public_path($member->photo))) {
+                                    $photoUrl = asset($member->photo);
+                                }
+                            }
+                        @endphp
                             <div class="team-carousel-item">
                                 <article class="team-member-card h-100">
                                     <div class="team-member-card-inner">
                                         <div class="team-member-header">
-                                            <div class="team-member-monogram">{{ $initial }}</div>
+                                            <div class="team-member-monogram">
+                                                @if($photoUrl)
+                                                    <img src="{{ $photoUrl }}" alt="{{ $member->name }}" class="img-fluid rounded-circle">
+                                                @else
+                                                    {{ $initial }}
+                                                @endif
+                                            </div>
                                             <div class="team-member-heading">
                                                 <h3 class="team-member-name">{{ $member->name }}</h3>
                                                 <div class="team-member-designation">{{ $member->designation ?: translate('Team Member') }}</div>
