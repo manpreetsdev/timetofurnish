@@ -129,7 +129,7 @@
 
     .intro-hero {
         position: relative;
-        min-height: 170px;
+        min-height: 60px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -487,25 +487,25 @@
 
     <section class="team-content">
         <div class="container">
-            <div class="row justify-content-center mb-4">
+            <!-- <div class="row justify-content-center mb-4">
                 <div class="col-xl-9 col-lg-10 text-center">
                     <p class="section-kicker">{{ translate('Welcome') }}</p>
                     <h2 class="section-title">{{ translate('Welcome from the Managing Director') }}</h2>
                     <p class="section-subtitle">{{ translate('A clean introduction with the full message available on demand.') }}</p>
                 </div>
-            </div>
+            </div> -->
 
             <div class="intro-panel mb-5">
                 <div class="intro-hero">
                     <div class="intro-hero-copy">
-                        <div class="eyebrow">{{ translate('Managing Director') }}</div>
-                        <h3>{{ translate('A message from Mrs. H. Kaur') }}</h3>
-                        <p>{{ $introSubtitle }}</p>
+                        <!-- <div class="eyebrow">{{ translate('Managing Director') }}</div> -->
+                        <h3>{{ translate('Welcome from Mrs. H. Kaur') }}</h3>
+                        <!-- <p>{{ $introSubtitle }}</p> -->
                     </div>
                 </div>
 
                 <div class="intro-body">
-                    <div class="intro-body-title">{{ translate('Full Message') }}</div>
+                    <!-- <div class="intro-body-title">{{ translate('Full Message') }}</div> -->
                     <p class="intro-body-subtitle">{{ translate('Welcome to Time To Furnish.') }}</p>
                     <div class="intro-message">
                         <div class="intro-message-body">{!! nl2br(e($introBody)) !!}</div>
