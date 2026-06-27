@@ -195,7 +195,7 @@
                         <li class="mb-2 pb-2 active">
                             <a href="{{ route('career') }}"
                                 class="fs-13 text-light text-sm-secondary animate-underline-white">
-                                Career
+                                Careers
                             </a>
                         </li>
                         <li class="mb-2 pb-2 active">
@@ -339,8 +339,9 @@
                     </div>
                     <div class="text-center text-sm-left mt-4">
                         <!-- Seller -->
-                        <h4 class="fs-14 text-light text-uppercase fw-700 mb-3">
-                            {{ translate('Be our delivery partners') }}</h4>
+                        <h4 class="fs-14 text-light fw-700 mb-3 partner-network-title">
+							Join Our Partner Network
+						</h4>
                         <ul class="list-unstyled">
 
                             <li class="mb-2">
@@ -402,7 +403,7 @@
                         <li class="mb-2 pb-2 active">
                             <a href="{{ route('career') }}"
                                 class="fs-13 text-light text-sm-secondary animate-underline-white">
-                                Career
+                                Careers
                             </a>
                         </li>
                          <li class="mb-2 pb-2 active">
@@ -452,6 +453,7 @@
                             <p class="fs-13 text-light">20 Wenlock Road<br />
                                 London, England <br />
                                 N1 7GU</p>
+							<p>	<strong>Registered VAT NO :</strong> 519774256</p>
                         </li>
                         <li class="mb-3">
                             <p class="fs-13 mb-1">{{ translate('WhatsApp') }}</p>
@@ -570,7 +572,7 @@
             <div class="aiz-accordion-wrap bg-black">
                 <div class="aiz-accordion-heading container bg-black">
                     <button
-                        class="aiz-accordion fs-14 text-white bg-transparent">{{ translate('Be our delivery partners') }}</button>
+                        class="aiz-accordion fs-14 text-white bg-transparent">{{ translate('Join Our Partner Network') }}</button>
                 </div>
                 <div class="aiz-accordion-panel bg-transparent" style="background-color: #685b4e !important;">
                     <div class="container">
@@ -594,7 +596,7 @@
             <div class="aiz-accordion-heading container bg-black">
                 <button class="aiz-accordion fs-14 text-white bg-transparent">{{ translate('') }}
                     <a href="{{ route('career') }}" class="text-white">
-                        {{ translate('Career') }}
+                        {{ translate('Careers') }}
                     </a></button>
             </div>
 

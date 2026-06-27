@@ -13,12 +13,43 @@
         }
 
         .home_slider_img {
-            /* max-height: 500px; */
+            height: 480px;
             background-position: center center;
         }
 
         .home_slider_img img {
             background-position: center center;
+            object-fit: cover;
+        }
+
+        @media (max-width: 1400px) {
+            .home_slider_img {
+                height: 420px;
+            }
+        }
+
+        @media (max-width: 1199px) {
+            .home_slider_img {
+                height: 360px;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .home_slider_img {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .home_slider_img {
+                height: 240px;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .home_slider_img {
+                height: 180px;
+            }
         }
 
         @media (max-width: 991px) {
@@ -367,7 +398,7 @@
     @php
         $todays_deal_section_bg = get_setting('todays_deal_section_bg_color');
     @endphp
-    <div id="todays_deal" class="mb-2rem mt-4 "
+    <div id="todays_deal" class=" "
         @if (get_setting('todays_deal_section_bg') == 1) style="background: {{ $todays_deal_section_bg }};" @endif>
 
     </div>

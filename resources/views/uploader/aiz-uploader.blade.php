@@ -250,11 +250,9 @@
                 .uploader-modal .btn-primary:hover {
                     background-color: #54493e !important;
                     border-color: #54493e !important;
-                    transform: translateY(-1px);
                     box-shadow: 0 4px 12px rgba(104,91,78,0.15);
                 }
                 .uploader-modal .btn-primary:active {
-                    transform: translateY(0);
                 }
 
                 /* Filter row */
@@ -314,7 +312,6 @@
                     box-shadow: none !important;
                 }
                 .uploader-grid .aiz-file-box-wrap:hover .card-file {
-                    transform: translateY(-4px);
                     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.02) !important;
                     border-color: #cbd5e1 !important;
                 }

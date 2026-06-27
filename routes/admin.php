@@ -322,7 +322,9 @@ Route::resource('sellers', SellerController::class);
                 Route::post('/team-members/update/{id}', 'update')->name('team-members.update');
                 Route::get('/team-members/destroy/{id}', 'destroy')->name('team-members.destroy');
                 Route::post('/team-members/update-status', 'updatePageStatus')->name('team-members.update-status');
-                Route::post('/team-members/update-settings', 'updatePageSettings')->name('team-members.update-settings');
+                Route::post('/team-members/update-welcome-section', 'updateWelcomeSection')->name('team-members.update-welcome-section');
+                Route::post('/team-members/update-banner-section', 'updateBannerSection')->name('team-members.update-banner-section');
+                Route::post('/team-members/seed-default-members', 'seedDefaultMembers')->name('team-members.seed-default-members');
             });
 
         // Custom Page

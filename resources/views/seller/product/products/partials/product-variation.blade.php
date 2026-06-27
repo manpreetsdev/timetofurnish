@@ -999,7 +999,6 @@
     }
 
     .seller-selected-value-row:hover {
-        transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(168, 156, 143, 0.12);
         border-color: rgba(168, 156, 143, 0.4);
     }

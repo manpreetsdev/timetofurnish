@@ -541,7 +541,6 @@
             background: #685b4e !important;
             color: #fff !important;
             border-color: #685b4e !important;
-            transform: translateY(-1.5px) !important;
         }
 
         /* General layout adjustments for mobile screens */

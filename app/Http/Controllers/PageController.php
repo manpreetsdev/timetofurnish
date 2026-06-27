@@ -7,6 +7,7 @@ use App\Models\Page;
 use App\Models\PageTranslation;
 use App\Models\TeamMember;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 
 class PageController extends Controller
@@ -334,7 +335,32 @@ public function become_delivery_partner()
         if (get_setting('team_members_page_status', 0) != 1) {
             abort(404);
         }
-        $team_members = TeamMember::where('is_active', 1)->orderBy('created_at', 'desc')->get();
+
+        $departmentOrder = [
+            'hr department' => 1,
+            'operations team' => 2,
+            'accounts department' => 3,
+            'it support' => 4,
+            'sales team' => 5,
+            'customer service team' => 6,
+        ];
+
+        $team_members = TeamMember::where('is_active', 1)
+            ->get()
+            ->sortBy(function ($member) use ($departmentOrder) {
+                $department = trim((string) ($member->department ?? ''));
+                $departmentKey = Str::lower($department);
+
+                return sprintf(
+                    '%02d-%04d-%04d-%s',
+                    $departmentOrder[$departmentKey] ?? 99,
+                    (int) ($member->department_sort_order ?? 0),
+                    (int) ($member->sort_order ?? 0),
+                    strtolower((string) $member->name)
+                );
+            })
+            ->values();
+
         return view('frontend.meet_the_team', compact('team_members'));
     }
     public function mobile_custom_page($slug){

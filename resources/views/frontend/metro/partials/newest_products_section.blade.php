@@ -2,7 +2,7 @@
     @php
         $newestProductsCount = count($newest_products);
     @endphp
-    <section class="mb-4 mt-4 home-mobile-product-section home-latest-products-section" id="section_latest_products_home">
+    <section class="home-mobile-product-section home-latest-products-section" id="section_latest_products_home">
         <div class="container">
             <div class="modern-section-bordered-wrap">
                 <!-- Section Header - Centered with Theme Color -->

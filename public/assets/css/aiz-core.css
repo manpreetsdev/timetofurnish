@@ -14729,7 +14729,6 @@ body.side-menu-open #main-content {
 }
 
 .aiz-card-box:hover {
-    transform: translateY(-5px);
     box-shadow: 0 12px 30px rgba(44, 36, 22, 0.12) !important;
 }
 

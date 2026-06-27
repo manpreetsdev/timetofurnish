@@ -28,7 +28,6 @@
         }
 
         .premium-offer-card:hover {
-            transform: translateY(-8px) scale(1.01) !important;
             background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(253, 250, 245, 0.95) 100%) !important;
             border-color: var(--soft-primary) !important;
             box-shadow: 0 30px 50px -15px rgba(103, 93, 76, 0.18), 0 0 0 2px var(--soft-primary) !important;
@@ -814,7 +813,6 @@
         .home-offers-wrap .premium-offer-section.offer-style-3 .btn:hover {
             background: var(--hov-primary) !important;
             border-color: var(--hov-primary) !important;
-            transform: translateY(-2px);
         }
 
         .home-offers-wrap .offer-inner-carousel .carousel-box {
@@ -830,7 +828,6 @@
         }
 
         .home-offers-wrap .offer-inner-carousel .modern-product-card:hover {
-            transform: translateY(-5px) !important;
             border-color: var(--primary) !important;
             box-shadow: 0 20px 42px var(--soft-primary) !important;
         }

@@ -310,7 +310,6 @@
     .seller-uploads-page .card-file:hover {
         border-color: rgba(104, 91, 78, 0.36);
         box-shadow: 0 14px 28px rgba(104, 91, 78, 0.13);
-        transform: translateY(-2px);
     }
 
     .seller-uploads-page .card-file-thumb {

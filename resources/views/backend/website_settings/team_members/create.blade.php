@@ -19,6 +19,19 @@
                 </div>
             </div>
             <div class="form-group row">
+                <label class="col-sm-2 col-from-label">{{ translate('Department') }}</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" placeholder="{{ translate('HR Department') }}" name="department" value="{{ old('department') }}">
+                    <small class="text-muted">{{ translate('Example: HR Department, Operations Team, Accounts Department.') }}</small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-from-label">{{ translate('Designation') }}</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" placeholder="{{ translate('HR Director') }}" name="designation" value="{{ old('designation') }}">
+                </div>
+            </div>
+            <div class="form-group row">
                 <label class="col-sm-2 col-from-label">{{ translate('Email') }}</label>
                 <div class="col-sm-10">
                     <input type="email" class="form-control" placeholder="{{ translate('Email') }}" name="email" value="{{ old('email') }}">
@@ -35,6 +48,20 @@
                 <div class="col-sm-10">
                     <input type="file" name="photo" class="form-control">
                     <small class="text-muted">{{ translate('Optional. JPG, PNG, WEBP.') }}</small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-from-label">{{ translate('Department Sort Order') }}</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" placeholder="0" name="department_sort_order" value="{{ old('department_sort_order', 0) }}" min="0">
+                    <small class="text-muted">{{ translate('Lower numbers appear first by department section.') }}</small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-from-label">{{ translate('Card Sort Order') }}</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" placeholder="0" name="sort_order" value="{{ old('sort_order', 0) }}" min="0">
+                    <small class="text-muted">{{ translate('Lower numbers appear first inside the department.') }}</small>
                 </div>
             </div>
             <div class="form-group row">

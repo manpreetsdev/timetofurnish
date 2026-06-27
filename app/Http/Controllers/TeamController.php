@@ -19,7 +19,10 @@ class TeamController extends Controller
 
     public function index(Request $request)
     {
-        $team_members = TeamMember::orderBy('created_at', 'desc')->get();
+        $team_members = TeamMember::orderBy('department_sort_order')
+            ->orderBy('sort_order')
+            ->orderBy('created_at', 'desc')
+            ->get();
         $team_page_status = get_setting('team_members_page_status', 0);
 
         return view('backend.website_settings.team_members.index', compact('team_members', 'team_page_status'));
@@ -34,15 +37,23 @@ class TeamController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'department' => 'nullable|string|max:255',
+            'designation' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255|unique:team_members,email',
             'bio' => 'nullable|string|max:2000',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'department_sort_order' => 'nullable|integer|min:0',
+            'sort_order' => 'nullable|integer|min:0',
         ]);
 
         $team_member = new TeamMember();
         $team_member->name = $request->name;
+        $team_member->department = $request->department;
+        $team_member->designation = $request->designation;
         $team_member->email = $request->email;
         $team_member->bio = $request->bio;
+        $team_member->department_sort_order = $request->department_sort_order ?? 0;
+        $team_member->sort_order = $request->sort_order ?? 0;
         $team_member->is_active = $request->has('is_active') ? 1 : 0;
 
         if ($request->hasFile('photo')) {
@@ -73,14 +84,22 @@ class TeamController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'department' => 'nullable|string|max:255',
+            'designation' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255|unique:team_members,email,' . $team_member->id,
             'bio' => 'nullable|string|max:2000',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'department_sort_order' => 'nullable|integer|min:0',
+            'sort_order' => 'nullable|integer|min:0',
         ]);
 
         $team_member->name = $request->name;
+        $team_member->department = $request->department;
+        $team_member->designation = $request->designation;
         $team_member->email = $request->email;
         $team_member->bio = $request->bio;
+        $team_member->department_sort_order = $request->department_sort_order ?? 0;
+        $team_member->sort_order = $request->sort_order ?? 0;
         $team_member->is_active = $request->has('is_active') ? 1 : 0;
 
         if ($request->hasFile('photo')) {
@@ -126,22 +145,20 @@ class TeamController extends Controller
         return redirect()->route('team-members.index');
     }
 
-    public function updatePageSettings(Request $request)
+    public function updateWelcomeSection(Request $request)
     {
         $request->validate([
-            'banner_title' => 'nullable|string|max:255',
-            'banner_subtitle' => 'nullable|string|max:1000',
-            'banner_description' => 'nullable|string|max:2000',
-            'banner_image' => 'nullable|string|max:255',
-            'card_image' => 'nullable|string|max:255',
+            'intro_title' => 'nullable|string|max:255',
+            'intro_subtitle' => 'nullable|string|max:255',
+            'intro_body' => 'nullable|string|max:5000',
+            'intro_signature' => 'nullable|string|max:500',
         ]);
 
         $settings = [
-            'team_members_banner_title' => $request->banner_title,
-            'team_members_banner_subtitle' => $request->banner_subtitle,
-            'team_members_banner_desc' => $request->banner_description,
-            'team_members_banner_image' => $request->banner_image,
-            'team_members_card_image' => $request->card_image,
+            'team_members_intro_title' => $request->intro_title,
+            'team_members_intro_subtitle' => $request->intro_subtitle,
+            'team_members_intro_body' => $request->intro_body,
+            'team_members_intro_signature' => $request->intro_signature,
         ];
 
         foreach ($settings as $type => $value) {
@@ -154,7 +171,51 @@ class TeamController extends Controller
 
         Cache::forget('business_settings');
 
-        flash(translate('Team page settings updated successfully'))->success();
+        flash(translate('Welcome section updated successfully'))->success();
+        return redirect()->route('team-members.index');
+    }
+
+    public function updateBannerSection(Request $request)
+    {
+        $request->validate([
+            'banner_title' => 'nullable|string|max:255',
+            'banner_subtitle' => 'nullable|string|max:1000',
+            'banner_description' => 'nullable|string|max:2000',
+            'banner_image' => 'nullable|string|max:255',
+        ]);
+
+        $settings = [
+            'team_members_banner_title' => $request->banner_title,
+            'team_members_banner_subtitle' => $request->banner_subtitle,
+            'team_members_banner_desc' => $request->banner_description,
+            'team_members_banner_image' => $request->banner_image,
+        ];
+
+        foreach ($settings as $type => $value) {
+            BusinessSetting::updateOrCreate([
+                'type' => $type,
+            ], [
+                'value' => $value,
+            ]);
+        }
+
+        Cache::forget('business_settings');
+
+        flash(translate('Team page banner settings updated successfully'))->success();
+        return redirect()->route('team-members.index');
+    }
+
+    public function seedDefaultMembers(Request $request)
+    {
+        $this->authorize('add_website_page');
+
+        if (! class_exists(\TeamMemberSeeder::class)) {
+            require_once database_path('seeds/TeamMemberSeeder.php');
+        }
+
+        (new \TeamMemberSeeder())->run();
+
+        flash(translate('Default team members have been created or updated successfully'))->success();
         return redirect()->route('team-members.index');
     }
 }

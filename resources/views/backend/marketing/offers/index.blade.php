@@ -44,7 +44,6 @@
         border-color: #554a3f !important;
         color: #ffffff !important;
         box-shadow: 0 6px 18px rgba(104, 91, 78, 0.2) !important;
-        transform: translateY(-1px) !important;
     }
     .theme-btn-secondary {
         background-color: #f3eee6 !important;

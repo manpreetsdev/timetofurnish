@@ -48,7 +48,6 @@
                     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
                 }
                 .review-card:hover {
-                    transform: translateY(-8px);
                     box-shadow: 0 25px 50px rgba(104, 91, 78, 0.12);
                     border-color: rgba(104, 91, 78, 0.8);
                     background: rgba(255, 255, 255, 0.92);
@@ -159,7 +158,6 @@
                     background: rgba(255, 255, 255, 0.72);
                 }
                 .full-image-review-box:hover {
-                    transform: translateY(-8px);
                     box-shadow: 0 25px 50px rgba(104, 91, 78, 0.12);
                     border-color: rgba(104, 91, 78, 0.8);
                 }
@@ -312,7 +310,7 @@
                     .review-card-divider {
         flex-wrap: nowrap !important;
         flex-direction: column;
-        gap: 10px !important;
+        gap: 5px !important;
     }
                 }
 
@@ -325,6 +323,17 @@
                     }
                     
                 }
+				@media (max-width: 767.98px) {
+    .purchased-text {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        line-height: 16px !important;
+    }
+}
             </style>
 
             @if ($desktop_slider == 1)

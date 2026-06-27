@@ -1646,7 +1646,6 @@ span.badge.badge-primary.badge-circle.position-absolute {
 
     .banner-category ul li {
         transition: all 0.5s ease-out;
-        margin-bottom: 22px;
     }
 }
 
@@ -2301,7 +2300,6 @@ span.badge.badge-primary.badge-circle.position-absolute {
 
 /* Card Hover Float & Highlight Effect */
 .modern-product-card:hover {
-    transform: translateY(-6px) !important;
     box-shadow: 0 12px 30px rgba(104, 91, 78, 0.08) !important;
     border-color: #685b4e !important;
 }
@@ -2394,7 +2392,6 @@ span.badge.badge-primary.badge-circle.position-absolute {
     z-index: 10 !important;
     pointer-events: auto !important;
     opacity: 0 !important;
-    transform: translateY(-8px) !important;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
@@ -3114,8 +3111,8 @@ span.badge.badge-primary.badge-circle.position-absolute {
 
 
 .custom-header-class .banner-category.custom-banner-category ul li>a:first-child {
-    width: 56px !important;
-    height: 56px !important;
+    width: 46px !important;
+    height: 35px !important;
     margin: 0 auto 6px !important;
     display: flex !important;
     align-items: center !important;
@@ -3143,7 +3140,6 @@ span.badge.badge-primary.badge-circle.position-absolute {
     font-weight: 700 !important;
     letter-spacing: 0 !important;
     line-height: 1.22 !important;
-    min-height: 32px !important;
     display: flex !important;
     align-items: flex-start !important;
     justify-content: center !important;
@@ -3181,14 +3177,14 @@ span.badge.badge-primary.badge-circle.position-absolute {
 
 @media (max-width: 991.98px) {
     .custom-header-class section.my-2.mt-2 {
-        padding: 10px 0 12px !important;
+        padding: 10px 0 7px !important;
     }
 
-    .custom-header-class .banner-category.custom-banner-category ul li>a:first-child {
+    /* .custom-header-class .banner-category.custom-banner-category ul li>a:first-child {
         width: 60px !important;
         height: 60px !important;
         border-radius: 18px !important;
-    }
+    } */
 
     .custom-header-class .banner-category.custom-banner-category ul li img {
         width: 38px !important;
@@ -3365,7 +3361,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
 /* border wrapping for other sections on home */
 .modern-section-bordered-wrap {
     background: #ffffff !important;
-    border: 1px solid #f3ece4 !important;
+    border: 1px solid #bcb2a7 !important;
     border-radius: 12px !important;
     padding: 24px 16px !important;
     box-shadow: 0 4px 20px rgba(104, 91, 78, 0.02) !important;
@@ -3373,7 +3369,6 @@ span.badge.badge-primary.badge-circle.position-absolute {
 
 /* Unique Today's Deal Card Styling */
 .modern-deal-card:hover {
-    transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(104, 91, 78, 0.08) !important;
     border-color: #685b4e !important;
 }
@@ -3455,10 +3450,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
 }
 
 @media (max-width: 767.98px) {
-    .home-mobile-product-section {
-        margin-top: 26px !important;
-        margin-bottom: 34px !important;
-    }
+
 
     .modern-product-card:hover {
         transform: none !important;
@@ -4713,4 +4705,9 @@ img[style*="float: right"] {
     padding: 15px 0;
     padding-bottom: calc(20px + env(safe-area-inset-bottom));
     height: 100vh !important;
+}
+
+.home-slider {
+    height: 100%;
+    max-height: 600px;
 }
