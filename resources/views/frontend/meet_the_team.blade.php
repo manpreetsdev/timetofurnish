@@ -243,14 +243,14 @@
         color: #4c433b;
         line-height: 1.9;
         margin-top: 12px;
-        white-space: pre-line;
+        
     }
 
     .signature-block {
         margin-top: 14px;
         padding-left: 14px;
         border-left: 3px solid rgba(104, 91, 78, 0.18);
-        white-space: pre-line;
+        
         color: var(--team-primary-dark);
         font-weight: 700;
         line-height: 1.5;
