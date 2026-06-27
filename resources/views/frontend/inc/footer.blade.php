@@ -416,7 +416,24 @@
                 </div>
             </div>
         </div>
-
+        <div class="aiz-accordion-wrap bg-black">
+            <div class="aiz-accordion-heading container bg-black">
+                <button class="aiz-accordion fs-14 text-white bg-transparent">Meet Out Team's</button>
+            </div>
+            <div class="aiz-accordion-panel bg-transparent" style="background-color: #685b4e !important;">
+                <div class="container">
+                    <ul class="list-unstyled">
+                       
+                         <li class="mb-2 pb-2 active">
+                            <a href="{{ route('meet.the.team') }}"
+                                class="fs-13 text-light text-sm-secondary animate-underline-white">
+                                Meet Our Team
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
         <!-- Contacts -->
         <div class="aiz-accordion-wrap bg-black">
             <div class="aiz-accordion-heading container bg-black">

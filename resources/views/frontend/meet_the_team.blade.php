@@ -14,11 +14,9 @@
     $bannerSubtitle = get_setting('team_members_banner_subtitle', translate('Discover the people who keep Time To Furnish moving.'));
     $bannerDescription = get_setting('team_members_banner_desc', '');
 
-    $introTitle = get_setting('team_members_intro_title', translate('Welcome from the Managing Director'));
     $introSubtitle = get_setting('team_members_intro_subtitle', translate('Welcome to Time To Furnish.'));
     $introBody = get_setting('team_members_intro_body', "My name is Mrs. H. Kaur, and I am proud to welcome you to a company built on generations of passion, craftsmanship, and trust. Our journey began in the early 1980s, when my father established a furniture business alongside a sawmill in North India. For over two decades, he dedicated his life to the furniture and timber industry, mastering the art of woodworking while earning a reputation for quality and integrity. Growing up around timber, furniture manufacturing, and skilled craftsmen gave me not only valuable knowledge but also a deep appreciation for fine furniture and the people who create it. Inspired by my father's legacy, I always dreamed of building something that would connect exceptional manufacturers directly with customers. As technology transformed the way people shop, we saw an opportunity to remove unnecessary barriers between manufacturers and buyers. That vision became Time To Furnish. Our mission is simple: to bring the UK's finest furniture manufacturers just one click away from every customer. We have created a platform where quality, affordability, and convenience come together. By simplifying the buying process, we also help manufacturers receive faster payments - reducing waiting times from months to just days - allowing them to focus on what they do best: creating outstanding furniture. We proudly partner with some of the UK's leading delivery companies to ensure your furniture arrives safely, quickly, and professionally. Whether you're furnishing your bedroom, living room, dining room, or any other space, we are committed to delivering beautiful, high-quality furniture directly to your doorstep, with professional installation available for your convenience. At Time To Furnish, we believe that everyone deserves stylish, durable, and affordable furniture without compromise. Every product reflects our commitment to craftsmanship, customer satisfaction, and innovation. Thank you for choosing Time To Furnish. We look forward to helping you create a home you'll love for years to come.");
     $introSignature = get_setting('team_members_intro_signature', "Mrs. H. Kaur\nManaging Director\nTime To Furnish");
-    $introExcerpt = \Illuminate\Support\Str::limit(trim(preg_replace('/\s+/', ' ', $introBody)), 360);
 
 ?>
 
@@ -37,10 +35,10 @@
     .team-hero {
         position: relative;
         overflow: hidden;
-        padding: 88px 0 78px;
+        padding: 82px 0 74px;
         color: #fff;
         background:
-            linear-gradient(135deg, rgba(31, 24, 18, 0.68), rgba(104, 91, 78, 0.76)),
+            linear-gradient(135deg, rgba(38, 30, 23, 0.78), rgba(104, 91, 78, 0.72)),
             url('{{ $bannerBg }}');
         background-size: cover;
         background-position: center;
@@ -95,7 +93,7 @@
         background:
             radial-gradient(circle at top left, rgba(218, 203, 188, 0.16), transparent 24%),
             linear-gradient(180deg, #f8f4ef 0%, #f3ede7 100%);
-        padding: 54px 0 72px;
+        padding: 54px 0 76px;
     }
 
     .section-kicker {
@@ -110,7 +108,7 @@
     .section-title {
         color: var(--team-text);
         font-weight: 800;
-        letter-spacing: -0.03em;
+        letter-spacing: -0.04em;
         margin-bottom: 10px;
     }
 
@@ -122,135 +120,127 @@
     }
 
     .intro-panel {
-        border-radius: 24px;
+        border-radius: 28px;
         overflow: hidden;
-        background: var(--team-surface);
-        border: 1px solid var(--team-line);
-        box-shadow: var(--team-shadow);
+        background: linear-gradient(180deg, #f8f2ea 0%, #fcfbf8 100%);
+        border: 1px solid rgba(79, 69, 60, 0.09);
+        box-shadow: 0 18px 44px rgba(52, 39, 28, 0.06);
     }
 
     .intro-hero {
         position: relative;
-        min-height: 250px;
+        min-height: 170px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 24px 14px;
         background:
-            linear-gradient(135deg, rgba(45, 36, 28, 0.08), rgba(104, 91, 78, 0.22)),
-            url('{{ static_asset('assets/img/team/team-banner.png') }}');
-        background-size: cover;
-        background-position: center;
+            radial-gradient(circle at top, rgba(223, 210, 195, 0.62), transparent 28%),
+            linear-gradient(180deg, #f5ecdf 0%, #efe3d2 100%);
+        border-bottom: 1px solid rgba(79, 69, 60, 0.08);
     }
 
     .intro-hero::after {
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(39, 31, 24, 0.46) 100%);
+        background:
+            radial-gradient(circle at center, rgba(255, 255, 255, 0.42), transparent 58%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0));
+        pointer-events: none;
     }
 
     .intro-hero-copy {
-        position: absolute;
-        inset: auto 0 0 0;
+        position: relative;
         z-index: 1;
-        padding: 22px 24px 22px;
-        color: #fff;
+        max-width: 780px;
+        text-align: center;
+        color: var(--team-primary-dark);
     }
 
     .intro-hero-copy .eyebrow {
         display: inline-flex;
-        padding: 7px 11px;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 14px;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.84);
+        color: var(--team-primary);
         letter-spacing: 0.08em;
         text-transform: uppercase;
         font-size: 0.72rem;
         font-weight: 700;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
+        border: 1px solid rgba(79, 69, 60, 0.1);
     }
 
     .intro-hero-copy h3 {
-        margin-bottom: 4px;
-        font-size: 1.55rem;
+        margin-bottom: 8px;
+        font-size: 1.9rem;
         font-weight: 800;
-        letter-spacing: -0.03em;
-        line-height: 1.08;
+        letter-spacing: -0.045em;
+        line-height: 1.05;
+        color: var(--team-text);
     }
 
     .intro-hero-copy p {
         margin-bottom: 0;
-        color: rgba(255, 255, 255, 0.92);
+        color: var(--team-muted);
+        font-size: 0.98rem;
     }
 
     .intro-body {
-        padding: 22px 24px 24px;
+        padding: 28px 28px 32px;
+        background: linear-gradient(180deg, #ffffff 0%, #fcfaf6 100%);
     }
 
     .intro-body-title {
-        margin: 0;
+        margin: 0 0 12px;
         color: var(--team-text);
-        font-size: 1.06rem;
+        font-size: 0.86rem;
         font-weight: 800;
-        letter-spacing: -0.02em;
+        letter-spacing: 0.12em;
+        text-align: center;
+        text-transform: uppercase;
     }
 
     .intro-body-subtitle {
-        margin: 4px 0 0;
+        margin: 0 0 18px;
         color: var(--team-muted);
         font-size: 0.95rem;
+        text-align: center;
     }
 
-    .intro-body-summary {
-        color: #4c433b;
-        line-height: 1.8;
-        font-size: 0.98rem;
-        margin-bottom: 14px;
-        max-width: 70rem;
+    .intro-message {
+        max-width: 860px;
+        margin: 0 auto;
+        position: relative;
+        padding: 18px 0 0;
     }
 
-    .intro-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 14px;
-    }
-
-    .intro-chip {
-        padding: 8px 12px;
+    .intro-message::before {
+        content: '';
+        display: block;
+        width: 72px;
+        height: 3px;
+        margin: 0 auto 20px;
         border-radius: 999px;
-        background: #f4ede4;
-        color: var(--team-primary-dark);
-        font-size: 0.84rem;
-        font-weight: 700;
-        border: 1px solid rgba(104, 91, 78, 0.08);
+        background: linear-gradient(90deg, rgba(79, 69, 60, 0.12), rgba(79, 69, 60, 0.35), rgba(79, 69, 60, 0.12));
     }
 
-    .intro-details {
-        margin-top: 14px;
-        padding-top: 14px;
-        border-top: 1px solid rgba(104, 91, 78, 0.12);
-    }
-
-    .intro-details summary {
-        cursor: pointer;
-        color: var(--team-primary-dark);
-        font-weight: 800;
-        list-style: none;
-    }
-
-    .intro-details summary::-webkit-details-marker {
-        display: none;
-    }
-
-    .intro-details-body {
+    .intro-message-body {
         color: #4c433b;
-        line-height: 1.9;
-        margin-top: 12px;
-        
+        line-height: 1.95;
+        text-align: center;
+        font-size: 0.98rem;
     }
 
     .signature-block {
-        margin-top: 14px;
-        padding-left: 14px;
-        border-left: 3px solid rgba(104, 91, 78, 0.18);
-        
+        margin: 22px auto 0;
+        padding: 0;
+        border-left: 0;
+        text-align: center;
+        white-space: pre-line;
         color: var(--team-primary-dark);
         font-weight: 700;
         line-height: 1.5;
@@ -267,10 +257,10 @@
     .team-member-card {
         position: relative;
         height: 100%;
-        border-radius: 24px;
-        background: #fbf8f3;
-        border: 1px solid rgba(79, 69, 60, 0.14);
-        box-shadow: 0 14px 34px rgba(52, 39, 28, 0.05);
+        border-radius: 28px;
+        background: linear-gradient(180deg, #fcfaf6 0%, #f7f1e8 100%);
+        border: 1px solid rgba(79, 69, 60, 0.12);
+        box-shadow: 0 16px 36px rgba(52, 39, 28, 0.05);
         overflow: hidden;
     }
 
@@ -278,8 +268,8 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0px;
-        padding: 28px 26px 26px;
+        gap: 0;
+        padding: 28px 24px 24px;
         text-align: center;
         min-height: 100%;
     }
@@ -288,69 +278,63 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 14px;
+        gap: 12px;
         width: 100%;
     }
 
     .team-member-monogram {
-        width: 88px;
-        height: 88px;
+        width: 84px;
+        height: 84px;
         border-radius: 50%;
-        flex: 0 0 88px;
+        flex: 0 0 84px;
         display: grid;
         place-items: center;
-        background: #e3d7c7;
+        background: linear-gradient(180deg, #e8ddcf 0%, #dccdb9 100%);
         color: var(--team-primary-dark);
-        font-size: 2rem;
+        font-size: 1.9rem;
         font-weight: 800;
-        border: 4px solid rgba(79, 69, 60, 0.12);
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35), 0 10px 22px rgba(79, 69, 60, 0.08);
     }
 
     .team-member-heading {
         min-width: 0;
         width: 100%;
         display: grid;
-        gap: 6px;
+        gap: 5px;
     }
 
     .team-member-name {
         margin-bottom: 0;
         color: var(--team-text);
-        font-size: 1.5rem;
+        font-size: 1.12rem;
         font-weight: 800;
         letter-spacing: -0.03em;
+    }
+    .team-member-email{
+        margin: 0;
     }
 
     .team-member-designation {
         color: var(--team-muted);
         font-weight: 500;
-        font-size: 1.02rem;
+        font-size: 0.95rem;
         margin-bottom: 0;
     }
 
     .team-member-body {
         display: grid;
-        gap: 12px;
+        gap: 10px;
         width: 100%;
-        margin-top: 4px;
+        padding-top: 5px;
     }
 
     .team-member-text,
     .team-member-bio,
     .team-member-contact {
         color: #4d443c;
-        font-size: 0.95rem;
-        line-height: 1.75;
+        font-size: 0.96rem;
+        line-height: 1.8;
         margin-bottom: 0;
-    }
-
-    .team-member-label {
-        color: var(--team-muted);
-        font-size: 0.72rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
     }
 
     .team-member-divider {
@@ -387,11 +371,11 @@
         }
 
         .intro-hero {
-            min-height: 220px;
+            min-height: 180px;
         }
 
         .intro-body {
-            padding: 20px 18px 20px;
+            padding: 22px 18px 26px;
         }
 
         .team-member-card {
@@ -399,23 +383,23 @@
         }
 
         .team-member-card-inner {
-            gap: 14px;
+            gap: 12px;
             padding: 22px 18px 20px;
         }
 
         .team-member-monogram {
-            width: 72px;
-            height: 72px;
-            flex-basis: 72px;
+            width: 74px;
+            height: 74px;
+            flex-basis: 74px;
             font-size: 1.55rem;
         }
 
         .team-member-name {
-            font-size: 1.35rem;
+            font-size: 1.1rem;
         }
 
         .team-member-designation {
-            font-size: 0.98rem;
+            font-size: 0.92rem;
         }
     }
 
@@ -476,7 +460,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-9 col-xl-8">
-                    <div class="hero-pill">{{ translate('Meet the people behind the brand') }}</div>
+                    <div class="hero-pill">{{ translate('Meet the people behind the Time To Furnish') }}</div>
                     <h1 class="display-5 hero-title">{{ $bannerTitle }}</h1>
                     <p class="lead hero-subtitle mb-3">{{ $bannerSubtitle }}</p>
                     @if($bannerDescription)
@@ -507,27 +491,17 @@
                 <div class="intro-hero">
                     <div class="intro-hero-copy">
                         <div class="eyebrow">{{ translate('Managing Director') }}</div>
-                        <h3>{{ $introTitle }}</h3>
+                        <h3>{{ translate('A message from Mrs. H. Kaur') }}</h3>
                         <p>{{ $introSubtitle }}</p>
                     </div>
                 </div>
 
                 <div class="intro-body">
-                    <div class="intro-body-title">{{ translate('A message from Mrs. H. Kaur') }}</div>
+                    <div class="intro-body-title">{{ translate('Full Message') }}</div>
                     <p class="intro-body-subtitle">{{ translate('Welcome to Time To Furnish.') }}</p>
-                    <div class="intro-body-summary">{{ $introExcerpt }}</div>
-
-                    <div class="intro-meta">
-                        <span class="intro-chip">{{ translate('Craftsmanship') }}</span>
-                        <span class="intro-chip">{{ translate('Trust') }}</span>
-                        <span class="intro-chip">{{ translate('Customer Focus') }}</span>
+                    <div class="intro-message">
+                        <div class="intro-message-body">{!! nl2br(e($introBody)) !!}</div>
                     </div>
-
-                    <details class="intro-details">
-                        <summary>{{ translate('Read full message') }}</summary>
-                        <div class="intro-details-body">{!! nl2br(e($introBody)) !!}</div>
-                    </details>
-
                     <div class="signature-block">{{ $introSignature }}</div>
                 </div>
             </div>
@@ -555,18 +529,25 @@
                             <article class="team-member-card h-100">
                                 <div class="team-member-card-inner">
                                     <div class="team-member-header">
-                                        <div class="team-member-monogram">{{ $initial }}</div>
+                                            <div class="team-member-monogram">
+                                                @if($member->photo)
+                                                    <img src="{{ asset($member->photo) }}" alt="{{ $member->name }}" class="img-fluid rounded-circle">
+                                                @else
+                                                    {{ $initial }}
+                                                @endif
+                                            </div>
+                                       
                                         <div class="team-member-heading">
-                                            <h3 class="team-member-name">{{ $member->department ?: $member->name }}</h3>
-                                            <div class="team-member-designation">{{ $member->designation ?: $member->name }}</div>
+                                            <h3 class="team-member-name">{{ $member->name }}</h3>
+                                            <p class="team-member-email">{{ $member->email }}</p>
+                                            <div class="team-member-designation">{{ $member->designation ?: translate('Team Member') }}</div>
                                         </div>
                                     </div>
 
                                     <div class="team-member-body">
-                                        @if($member->email)
-                                            <div class="team-member-contact">{{ $member->email }}</div>
-                                        @endif
+                                        @if($bio)
                                         <div class="team-member-divider"></div>
+                                        @endif
                                         <p class="team-member-bio">{{ $bio }}</p>
 
                                     </div>
@@ -577,10 +558,10 @@
                 </div>
 
                 <div class="team-mobile-carousel-wrap d-md-none">
-                    <div class="aiz-carousel sm-gutters-16 offer-inner-carousel arrow-none team-mobile-carousel"
+                    <div class="aiz-carousel sm-gutters-16 arrow-none team-mobile-carousel"
                         data-items="3" data-xl-items="3" data-lg-items="3" data-md-items="2"
                         data-sm-items="2" data-xs-items="1" data-arrows="false"
-                        data-dots="true" data-infinite="true" data-autoplay="true">
+                        data-dots="true" data-infinite="false" data-autoplay="false">
                         @foreach($team_members as $member)
                             @php
                                 $initial = strtoupper(substr($member->name, 0, 1));
@@ -592,8 +573,8 @@
                                         <div class="team-member-header">
                                             <div class="team-member-monogram">{{ $initial }}</div>
                                             <div class="team-member-heading">
-                                                <h3 class="team-member-name">{{ $member->department ?: $member->name }}</h3>
-                                                <div class="team-member-designation">{{ $member->designation ?: $member->name }}</div>
+                                                <h3 class="team-member-name">{{ $member->name }}</h3>
+                                                <div class="team-member-designation">{{ $member->designation ?: translate('Team Member') }}</div>
                                             </div>
                                         </div>
 
