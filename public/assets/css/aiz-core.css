@@ -10078,6 +10078,7 @@ input[type="number"] {
 [data-selected="true"] .aiz-uploader-select {
     border-color: #685c4e !important;
     background: rgba(0, 123, 255, 0.05);
+    border: 1px solid #685c4e !important;
 }
 
 .modal-adaptive {
@@ -11602,14 +11603,16 @@ div.footable-loader>span.fooicon:after {
 }
 
 .aiz-carousel .slick-dots button {
-    height: 11px;
-    width: 11px;
+    height: 9px !important;
+    width: 9px !important;
     padding: 0px;
     color: transparent;
     border: 0;
     background: #ddd;
     border-radius: 50%;
     margin: 0 3px;
+    text-align: center;
+    display: block !important;
 }
 
 .aiz-carousel .slick-dots .slick-active button {
@@ -11618,7 +11621,7 @@ div.footable-loader>span.fooicon:after {
 
 .aiz-carousel.dots-inside-bottom .slick-dots {
     position: absolute;
-    bottom: 10px;
+    bottom: 10px !important;
     left: 50%;
     transform: translateX(-50%);
     -webkit-transform: translateX(-50%);
@@ -12515,6 +12518,14 @@ ul.apps a:hover i {
 @media (max-width: 767.98px) {
     .mobile-img-auto-height img {
         height: auto;
+    }
+
+    .aiz-carousel.dots-inside-bottom .slick-dots {
+        bottom: -30px !important;
+    }
+
+    div#todays_deal {
+        margin-top: 20px;
     }
 }
 
@@ -14740,10 +14751,6 @@ body.side-menu-open #main-content {
 /* Chart canvas area */
 canvas {
     max-width: 100% !important;
-}
-
-.text {
-    margin-left: 26px !important;
 }
 
 .aiz-side-nav-list metismenu {

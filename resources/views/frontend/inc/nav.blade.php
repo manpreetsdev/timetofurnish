@@ -539,7 +539,7 @@
                         <div class="banner-category custom-banner-category"
                             style="overflow: hidden !important; position: relative !important;">
                             <ul class="aiz-carousel sm-gutters-16 arrow" data-items="9" data-xl-items="7"
-                                data-lg-items="6" data-md-items="5" data-sm-items="5" data-xs-items="4"
+                                data-lg-items="6" data-md-items="5" data-sm-items="5" data-xs-items="5"
                                 data-arrows='true' data-infinite='false'
                                 style="display: flex !important; flex-wrap: wrap !important; list-style: none !important; padding: 0 !important; margin: 0 !important;">
                                 @foreach ($featured_categories as $key => $category)
@@ -553,7 +553,7 @@
                                                 style="display: block !important;">
                                                 <img src="{{ isset($category->coverImage->file_name) ? my_asset($category->coverImage->file_name) : static_asset('assets/img/placeholder.jpg') }}"
                                                     alt="{{ $category_name }}" class="img-fluid"
-                                                    style="max-width: 45px !important; max-height: 45px !important; width: auto !important; height: auto !important; margin: 0 auto !important; display: block !important;">
+                                                    style="max-width: 45px; max-height: 45px; width: auto; height: auto; margin: 0 auto; display: block;">
                                             </a>
                                             <a href="{{ route('products.category', $category->slug) }}"
                                                 class="category_a">

@@ -13,7 +13,7 @@
         }
 
         .home_slider_img {
-            height: 480px;
+            height: 100%;
             background-position: center center;
         }
 
@@ -22,33 +22,29 @@
             object-fit: cover;
         }
 
-        @media (max-width: 1400px) {
-            .home_slider_img {
-                height: 420px;
-            }
-        }
+        
 
         @media (max-width: 1199px) {
             .home_slider_img {
-                height: 360px;
+                height: 100%;
             }
         }
 
         @media (max-width: 991px) {
             .home_slider_img {
-                height: 300px;
+                height: 100%;
             }
         }
 
         @media (max-width: 767px) {
             .home_slider_img {
-                height: 240px;
+                height: 100%;
             }
         }
 
         @media (max-width: 575px) {
             .home_slider_img {
-                height: 180px;
+                height: 100%;
             }
         }
 

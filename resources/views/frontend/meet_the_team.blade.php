@@ -22,14 +22,14 @@
 
 <style>
     .team-page {
-        --team-bg: #f6f1ea;
+        --team-bg: #f8f4ef;
         --team-surface: #ffffff;
-        --team-primary: #4f453c;
-        --team-primary-dark: #2e2720;
-        --team-text: #2a241d;
-        --team-muted: #6f655b;
-        --team-line: rgba(79, 69, 60, 0.12);
-        --team-shadow: 0 12px 30px rgba(52, 39, 28, 0.06);
+        --team-primary: #a77951;
+        --team-primary-dark: #39322a;
+        --team-text: #39322a;
+        --team-muted: #74695d;
+        --team-line: #eadfd4;
+        --team-shadow: 0 18px 45px rgba(57, 50, 42, 0.08);
     }
 
     .team-hero {
@@ -90,16 +90,14 @@
     }
 
     .team-content {
-        background:
-            radial-gradient(circle at top left, rgba(218, 203, 188, 0.16), transparent 24%),
-            linear-gradient(180deg, #f8f4ef 0%, #f3ede7 100%);
-        padding: 54px 0 76px;
+        background: linear-gradient(180deg, #f8f4ef 0%, #f5efe8 100%);
+        padding: 52px 0 72px;
     }
 
     .section-kicker {
         text-transform: uppercase;
-        letter-spacing: 0.12em;
-        font-size: 0.78rem;
+        letter-spacing: 0.18em;
+        font-size: 0.72rem;
         font-weight: 800;
         color: var(--team-primary);
         margin-bottom: 10px;
@@ -120,21 +118,18 @@
     }
 
     .intro-panel {
-        border-radius: 28px;
+        border-radius: 22px;
         overflow: hidden;
-        background: linear-gradient(180deg, #f8f2ea 0%, #fcfbf8 100%);
-        border: 1px solid rgba(79, 69, 60, 0.09);
-        box-shadow: 0 18px 44px rgba(52, 39, 28, 0.06);
+        background: #fff;
+        border: 1px solid var(--team-line);
+        box-shadow: var(--team-shadow);
     }
 
     .intro-hero {
         position: relative;
-        min-height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 30px 0px 14px;
-        background:#685c4e29;
+        padding: 46px 36px 18px;
+        background: #fff;
+        border-bottom: 1px solid var(--team-line);
     }
 
     .intro-hero::after {
@@ -147,10 +142,11 @@
     .intro-hero-copy {
         position: relative;
         z-index: 1;
-        max-width: 100%;
-    width: 100%;
+        max-width: 820px;
+        width: 100%;
         text-align: center;
         color: var(--team-primary-dark);
+        margin: 0 auto;
     }
 
     .intro-hero-copy .eyebrow {
@@ -169,13 +165,19 @@
         border: 1px solid rgba(79, 69, 60, 0.1);
     }
 
-    .intro-hero-copy h3 {
-        margin-bottom: 8px;
+    .director-title {
+        margin: 0;
         font-size: 1.9rem;
         font-weight: 800;
         letter-spacing: -0.045em;
         line-height: 1.05;
         color: var(--team-text);
+    }
+
+    .director-subtitle {
+        margin: 10px 0 0;
+        color: var(--team-muted);
+        font-size: 1rem;
     }
 
     .intro-hero-copy p {
@@ -185,8 +187,8 @@
     }
 
     .intro-body {
-        padding: 28px 28px 32px;
-        background:#685c4e29;
+        padding: 30px 36px 34px;
+        background: #fff;
     }
 
     .intro-body-title {
@@ -200,64 +202,72 @@
     }
 
     .intro-body-subtitle {
-        margin: 0 0 18px;
-        color: var(--team-muted);
-        font-size: 0.95rem;
+        margin: 0 0 14px;
+        color: var(--team-text);
+        font-size: 1.2rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
         text-align: center;
     }
 
     .intro-message {
-        max-width: 860px;
+        max-width: 840px;
         margin: 0 auto;
         position: relative;
-        padding: 18px 0 0;
+        padding: 12px 0 0;
     }
 
-    .intro-message::before {
-        content: '';
-        display: block;
-        width: 72px;
-        height: 3px;
-        margin: 0 auto 20px;
-        border-radius: 999px;
-        background: linear-gradient(90deg, rgba(79, 69, 60, 0.12), rgba(79, 69, 60, 0.35), rgba(79, 69, 60, 0.12));
-    }
-    .bottom-line::before {
-        content: '';
-        display: block;
-        width: 72px;
-        height: 3px;
-        margin: 0 auto 20px;
-        border-radius: 999px;
-        background: linear-gradient(90deg, rgba(79, 69, 60, 0.12), rgba(79, 69, 60, 0.35), rgba(79, 69, 60, 0.12));
-    }
-     .top-line::after {
-        content: '';
-        display: block;
-        width: 72px;
-        height: 3px;
-        margin:20px auto 20px;
-        border-radius: 999px;
-        background: linear-gradient(90deg, rgba(79, 69, 60, 0.12), rgba(79, 69, 60, 0.35), rgba(79, 69, 60, 0.12));
+    .decor-line {
+        width: 150px;
+        height: 20px;
+        margin: 14px auto 0;
+        position: relative;
     }
 
+    .decor-line::before,
+    .decor-line::after {
+        content: '';
+        position: absolute;
+        top: 10px;
+        width: 60px;
+        height: 1px;
+        background: var(--team-primary);
+        opacity: 0.72;
+    }
+
+    .decor-line::before {
+        left: 0;
+    }
+
+    .decor-line::after {
+        right: 0;
+    }
+
+    .decor-line span {
+        width: 9px;
+        height: 9px;
+        background: var(--team-primary);
+        display: block;
+        transform: rotate(45deg);
+        margin: 6px auto 0;
+    }
 
     .intro-message-body {
-        color: #4c433b;
-        line-height: 1.95;
+        color: #4a4239;
+        line-height: 2;
         text-align: center;
-        font-size: 0.98rem;
+        font-size: 0.96rem;
     }
 
     .signature-block {
-        margin: 22px auto 0;
-        padding: 0;
-        border-left: 0;
+        margin: 24px auto 0;
+        padding-top: 18px;
+        border-top: 1px solid rgba(79, 69, 60, 0.1);
         text-align: center;
         white-space: pre-line;
         color: var(--team-primary-dark);
         font-weight: 700;
-        line-height: 1.5;
+        line-height: 1.55;
     }
 
     .team-grid {
@@ -271,11 +281,18 @@
     .team-member-card {
         position: relative;
         height: 100%;
-        border-radius: 28px;
-        background: linear-gradient(180deg, #fcfaf6 0%, #f7f1e8 100%);
-        border: 1px solid rgba(79, 69, 60, 0.12);
-        box-shadow: 0 16px 36px rgba(52, 39, 28, 0.05);
+        border-radius: 20px;
+        background: #fff;
+        border: 1px solid var(--team-line);
+        box-shadow: 0 12px 30px rgba(57, 50, 42, 0.06);
         overflow: hidden;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .team-member-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 18px 44px rgba(57, 50, 42, 0.12);
+        border-color: #d7bea5;
     }
 
     .team-member-card-inner {
@@ -283,7 +300,7 @@
         flex-direction: column;
         align-items: center;
         gap: 0;
-        padding: 28px 24px 24px;
+        padding: 30px 24px 24px;
         text-align: center;
         min-height: 100%;
     }
@@ -297,17 +314,19 @@
     }
 
     .team-member-monogram {
-        width: 84px;
-        height: 84px;
+        width: 76px;
+        height: 76px;
         border-radius: 50%;
-        flex: 0 0 84px;
+        flex: 0 0 76px;
         display: grid;
         place-items: center;
-        background: linear-gradient(180deg, #e8ddcf 0%, #dccdb9 100%);
+        background: #fff;
         color: var(--team-primary-dark);
-        font-size: 1.9rem;
+        font-size: 1.8rem;
         font-weight: 800;
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35), 0 10px 22px rgba(79, 69, 60, 0.08);
+        border: 1px solid #b58c67;
+        box-shadow: 0 8px 18px rgba(57, 50, 42, 0.06);
+        overflow: hidden;
     }
 
     .team-member-monogram img {
@@ -328,18 +347,23 @@
     .team-member-name {
         margin-bottom: 0;
         color: var(--team-text);
-        font-size: 1.12rem;
+        font-size: 1.1rem;
         font-weight: 800;
         letter-spacing: -0.03em;
     }
-    .team-member-email{
-        margin: 0;
+
+    .team-member-email {
+        margin: 0 auto;
+        color: var(--team-primary);
+        font-size: 0.9rem;
+        font-weight: 600;
+        word-break: break-word;
     }
 
     .team-member-designation {
         color: var(--team-muted);
         font-weight: 500;
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         margin-bottom: 0;
     }
 
@@ -347,23 +371,22 @@
         display: grid;
         gap: 10px;
         width: 100%;
-        padding-top: 5px;
     }
 
     .team-member-text,
     .team-member-bio,
     .team-member-contact {
         color: #4d443c;
-        font-size: 0.96rem;
-        line-height: 1.8;
+        font-size: 0.95rem;
+        line-height: 1.75;
         margin-bottom: 0;
     }
 
     .team-member-divider {
+        width: 44px;
         height: 1px;
-        background: rgba(79, 69, 60, 0.12);
-        width: 100%;
-        margin: 2px 0;
+        background: #c3a17e;
+        margin: 0 auto;
     }
 
     .team-empty {
@@ -379,11 +402,11 @@
         }
 
         .team-content {
-            padding: 46px 0 64px;
+            padding: 44px 0 60px;
         }
 
         .team-member-card-inner {
-            padding: 24px 20px 22px;
+            padding: 26px 20px 22px;
         }
     }
 
@@ -393,7 +416,7 @@
         }
 
         .intro-hero {
-            min-height: 180px;
+            padding: 30px 18px 14px;
         }
 
         .intro-body {
@@ -406,7 +429,7 @@
 
         .team-member-card-inner {
             gap: 12px;
-            padding: 22px 18px 20px;
+            padding: 24px 18px 20px;
         }
 
         .team-member-monogram {
@@ -423,6 +446,19 @@
         .team-member-designation {
             font-size: 0.92rem;
         }
+
+        .director-title {
+            font-size: 1.55rem;
+        }
+
+        .intro-message {
+            padding-top: 10px;
+        }
+
+        .intro-message-body {
+            font-size: 0.95rem;
+            line-height: 1.9;
+        }
     }
 
     @media (min-width: 768px) {
@@ -438,6 +474,10 @@
 
         .team-mobile-carousel-wrap {
             display: block;
+        }
+
+        .team-mobile-carousel-wrap .slick-list {
+                    border-radius: 20px;
         }
 
         .team-mobile-carousel-wrap .slick-track {
@@ -473,6 +513,22 @@
 
         .section-title {
             font-size: 1.45rem;
+        }
+
+        .intro-hero {
+            padding: 26px 14px 12px;
+        }
+
+        .intro-body {
+            padding: 20px 14px 24px;
+        }
+
+        .director-title {
+            font-size: 1.35rem;
+        }
+
+        .intro-body-subtitle {
+            font-size: 1.05rem;
         }
     }
 </style>
@@ -512,17 +568,16 @@
             <div class="intro-panel mb-5">
                 <div class="intro-hero">
                     <div class="intro-hero-copy">
-                        <!-- <div class="eyebrow">{{ translate('Managing Director') }}</div> -->
-                        <h3 class="top-line">{{ translate('A Message from our Managing Director') }}</h3>
-                        <h3 class="top-line">{{ translate('Mrs H Kaur') }}</h3>
-                        <!-- <p>{{ $introSubtitle }}</p> -->
+                        <div class="eyebrow">{{ translate('Managing Director') }}</div>
+                        <h3 class="director-title">{{ translate('A Message from our Managing Director') }}</h3>
+                        <p class="director-subtitle">{{ $introSubtitle }}</p>
                     </div>
                 </div>
 
                 <div class="intro-body">
-                    <!-- <div class="intro-body-title">{{ translate('Full Message') }}</div> -->
-                    <p class="intro-body-subtitle">{{ translate('Welcome to Time To Furnish.') }}</p>
-                    <div class="intro-message bottom-line">
+                    <p class="intro-body-subtitle">{{ translate('Mrs H Kaur') }}</p>
+                    <div class="decor-line"><span></span></div>
+                    <div class="intro-message">
                         <div class="intro-message-body">{!! nl2br(e($introBody)) !!}</div>
                     </div>
                     <div class="signature-block">{{ $introSignature }}</div>
@@ -533,6 +588,7 @@
                 <div class="col-xl-9 col-lg-10 text-center">
                     <p class="section-kicker">{{ translate('Meet our dedicated team') }}</p>
                     <h2 class="section-title">{{ translate('Team Members') }}</h2>
+                    <div class="decor-line"><span></span></div>
                 </div>
             </div>
 
@@ -559,27 +615,25 @@
                             <article class="team-member-card h-100">
                                 <div class="team-member-card-inner">
                                     <div class="team-member-header">
-                                            <div class="team-member-monogram">
-                                                @if($photoUrl)
-                                                    <img src="{{ $photoUrl }}" alt="{{ $member->name }}" class="img-fluid rounded-circle">
-                                                @else
-                                                    {{ $initial }}
-                                                @endif
-                                            </div>
-                                       
+                                        <div class="team-member-monogram">
+                                            @if($photoUrl)
+                                                <img src="{{ $photoUrl }}" alt="{{ $member->name }}" class="img-fluid rounded-circle">
+                                            @else
+                                                {{ $initial }}
+                                            @endif
+                                        </div>
                                         <div class="team-member-heading">
                                             <h3 class="team-member-name">{{ $member->name }}</h3>
-                                            <p class="team-member-email">{{ $member->email }}</p>
+                                            @if($member->email)
+                                                <p class="team-member-email">{{ $member->email }}</p>
+                                            @endif
                                             <div class="team-member-designation">{{ $member->designation ?: translate('Team Member') }}</div>
+                                            <div class="team-member-divider"></div>
                                         </div>
                                     </div>
 
                                     <div class="team-member-body">
-                                        @if($bio)
-                                        <div class="team-member-divider"></div>
-                                        @endif
                                         <p class="team-member-bio">{{ $bio }}</p>
-
                                     </div>
                                 </div>
                             </article>
@@ -589,9 +643,9 @@
 
                 <div class="team-mobile-carousel-wrap d-md-none">
                     <div class="aiz-carousel sm-gutters-16 arrow-none team-mobile-carousel"
-                        data-items="3" data-xl-items="3" data-lg-items="3" data-md-items="2"
-                        data-sm-items="2" data-xs-items="1" data-arrows="false"
-                        data-dots="true" data-infinite="false" data-autoplay="false">
+                        data-items="1" data-xl-items="1" data-lg-items="1" data-md-items="1"
+                        data-sm-items="1" data-xs-items="1" data-arrows="false"
+                        data-dots="true" data-infinite="true" data-autoplay="true">
                         @foreach($team_members as $member)
                         @php
                             $initial = strtoupper(substr($member->name, 0, 1));
@@ -618,15 +672,15 @@
                                             </div>
                                             <div class="team-member-heading">
                                                 <h3 class="team-member-name">{{ $member->name }}</h3>
+                                                @if($member->email)
+                                                    <p class="team-member-email">{{ $member->email }}</p>
+                                                @endif
                                                 <div class="team-member-designation">{{ $member->designation ?: translate('Team Member') }}</div>
+                                                <div class="team-member-divider"></div>
                                             </div>
                                         </div>
 
                                         <div class="team-member-body">
-                                            @if($member->email)
-                                                <div class="team-member-contact">{{ $member->email }}</div>
-                                            @endif
-                                            <div class="team-member-divider"></div>
                                             <p class="team-member-bio">{{ $bio }}</p>
                                         </div>
                                     </div>
