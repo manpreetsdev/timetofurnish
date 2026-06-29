@@ -160,7 +160,7 @@
             <!-- Quick Links -->
             <div class="{{ $col_values }}">
                 <div class="ttf-footer-card">
-                    <h4 class="fs-14 text-white text-uppercase fw-700 mb-3">
+                    <h4 class="fs-14 text-light text-uppercase fw-700 mb-3">
                         Quick Links
                     </h4>
 
@@ -368,6 +368,8 @@
                                 </li>
                             </ul>
                         </div>
+						
+						 
 
                     </div>
                 </div>
@@ -431,24 +433,6 @@
             </div>
         </div>
 
-        <!-- Meet Our Team -->
-        <div class="aiz-accordion-wrap ttf-mobile-accordion">
-            <div class="aiz-accordion-heading container">
-                <button class="aiz-accordion fs-14 text-white bg-transparent">Meet Out Team's</button>
-            </div>
-
-            <div class="aiz-accordion-panel bg-transparent">
-                <div class="container">
-                    <ul class="list-unstyled">
-                        <li class="mb-2 pb-2">
-                            <a href="{{ route('meet.the.team') }}" class="fs-13 text-light animate-underline-white">
-                                Meet Our Team
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
 
         <!-- Important Links -->
         <div class="aiz-accordion-wrap ttf-mobile-accordion">
@@ -594,12 +578,12 @@
                 <div class="aiz-accordion-panel bg-transparent">
                     <div class="container">
                         <ul class="list-unstyled mt-3">
-                            <li class="mb-2 pb-2">
-                                <a href="{{ route('shops.create') }}"
+                           {{-- <li class="mb-2 pb-2">
+                               <a href="{{ route('shops.create') }}"
                                     class="fs-13 text-light animate-underline-white">
                                     {{ translate('Become A Seller') }}
                                 </a>
-                            </li>
+                            </li>--}}
 
                             @guest
                                 <li class="mb-2 pb-2 {{ areActiveRoutes(['deliveryboy.login'], ' active') }}">
@@ -647,19 +631,49 @@
                         </ul>
                     </div>
                 </div>
+				
+				
+				
+				
             </div>
         @endif
 
+		
+		     <!-- Careers - Direct Link No Dropdown -->
+<div class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-career-link-wrap">
+    <div class="aiz-accordion-heading container">
+        <a href="{{ route('become_delivery_partner') }}"
+           class="ttf-mobile-career-link fs-14 text-white bg-transparent">
+            {{ translate('join our delivery partner') }}
+        </a>
+    </div>
+</div>
+		
+		
+	
+		
+		
         <!-- Careers -->
-        <div class="aiz-accordion-wrap ttf-mobile-accordion">
-            <div class="aiz-accordion-heading container">
-                <button class="aiz-accordion fs-14 text-white bg-transparent">
-                    <a href="{{ route('career') }}" class="text-white">
-                        {{ translate('Careers') }}
-                    </a>
-                </button>
-            </div>
-        </div>
+     <!-- Careers - Direct Link No Dropdown -->
+<div class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-career-link-wrap">
+    <div class="aiz-accordion-heading container">
+        <a href="{{ route('career') }}"
+           class="ttf-mobile-career-link fs-14 text-white bg-transparent">
+            {{ translate('Careers') }}
+        </a>
+    </div>
+</div>
+		
+		        <!-- Meet Our Team -->
+<!-- Meet Our Team - Direct Link Same Accordion Style -->
+<div class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-single-link-wrap">
+    <div class="aiz-accordion-heading container">
+        <a href="{{ route('meet.the.team') }}"
+           class="ttf-mobile-single-link fs-14 text-white bg-transparent">
+            Meet Our Teams
+        </a>
+    </div>
+</div>
 
         <!-- Delivery Boy -->
         @if (addon_is_activated('delivery_boy'))
@@ -1139,7 +1153,7 @@
     }
 
     .ttf-footer-card {
-        background: rgba(255, 255, 255, 0.07);
+        background: #fff;
         border: 1px solid rgba(255, 255, 255, 0.14);
         border-radius: 22px;
         padding: 26px 24px;
@@ -1151,7 +1165,7 @@
 
     .ttf-footer-card:hover {
         transform: translateY(-5px);
-        background: rgba(255, 255, 255, 0.10);
+        
         box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
     }
 
@@ -1169,7 +1183,7 @@
         bottom: 0;
         width: 45px;
         height: 2px;
-        background: #eadfd3;
+        background: #876a4b;
         border-radius: 20px;
     }
 
@@ -1186,7 +1200,7 @@
     }
 
     .ttf-footer-card a {
-        color: rgba(255, 255, 255, 0.88) !important;
+        color: #000 !important;
         line-height: 1.6;
         display: inline-block;
         transition: all 0.25s ease;
@@ -1210,7 +1224,7 @@
 
     .ttf-mobile-accordion {
         background: transparent !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.39);
     }
 
     .ttf-mobile-accordion .aiz-accordion-heading {
@@ -1246,6 +1260,56 @@
             padding-bottom: 0 !important;
         }
     }
+	/* Mobile footer direct link - same accordion style, no dropdown */
+.ttf-mobile-single-link-wrap .ttf-mobile-single-link {
+    display: block;
+    width: 100%;
+    padding: 22px 0;
+    color: #fff !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    line-height: normal;
+    text-decoration: none !important;
+    background: transparent !important;
+    border: 0 !important;
+}
+
+/* hover same rakho */
+.ttf-mobile-single-link-wrap .ttf-mobile-single-link:hover {
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+/* is section ka plus icon hide */
+.ttf-mobile-single-link-wrap .ttf-mobile-single-link::after {
+    display: none !important;
+    content: none !important;
+}
+	/* Careers direct link - same accordion row style */
+.ttf-mobile-career-link-wrap .ttf-mobile-career-link {
+    display: block;
+    width: 100%;
+    padding: 22px 0;
+    color: #fff !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    line-height: normal;
+    text-decoration: none !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+/* plus icon hide for careers */
+.ttf-mobile-career-link-wrap .aiz-accordion-heading::after,
+.ttf-mobile-career-link-wrap .ttf-mobile-career-link::after {
+    display: none !important;
+    content: none !important;
+}
+
+.ttf-mobile-career-link-wrap .ttf-mobile-career-link:hover {
+    color: #fff !important;
+    text-decoration: none !important;
+}
 </style>
 <script>
     function toggleFlags(event) {
@@ -1279,6 +1343,42 @@
                     shortText.classList.remove('d-none');
                     readMoreBtn.textContent = 'Read More';
                 }
+            });
+        }
+		    /* ==========================
+           Mobile Footer Accordion
+           Only one open at a time
+        ========================== */
+        const mobileFooter = document.querySelector('.ttf-mobile-footer');
+
+        if (mobileFooter) {
+            mobileFooter.addEventListener('click', function (e) {
+                const currentButton = e.target.closest('.aiz-accordion');
+
+                if (!currentButton || !mobileFooter.contains(currentButton)) {
+                    return;
+                }
+
+                const currentWrap = currentButton.closest('.aiz-accordion-wrap');
+
+                setTimeout(function () {
+                    mobileFooter.querySelectorAll('.aiz-accordion-wrap').forEach(function (wrap) {
+                        if (wrap !== currentWrap) {
+                            const btn = wrap.querySelector('.aiz-accordion');
+                            const panel = wrap.querySelector('.aiz-accordion-panel');
+
+                            if (btn) {
+                                btn.classList.remove('active');
+                            }
+
+                            if (panel) {
+                                panel.classList.remove('active', 'show');
+                                panel.style.maxHeight = null;
+                                panel.style.display = '';
+                            }
+                        }
+                    });
+                }, 50);
             });
         }
     });

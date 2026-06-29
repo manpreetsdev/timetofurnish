@@ -3120,6 +3120,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
 
 .custom-header-class .banner-category.custom-banner-category ul li .category_a {
     padding: 0 !important;
+    margin-top: 10px !important;
     color: #3e3327 !important;
     font-family: 'Poppins', sans-serif !important;
     font-size: 13px !important;
@@ -3130,7 +3131,6 @@ span.badge.badge-primary.badge-circle.position-absolute {
     align-items: flex-start !important;
     justify-content: center !important;
     transition: color 0.22s ease !important;
-    margin-top: 10px !important;
 }
 
 .custom-header-class .banner-category.custom-banner-category ul li:hover .category_a {

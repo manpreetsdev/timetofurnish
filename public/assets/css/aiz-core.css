@@ -1248,7 +1248,7 @@ hr {
 
 .text-light,
 .hov-text-light:hover {
-    color: var(--light) !important;
+    color: black !important;
 }
 
 .text-soft-light {
@@ -10284,7 +10284,7 @@ input[type="number"] {
     }
 
     .aiz-accordion-panel ul li {
-        border-bottom: 1px solid #292933;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.39);
         padding-left: 1rem;
     }
 
@@ -13467,7 +13467,7 @@ ul.apps a:hover i {
 
 .aiz-accordion-heading .aiz-accordion:after {
     content: "\002B";
-    color: #777;
+    color: #dcdcdc;
     font-weight: bold;
     float: right;
     margin-left: 5px;
