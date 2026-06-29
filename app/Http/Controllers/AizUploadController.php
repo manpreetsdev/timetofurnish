@@ -10,6 +10,8 @@ use Storage;
 use Image;
 use enshrined\svgSanitize\Sanitizer;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AizUploadController extends Controller
 {
@@ -68,110 +70,285 @@ class AizUploadController extends Controller
     }
     public function upload(Request $request)
     {
-        if (!$request->hasFile('aiz_file')) {
-            return response()->json(['error' => translate('Upload file is missing')], 400);
+        $files = $this->extractAizFiles($request);
+
+        if (count($files) === 0) {
+            return response()->json([
+                'result' => false,
+                'error' => translate('Upload file is missing'),
+                'message' => translate('Upload file is missing'),
+            ], 400);
         }
 
-        $file = $request->file('aiz_file');
+        if (count($files) === 1) {
+            $response = $this->storeUploadedAizFile($files[0]);
+
+            if (!$response['result']) {
+                return response()->json([
+                    'result' => false,
+                    'error' => $response['message'],
+                    'message' => $response['message'],
+                ], $response['status']);
+            }
+
+            return response()->json($response['upload']);
+        }
+
+        $uploads = [];
+        $errors = [];
+
+        foreach ($files as $file) {
+            $response = $this->storeUploadedAizFile($file);
+
+            if ($response['result']) {
+                $uploads[] = $response['upload'];
+            } else {
+                $errors[] = [
+                    'file' => $file ? $file->getClientOriginalName() : null,
+                    'message' => $response['message'],
+                ];
+            }
+        }
+
+        if (count($errors) > 0) {
+            return response()->json([
+                'result' => false,
+                'message' => translate('One or more files could not be uploaded'),
+                'uploads' => $uploads,
+                'errors' => $errors,
+            ], 422);
+        }
+
+        return response()->json([
+            'result' => true,
+            'message' => translate('Files uploaded successfully'),
+            'uploads' => $uploads,
+        ]);
+    }
+
+    private function extractAizFiles(Request $request): array
+    {
+        $files = $request->allFiles();
+        $flatFiles = [];
+
+        $flatten = function ($value) use (&$flatten, &$flatFiles) {
+            if (is_array($value)) {
+                foreach ($value as $item) {
+                    $flatten($item);
+                }
+                return;
+            }
+
+            if ($value) {
+                $flatFiles[] = $value;
+            }
+        };
+
+        foreach ($files as $file) {
+            $flatten($file);
+        }
+
+        if (!empty($flatFiles)) {
+            return $flatFiles;
+        }
+
+        if ($request->hasFile('aiz_file')) {
+            $file = $request->file('aiz_file');
+            return is_array($file) ? array_values(array_filter($file)) : [$file];
+        }
+
+        return [];
+    }
+
+    private function storeUploadedAizFile($file): array
+    {
+        $type = get_configured_upload_types();
+        $extension = strtolower($file->getClientOriginalExtension());
+        $originalName = $file->getClientOriginalName();
+
+        if (!isset($type[$extension])) {
+            return [
+                'result' => false,
+                'status' => 400,
+                'message' => translate('The file extension ') . $extension . translate(' is not allowed.'),
+            ];
+        }
+
         $error_message = null;
         if (!validate_uploaded_file($file, $error_message)) {
-            return response()->json(['error' => $error_message], 400);
+            return [
+                'result' => false,
+                'status' => 400,
+                'message' => $error_message,
+            ];
         }
-
-        $type = get_configured_upload_types();
-        $upload = new Upload;
-        $extension = strtolower($file->getClientOriginalExtension());
 
         if (
             env('DEMO_MODE') == 'On' &&
             isset($type[$extension]) &&
             $type[$extension] == 'archive'
         ) {
-            return '{}';
+            return [
+                'result' => true,
+                'upload' => (object) [],
+            ];
         }
 
-        if (isset($type[$extension])) {
-                $upload->file_original_name = null;
-                $arr = explode('.', $request->file('aiz_file')->getClientOriginalName());
-                for ($i = 0; $i < count($arr) - 1; $i++) {
-                    if ($i == 0) {
-                        $upload->file_original_name .= $arr[$i];
-                    } else {
-                        $upload->file_original_name .= "." . $arr[$i];
-                    }
-                }
-
-                if ($extension == 'svg') {
-                    $sanitizer = new Sanitizer();
-                    // Load the dirty svg
-                    $dirtySVG = file_get_contents($request->file('aiz_file'));
-
-                    // Pass it to the sanitizer and get it back clean
-                    $cleanSVG = $sanitizer->sanitize($dirtySVG);
-
-                    // Load the clean svg
-                    file_put_contents($request->file('aiz_file'), $cleanSVG);
-                }
-
-
-                $path = $request->file('aiz_file')->store('uploads/all', 'local');
-                $size = $request->file('aiz_file')->getSize();
-
-                // Return MIME type ala mimetype extension
-                $finfo = finfo_open(FILEINFO_MIME_TYPE);
-
-                // Get the MIME type of the file
-                $file_mime = finfo_file($finfo, base_path('public/') . $path);
-
-
-                if ($type[$extension] == 'image' && get_setting('disable_image_optimization') != 1) {
-                    try {
-                        $img = Image::make($request->file('aiz_file')->getRealPath())->encode();
-                        $height = $img->height();
-                        $width = $img->width();
-                        if ($width > $height && $width > 1500) {
-                            $img->resize(1500, null, function ($constraint) {
-                                $constraint->aspectRatio();
-                            });
-                        } elseif ($height > 1500) {
-                            $img->resize(null, 800, function ($constraint) {
-                                $constraint->aspectRatio();
-                            });
-                        }
-                        $img->save(base_path('public/') . $path);
-                        clearstatcache();
-                        $size = $img->filesize();
-                    } catch (\Exception $e) {
-                        //dd($e);
-                    }
-                }
-
-                if (env('FILESYSTEM_DRIVER') != 'local') {
-
-                    Storage::disk(env('FILESYSTEM_DRIVER'))->put(
-                        $path,
-                        file_get_contents(base_path('public/') . $path),
-                        [
-                            'visibility' => 'public',
-                            'ContentType' =>  $extension == 'svg' ? 'image/svg+xml' : $file_mime
-                        ]
-                    );
-                    // dd($storage);
-                    if ($arr[0] != 'updates') {
-                        unlink(base_path('public/') . $path);
-                    }
-                }
-
-                $upload->extension = $extension;
-                $upload->file_name = $path;
-                $upload->user_id = Auth::user()->id;
-                $upload->type = $type[$upload->extension];
-                $upload->file_size = $size;
-                $upload->save();
-                return response()->json($upload);
+        $upload = new Upload;
+        $upload->file_original_name = null;
+        $arr = explode('.', $originalName);
+        for ($i = 0; $i < count($arr) - 1; $i++) {
+            if ($i == 0) {
+                $upload->file_original_name .= $arr[$i];
+            } else {
+                $upload->file_original_name .= "." . $arr[$i];
             }
-            return '{}';
         }
+
+        $uploadDir = public_path('uploads/all');
+        if (!is_dir($uploadDir) && !@mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
+            return [
+                'result' => false,
+                'status' => 500,
+                'message' => translate('Unable to create the upload directory.'),
+            ];
+        }
+
+        $storedName = Str::random(40) . '.' . $extension;
+        $path = 'uploads/all/' . $storedName;
+        $fullPath = $uploadDir . '/' . $storedName;
+
+        try {
+            $file->move($uploadDir, $storedName);
+            $size = filesize($fullPath) ?: $file->getSize();
+        } catch (\Throwable $e) {
+            Log::error('AIZ upload move failed', [
+                'file' => $originalName,
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'result' => false,
+                'status' => 500,
+                'message' => translate('Unable to store the file on the server.') . ' ' . $e->getMessage(),
+            ];
+        }
+
+        try {
+            if ($extension === 'svg') {
+                $sanitizer = new Sanitizer();
+                $dirtySVG = file_get_contents($fullPath);
+                $cleanSVG = $sanitizer->sanitize($dirtySVG);
+
+                if ($cleanSVG === false || $cleanSVG === null) {
+                    $this->removeLocalUploadFile($path);
+
+                    return [
+                        'result' => false,
+                        'status' => 422,
+                        'message' => translate('The SVG file is invalid or unsafe.'),
+                    ];
+                }
+
+                file_put_contents($fullPath, $cleanSVG);
+            } elseif ($type[$extension] == 'image') {
+                try {
+                    $img = Image::make($fullPath);
+                } catch (\Throwable $e) {
+                    $this->removeLocalUploadFile($path);
+
+                    return [
+                        'result' => false,
+                        'status' => 422,
+                        'message' => translate('The selected file is not a valid image.'),
+                    ];
+                }
+
+                if (get_setting('disable_image_optimization') != 1) {
+                    $img = $img->encode();
+                    $height = $img->height();
+                    $width = $img->width();
+                    if ($width > $height && $width > 1500) {
+                        $img->resize(1500, null, function ($constraint) {
+                            $constraint->aspectRatio();
+                        });
+                    } elseif ($height > 1500) {
+                        $img->resize(null, 800, function ($constraint) {
+                            $constraint->aspectRatio();
+                        });
+                    }
+                    $img->save($fullPath);
+                    clearstatcache();
+                    $size = $img->filesize();
+                }
+            }
+        } catch (\Throwable $e) {
+            $this->removeLocalUploadFile($path);
+            Log::error('AIZ upload processing failed', [
+                'file' => $originalName,
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'result' => false,
+                'status' => 422,
+                'message' => translate('The file could not be processed.'),
+            ];
+        }
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $file_mime = finfo_file($finfo, $fullPath);
+
+        if (env('FILESYSTEM_DRIVER') != 'local') {
+            try {
+                Storage::disk(env('FILESYSTEM_DRIVER'))->put(
+                    $path,
+                    file_get_contents($fullPath),
+                    [
+                        'visibility' => 'public',
+                        'ContentType' => $extension == 'svg' ? 'image/svg+xml' : $file_mime
+                    ]
+                );
+
+                if ($arr[0] != 'updates') {
+                    unlink($fullPath);
+                }
+            } catch (\Throwable $e) {
+                $this->removeLocalUploadFile($path);
+                Log::error('AIZ upload remote storage failed', [
+                    'file' => $originalName,
+                    'error' => $e->getMessage(),
+                ]);
+
+                return [
+                    'result' => false,
+                    'status' => 500,
+                    'message' => translate('Unable to store the file in remote storage.'),
+                ];
+            }
+        }
+
+        $upload->extension = $extension;
+        $upload->file_name = $path;
+        $upload->user_id = Auth::user()->id;
+        $upload->type = $type[$upload->extension];
+        $upload->file_size = $size;
+        $upload->save();
+
+        return [
+            'result' => true,
+            'upload' => $upload,
+        ];
+    }
+
+    private function removeLocalUploadFile(string $path): void
+    {
+        $fullPath = public_path($path);
+
+        if (file_exists($fullPath)) {
+            @unlink($fullPath);
+        }
+    }
 
     public function get_uploaded_files(Request $request)
     {

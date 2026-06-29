@@ -629,6 +629,7 @@
                         <div id="aiz-upload-files" class="h-100">
                             <!-- Uppy / upload area handled by JS -->
                         </div>
+                        <div id="aiz-upload-errors" class="mt-3"></div>
                     </div>
                 </div>
             </div>

@@ -3575,6 +3575,22 @@ if (!function_exists('validate_uploaded_file')) {
             return false;
         }
 
+        if (method_exists($file, 'isValid') && !$file->isValid()) {
+            $errorCode = method_exists($file, 'getError') ? $file->getError() : null;
+            $errorMap = [
+                UPLOAD_ERR_INI_SIZE => translate('The uploaded file exceeds the server upload limit.'),
+                UPLOAD_ERR_FORM_SIZE => translate('The uploaded file exceeds the form limit.'),
+                UPLOAD_ERR_PARTIAL => translate('The file was only partially uploaded.'),
+                UPLOAD_ERR_NO_FILE => translate('No file was uploaded.'),
+                UPLOAD_ERR_NO_TMP_DIR => translate('Server is missing a temporary upload directory.'),
+                UPLOAD_ERR_CANT_WRITE => translate('Server could not write the uploaded file.'),
+                UPLOAD_ERR_EXTENSION => translate('A PHP extension stopped the upload.'),
+            ];
+
+            $error_message = $errorMap[$errorCode] ?? translate('The uploaded file is not valid.');
+            return false;
+        }
+
         // 1. Validate file size
         $maxMb = (int) get_setting('max_upload_file_size', 5); // default 5 MB
         $maxBytes = $maxMb * 1024 * 1024;
@@ -3594,4 +3610,3 @@ if (!function_exists('validate_uploaded_file')) {
         return true;
     }
 }
-

@@ -26,6 +26,71 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
             next_page_url: null,
             prev_page_url: null,
         },
+        clearUploadErrors: function () {
+            $("#aiz-upload-errors").empty();
+        },
+        renderUploadError: function (fileName, message) {
+            var $container = $("#aiz-upload-errors");
+            if (!$container.length) {
+                AIZ.plugins.notify(
+                    "warning",
+                    (fileName ? fileName + ": " : "") + message
+                );
+                return;
+            }
+
+            var $alert = $(
+                '<div class="alert alert-warning alert-dismissible fade show mb-2 border" role="alert"></div>'
+            );
+            var $title = $('<strong class="d-block mb-1"></strong>');
+            $title.text(fileName ? fileName : (AIZ.local.file || "File"));
+            var $body = $('<span class="d-block"></span>');
+            $body.text(message);
+
+            $alert.append($title).append($body);
+            $container.append($alert);
+            AIZ.plugins.notify(
+                "warning",
+                (fileName ? fileName + ": " : "") + message
+            );
+        },
+        extractUploadErrorMessage: function (error, response) {
+            if (response && response.body) {
+                if (typeof response.body === "string") {
+                    return response.body;
+                }
+                if (response.body.message) {
+                    return response.body.message;
+                }
+                if (response.body.error) {
+                    return response.body.error;
+                }
+                if (response.body.errors) {
+                    if (Array.isArray(response.body.errors)) {
+                        var firstError = response.body.errors[0];
+                        if (firstError) {
+                            return firstError.message || firstError;
+                        }
+                    }
+                    if (typeof response.body.errors === "object") {
+                        var firstKey = Object.keys(response.body.errors)[0];
+                        if (firstKey && response.body.errors[firstKey]) {
+                            return response.body.errors[firstKey][0] || response.body.errors[firstKey];
+                        }
+                    }
+                }
+            }
+
+            if (error && error.message) {
+                return error.message;
+            }
+
+            if (typeof error === "string") {
+                return error;
+            }
+
+            return "Upload failed";
+        },
         removeInputValue: function (id, array, elem) {
             var selected = array.filter(function (item) {
                 return item !== id;
@@ -707,6 +772,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                 function (data) {
                     $("body").append(data);
                     $("#aizUploaderModal").modal("show");
+                    AIZ.uploader.clearUploadErrors();
                     AIZ.plugins.aizUppy();
                     AIZ.uploader.getAllUploads(
                         AIZ.data.appUrl + "/aiz-uploader/get-uploaded-files",
@@ -1173,6 +1239,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
         },
         aizUppy: function () {
             if ($("#aiz-upload-files").length > 0) {
+                AIZ.uploader.clearUploadErrors();
                 var uppy = Uppy.Core({
                     autoProceed: true,
                 });
@@ -1218,21 +1285,45 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                     endpoint: AIZ.data.appUrl + "/aiz-uploader/upload",
                     fieldName: "aiz_file",
                     formData: true,
+                    bundle: true,
                     headers: {
                         'X-CSRF-TOKEN': AIZ.data.csrf,
                     },
                 });
+                uppy.on("restriction-failed", function (file, error) {
+                    var fileName = file && file.name ? file.name : "";
+                    var message = AIZ.uploader.extractUploadErrorMessage(error);
+                    AIZ.uploader.renderUploadError(fileName, message);
+                });
+                uppy.on("upload-error", function (file, error, response) {
+                    var fileName = file && file.name ? file.name : "";
+                    var message = AIZ.uploader.extractUploadErrorMessage(error, response);
+                    AIZ.uploader.renderUploadError(fileName, message);
+                });
                 uppy.on("upload-success", function (file, response) {
+                    var uploads = [];
                     if (response.body && response.body.id) {
+                        uploads = [response.body];
+                    } else if (response.body && Array.isArray(response.body.uploads)) {
+                        uploads = response.body.uploads;
+                    }
+
+                    if (uploads.length > 0) {
                         if (!AIZ.uploader.data.multiple) {
                             AIZ.uploader.data.selectedFiles = [];
                             AIZ.uploader.data.selectedFilesObject = [];
                         }
-                        if (!AIZ.uploader.data.selectedFiles.includes(response.body.id)) {
-                            AIZ.uploader.data.selectedFiles.push(response.body.id);
-                            AIZ.uploader.data.selectedFilesObject.push(response.body);
+
+                        uploads.forEach(function (upload) {
+                            if (upload && upload.id && !AIZ.uploader.data.selectedFiles.includes(upload.id)) {
+                                AIZ.uploader.data.selectedFiles.push(upload.id);
+                                AIZ.uploader.data.selectedFilesObject.push(upload);
+                            }
+                        });
+
+                        if (AIZ.uploader.data.selectedFiles.length > 0) {
+                            AIZ.uploader.updateUploaderSelected();
                         }
-                        AIZ.uploader.updateUploaderSelected();
                     }
                     AIZ.uploader.getAllUploads(
                         AIZ.data.appUrl + "/aiz-uploader/get-uploaded-files"

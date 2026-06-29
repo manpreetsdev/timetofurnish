@@ -22,6 +22,7 @@
     	<div id="aiz-upload-files" class="h-420px" style="min-height: 65vh">
     		
     	</div>
+    	<div id="aiz-upload-errors" class="mt-3"></div>
     </div>
 </div>
 @endsection
