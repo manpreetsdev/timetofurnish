@@ -1305,7 +1305,6 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                     endpoint: AIZ.data.appUrl + "/aiz-uploader/upload",
                     fieldName: "aiz_file",
                     formData: true,
-                    bundle: true,
                     headers: {
                         'X-CSRF-TOKEN': AIZ.data.csrf,
                     },
