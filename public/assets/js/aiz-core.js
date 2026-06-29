@@ -55,6 +55,26 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
             );
         },
         extractUploadErrorMessage: function (error, response) {
+            if (response) {
+                if (response.status) {
+                    if (response.status === 413) {
+                        return "The upload is too large for the server request limit. Upload fewer files at once or increase the server body size limit.";
+                    }
+
+                    if (response.status === 404) {
+                        return "Upload endpoint not found.";
+                    }
+
+                    if (response.status >= 500) {
+                        return "The server failed while processing the upload.";
+                    }
+                }
+
+                if (response.responseText) {
+                    return response.responseText.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+                }
+            }
+
             if (response && response.body) {
                 if (typeof response.body === "string") {
                     return response.body;
@@ -1285,7 +1305,6 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                     endpoint: AIZ.data.appUrl + "/aiz-uploader/upload",
                     fieldName: "aiz_file",
                     formData: true,
-                    bundle: true,
                     headers: {
                         'X-CSRF-TOKEN': AIZ.data.csrf,
                     },
