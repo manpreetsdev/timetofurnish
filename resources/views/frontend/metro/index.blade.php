@@ -402,13 +402,13 @@
     <!-- Banner section 1 -->
     @if (get_setting('home_banner1_images') != null)
         <div class="section-padding" style="background: #fff;">
-            <div class="container mb-2 mb-md-3">
+            <div class="container  mb-4 mt-4">
                 @php
                     $banner_1_imags = json_decode(get_setting('home_banner1_images'));
                     $data_md = count($banner_1_imags) >= 2 ? 2 : 1;
                 @endphp
                 <div class="w-100">
-                    <div class="aiz-carousel home_banner_111 gutters-16 overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
+                    <div class="aiz-carousel home_banner_111  overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
                         data-items="{{ count($banner_1_imags) }}" data-xxl-items="{{ count($banner_1_imags) }}"
                         data-xl-items="{{ count($banner_1_imags) }}" data-lg-items="{{ $data_md }}"
                         data-md-items="{{ $data_md }}" data-sm-items="1" data-xs-items="1" data-arrows="true"

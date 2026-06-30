@@ -2,7 +2,7 @@
 
 @section('content')
  <!-- Breadcrumb -->
-    <section class="pt-4 mb-3">
+    <section class="pt-4 mb-4 mt-4">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 text-center text-lg-left">
