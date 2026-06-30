@@ -3432,6 +3432,9 @@ span.badge.badge-primary.badge-circle.position-absolute {
 }
 
 @media (max-width: 767.98px) {
+    .home_Section {
+        margin: 0px 0px !important;
+    }
 
     .custom-header-class .banner-category.custom-banner-category ul li img {
         width: 35px !important;

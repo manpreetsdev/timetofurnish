@@ -2,7 +2,7 @@
 
 @section('content')
  <!-- Breadcrumb -->
-    <section class="pt-4 mb-4 mt-4">
+    <section class="pt-4 mb-4 mt-4 home_Section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 text-center text-lg-left">
@@ -22,7 +22,7 @@
         </div>
     </section>
     <!-- All Sellers -->
-    <section class="mb-5" style="margin-top: 2rem;">
+    <section class="mb-5 home_Section" style="margin-top: 2rem;">
         <div class="container">
             <!-- Banner -->
             @if (get_setting('todays_deal_banner') != null || get_setting('todays_deal_banner_small') != null)

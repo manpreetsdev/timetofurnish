@@ -2,7 +2,7 @@
     @php
         $todaysDealCount = count($todays_deal_products);
     @endphp
-    <section class="mb-4 mt-5 home-mobile-product-section home-todays-deal-section" id="section_todays_deals_home">
+    <section class="mb-4 mt-5 home-mobile-product-section home-todays-deal-section home_Section" id="section_todays_deals_home">
         <div class="container">
             <div class="todays-deal-card-wrap">
                 <!-- Section Header - Centered with Theme Color -->

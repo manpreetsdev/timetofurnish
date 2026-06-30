@@ -240,7 +240,7 @@
                 : 'text-white';
     @endphp
     @if ($flash_deal != null)
-        <section class="mb-2 mb-md-3 mt-2 mt-md-3"
+        <section class="mb-2 mb-md-3 mt-2 mt-md-3 home_Section"
             style="background: {{ $flash_deal_bg_full_width && $flash_deal_bg != null ? $flash_deal_bg : '' }};"
             id="flash_deal">
             <div class="container">
@@ -468,7 +468,7 @@
 
     </div>
     <!-- New Products -->
-    <div id="section_newest" class="pt-5 pb-4">
+    <div id="section_newest" class="pt-4 pb-4">
 
     </div>
     <!-- Category wise Products -->
@@ -598,7 +598,7 @@
             $classified_products = get_home_page_classified_products(6);
         @endphp
         @if (count($classified_products) > 0)
-            <section class="mb-2 mb-md-4 mt-4 mt-md-5">
+            <section class="mb-2 mb-md-4 mt-4 mt-md-5 home_Section">
                 <div class="container">
                     <!-- Top Section -->
                     <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">

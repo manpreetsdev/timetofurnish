@@ -1,5 +1,5 @@
 @if (count($newest_products) > 0)
-    <section class="mb-2 mb-md-3 mt-2 mt-md-3">
+    <section class="mb-2 mb-md-3 mt-2 mt-md-3 home_Section">
         <div class="container">
             <!-- Top Section -->
             <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">

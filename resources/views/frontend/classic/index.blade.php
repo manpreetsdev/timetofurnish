@@ -43,7 +43,7 @@
         $flash_deal = get_featured_flash_deal();
     @endphp
     @if ($flash_deal != null)
-        <section class="mb-2 mb-md-3 mt-2 mt-md-3" id="flash_deal">
+        <section class="mb-2 mb-md-3 mt-2 mt-md-3 home_Section" id="flash_deal">
             <div class="container">
                 <!-- Top Section -->
                 <div class="d-flex flex-wrap mb-2 mb-md-3 align-items-baseline justify-content-between">
@@ -158,7 +158,7 @@
 
     <!-- Featured Categories -->
     @if (count($featured_categories) > 0)
-        <section class="mb-2 mb-md-3 mt-2 mt-md-3">
+        <section class="mb-2 mb-md-3 mt-2 mt-md-3 home_Section">
             <div class="container">
                 <div class="bg-white">
                     <!-- Top Section -->
@@ -308,7 +308,7 @@
     </div>
 
     <!-- New Products -->
-    <div id="section_newest">
+    <div id="section_newest home_Section">
 
     </div>
 
@@ -436,7 +436,7 @@
             $classified_products = get_home_page_classified_products(6);
         @endphp
         @if (count($classified_products) > 0)
-            <section class="mb-2 mb-md-3 mt-2 mt-md-3">
+            <section class="mb-2 mb-md-3 mt-2 mt-md-3 home_Section">
                 <div class="container">
                     <!-- Top Section -->
                     <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">
@@ -522,7 +522,7 @@
             $best_selers = get_best_sellers(5);
         @endphp
         @if (count($best_selers) > 0)
-        <section class="mb-2 mb-md-3 mt-2 mt-md-3">
+        <section class="mb-2 mb-md-3 mt-2 mt-md-3 home_Section">
             <div class="container">
                 <!-- Top Section -->
                 <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">
@@ -622,7 +622,7 @@
 
     <!-- Top Brands -->
     @if (get_setting('top_brands') != null)
-        <section class="mb-2 mb-md-3 mt-2 mt-md-3">
+        <section class="mb-2 mb-md-3 mt-2 mt-md-3 home_Section">
             <div class="container">
                 <!-- Top Section -->
                 <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">
