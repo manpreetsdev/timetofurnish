@@ -3,7 +3,7 @@
     $featuredProductCount = count($featuredProducts);
 @endphp
 @if ($featuredProductCount > 0)
-    <section class="mb-4 home-mobile-product-section home-featured-products-section"
+    <section class="mb-4 mt-4 home-mobile-product-section home-featured-products-section"
         id="section_featured_products_home">
         <div class="container">
             <div class="modern-section-bordered-wrap">

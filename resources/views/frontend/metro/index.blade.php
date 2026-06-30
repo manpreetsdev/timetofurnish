@@ -272,7 +272,7 @@
                 </div>
 
                 <!-- Countdown for small device -->
-                <div class="bg-white mb-3 d-md-none">
+                <div class="bg-white mb-4 d-md-none">
                     <div class="aiz-count-down-circle" end-date="{{ date('Y/m/d H:i:s', $flash_deal->end_date) }}"></div>
                 </div>
 
@@ -464,11 +464,11 @@
     @endif
 
     <!-- Best Selling  -->
-    <div id="section_best_selling" class="pt-3 pb-3">
+    <div id="section_best_selling" class="pt-4 pb-4">
 
     </div>
     <!-- New Products -->
-    <div id="section_newest" class="pt-3 pb-3">
+    <div id="section_newest" class="pt-5 pb-4">
 
     </div>
     <!-- Category wise Products -->
@@ -477,7 +477,7 @@
 
     <!-- Banner Section 3 -->
     @if (get_setting('home_banner3_images') != null)
-        <div class="mb-2 mb-md-3 mt-2 mt-md-3">
+        <div class="mb-2 mb-md-4 mt-2 mt-md-4">
             <div class="container">
                 @php
                     $banner_3_imags = json_decode(get_setting('home_banner3_images'));
@@ -598,7 +598,7 @@
             $classified_products = get_home_page_classified_products(6);
         @endphp
         @if (count($classified_products) > 0)
-            <section class="mb-2 mb-md-3 mt-3 mt-md-5">
+            <section class="mb-2 mb-md-4 mt-4 mt-md-5">
                 <div class="container">
                     <!-- Top Section -->
                     <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">
