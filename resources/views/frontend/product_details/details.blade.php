@@ -1114,7 +1114,7 @@
 @endif
 
 <!-- Share -->
-<div class="mt-4 row no-gutters">
+{{--<div class="mt-4 row no-gutters">
     <div class="col-sm-2">
         <div class="mt-2 text-secondary fs-14 fw-500" style="color:#333 !important">{{ translate('Share') }}
         </div>
@@ -1123,7 +1123,7 @@
         <div class="aiz-share"></div>
     </div>
 </div>
-
+--}}
 </div>
 <script>
     function change_qty() {

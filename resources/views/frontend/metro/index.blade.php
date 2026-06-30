@@ -148,7 +148,7 @@
                                 <a href="{{ json_decode(get_setting('home_slider_links'), true)[$key] }}">
                                     <!-- Image -->
                                     <div class="d-block mw-100 img-fit overflow-hidden home_slider_img overflow-hidden">
-                                        <img class="img-fit h-100 m-auto has-transition ls-is-cached lazyloaded"
+                                        <img class="img-fit  m-auto has-transition ls-is-cached lazyloaded"
                                             src="{{ $slider ? my_asset($slider->file_name) : static_asset('assets/img/placeholder.jpg') }}"
                                             alt="{{ env('APP_NAME') }} promo"
                                             onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
@@ -408,7 +408,7 @@
                     $data_md = count($banner_1_imags) >= 2 ? 2 : 1;
                 @endphp
                 <div class="w-100">
-                    <div class="aiz-carousel gutters-16 overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
+                    <div class="aiz-carousel home_banner_111 gutters-16 overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
                         data-items="{{ count($banner_1_imags) }}" data-xxl-items="{{ count($banner_1_imags) }}"
                         data-xl-items="{{ count($banner_1_imags) }}" data-lg-items="{{ $data_md }}"
                         data-md-items="{{ $data_md }}" data-sm-items="1" data-xs-items="1" data-arrows="true"

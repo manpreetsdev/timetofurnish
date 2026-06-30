@@ -297,7 +297,7 @@ input:-webkit-autofill:active {
 }
 .btn-login {
     background: #685b4e;
-    color: #ffffff;
+    color: #ffffff !important;
     border: none;
     border-radius: 12px;
     padding: 12px 20px;

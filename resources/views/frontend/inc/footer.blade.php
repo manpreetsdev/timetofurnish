@@ -471,8 +471,8 @@
                 <div class="container mb-3">
                     <ul class="list-unstyled mt-3">
                         <li class="mb-2">
-                            <p class="fs-13 mb-2">{{ translate('Address') }}</p>
-                            <p class="fs-13 text-light">
+                            <p class="fs-13 mb-2 text-white">{{ translate('Address') }}</p>
+                            <p class="fs-13 text-white">
                                 20 Wenlock Road<br>
                                 London, England <br>
                                 N1 7GU
@@ -1207,7 +1207,7 @@
     }
 
     .ttf-footer-card a:hover {
-        color: #fff !important;
+        color: #000 !important;
         padding-left: 6px;
     }
 

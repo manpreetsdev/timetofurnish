@@ -13486,10 +13486,10 @@ ul.apps a:hover i {
 }
 
 /* Custom */
-.home-slider {
+/* .home-slider {
     width: 100% !important;
     max-width: 100% !important;
-}
+} */
 
 .hov-svg-danger>svg *,
 .hov-svg-white>svg *,
@@ -13805,6 +13805,12 @@ ul.apps a:hover i {
 
     .h-xl-100 {
         height: 100% !important;
+    }
+}
+
+@media only screen and (min-width:1700px) {
+    .home-banner-area .img-fit {
+        width: auto !important;
     }
 }
 

@@ -85,6 +85,7 @@
 
         .adminsidebar .aiz-side-nav-text {
             letter-spacing: 0.1px;
+			    margin-left: 22px;
         }
 
         .adminsidebar .aiz-sidebar-overlay {
@@ -106,6 +107,10 @@
     Display : block ;
      Background : transparent;
 			width:100% ;
+		}
+		
+		.r{
+		margin-right:20px !important;
 		}
     </style>
     <div class="aiz-sidebar left c-scrollbar ">
@@ -198,7 +203,7 @@
                                 </svg>
                             </div>
                             <span class="aiz-side-nav-text">{{translate('Products')}}</span>
-                            <span class="aiz-side-nav-arrow"></span>
+                            <span class="aiz-side-nav-arrow r"></span>
                         </a>
                         <!--Submenu-->
                         <ul class="aiz-side-nav-list level-2">
@@ -212,7 +217,7 @@
                             @can('show_all_products')
                                 <li class="aiz-side-nav-item">
                                     <a href="{{route('products.all')}}" class="aiz-side-nav-link">
-                                        <span class="aiz-side-nav-text text">{{ translate('All Products') }}</span>
+                                        <span class="aiz-side-nav-text text r">{{ translate('All Products') }}</span>
                                     </a>
                                 </li>
                             @endcan
