@@ -3480,6 +3480,12 @@ span.badge.badge-primary.badge-circle.position-absolute {
         margin-bottom: 4px !important;
     }
 
+    .home_banner_111 .slick-slide img {
+        display: block;
+        padding-right: 10px !important;
+        padding-left: 10px !important;
+    }
+
     .home-mobile-product-section .modern-section-subtitle {
         font-size: 10.5px !important;
         line-height: 1.4 !important;
