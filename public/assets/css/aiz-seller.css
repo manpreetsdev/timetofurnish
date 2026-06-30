@@ -11116,7 +11116,20 @@ ul.social.colored [class*="linkedin"] {
     }
 
     div#todays_deal {
-        margin-top: 20px;
+        margin-top: 50px;
+    }
+
+    .home_banner_111 ul.slick-dots {
+        position: absolute;
+        bottom: 30px !important;
+    }
+
+    .home_banner_111 li.slick-active {
+        border-color: #fff !important;
+    }
+
+    .home_banner_111 .slick-dots li.slick-active button {
+        background: #fff !important;
     }
 }
 

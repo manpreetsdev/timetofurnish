@@ -3436,6 +3436,10 @@ span.badge.badge-primary.badge-circle.position-absolute {
         margin: 0px 0px !important;
     }
 
+    .home_banner_3 {
+        padding: 15px;
+    }
+
     .custom-header-class .banner-category.custom-banner-category ul li img {
         width: 35px !important;
         height: 35px !important;
