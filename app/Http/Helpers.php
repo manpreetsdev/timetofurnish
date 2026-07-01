@@ -2481,11 +2481,13 @@ if (!function_exists('get_featured_products')) {
 if (!function_exists('get_best_selling_products')) {
     function get_best_selling_products($limit, $user_id = null)
     {
-        $product_query = Product::query();
-        if ($user_id) {
-            $product_query = $product_query->where('user_id', $user_id);
-        }
-        return filter_products($product_query->orderBy('num_of_sale', 'desc'))->limit($limit)->get();
+        return Cache::remember('best_selling_products_' . $limit . '_' . ($user_id ?? 'all'), 3600, function () use ($limit, $user_id) {
+            $product_query = Product::query();
+            if ($user_id) {
+                $product_query = $product_query->where('user_id', $user_id);
+            }
+            return filter_products($product_query->orderBy('num_of_sale', 'desc'))->limit($limit)->get();
+        });
     }
 }
 
@@ -2642,13 +2644,15 @@ if (!function_exists('get_brands_by_products')) {
 if (!function_exists('get_category')) {
     function get_category($category_ids)
     {
-        $category_query = Category::query();
-        $category_query->with('coverImage');
+        $category_ids = is_array($category_ids) ? $category_ids : (array) $category_ids;
+        sort($category_ids);
 
-        $category_query->whereIn('id', $category_ids);
+        return Cache::remember('home_categories_' . md5(json_encode($category_ids)), 86400, function () use ($category_ids) {
+            $category_query = Category::query()->with('coverImage');
+            $category_query->whereIn('id', $category_ids);
 
-        $categories = $category_query->get();
-        return $categories;
+            return $category_query->get();
+        });
     }
 }
 
@@ -2955,9 +2959,9 @@ if (!function_exists('get_user_wishlist')) {
 if (!function_exists('get_best_sellers')) {
     function get_best_sellers($limit = '')
     {
-        // return Cache::remember('best_selers', 86400, function () use ($limit) {
-        return Shop::where('verification_status', 1)->orderBy('num_of_sale', 'desc')->take($limit)->get();
-        // });
+        return Cache::remember('best_sellers_' . $limit, 86400, function () use ($limit) {
+            return Shop::where('verification_status', 1)->orderBy('num_of_sale', 'desc')->take($limit)->get();
+        });
     }
 }
 

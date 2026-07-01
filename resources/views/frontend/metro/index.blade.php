@@ -396,7 +396,7 @@
     @endphp
     <div id="todays_deal" class=" "
         @if (get_setting('todays_deal_section_bg') == 1) style="background: {{ $todays_deal_section_bg }};" @endif>
-
+        @include('frontend.' . get_setting('homepage_select') . '.partials.todays_deal')
     </div>
 
     <!-- Banner section 1 -->
@@ -432,7 +432,9 @@
     @endif
 
     <!-- Featured Products -->
-    <div id="section_featured" style="display: none;"></div>
+    <div id="section_featured">
+        @include('frontend.' . get_setting('homepage_select') . '.partials.featured_products_section')
+    </div>
 
     <!-- Banner Section 2 -->
     @if (get_setting('home_banner2_images') != null)
@@ -465,11 +467,11 @@
 
     <!-- Best Selling  -->
     <div id="section_best_selling" class="pt-4 pb-4">
-
+        @include('frontend.' . get_setting('homepage_select') . '.partials.best_selling_section')
     </div>
     <!-- New Products -->
     <div id="section_newest" class="pt-4 pb-4">
-
+        @include('frontend.' . get_setting('homepage_select') . '.partials.newest_products_section')
     </div>
     <!-- Category wise Products -->
 
@@ -507,7 +509,7 @@
     <!-- Auction Product -->
     @if (addon_is_activated('auction'))
         <div id="auction_products">
-
+            {{-- Loaded only if the addon provides a matching view --}}
         </div>
     @endif
 

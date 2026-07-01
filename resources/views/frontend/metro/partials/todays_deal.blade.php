@@ -1,4 +1,9 @@
-@if(count($todays_deal_products) > 0)
+@php
+    $todays_deal_products = $todays_deal_products ?? \Cache::remember('todays_deal_products_home', 3600, function () {
+        return filter_products(\App\Models\Product::with('thumbnail')->where('todays_deal', '1'))->get();
+    });
+@endphp
+@if (count($todays_deal_products) > 0)
     @php
         $todaysDealCount = count($todays_deal_products);
     @endphp

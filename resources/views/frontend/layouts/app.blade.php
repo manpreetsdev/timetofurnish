@@ -759,62 +759,6 @@
     </script>
 
     <script>
-        @if (Route::currentRouteName() == 'home' || Route::currentRouteName() == '/')
-
-        $.post('{{ route('home.section.featured') }}', { _token: '{{ csrf_token() }}'},
-            function(data) {
-                if ($.trim(data)) {
-                    console.log(data);
-                    $('#section_featured').html(data).show();
-                    AIZ.plugins.slickCarousel();
-                } else {
-                    $('#section_featured').hide();
-                }
-            });
-
-
-        $.post('{{ route('home.section.todays_deal') }}', {
-                _token: '{{ csrf_token() }}'
-            },
-            function(data) {
-                $('#todays_deal').html(data);
-                AIZ.plugins.slickCarousel();
-                AIZ.plugins.countDown();
-            });
-
-        $.post('{{ route('home.section.best_selling') }}', {
-                _token: '{{ csrf_token() }}'
-            },
-            function(data) {
-                $('#section_best_selling').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-
-        $.post('{{ route('home.section.newest_products') }}', {
-                _token: '{{ csrf_token() }}'
-            },
-            function(data) {
-                $('#section_newest').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-
-        $.post('{{ route('home.section.auction_products') }}', {
-                _token: '{{ csrf_token() }}'
-            },
-            function(data) {
-                $('#auction_products').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-
-        $.post('{{ route('home.section.home_categories') }}', {
-                _token: '{{ csrf_token() }}'
-            },
-            function(data) {
-                $('#section_home_categories').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-        @endif
-
         $(document).ready(function() {
             $('.category-nav-element').each(function(i, el) {
 

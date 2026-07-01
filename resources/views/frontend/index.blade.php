@@ -153,12 +153,12 @@
 
     <!-- Today's deal -->
     <div id="todays_deal">
-
+        @include('frontend.' . get_setting('homepage_select') . '.partials.todays_deal')
     </div>
 
     <!-- Featured Products -->
     <div id="section_featured">
-
+        @include('frontend.' . get_setting('homepage_select') . '.partials.featured_products_section')
     </div>
 
 
@@ -274,12 +274,12 @@
 
     <!-- Best Selling  -->
     <div id="section_best_selling">
-
+        @include('frontend.' . get_setting('homepage_select') . '.partials.best_selling_section')
     </div>
 
     <!-- New Products -->
     <div id="section_newest">
-
+        @include('frontend.' . get_setting('homepage_select') . '.partials.newest_products_section')
     </div>
 
     <!-- Banner Section 3 -->
@@ -314,7 +314,6 @@
     <!-- Auction Product -->
     @if (addon_is_activated('auction'))
         <div id="auction_products">
-
         </div>
     @endif
 
@@ -397,7 +396,7 @@
 
     <!-- Category wise Products -->
     <div id="section_home_categories" class="mb-2 mb-md-3 mt-2 mt-md-3">
-
+        @include('frontend.' . get_setting('homepage_select') . '.partials.home_categories_section')
     </div>
 
     <!-- Classified Product -->
@@ -637,54 +636,7 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            $.post('{{ route('home.section.featured') }}', {
-                _token: '{{ csrf_token() }}'
-            }, function(data) {
-                $('#section_featured').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-
-            $.post('{{ route('home.section.todays_deal') }}', {
-                _token: '{{ csrf_token() }}'
-            }, function(data) {
-                $('#todays_deal').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-
-            $.post('{{ route('home.section.best_selling') }}', {
-                _token: '{{ csrf_token() }}'
-            }, function(data) {
-                $('#section_best_selling').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-
-            $.post('{{ route('home.section.newest_products') }}', {
-                _token: '{{ csrf_token() }}'
-            }, function(data) {
-                $('#section_newest').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-
-            $.post('{{ route('home.section.auction_products') }}', {
-                _token: '{{ csrf_token() }}'
-            }, function(data) {
-                $('#auction_products').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-
-            $.post('{{ route('home.section.home_categories') }}', {
-                _token: '{{ csrf_token() }}'
-            }, function(data) {
-                $('#section_home_categories').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-
-            $.post('{{ route('home.section.best_sellers') }}', {
-                _token: '{{ csrf_token() }}'
-            }, function(data) {
-                $('#section_best_sellers').html(data);
-                AIZ.plugins.slickCarousel();
-            });
+            AIZ.plugins.slickCarousel();
         });
     </script>
 @endsection
