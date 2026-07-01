@@ -5,7 +5,7 @@
 @endphp
 
 @if ($section_status == 1 && count($homepage_reviews) > 0)
-    <section class="homepage-reviews-section py-5 py-md-6 position-relative" style="background-image: url('{{ static_asset('assets/img/reviews_bg_luxury.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; overflow: hidden; border-top: 1px solid #f2ebe1; border-bottom: 1px solid #f2ebe1;">
+    <section class="homepage-reviews-section home_Section py-5 py-md-6 position-relative" style="background-image: url('{{ static_asset('assets/img/reviews_bg_luxury.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; overflow: hidden; border-top: 1px solid #f2ebe1; border-bottom: 1px solid #f2ebe1;">
         <!-- Warm Beige overlay to match base theme color (#685b4e) instead of dark grey -->
         <div class="position-absolute" style="top:0; left:0; right:0; bottom:0; background: linear-gradient(180deg, rgba(251, 249, 246, 0.86) 0%, rgba(243, 236, 228, 0.84) 100%); z-index: 1;"></div>
 

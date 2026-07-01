@@ -320,7 +320,7 @@
                     $banner_3_imags = json_decode(get_setting('home_banner3_images'));
                     $data_md = count($banner_3_imags) >= 2 ? 2 : 1;
                 @endphp
-                <div class="aiz-carousel gutters-16  home_banner_3 overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
+                <div class="aiz-carousel home_banner_3 overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
                     data-items="{{ count($banner_3_imags) }}" data-xxl-items="{{ count($banner_3_imags) }}"
                     data-xl-items="{{ count($banner_3_imags) }}" data-lg-items="{{ $data_md }}"
                     data-md-items="{{ $data_md }}" data-sm-items="1" data-xs-items="1" data-arrows="true"
