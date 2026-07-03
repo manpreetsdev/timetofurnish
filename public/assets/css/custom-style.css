@@ -3308,6 +3308,10 @@ span.badge.badge-primary.badge-circle.position-absolute {
     align-items: stretch !important;
 }
 
+.home_banner_111 .slick-track {
+    gap: 10px;
+}
+
 .aiz-carousel .carousel-box {
     height: 100% !important;
 }
