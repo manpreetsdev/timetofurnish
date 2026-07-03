@@ -141,11 +141,11 @@ pre {
     object-fit: cover;
 }
 
-@media only screen and (min-width:1700px) {
-    .home-banner-area .img-fit {
-        width: auto !important;
+/* @media only screen and (min-width:1500px) {
+    .home_slider_img img {
+        height: 647px;
     }
-}
+} */
 
 .overlay {
     position: absolute;

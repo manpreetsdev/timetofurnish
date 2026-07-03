@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\RoleTranslation;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Services\ActivityLogger;
 
 class RoleController extends Controller
 {
@@ -97,11 +98,18 @@ class RoleController extends Controller
     public function update(Request $request, $id)
     {
         $role = Role::findOrFail($id);
+        $previousPermissions = $role->permissions()->pluck('id')->toArray();
         if ($request->lang == env("DEFAULT_LANGUAGE")) {
             $role->name = $request->name;
         }
         $role->syncPermissions($request->permissions);
         $role->save();
+        app(ActivityLogger::class)->log('permissions_updated', $role, [
+            'permissions' => [
+                'old' => $previousPermissions,
+                'new' => $request->permissions ?? [],
+            ],
+        ], 'Updated role permissions');
 
         // Role Translation
         $role_translation = RoleTranslation::firstOrNew(['lang' => $request->lang, 'role_id' => $role->id]);

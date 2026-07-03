@@ -13807,11 +13807,11 @@ ul.apps a:hover i {
     }
 }
 
-@media only screen and (min-width:1700px) {
-    .home-banner-area .img-fit {
-        width: auto !important;
+/* @media only screen and (min-width:1500px) {
+    .home_slider_img img {
+        height: 647px;
     }
-}
+} */
 
 /* Main category info*/
 .main-category-info-icon {

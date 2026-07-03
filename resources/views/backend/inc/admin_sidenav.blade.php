@@ -810,6 +810,11 @@
                                     </a>
                                 </li>
                             @endcan
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('event-viewer.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['event-viewer.index']) }}">
+                                    <span class="aiz-side-nav-text  text">{{ translate('Event Viewer') }}</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endcanany
@@ -1763,5 +1768,4 @@
     <div class="aiz-sidebar-overlay">
 	</div>
 </div><!-- .aiz-sidebar -->
-
 

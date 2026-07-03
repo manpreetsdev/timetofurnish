@@ -8,6 +8,8 @@ use App\Models\Product;
 use Artisan;
 use Cache;
 use CoreComponentRepository;
+use App\Services\ActivityLogger;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -55,6 +57,29 @@ class AdminController extends Controller
         Artisan::call('optimize:clear');
         flash(translate('Cache cleared successfully'))->success();
         return back();
+    }
+
+    function runMigrationsPage(Request $request)
+    {
+        return view('backend.system.run_migrations');
+    }
+
+    function runMigrations(Request $request)
+    {
+        if (env('DEMO_MODE') == 'On') {
+            flash(translate('This action is disabled in demo mode'))->error();
+            return back();
+        }
+
+        Artisan::call('migrate', ['--force' => true]);
+        $output = Artisan::output();
+
+        app(ActivityLogger::class)->log('migrations_run', null, [
+            'output' => Str::limit($output, 5000, ''),
+        ], 'Migration command executed from admin panel');
+
+        flash(translate('Migration command executed successfully'))->success();
+        return back()->with('migration_output', $output);
     }
 
 }
