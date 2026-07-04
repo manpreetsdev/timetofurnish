@@ -20,3 +20,9 @@ Remote Address
 Referrer Policy
 strict-origin-when-cross-origin
 from admin or seller admin
+
+cd /var/www/vhosts/timetofurnish.com/staging
+git pull origin main
+which composer
+/usr/bin/composer
+/opt/plesk/php/8.4/bin/php /usr/bin/composer install --no-dev --optimize-autoloader

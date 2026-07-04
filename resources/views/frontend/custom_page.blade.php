@@ -1,18 +1,28 @@
 @extends('frontend.layouts.app')
 
+@php
+    $pageBuilderData = \App\Support\CustomPageTemplate::fromContent(
+        $page->getTranslation('content'),
+        $page->getTranslation('title')
+    );
+@endphp
+
 @section('meta_title'){{ $page->meta_title }}@stop
 
 @section('meta_description'){{ $page->meta_description }}@stop
 
-@section('meta_keywords'){{ $page->tags }}@stop
+@section('meta_keywords'){{ $page->keywords }}@stop
 
 @section('meta')
-    <!-- Schema.org markup for Google+ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/custom-pages/frontend-page-builder.css') }}">
+
     <meta itemprop="name" content="{{ $page->meta_title }}">
     <meta itemprop="description" content="{{ $page->meta_description }}">
     <meta itemprop="image" content="{{ uploaded_asset($page->meta_image) }}">
 
-    <!-- Twitter Card data -->
     <meta name="twitter:card" content="website">
     <meta name="twitter:site" content="@publisher_handle">
     <meta name="twitter:title" content="{{ $page->meta_title }}">
@@ -20,7 +30,6 @@
     <meta name="twitter:creator" content="@author_handle">
     <meta name="twitter:image" content="{{ uploaded_asset($page->meta_image) }}">
 
-    <!-- Open Graph data -->
     <meta property="og:title" content="{{ $page->meta_title }}" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ URL($page->slug) }}" />
@@ -30,36 +39,8 @@
 @endsection
 
 @section('content')
-<section class="pb-3 pt-4 title breadcrumb-banner">
-    <div class="container text-center">
-        <div class="row ">
-           {{-- <div class="col-lg-6 text-center text-lg-left ">
-                <h1 class="fw-600 h4 ">{{ $page->getTranslation('title') }}</h1>
-            </div>--}}
-            <div class="col-lg-12">
-                <ul class="breadcrumb bg-transparent p-0 justify-content-center justify-content-lg-center fs-500 breadcrumbfont" >
-                    <li class="breadcrumb-item has-transition opacity-50 hov-opacity-100">
-                        <a class="text-reset" href="{{ route('home') }}">{{ translate('Home')}}</a>
-                    </li>
-                    <li class="text-dark fw-600 breadcrumb-item">
-                        "{{ $page->title }}"
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="mb-3">
-	<div class="container">
-        <div class="p-4 bg-white rounded shadow-sm overflow-hidden mw-100 text-left">
-		    @php echo $page->getTranslation('content'); @endphp
-        </div>
-	</div>
-</section>
-<style>
-    /*.title{*/
-    /*    background-color:#FAF7F2;*/
-    /*}*/
-</style>
+    @include('frontend.custom-pages.render', [
+        'page' => $page,
+        'pageBuilderData' => $pageBuilderData,
+    ])
 @endsection

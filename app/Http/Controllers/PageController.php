@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Page;
 use App\Models\PageTranslation;
 use App\Models\TeamMember;
+use App\Support\CustomPageTemplate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -36,7 +37,10 @@ class PageController extends Controller
      */
     public function create()
     {
-        return view('backend.website_settings.pages.create');
+        $pageBuilderData = CustomPageTemplate::defaultPayload();
+        $fontFamilyOptions = CustomPageTemplate::fontFamilyOptions();
+
+        return view('backend.website_settings.pages.create', compact('pageBuilderData', 'fontFamilyOptions'));
     }
 // public function submit_delivery_partner(Request $request)
 // {
@@ -113,10 +117,11 @@ public function DeliveryPartner()
     {
         $page = new Page;
         $page->title = $request->title;
+        $content = $this->buildPageContentPayload($request);
         if (Page::where('slug', preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug)))->first() == null) {
             $page->slug             = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug));
             $page->type             = "custom_page";
-            $page->content          = $request->content;
+            $page->content          = $content;
             $page->meta_title       = $request->meta_title;
             $page->meta_description = $request->meta_description;
             $page->keywords         = $request->keywords;
@@ -125,7 +130,7 @@ public function DeliveryPartner()
 
             $page_translation           = PageTranslation::firstOrNew(['lang' => env('DEFAULT_LANGUAGE'), 'page_id' => $page->id]);
             $page_translation->title    = $request->title;
-            $page_translation->content  = $request->content;
+            $page_translation->content  = $content;
             $page_translation->save();
 
             flash(translate('New page has been created successfully'))->success();
@@ -259,10 +264,16 @@ public function become_delivery_partner()
         $page_name = $request->page;
         $page = Page::where('slug', $id)->first();
         if($page != null){
+            $pageBuilderData = CustomPageTemplate::fromContent(
+                $page->getTranslation('content', $lang),
+                $page->getTranslation('title', $lang)
+            );
+            $fontFamilyOptions = CustomPageTemplate::fontFamilyOptions();
+
             if ($page_name == 'home') {
                 return view('backend.website_settings.pages.'.get_setting('homepage_select').'.home_page_edit', compact('page','lang'));
             }
-            return view('backend.website_settings.pages.edit', compact('page','lang'));
+            return view('backend.website_settings.pages.edit', compact('page','lang', 'pageBuilderData', 'fontFamilyOptions'));
         }
         abort(404);
     }
@@ -277,13 +288,14 @@ public function become_delivery_partner()
     public function update(Request $request, $id)
     {
         $page = Page::findOrFail($id);
+        $content = $this->buildPageContentPayload($request);
         if (Page::where('id','!=', $id)->where('slug', preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug)))->first() == null) {
             if($page->type == 'custom_page'){
               $page->slug           = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug));
             }
             if($request->lang == env("DEFAULT_LANGUAGE")){
               $page->title          = $request->title;
-              $page->content        = $request->content;
+              $page->content        = $content;
             }
             $page->meta_title       = $request->meta_title;
             $page->meta_description = $request->meta_description;
@@ -293,7 +305,7 @@ public function become_delivery_partner()
 
             $page_translation           = PageTranslation::firstOrNew(['lang' => $request->lang, 'page_id' => $page->id]);
             $page_translation->title    = $request->title;
-            $page_translation->content  = $request->content;
+            $page_translation->content  = $content;
             $page_translation->save();
 
             flash(translate('Page has been updated successfully'))->success();
@@ -369,5 +381,23 @@ public function become_delivery_partner()
             return view('frontend.m_custom_page', compact('page'));
         }
         abort(404);
+    }
+
+    protected function buildPageContentPayload(Request $request): string
+    {
+        $payload = [
+            'page_builder' => true,
+            'template' => CustomPageTemplate::TEMPLATE_STORY,
+            'banner' => $request->input('builder.banner', []),
+            'styles' => $request->input('builder.styles', []),
+            'classic_html' => '',
+            'classic_blocks' => [],
+            'policy_intro' => '',
+            'policy_html' => '',
+            'policy_sections' => [],
+            'sections' => $request->input('builder.sections', []),
+        ];
+
+        return CustomPageTemplate::encode($payload, $request->title);
     }
 }
