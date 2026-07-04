@@ -96,16 +96,24 @@
     margin-bottom: var(--ttf-section-gap);
     color: var(--section-text, var(--ttf-text));
     background: var(--section-bg, transparent);
-    border: 1px solid var(--section-border, transparent);
+    border: var(--section-border-width, 1px) var(--section-border-style, solid) var(--section-border, transparent);
     border-radius: var(--section-radius, 0);
-    padding: var(--section-padding, 0);
+    padding-top: var(--section-padding-top, 0);
+    padding-bottom: var(--section-padding-bottom, 0);
+    padding-left: var(--section-padding-left, 0);
+    padding-right: var(--section-padding-right, 0);
 }
 
 .ttf-story-section:last-child {
     margin-bottom: 0;
 }
 
+.ttf-story-section h1,
 .ttf-story-section h2,
+.ttf-story-section h3,
+.ttf-story-section h4,
+.ttf-story-section h5,
+.ttf-story-section h6,
 .ttf-policy-toc h2,
 .ttf-policy-content h1,
 .ttf-policy-content h2,
@@ -119,9 +127,10 @@
     color: var(--section-heading, var(--ttf-heading));
 }
 
+.ttf-story-section h1,
 .ttf-story-section h2 {
-    font-size: clamp(34px, 3vw, 52px);
-    line-height: 1.1;
+    font-size: var(--section-title-size, 36px);
+    line-height: var(--section-title-height, 1.1);
     margin: 0 0 18px;
 }
 
@@ -166,10 +175,15 @@
 }
 
 .ttf-story-section h2 span,
+.ttf-story-section h1 span,
+.ttf-story-section h3 span,
+.ttf-story-section h4 span,
+.ttf-story-section h5 span,
+.ttf-story-section h6 span,
 .ttf-policy-toc h2,
 .ttf-policy-content h2 span,
 .ttf-classic-content h2 span {
-    color: var(--section-accent, var(--ttf-accent));
+    color: var(--section-highlight-color, var(--section-accent, var(--ttf-accent))) !important;
 }
 
 .ttf-rich-text,
@@ -179,8 +193,8 @@
 .ttf-classic-content {
     font-family: var(--section-body-font, var(--ttf-text-font));
     color: var(--section-text, var(--ttf-text));
-    font-size: 18px;
-    line-height: 1.9;
+    font-size: var(--section-body-size, 18px);
+    line-height: var(--section-body-height, 1.9);
 }
 
 .ttf-rich-text p:last-child,
@@ -385,7 +399,7 @@
 
 .ttf-policy-toc h2 {
     color: var(--ttf-toc-heading);
-    font-size: 30px;
+    font-size: 26px !important;
     margin: 0 0 16px;
 }
 
@@ -409,7 +423,8 @@
     top: 7px;
     width: 2px;
     height: 16px;
-    background: rgba(58, 42, 31, 0.28);
+    background: transparent;
+    transition: all 0.2s ease;
 }
 
 .ttf-policy-toc li.is-child {
@@ -417,12 +432,21 @@
 }
 
 .ttf-policy-toc a {
-    color: var(--ttf-toc-text);
-    font: 600 16px/1.55 var(--ttf-text-font);
+    color: #8e8174;
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    line-height: 1.55;
+    font-family: var(--ttf-text-font);
+    transition: all 0.2s ease;
 }
 
 .ttf-policy-content h1,
-.ttf-policy-content h2,
+.ttf-policy-content h2 {
+    font-size: var(--section-title-size, 40px) !important;
+    line-height: 1.12;
+    margin: 0 0 16px;
+}
+
 .ttf-classic-content h1,
 .ttf-classic-content h2 {
     font-size: clamp(32px, 2.8vw, 46px);
@@ -463,6 +487,7 @@
 
 .ttf-policy-section {
     margin-bottom: 34px;
+    scroll-margin-top: 160px;
 }
 
 .ttf-policy-section:last-child {
@@ -476,6 +501,10 @@
 }
 
 @media (max-width: 991.98px) {
+    .ttf-policy-section {
+        scroll-margin-top: 100px;
+    }
+
     .ttf-page-banner {
         min-height: 280px;
     }
@@ -529,7 +558,7 @@
     }
 
     .ttf-policy-toc {
-        position: static;
+        display: none !important;
     }
 
     .ttf-image-grid {
@@ -608,6 +637,79 @@
     .ttf-hide-ipad-pro {
         display: none !important;
     }
+
+/* Multi-column Grid Layout */
+.ttf-grid-cols-1 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--group-gap, 18px);
+}
+.ttf-grid-cols-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--group-gap, 18px);
+}
+.ttf-grid-cols-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--group-gap, 18px);
+}
+.ttf-grid-cols-4 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--group-gap, 18px);
+}
+
+.ttf-grid-column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--group-gap, 18px);
+    min-width: 0;
+}
+
+@media (max-width: 991.98px) {
+    .ttf-grid-cols-2,
+    .ttf-grid-cols-3,
+    .ttf-grid-cols-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Standalone Header Widget */
+.ttf-header-widget {
+    margin: 0;
+    width: 100%;
+}
+
+/* Standalone Image Widget */
+.ttf-image-widget {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+.ttf-image-widget img {
+    max-width: 100%;
+    height: var(--img-height, auto);
+    width: var(--img-width, 100%);
+    object-fit: cover;
+    border-radius: var(--img-radius, 8px);
+}
+
+/* Action Button Widget */
+.ttf-button-widget {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.25s ease;
+}
+.ttf-button-widget:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 }
 
 @media (min-width: 768px) and (max-width: 1023.98px) {
@@ -620,4 +722,124 @@
     .ttf-hide-phone {
         display: none !important;
     }
+
+    /* Mobile Spacing & Padding (30px) */
+    .ttf-story-section {
+        padding-top: 30px !important;
+        padding-bottom: 30px !important;
+    }
+
+    /* Mobile Custom Page Headings (28px) */
+    .ttf-story-section h1,
+    .ttf-story-section h2 {
+        font-size: 28px !important;
+        line-height: 1.25 !important;
+        margin-bottom: 12px !important;
+    }
+
+    /* Mobile TOC Policy Content Headings (30px) */
+    .ttf-policy-content h1,
+    .ttf-policy-content h2,
+    .ttf-policy-section h1,
+    .ttf-policy-section h2 {
+        font-size: 30px !important;
+        line-height: 1.25 !important;
+        margin-bottom: 12px !important;
+    }
+
+    /* Mobile Body/Paragraph Fonts (16px) */
+    .ttf-rich-text,
+    .ttf-rich-text p,
+    .ttf-story-section__intro,
+    .ttf-policy-content,
+    .ttf-policy-content p,
+    .ttf-policy-section,
+    .ttf-policy-section p,
+    .ttf-policy-section li,
+    .ttf-classic-content,
+    .ttf-classic-content p {
+        font-size: 16px !important;
+        line-height: 1.65 !important;
+    }
 }
+
+/* --- Strict TOC + Content Frontend Typography Overrides --- */
+
+/* Right Side Heading Font Size (40px) */
+.ttf-policy-content h1,
+.ttf-policy-content h2,
+.ttf-policy-section h1,
+.ttf-policy-section h2 {
+    font-size: 40px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+    margin-bottom: 16px !important;
+}
+
+/* Right Side Body Content (18px) */
+.ttf-policy-content,
+.ttf-policy-content p,
+.ttf-policy-section,
+.ttf-policy-section p,
+.ttf-policy-section li,
+.ttf-policy-section .ttf-rich-text {
+    font-size: 18px !important;
+    line-height: 1.8 !important;
+}
+
+/* Left Sidebar Table of Contents Title (26px) */
+.ttf-policy-toc h2 {
+    font-size: 26px !important;
+    font-weight: 700 !important;
+}
+
+/* Left Sidebar Links List (18px) */
+.ttf-policy-toc a,
+.ttf-policy-toc li a,
+.ttf-policy-toc ul li a {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+}
+
+/* Vertical Tab Layout for TOC Content on Desktop Viewports */
+@media (min-width: 992px) {
+    .ttf-policy-layout--widget .ttf-policy-section {
+        display: none;
+    }
+    .ttf-policy-layout--widget .ttf-policy-section.active {
+        display: block;
+        animation: ttfFadeIn 0.3s ease-out;
+    }
+}
+
+@keyframes ttfFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Sidebar Active Indicators & Highlight Styles */
+.ttf-policy-toc li.active::before {
+    background: #3b2d22 !important; /* Bold dark active bar */
+    width: 3px !important;
+    height: 20px !important;
+    top: 4px !important;
+}
+
+.ttf-policy-toc li.active a,
+.ttf-policy-toc a.active {
+    color: #3b2d22 !important; /* Bold dark text */
+    font-weight: 700 !important;
+}
+
+.ttf-policy-toc a:hover {
+    color: #3b2d22 !important;
+    text-decoration: none;
+}
+
+

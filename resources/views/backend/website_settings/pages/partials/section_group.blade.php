@@ -3,10 +3,25 @@
     $groupName = trim((string) ($group['name'] ?? ''));
     $widgets = $group['widgets'] ?? [];
     $widgetLibrary = [
+        'header_widget' => [
+            'label' => translate('Heading'),
+            'icon' => 'las la-heading',
+            'description' => translate('Standalone heading block'),
+        ],
         'rich_text' => [
             'label' => translate('Text Editor'),
             'icon' => 'las la-align-left',
             'description' => translate('Rich text, policies and long copy'),
+        ],
+        'image_widget' => [
+            'label' => translate('Single Image'),
+            'icon' => 'las la-image',
+            'description' => translate('Standalone responsive image'),
+        ],
+        'button_widget' => [
+            'label' => translate('Action Button'),
+            'icon' => 'las la-link',
+            'description' => translate('Call to action link button'),
         ],
         'split' => [
             'label' => translate('Two Column'),
@@ -43,6 +58,28 @@
     $visibilitySummary = $visibleOn->count() === 4
         ? translate('All Devices')
         : ($visibleOn->isEmpty() ? translate('Hidden Everywhere') : $visibleOn->implode(', '));
+
+    $columnsCount = (int) ($group['columns'] ?? 1);
+    if ($columnsCount < 1) $columnsCount = 1;
+
+    // Group widgets by column_index
+    $columnsWidgets = [];
+    for ($i = 0; $i < $columnsCount; $i++) {
+        $columnsWidgets[$i] = [];
+    }
+    foreach ($widgets as $widgetIndex => $widget) {
+        $colIdx = (int) ($widget['column_index'] ?? 0);
+        if ($colIdx >= $columnsCount) {
+            $colIdx = $columnsCount - 1;
+        }
+        if ($colIdx < 0) {
+            $colIdx = 0;
+        }
+        $columnsWidgets[$colIdx][] = [
+            'index' => $widgetIndex,
+            'data' => $widget
+        ];
+    }
 @endphp
 
 <div class="ttf-group-card card mb-4" data-group-card data-group-index="{{ $groupIndex }}" draggable="false">
@@ -64,177 +101,210 @@
             </div>
         </div>
         <div class="d-flex align-items-center gap-2">
-            <button type="button" class="btn btn-sm btn-soft-primary" data-toggle-group data-label-open="{{ translate('Edit Section') }}" data-label-close="{{ translate('Hide Section') }}">
-                {{ translate('Edit Section') }}
+            <button type="button" class="btn btn-sm btn-soft-primary" data-toggle-group data-label-open="{{ translate('Expand') }}" data-label-close="{{ translate('Collapse') }}">
+                {{ translate('Expand') }}
             </button>
-            <button type="button" class="btn btn-sm btn-soft-danger" data-remove-group>
+            <button type="button" class="btn btn-icon btn-sm btn-soft-primary" data-edit-section-settings title="{{ translate('Section Settings') }}">
+                <i class="las la-cog"></i>
+            </button>
+            <button type="button" class="btn btn-icon btn-sm btn-soft-danger" data-remove-group title="{{ translate('Remove Section') }}">
                 <i class="las la-trash"></i>
-                {{ translate('Remove') }}
             </button>
         </div>
     </div>
 
     <div class="card-body d-none" data-group-body>
-        <div class="ttf-group-editor">
-            <div class="ttf-group-editor__main">
-                <div class="ttf-section-block">
-                    <div class="ttf-section-block__header">
-                        <h6 class="mb-1">{{ translate('Section Info') }}</h6>
-                        <small class="text-muted">{{ translate('Use sections as clear layout containers. Add one or more widgets inside each section.') }}</small>
-                    </div>
-                    <div class="ttf-section-block__body">
-                        <div class="row">
-                            <div class="col-lg-8">
-                                <div class="form-group mb-0">
-                                    <label>{{ translate('Section Name') }}</label>
-                                    <input type="text" class="form-control" name="builder[sections][{{ $groupIndex }}][name]" value="{{ $group['name'] ?? '' }}" data-group-name-input placeholder="{{ translate('About Intro Section') }}">
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="form-group mb-0">
-                                    <label>{{ translate('Widget Gap') }}</label>
-                                    <input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][section_gap]" value="{{ $group['section_gap'] ?? '18' }}" min="0" max="80">
-                                </div>
-                            </div>
+        <div class="ttf-section-block mb-3">
+            <div class="ttf-section-block__header">
+                <h6 class="mb-1">{{ translate('Section Info') }}</h6>
+                <small class="text-muted">{{ translate('Configure columns and gaps. Drag elements from the global sidebar into the columns below.') }}</small>
+            </div>
+            <div class="ttf-section-block__body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group mb-lg-0">
+                            <label>{{ translate('Section Name') }}</label>
+                            <input type="text" class="form-control" name="builder[sections][{{ $groupIndex }}][name]" value="{{ $group['name'] ?? '' }}" data-group-name-input placeholder="{{ translate('About Intro Section') }}">
                         </div>
                     </div>
-                </div>
-
-                <div class="ttf-section-block">
-                    <div class="ttf-section-block__header ttf-section-block__header--inline">
-                        <div>
-                            <h6 class="mb-1">{{ translate('Section Widgets') }}</h6>
-                            <small class="text-muted">{{ translate('Add widgets inside this section. You can mix text, images, policy TOC and grid widgets freely.') }}</small>
+                    <div class="col-lg-3">
+                        <div class="form-group mb-0">
+                            <label>{{ translate('Grid Columns') }}</label>
+                            <select class="form-control aiz-selectpicker" name="builder[sections][{{ $groupIndex }}][columns]" data-group-columns-select>
+                                <option value="1" @selected($columnsCount === 1)>{{ translate('1 Column') }}</option>
+                                <option value="2" @selected($columnsCount === 2)>{{ translate('2 Columns') }}</option>
+                                <option value="3" @selected($columnsCount === 3)>{{ translate('3 Columns') }}</option>
+                                <option value="4" @selected($columnsCount === 4)>{{ translate('4 Columns') }}</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="ttf-section-block__body">
-                        <div class="ttf-widget-library ttf-widget-library--compact">
-                            @foreach ($widgetLibrary as $widgetKey => $widgetMeta)
-                                <button type="button" class="ttf-widget-card" data-add-widget="{{ $widgetKey }}">
-                                    <span class="ttf-widget-card__icon"><i class="{{ $widgetMeta['icon'] }}"></i></span>
-                                    <span class="ttf-widget-card__title">{{ $widgetMeta['label'] }}</span>
-                                    <span class="ttf-widget-card__text">{{ $widgetMeta['description'] }}</span>
-                                </button>
-                            @endforeach
+                    <div class="col-lg-3">
+                        <div class="form-group mb-0">
+                            <label>{{ translate('Widget Gap') }}</label>
+                            <input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][section_gap]" value="{{ $group['section_gap'] ?? '18' }}" min="0" max="80">
                         </div>
-
-                        <div class="ttf-widget-list" data-widget-container data-next-widget-index="{{ count($widgets) }}">
-                            @foreach ($widgets as $widgetIndex => $widget)
-                                @include('backend.website_settings.pages.partials.structured_section', [
-                                    'widget' => $widget,
-                                    'groupIndex' => $groupIndex,
-                                    'widgetIndex' => $widgetIndex,
-                                    'fontFamilyOptions' => $fontFamilyOptions,
-                                ])
-                            @endforeach
-                        </div>
-
-                        <div class="ttf-sections-empty-state @if(!empty($widgets)) d-none @endif" data-widget-empty-state>
-                            <h6 class="mb-1">{{ translate('No Widgets In This Section') }}</h6>
-                            <p class="mb-0 text-muted">{{ translate('Choose a widget above to start building this section.') }}</p>
-                        </div>
-
-                        @foreach (array_keys(\App\Support\CustomPageTemplate::structuredSectionTemplates()) as $widgetKey)
-                            <template data-widget-template="{{ $widgetKey }}">
-                                @include('backend.website_settings.pages.partials.structured_section', [
-                                    'widget' => \App\Support\CustomPageTemplate::structuredSectionTemplates()[$widgetKey],
-                                    'groupIndex' => $groupIndex,
-                                    'widgetIndex' => '__WIDGET_INDEX__',
-                                    'fontFamilyOptions' => $fontFamilyOptions,
-                                ])
-                            </template>
-                        @endforeach
                     </div>
                 </div>
             </div>
+        </div>
 
-            <aside class="ttf-group-editor__aside">
-                <div class="ttf-section-settings">
-                    <details class="ttf-setting-group" open>
-                        <summary>{{ translate('Section Frame') }}</summary>
-                        <div class="ttf-setting-group__body">
-                            <div class="ttf-toggle-list">
-                                <label class="ttf-toggle-option">
-                                    <input type="hidden" name="builder[sections][{{ $groupIndex }}][show_background]" value="0">
-                                    <input type="checkbox" name="builder[sections][{{ $groupIndex }}][show_background]" value="1" data-style-toggle="background" @checked(($group['show_background'] ?? '0') === '1')>
-                                    <span>{{ translate('Use section background') }}</span>
-                                </label>
-                                <label class="ttf-toggle-option">
-                                    <input type="hidden" name="builder[sections][{{ $groupIndex }}][show_border]" value="0">
-                                    <input type="checkbox" name="builder[sections][{{ $groupIndex }}][show_border]" value="1" data-style-toggle="border" @checked(($group['show_border'] ?? '0') === '1')>
-                                    <span>{{ translate('Show section border') }}</span>
-                                </label>
-                                <label class="ttf-toggle-option">
-                                    <input type="hidden" name="builder[sections][{{ $groupIndex }}][use_padding]" value="0">
-                                    <input type="checkbox" name="builder[sections][{{ $groupIndex }}][use_padding]" value="1" data-style-toggle="padding" @checked(($group['use_padding'] ?? '0') === '1')>
-                                    <span>{{ translate('Use section inner spacing') }}</span>
-                                </label>
+        <div class="ttf-section-block">
+            <div class="ttf-section-block__body p-0">
+                <!-- Columns Grid container -->
+                <div class="ttf-admin-columns-grid p-0 ttf-columns-count-{{ $columnsCount }}" data-columns-grid>
+                    @for ($col = 0; $col < $columnsCount; $col++)
+                        <div class="ttf-admin-column" data-admin-column="{{ $col }}">
+                            <div class="ttf-admin-column-header">
+                                <span>{{ translate('Column') }} {{ $col + 1 }}</span>
                             </div>
-
-                            <div class="row mt-3 {{ ($group['show_background'] ?? '0') === '1' ? '' : 'd-none' }}" data-style-target="background">
-                                <div class="col-12">
-                                    <div class="form-group mb-0">
-                                        <label>{{ translate('Background Color') }}</label>
-                                        <input type="color" class="form-control" name="builder[sections][{{ $groupIndex }}][background_color]" value="{{ $group['background_color'] ?? '#fffdf9' }}">
-                                    </div>
-                                </div>
+                            
+                            <div class="ttf-widget-list" data-widget-container data-column-index="{{ $col }}">
+                                @foreach ($columnsWidgets[$col] as $item)
+                                    @include('backend.website_settings.pages.partials.structured_section', [
+                                        'widget' => $item['data'],
+                                        'groupIndex' => $groupIndex,
+                                        'widgetIndex' => $item['index'],
+                                        'fontFamilyOptions' => $fontFamilyOptions,
+                                    ])
+                                @endforeach
                             </div>
-                            <div class="row mt-3 {{ (($group['show_background'] ?? '0') === '1' || ($group['show_border'] ?? '0') === '1') ? '' : 'd-none' }}" data-style-target="radius">
-                                <div class="col-12">
-                                    <div class="form-group mb-0">
-                                        <label>{{ translate('Corner Radius') }}</label>
-                                        <input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][border_radius]" value="{{ $group['border_radius'] ?? '24' }}" min="0" max="60">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-3 {{ ($group['show_border'] ?? '0') === '1' ? '' : 'd-none' }}" data-style-target="border">
-                                <div class="col-12">
-                                    <div class="form-group mb-0">
-                                        <label>{{ translate('Border Color') }}</label>
-                                        <input type="color" class="form-control" name="builder[sections][{{ $groupIndex }}][border_color]" value="{{ $group['border_color'] ?? '#e3d6ca' }}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-3 {{ ($group['use_padding'] ?? '0') === '1' ? '' : 'd-none' }}" data-style-target="padding">
-                                <div class="col-12">
-                                    <div class="form-group mb-0">
-                                        <label>{{ translate('Section Padding') }}</label>
-                                        <input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][section_padding]" value="{{ $group['section_padding'] ?? '28' }}" min="0" max="80">
-                                    </div>
-                                </div>
+                            
+                            <div class="ttf-sections-empty-state @if(!empty($columnsWidgets[$col])) d-none @endif" data-widget-empty-state>
+                                <small class="text-muted">{{ translate('Empty Column. Add/drag widgets here.') }}</small>
                             </div>
                         </div>
-                    </details>
-
-                    <details class="ttf-setting-group">
-                        <summary>{{ translate('Section Visibility') }}</summary>
-                        <div class="ttf-setting-group__body">
-                            <div class="ttf-toggle-list">
-                                <label class="ttf-toggle-option">
-                                    <input type="hidden" name="builder[sections][{{ $groupIndex }}][show_on_desktop]" value="0">
-                                    <input type="checkbox" name="builder[sections][{{ $groupIndex }}][show_on_desktop]" value="1" data-visibility-toggle="desktop" @checked(($group['show_on_desktop'] ?? '1') === '1')>
-                                    <span>{{ translate('Desktop') }}</span>
-                                </label>
-                                <label class="ttf-toggle-option">
-                                    <input type="hidden" name="builder[sections][{{ $groupIndex }}][show_on_ipad_pro]" value="0">
-                                    <input type="checkbox" name="builder[sections][{{ $groupIndex }}][show_on_ipad_pro]" value="1" data-visibility-toggle="ipad_pro" @checked(($group['show_on_ipad_pro'] ?? '1') === '1')>
-                                    <span>{{ translate('iPad Pro') }}</span>
-                                </label>
-                                <label class="ttf-toggle-option">
-                                    <input type="hidden" name="builder[sections][{{ $groupIndex }}][show_on_ipad]" value="0">
-                                    <input type="checkbox" name="builder[sections][{{ $groupIndex }}][show_on_ipad]" value="1" data-visibility-toggle="ipad" @checked(($group['show_on_ipad'] ?? '1') === '1')>
-                                    <span>{{ translate('iPad') }}</span>
-                                </label>
-                                <label class="ttf-toggle-option">
-                                    <input type="hidden" name="builder[sections][{{ $groupIndex }}][show_on_phone]" value="0">
-                                    <input type="checkbox" name="builder[sections][{{ $groupIndex }}][show_on_phone]" value="1" data-visibility-toggle="phone" @checked(($group['show_on_phone'] ?? '1') === '1')>
-                                    <span>{{ translate('Phone') }}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </details>
+                    @endfor
                 </div>
-            </aside>
+
+                @foreach (array_keys(\App\Support\CustomPageTemplate::structuredSectionTemplates()) as $widgetKey)
+                    <template data-widget-template="{{ $widgetKey }}">
+                        @include('backend.website_settings.pages.partials.structured_section', [
+                            'widget' => \App\Support\CustomPageTemplate::structuredSectionTemplates()[$widgetKey],
+                            'groupIndex' => $groupIndex,
+                            'widgetIndex' => '__WIDGET_INDEX__',
+                            'fontFamilyOptions' => $fontFamilyOptions,
+                        ])
+                    </template>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Section Settings Portal Source Wrapper -->
+        <div class="d-none" data-section-settings-portal>
+            <div class="ttf-section-settings">
+                <details class="ttf-setting-group" open>
+                    <summary>{{ translate('Section Layout & Spacing') }}</summary>
+                    <div class="ttf-setting-group__body">
+                        <div class="ttf-toggle-list">
+                            <label class="ttf-toggle-option">
+                                <input type="hidden" name="builder[sections][{{ $groupIndex }}][show_background]" value="0">
+                                <input type="checkbox" name="builder[sections][{{ $groupIndex }}][show_background]" value="1" data-style-toggle="background" @checked(($group['show_background'] ?? '0') === '1')>
+                                <span>{{ translate('Use section background') }}</span>
+                            </label>
+                            <label class="ttf-toggle-option">
+                                <input type="hidden" name="builder[sections][{{ $groupIndex }}][show_border]" value="0">
+                                <input type="checkbox" name="builder[sections][{{ $groupIndex }}][show_border]" value="1" data-style-toggle="border" @checked(($group['show_border'] ?? '0') === '1')>
+                                <span>{{ translate('Show section border') }}</span>
+                            </label>
+                            <label class="ttf-toggle-option">
+                                <input type="hidden" name="builder[sections][{{ $groupIndex }}][use_padding]" value="0">
+                                <input type="checkbox" name="builder[sections][{{ $groupIndex }}][use_padding]" value="1" data-style-toggle="padding" @checked(($group['use_padding'] ?? '0') === '1')>
+                                <span>{{ translate('Use section inner spacing') }}</span>
+                            </label>
+                        </div>
+
+                        <div class="row mt-3 {{ ($group['show_background'] ?? '0') === '1' ? '' : 'd-none' }}" data-style-target="background">
+                            <div class="col-12">
+                                <div class="form-group mb-0">
+                                    <label>{{ translate('Background Color') }}</label>
+                                    <input type="color" class="form-control" name="builder[sections][{{ $groupIndex }}][background_color]" value="{{ $group['background_color'] ?? '#fffdf9' }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3 {{ (($group['show_background'] ?? '0') === '1' || ($group['show_border'] ?? '0') === '1') ? '' : 'd-none' }}" data-style-target="radius">
+                            <div class="col-12">
+                                <div class="form-group mb-0">
+                                    <label>{{ translate('Corner Radius') }}</label>
+                                    <input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][border_radius]" value="{{ $group['border_radius'] ?? '24' }}" min="0" max="60">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3 {{ ($group['show_border'] ?? '0') === '1' ? '' : 'd-none' }}" data-style-target="border">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>{{ translate('Border Color') }}</label>
+                                    <input type="color" class="form-control" name="builder[sections][{{ $groupIndex }}][border_color]" value="{{ $group['border_color'] ?? '#e3d6ca' }}">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>{{ translate('Border Width') }}</label>
+                                    <input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][border_width]" value="{{ $group['border_width'] ?? '' }}" min="0" max="10" placeholder="1">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group mb-0">
+                                    <label>{{ translate('Border Style') }}</label>
+                                    <select class="form-control" name="builder[sections][{{ $groupIndex }}][border_style]">
+                                        <option value="solid" @selected(($group['border_style'] ?? 'solid') === 'solid')>{{ translate('Solid') }}</option>
+                                        <option value="dashed" @selected(($group['border_style'] ?? '') === 'dashed')>{{ translate('Dashed') }}</option>
+                                        <option value="dotted" @selected(($group['border_style'] ?? '') === 'dotted')>{{ translate('Dotted') }}</option>
+                                        <option value="double" @selected(($group['border_style'] ?? '') === 'double')>{{ translate('Double') }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3 {{ ($group['use_padding'] ?? '0') === '1' ? '' : 'd-none' }}" data-style-target="padding">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>{{ translate('Overall Padding') }}</label>
+                                    <input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][section_padding]" value="{{ $group['section_padding'] ?? '28' }}" min="0" max="80">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group mb-0">
+                                    <label>{{ translate('Padding Top') }}</label>
+                                    <input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][padding_top]" value="{{ $group['padding_top'] ?? '' }}" min="0" max="120" placeholder="28">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group mb-0">
+                                    <label>{{ translate('Padding Bottom') }}</label>
+                                    <input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][padding_bottom]" value="{{ $group['padding_bottom'] ?? '' }}" min="0" max="120" placeholder="28">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="ttf-setting-group">
+                    <summary>{{ translate('Section Visibility') }}</summary>
+                    <div class="ttf-setting-group__body">
+                        <div class="ttf-toggle-list">
+                            <label class="ttf-toggle-option">
+                                <input type="hidden" name="builder[sections][{{ $groupIndex }}][show_on_desktop]" value="0">
+                                <input type="checkbox" name="builder[sections][{{ $groupIndex }}][show_on_desktop]" value="1" data-visibility-toggle="desktop" @checked(($group['show_on_desktop'] ?? '1') === '1')>
+                                <span>{{ translate('Desktop') }}</span>
+                            </label>
+                            <label class="ttf-toggle-option">
+                                <input type="hidden" name="builder[sections][{{ $groupIndex }}][show_on_ipad_pro]" value="0">
+                                <input type="checkbox" name="builder[sections][{{ $groupIndex }}][show_on_ipad_pro]" value="1" data-visibility-toggle="ipad_pro" @checked(($group['show_on_ipad_pro'] ?? '1') === '1')>
+                                <span>{{ translate('iPad Pro') }}</span>
+                            </label>
+                            <label class="ttf-toggle-option">
+                                <input type="hidden" name="builder[sections][{{ $groupIndex }}][show_on_ipad]" value="0">
+                                <input type="checkbox" name="builder[sections][{{ $groupIndex }}][show_on_ipad]" value="1" data-visibility-toggle="ipad" @checked(($group['show_on_ipad'] ?? '1') === '1')>
+                                <span>{{ translate('iPad') }}</span>
+                            </label>
+                            <label class="ttf-toggle-option">
+                                <input type="hidden" name="builder[sections][{{ $groupIndex }}][show_on_phone]" value="0">
+                                <input type="checkbox" name="builder[sections][{{ $groupIndex }}][show_on_phone]" value="1" data-visibility-toggle="phone" @checked(($group['show_on_phone'] ?? '1') === '1')>
+                                <span>{{ translate('Phone') }}</span>
+                            </label>
+                        </div>
+                    </div>
+                </details>
+            </div>
         </div>
     </div>
 </div>

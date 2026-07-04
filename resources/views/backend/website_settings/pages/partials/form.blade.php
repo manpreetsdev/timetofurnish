@@ -5,7 +5,7 @@
     $slugValue = $isEdit ? $page->slug : '';
 @endphp
 
-<form class="p-4 ttf-admin-page-form" action="{{ $isEdit ? route('custom-pages.update', $page->id) : route('custom-pages.store') }}" method="POST" enctype="multipart/form-data">
+<form class="p-0 ttf-admin-page-form" action="{{ $isEdit ? route('custom-pages.update', $page->id) : route('custom-pages.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     @if ($isEdit)
         <input type="hidden" name="_method" value="PATCH">

@@ -7,6 +7,16 @@
         const pageBuilderLayout = document.querySelector('[data-page-builder-layout]');
         let draggedGroupCard = null;
         let draggedWidgetCard = null;
+        let draggedSidebarWidgetType = null;
+
+        // Settings portal state variables
+        let activePortalOwner = null;
+        let activePortalElement = null;
+
+        const activeSettingsHeader = document.getElementById('active-settings-header');
+        const activeSettingsTitle = document.getElementById('active-settings-title');
+        const activeSettingsPortalTarget = document.getElementById('active-settings-portal-target');
+        const defaultPageSettings = document.getElementById('default-page-settings');
 
         function refreshPlugins() {
             if (window.AIZ && AIZ.plugins) {
@@ -22,6 +32,73 @@
             }
         }
 
+        function closeSettingsPortal() {
+            if (activePortalOwner && activePortalElement) {
+                // Remove visual active class
+                activePortalOwner.classList.remove('is-active-editing');
+                
+                // Return portal element back to owner
+                const isWidget = activePortalOwner.hasAttribute('data-widget-card');
+                const selector = isWidget ? '[data-widget-settings-portal]' : '[data-section-settings-portal]';
+                const portalSource = activePortalOwner.querySelector(selector);
+                if (portalSource) {
+                    portalSource.appendChild(activePortalElement);
+                }
+            }
+
+            activePortalOwner = null;
+            activePortalElement = null;
+
+            if (activeSettingsHeader) activeSettingsHeader.classList.add('d-none');
+            if (activeSettingsPortalTarget) {
+                activeSettingsPortalTarget.classList.add('d-none');
+                activeSettingsPortalTarget.innerHTML = '';
+            }
+            if (defaultPageSettings) defaultPageSettings.classList.remove('d-none');
+        }
+
+        function openSettingsPortal(ownerElement, portalSelector, titleText) {
+            // Restore any current portal first
+            closeSettingsPortal();
+
+            const portalSource = ownerElement.querySelector(portalSelector);
+            if (!portalSource) return;
+
+            const settingsDiv = portalSource.firstElementChild;
+            if (!settingsDiv) return;
+
+            activePortalOwner = ownerElement;
+            activePortalElement = settingsDiv;
+
+            // Mark active element visually
+            ownerElement.classList.add('is-active-editing');
+
+            // Move settingsDiv physically to sidebar target
+            if (activeSettingsPortalTarget) {
+                activeSettingsPortalTarget.appendChild(settingsDiv);
+                activeSettingsPortalTarget.classList.remove('d-none');
+            }
+
+            if (activeSettingsTitle) activeSettingsTitle.textContent = titleText;
+            if (activeSettingsHeader) activeSettingsHeader.classList.remove('d-none');
+            if (defaultPageSettings) defaultPageSettings.classList.add('d-none');
+
+            // Open sidebar layout if hidden
+            if (pageBuilderLayout) {
+                pageBuilderLayout.classList.remove('is-sidebar-hidden');
+                const label = document.querySelector('[data-toggle-page-sidebar] [data-sidebar-toggle-label]');
+                if (label) {
+                    label.textContent = 'Hide Page Settings';
+                }
+            }
+
+            // Ensure settings tab is active
+            const tabBtn = document.querySelector('[data-tab-target="settings-tab"]');
+            if (tabBtn) {
+                tabBtn.click();
+            }
+        }
+
         function syncGroupEmptyState() {
             if (!sectionGroups || !groupEmptyState) {
                 return;
@@ -31,14 +108,13 @@
         }
 
         function syncWidgetEmptyState(groupCard) {
-            const widgetEmptyState = groupCard.querySelector('[data-widget-empty-state]');
-            const widgetContainer = groupCard.querySelector('[data-widget-container]');
-
-            if (!widgetEmptyState || !widgetContainer) {
-                return;
-            }
-
-            widgetEmptyState.classList.toggle('d-none', widgetContainer.querySelector('[data-widget-card]') !== null);
+            groupCard.querySelectorAll('[data-widget-container]').forEach(function (widgetContainer) {
+                const column = widgetContainer.closest('[data-admin-column]');
+                const widgetEmptyState = column ? column.querySelector('[data-widget-empty-state]') : null;
+                if (widgetEmptyState) {
+                    widgetEmptyState.classList.toggle('d-none', widgetContainer.querySelector('[data-widget-card]') !== null);
+                }
+            });
         }
 
         function clearWidgetDropState() {
@@ -59,8 +135,8 @@
 
             if (button) {
                 button.textContent = expanded
-                    ? (button.getAttribute('data-label-close') || 'Hide')
-                    : (button.getAttribute('data-label-open') || 'Edit');
+                    ? (button.getAttribute('data-label-close') || 'Collapse')
+                    : (button.getAttribute('data-label-open') || 'Expand');
             }
         }
 
@@ -141,7 +217,10 @@
                 full_width: 'Full Width',
                 image_grid: 'Grid Cards',
                 full_image: 'Image Showcase',
-                toc_content: 'TOC + Content'
+                toc_content: 'TOC + Content',
+                header_widget: 'Heading',
+                image_widget: 'Single Image',
+                button_widget: 'Action Button'
             };
             const fallback = labels[typeInput ? typeInput.value : 'rich_text'] || 'Widget';
 
@@ -199,18 +278,31 @@
         }
 
         function reindexWidgets(groupCard) {
-            const widgetContainer = groupCard.querySelector('[data-widget-container]');
-            if (!widgetContainer) {
+            let widgetIndex = 0;
+            const containers = groupCard.querySelectorAll('[data-widget-container]');
+            if (containers.length === 0) {
                 return;
             }
 
-            widgetContainer.querySelectorAll('[data-widget-card]').forEach(function (widgetCard, widgetIndex) {
-                const oldIndex = widgetCard.getAttribute('data-widget-index');
-                replaceWidgetIndex(groupCard, widgetCard, oldIndex, widgetIndex);
-                widgetCard.setAttribute('data-widget-index', String(widgetIndex));
+            containers.forEach(function (container) {
+                const columnIndex = container.getAttribute('data-column-index') || '0';
+                
+                container.querySelectorAll('[data-widget-card]').forEach(function (widgetCard) {
+                    const oldIndex = widgetCard.getAttribute('data-widget-index');
+                    replaceWidgetIndex(groupCard, widgetCard, oldIndex, widgetIndex);
+                    widgetCard.setAttribute('data-widget-index', String(widgetIndex));
+                    
+                    // Update column index hidden input
+                    const colInput = widgetCard.querySelector('[data-widget-column-input]');
+                    if (colInput) {
+                        colInput.value = columnIndex;
+                    }
+                    widgetIndex++;
+                });
+                
+                container.setAttribute('data-next-widget-index', String(container.querySelectorAll('[data-widget-card]').length));
             });
 
-            widgetContainer.setAttribute('data-next-widget-index', String(widgetContainer.querySelectorAll('[data-widget-card]').length));
             syncWidgetCount(groupCard);
             syncWidgetEmptyState(groupCard);
         }
@@ -266,23 +358,13 @@
             refreshPlugins();
         }
 
-        function addWidget(groupCard, widgetType) {
-            const widgetContainer = groupCard.querySelector('[data-widget-container]');
-            const widgetTemplate = groupCard.querySelector('template[data-widget-template="' + widgetType + '"]');
-
-            if (!widgetContainer || !widgetTemplate) {
-                return;
-            }
-
-            const widgetIndex = Number(widgetContainer.getAttribute('data-next-widget-index') || 0);
-            const html = widgetTemplate.innerHTML.split('__WIDGET_INDEX__').join(widgetIndex);
-            widgetContainer.insertAdjacentHTML('beforeend', html);
-            widgetContainer.setAttribute('data-next-widget-index', String(widgetIndex + 1));
-
-            const widgetCard = widgetContainer.querySelector('[data-widget-card]:last-child');
-            initializeWidgetCard(widgetCard, true);
-            reindexWidgets(groupCard);
-            refreshPlugins();
+        function slugify(text) {
+            return text.toString().toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-')
+                .replace(/^-+/, '')
+                .replace(/-+$/, '');
         }
 
         function addItem(button, itemType) {
@@ -296,7 +378,7 @@
 
             const itemIndex = Number(target.getAttribute('data-next-index') || 0);
             const html = template.innerHTML.split('__ITEM_INDEX__').join(itemIndex);
-            target.insertAdjacentHTML('beforeend', html);
+            target.insertAdjacentHTML('afterbegin', html);
             target.setAttribute('data-next-index', String(itemIndex + 1));
             refreshPlugins();
         }
@@ -333,11 +415,24 @@
 
         document.addEventListener('input', function (event) {
             if (event.target.matches('[data-group-name-input]')) {
-                syncGroupLabel(event.target.closest('[data-group-card]'));
+                const groupCard = event.target.closest('[data-group-card]');
+                syncGroupLabel(groupCard);
+                // If it is currently active in the portal, update the title
+                if (activePortalOwner === groupCard && activeSettingsTitle) {
+                    activeSettingsTitle.textContent = 'Section: ' + (event.target.value.trim() || 'Untitled Section');
+                }
             }
 
             if (event.target.matches('[data-widget-heading-input], [data-widget-subheading-input]')) {
                 syncWidgetLabel(event.target.closest('[data-widget-card]'));
+            }
+
+            if (event.target.matches('[data-toc-title-input]')) {
+                const row = event.target.closest('[data-item-row]');
+                const anchorInput = row ? row.querySelector('[data-toc-anchor-input]') : null;
+                if (anchorInput) {
+                    anchorInput.value = slugify(event.target.value);
+                }
             }
         });
 
@@ -345,20 +440,142 @@
             const groupCard = event.target.closest('[data-group-card]');
             const widgetCard = event.target.closest('[data-widget-card]');
 
+            // Find style toggle within active settings portal target or owner card
             if (event.target.matches('[data-style-toggle]')) {
-                syncAppearance(widgetCard || groupCard);
+                syncAppearance(widgetCard || groupCard || activePortalOwner);
             }
 
             if (event.target.matches('[data-visibility-toggle]')) {
-                if (widgetCard) {
-                    syncVisibilitySummary(widgetCard, '[data-widget-visibility-summary]');
-                } else if (groupCard) {
-                    syncVisibilitySummary(groupCard, '[data-group-visibility-summary]');
+                const targetOwner = widgetCard || groupCard || activePortalOwner;
+                if (targetOwner) {
+                    const isWidget = targetOwner.hasAttribute('data-widget-card');
+                    if (isWidget) {
+                        syncVisibilitySummary(targetOwner, '[data-widget-visibility-summary]');
+                    } else {
+                        syncVisibilitySummary(targetOwner, '[data-group-visibility-summary]');
+                    }
                 }
+            }
+
+            // Handle Grid Columns change
+            if (event.target.matches('[data-group-columns-select]')) {
+                const select = event.target;
+                const columnsGrid = groupCard ? groupCard.querySelector('[data-columns-grid]') : null;
+                if (!groupCard || !columnsGrid) return;
+                
+                const oldColumnsCount = columnsGrid.querySelectorAll('[data-admin-column]').length;
+                const newColumnsCount = parseInt(select.value) || 1;
+                
+                if (oldColumnsCount === newColumnsCount) return;
+                
+                // Update grid columns class
+                columnsGrid.className = 'ttf-admin-columns-grid ttf-columns-count-' + newColumnsCount;
+                
+                if (newColumnsCount > oldColumnsCount) {
+                    // Add columns
+                    for (let col = oldColumnsCount; col < newColumnsCount; col++) {
+                        const colHtml = `
+                            <div class="ttf-admin-column" data-admin-column="${col}">
+                                <div class="ttf-admin-column-header">
+                                    <span>Column ${col + 1}</span>
+                                </div>
+                                <div class="ttf-widget-list" data-widget-container data-column-index="${col}"></div>
+                                <div class="ttf-sections-empty-state" data-widget-empty-state>
+                                    <small class="text-muted">Empty Column. Add/drag widgets here.</small>
+                                </div>
+                            </div>
+                        `;
+                        columnsGrid.insertAdjacentHTML('beforeend', colHtml);
+                    }
+                } else {
+                    // Reduce columns: migrate widgets to the last remaining column
+                    const targetContainer = columnsGrid.querySelector('[data-admin-column="' + (newColumnsCount - 1) + '"] [data-widget-container]');
+                    
+                    for (let col = newColumnsCount; col < oldColumnsCount; col++) {
+                        const sourceColumn = columnsGrid.querySelector('[data-admin-column="' + col + '"]');
+                        if (sourceColumn) {
+                            const sourceContainer = sourceColumn.querySelector('[data-widget-container]');
+                            if (sourceContainer && targetContainer) {
+                                sourceContainer.querySelectorAll('[data-widget-card]').forEach(function (widgetCard) {
+                                    targetContainer.appendChild(widgetCard);
+                                });
+                            }
+                            sourceColumn.remove();
+                        }
+                    }
+                }
+                
+                reindexWidgets(groupCard);
+                refreshPlugins();
             }
         });
 
         document.addEventListener('click', function (event) {
+            // Sidebar tab toggling
+            const tabBtn = event.target.closest('[data-tab-target]');
+            if (tabBtn) {
+                // If switching to widgets tab, close settings portal
+                if (tabBtn.getAttribute('data-tab-target') === 'widgets-tab') {
+                    closeSettingsPortal();
+                }
+                
+                const tabTarget = tabBtn.getAttribute('data-tab-target');
+                const sidebar = tabBtn.closest('[data-page-sidebar]');
+                if (sidebar) {
+                    sidebar.querySelectorAll('[data-tab-target]').forEach(btn => btn.classList.remove('active'));
+                    sidebar.querySelectorAll('[data-tab-content]').forEach(content => content.classList.remove('active'));
+                    
+                    tabBtn.classList.add('active');
+                    const targetContent = sidebar.querySelector('#' + tabTarget);
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                }
+                return;
+            }
+
+            // Close active settings button
+            const closeSettingsBtn = event.target.closest('#close-active-settings');
+            if (closeSettingsBtn) {
+                closeSettingsPortal();
+                return;
+            }
+
+            // Edit Section Settings button (Gear button)
+            const editSectionSettingsBtn = event.target.closest('[data-edit-section-settings]');
+            if (editSectionSettingsBtn) {
+                const groupCard = editSectionSettingsBtn.closest('[data-group-card]');
+                if (groupCard) {
+                    const groupNameInput = groupCard.querySelector('[data-group-name-input]');
+                    const groupTitle = groupNameInput ? groupNameInput.value.trim() : 'Untitled Section';
+                    openSettingsPortal(groupCard, '[data-section-settings-portal]', 'Section: ' + (groupTitle || 'Untitled Section'));
+                }
+                return;
+            }
+
+            // Edit Widget Settings button (Gear button)
+            const editWidgetSettingsBtn = event.target.closest('[data-edit-widget-settings]');
+            if (editWidgetSettingsBtn) {
+                const widgetCard = editWidgetSettingsBtn.closest('[data-widget-card]');
+                if (widgetCard) {
+                    const typeInput = widgetCard.querySelector('input[name*="[type]"]');
+                    const labels = {
+                        rich_text: 'Text Editor',
+                        split: 'Two Column',
+                        full_width: 'Full Width',
+                        image_grid: 'Grid Cards',
+                        full_image: 'Image Showcase',
+                        toc_content: 'TOC + Content',
+                        header_widget: 'Heading',
+                        image_widget: 'Single Image',
+                        button_widget: 'Action Button'
+                    };
+                    const typeLabel = labels[typeInput ? typeInput.value : 'rich_text'] || 'Widget';
+                    openSettingsPortal(widgetCard, '[data-widget-settings-portal]', 'Widget: ' + typeLabel);
+                }
+                return;
+            }
+
             const toggleSidebar = event.target.closest('[data-toggle-page-sidebar]');
             if (toggleSidebar) {
                 pageBuilderLayout.classList.toggle('is-sidebar-hidden');
@@ -386,15 +603,17 @@
             if (removeGroupButton) {
                 const groupCard = removeGroupButton.closest('[data-group-card]');
                 if (groupCard) {
+                    if (activePortalOwner === groupCard) {
+                        closeSettingsPortal();
+                    }
+                    groupCard.querySelectorAll('[data-widget-card]').forEach(function (widgetCard) {
+                        if (activePortalOwner === widgetCard) {
+                            closeSettingsPortal();
+                        }
+                    });
                     groupCard.remove();
                     reindexGroups();
                 }
-                return;
-            }
-
-            const addWidgetButton = event.target.closest('[data-add-widget]');
-            if (addWidgetButton) {
-                addWidget(addWidgetButton.closest('[data-group-card]'), addWidgetButton.getAttribute('data-add-widget'));
                 return;
             }
 
@@ -410,6 +629,9 @@
                 const widgetCard = removeWidgetButton.closest('[data-widget-card]');
                 const groupCard = removeWidgetButton.closest('[data-group-card]');
                 if (widgetCard) {
+                    if (activePortalOwner === widgetCard) {
+                        closeSettingsPortal();
+                    }
                     widgetCard.remove();
                     reindexWidgets(groupCard);
                 }
@@ -466,28 +688,65 @@
             });
         });
 
-        if (sectionGroups) {
-            sectionGroups.addEventListener('dragstart', function (event) {
-                const widgetCard = event.target.closest('[data-widget-card]');
-                if (widgetCard) {
-                    draggedWidgetCard = widgetCard;
-                    widgetCard.classList.add('is-dragging');
-                    event.dataTransfer.effectAllowed = 'move';
-                    return;
-                }
+        document.addEventListener('dragstart', function (event) {
+            closeSettingsPortal();
 
-                const groupCard = event.target.closest('[data-group-card]');
-                if (!groupCard) {
-                    return;
-                }
+            const sidebarWidget = event.target.closest('[data-sidebar-widget]');
+            if (sidebarWidget) {
+                draggedSidebarWidgetType = sidebarWidget.getAttribute('data-sidebar-widget');
+                sidebarWidget.classList.add('is-dragging');
+                event.dataTransfer.effectAllowed = 'move';
+                return;
+            }
+            
+            const widgetCard = event.target.closest('[data-widget-card]');
+            if (widgetCard) {
+                draggedWidgetCard = widgetCard;
+                widgetCard.classList.add('is-dragging');
+                event.dataTransfer.effectAllowed = 'move';
+                return;
+            }
 
+            const groupCard = event.target.closest('[data-group-card]');
+            if (groupCard && event.target.matches('[data-group-card]')) {
                 draggedGroupCard = groupCard;
                 groupCard.classList.add('is-dragging');
                 event.dataTransfer.effectAllowed = 'move';
-            });
+            }
+        });
 
+        document.addEventListener('dragend', function () {
+            document.querySelectorAll('[data-sidebar-widget].is-dragging').forEach(function (el) {
+                el.classList.remove('is-dragging');
+            });
+            draggedSidebarWidgetType = null;
+            clearWidgetDropState();
+
+            if (draggedWidgetCard) {
+                draggedWidgetCard.classList.remove('is-dragging');
+                draggedWidgetCard.setAttribute('draggable', 'false');
+                
+                const groupCard = draggedWidgetCard.closest('[data-group-card]');
+                if (groupCard) {
+                    reindexWidgets(groupCard);
+                }
+                
+                draggedWidgetCard = null;
+                reindexGroups();
+                return;
+            }
+
+            if (draggedGroupCard) {
+                draggedGroupCard.classList.remove('is-dragging');
+                draggedGroupCard.setAttribute('draggable', 'false');
+                draggedGroupCard = null;
+                reindexGroups();
+            }
+        });
+
+        if (sectionGroups) {
             sectionGroups.addEventListener('dragover', function (event) {
-                if (draggedWidgetCard) {
+                if (draggedWidgetCard || draggedSidebarWidgetType) {
                     event.preventDefault();
                     let widgetContainer = event.target.closest('[data-widget-container]');
                     if (!widgetContainer) {
@@ -502,14 +761,14 @@
                     clearWidgetDropState();
                     widgetContainer.classList.add('is-drop-zone');
 
-                    const afterElement = getDragAfterWidget(widgetContainer, event.clientY);
-
-                    if (!afterElement) {
-                        widgetContainer.appendChild(draggedWidgetCard);
-                    } else {
-                        widgetContainer.insertBefore(draggedWidgetCard, afterElement);
+                    if (draggedWidgetCard) {
+                        const afterElement = getDragAfterWidget(widgetContainer, event.clientY);
+                        if (!afterElement) {
+                            widgetContainer.appendChild(draggedWidgetCard);
+                        } else {
+                            widgetContainer.insertBefore(draggedWidgetCard, afterElement);
+                        }
                     }
-
                     return;
                 }
 
@@ -528,29 +787,54 @@
                 sectionGroups.insertBefore(draggedGroupCard, afterElement);
             });
 
-            sectionGroups.addEventListener('dragend', function () {
-                if (draggedWidgetCard) {
-                    draggedWidgetCard.classList.remove('is-dragging');
-                    draggedWidgetCard.setAttribute('draggable', 'false');
-                    draggedWidgetCard = null;
-                    clearWidgetDropState();
-                    reindexGroups();
+            sectionGroups.addEventListener('drop', function (event) {
+                event.preventDefault();
+                let widgetContainer = event.target.closest('[data-widget-container]');
+                if (!widgetContainer) {
+                    const groupCard = event.target.closest('[data-group-card]');
+                    widgetContainer = groupCard ? groupCard.querySelector('[data-widget-container]') : null;
+                }
+
+                if (!widgetContainer) {
                     return;
                 }
 
-                if (!draggedGroupCard) {
+                const groupCard = widgetContainer.closest('[data-group-card]');
+                if (!groupCard) {
                     return;
                 }
 
-                draggedGroupCard.classList.remove('is-dragging');
-                draggedGroupCard.setAttribute('draggable', 'false');
-                draggedGroupCard = null;
-                reindexGroups();
+                if (draggedSidebarWidgetType) {
+                    const widgetType = draggedSidebarWidgetType;
+                    const widgetTemplate = groupCard.querySelector('template[data-widget-template="' + widgetType + '"]');
+                    if (!widgetTemplate) {
+                        return;
+                    }
+
+                    const widgetIndex = Number(widgetContainer.getAttribute('data-next-widget-index') || 0);
+                    
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = widgetTemplate.innerHTML.split('__WIDGET_INDEX__').join(widgetIndex);
+                    const widgetCard = tempDiv.firstElementChild;
+                    
+                    const afterElement = getDragAfterWidget(widgetContainer, event.clientY);
+                    if (!afterElement) {
+                        widgetContainer.appendChild(widgetCard);
+                    } else {
+                        widgetContainer.insertBefore(widgetCard, afterElement);
+                    }
+                    
+                    widgetContainer.setAttribute('data-next-widget-index', String(widgetIndex + 1));
+                    initializeWidgetCard(widgetCard, true);
+                    reindexWidgets(groupCard);
+                    refreshPlugins();
+                }
             });
         }
 
         if (pageForm) {
             pageForm.addEventListener('submit', function () {
+                closeSettingsPortal(); // Restore active inputs to form DOM before submit
                 reindexGroups();
             });
         }

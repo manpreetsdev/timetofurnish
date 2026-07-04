@@ -7,10 +7,9 @@
 }
 
 .ttf-builder-shell {
-    background: linear-gradient(180deg, #fbf8f4 0%, #f7f2eb 100%);
-    border: 1px solid #e7ddd2;
-    border-radius: 10px;
-    padding: 22px;
+    background: transparent;
+    border: none;
+    padding: 0;
 }
 
 .ttf-builder-card,
@@ -61,7 +60,7 @@
 
 .ttf-editor-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-columns: minmax(0, 1fr) 360px;
     gap: 24px;
     align-items: start;
 }
@@ -138,6 +137,12 @@
 .ttf-editor-sidebar {
     position: sticky;
     top: 18px;
+    background: #ffffff;
+    border: 1px solid #ebdccb;
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(47, 34, 23, 0.04);
+    overflow: hidden;
+    padding: 0 !important;
 }
 
 .ttf-builder-card--sticky {
@@ -268,10 +273,7 @@
 }
 
 .ttf-group-editor {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 280px;
-    gap: 18px;
-    align-items: start;
+    display: block;
 }
 
 .ttf-group-editor__main {
@@ -280,7 +282,7 @@
 }
 
 .ttf-group-editor__aside {
-    min-width: 0;
+    display: none;
 }
 
 .ttf-widget-list {
@@ -298,15 +300,18 @@
 }
 
 .ttf-widget-editor {
-    border: 1px solid #eadfd2;
-    border-radius: 10px;
+    border: 1px solid #be9a7c;
+    border-radius: 8px;
     box-shadow: none;
+    background: #ffffff;
     overflow: hidden;
+    margin-bottom: 8px;
 }
 
 .ttf-widget-editor > .card-header {
-    padding: 14px 16px;
-    background: #fff;
+    padding: 10px 12px;
+    background: transparent;
+    border-bottom: none;
 }
 
 .ttf-widget-editor__body {
@@ -378,15 +383,16 @@
 }
 
 .ttf-section-block {
-    border: 1px solid #e8ddd2;
-    border-radius: 10px;
-    background: #fff;
+    border: none;
+    border-radius: 0;
+    background: transparent;
 }
 
 .ttf-section-block__header {
-    padding: 14px 16px;
-    border-bottom: 1px solid #ebe2d8;
-    background: #fcfaf7;
+    padding: 0 0 10px 0;
+    border-bottom: 1px solid #eadfd2;
+    background: transparent;
+    margin-bottom: 14px;
 }
 
 .ttf-section-block__header--inline {
@@ -691,3 +697,274 @@
         width: 100%;
     }
 }
+
+/* Columns Grid in Admin Builder */
+.ttf-admin-columns-grid {
+    display: grid;
+    gap: 16px;
+    margin-top: 16px;
+    background: #fbf9f6;
+    padding: 16px;
+    border: 1px solid #ebdccb;
+    border-radius: 12px;
+}
+
+.ttf-columns-count-1 {
+    grid-template-columns: 1fr;
+}
+.ttf-columns-count-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+.ttf-columns-count-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+.ttf-columns-count-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.ttf-admin-column {
+    display: flex;
+    flex-direction: column;
+    background: #fdfdfd;
+    border: 1px dashed #eadfd2;
+    border-radius: 8px;
+    padding: 10px;
+    min-height: 140px;
+    box-shadow: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ttf-admin-column:hover {
+    border-color: #be9a7c;
+    box-shadow: 0 6px 16px rgba(47, 34, 23, 0.05);
+}
+
+.ttf-admin-column-header {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #8c735d;
+    letter-spacing: 0.05em;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    border-bottom: 1px dashed #efe6dd;
+}
+
+.ttf-admin-column .ttf-widget-list {
+    flex: 1 1 auto;
+    min-height: 100px;
+    border: 1px dashed transparent;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.ttf-admin-column .ttf-widget-list.is-drop-zone {
+    background: #fcf6ed;
+    border: 1px dashed #be9a7c;
+    border-radius: 8px;
+}
+
+@media (max-width: 991.98px) {
+    .ttf-columns-count-2,
+    .ttf-columns-count-3,
+    .ttf-columns-count-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Sidebar Tabs Navigation */
+.ttf-sidebar-tabs {
+    display: flex;
+    border-bottom: 1px solid #ebdccb;
+    background: #fbf9f6;
+}
+
+.ttf-sidebar-tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    border: none;
+    background: transparent;
+    color: #8c735d;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.ttf-sidebar-tab-btn:hover {
+    color: #7a563c;
+    background: rgba(235, 220, 203, 0.2);
+}
+
+.ttf-sidebar-tab-btn.active {
+    color: #7a563c;
+    border-bottom-color: #7a563c;
+    background: #ffffff;
+}
+
+.ttf-sidebar-tab-btn i {
+    font-size: 16px;
+}
+
+/* Sidebar Tab Content Visibility toggling */
+.ttf-sidebar-tab-content {
+    display: none;
+    padding: 20px;
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+}
+
+.ttf-sidebar-tab-content.active {
+    display: block;
+}
+
+/* Sidebar Widgets panel styling */
+.ttf-sidebar-section-title {
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #efe6dd;
+}
+
+.ttf-sidebar-section-title h6 {
+    font-weight: 700;
+    color: #3b2d22;
+    margin-bottom: 4px;
+}
+
+.ttf-sidebar-widgets-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.ttf-sidebar-widget-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 12px;
+    background: #ffffff;
+    border: 1px solid #eadfd2;
+    border-radius: 10px;
+    cursor: grab;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+.ttf-sidebar-widget-item:hover {
+    border-color: #be9a7c;
+    box-shadow: 0 4px 12px rgba(47, 34, 23, 0.05);
+    transform: translateY(-1px);
+}
+
+.ttf-sidebar-widget-item.is-dragging {
+    opacity: 0.5;
+    background: #fbf9f6;
+    border-style: dashed;
+}
+
+.ttf-sidebar-widget-item__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #f5ebe0;
+    color: #7a563c;
+    font-size: 18px;
+    transition: all 0.25s ease;
+}
+
+.ttf-sidebar-widget-item:hover .ttf-sidebar-widget-item__icon {
+    background: #7a563c;
+    color: #ffffff;
+}
+
+.ttf-sidebar-widget-item__title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #4a3a2d;
+    text-align: center;
+}
+
+/* Active settings header in sidebar */
+.ttf-active-settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    background: #fcfbf9;
+    border: 1px solid #ebdccb;
+    border-radius: 8px;
+    margin-bottom: 18px;
+}
+
+.ttf-active-settings-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #4a3829;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.ttf-active-settings-portal-target {
+    display: block;
+}
+
+/* Active editing indicator card outline */
+.ttf-group-card.is-active-editing {
+    border-color: #be9a7c !important;
+    box-shadow: 0 0 0 3px rgba(190, 154, 124, 0.15), 0 10px 30px rgba(47, 34, 23, 0.05) !important;
+    transition: all 0.25s ease;
+}
+
+.ttf-widget-editor.is-active-editing {
+    border-color: #be9a7c !important;
+    box-shadow: 0 0 0 3px rgba(190, 154, 124, 0.15), 0 8px 24px rgba(47, 34, 23, 0.05) !important;
+    transition: all 0.25s ease;
+}
+
+/* Let column containers fill 100% since dual column layout inside groups is disabled */
+.ttf-admin-columns-grid {
+    width: 100%;
+}
+
+/* Outer section group flat overrides and layout spacing */
+.ttf-group-card {
+    border: 1px solid #e4d6c7 !important;
+    background: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02) !important;
+    margin-bottom: 20px !important;
+}
+
+.ttf-group-card > .card-body {
+    padding: 12px !important;
+}
+
+/* Button icon decorations to prevent stretching */
+.ttf-builder-shell .btn-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    border-radius: 6px !important;
+}
+
+.ttf-builder-shell .btn-icon i {
+    font-size: 16px !important;
+}
+
+
+
+

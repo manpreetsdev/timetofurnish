@@ -1,7 +1,7 @@
 @extends('backend.layouts.app')
 
 @section('content')
-<link rel="stylesheet" href="{{ static_asset('assets/css/custom-pages/admin-page-builder.css') }}">
+<link rel="stylesheet" href="{{ static_asset('assets/css/custom-pages/admin-page-builder.css') }}?v={{ time() }}">
 
 <div class="aiz-titlebar text-left mt-2 mb-3">
     <div class="row align-items-center">

@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="{{ static_asset('assets/css/vendors.css') }}">
     <link rel="stylesheet" href="{{ static_asset('assets/css/aiz-core.css') }}">
     <link rel="stylesheet" href="{{ static_asset('assets/css/custom-style.css') }}">
-    <link rel="stylesheet" href="{{ static_asset('assets/css/custom-pages/frontend-page-builder.css') }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/custom-pages/frontend-page-builder.css') }}?v={{ time() }}">
 </head>
 <body>
     @include('frontend.custom-pages.render', [

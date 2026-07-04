@@ -11,7 +11,7 @@
 <div
     class="ttf-custom-page"
     style="
-        --ttf-page-bg: {{ $styles['page_background'] ?? '#fbf7f2' }};
+        --ttf-page-bg: {{ $styles['page_background'] ?? '#FAF8F5' }};
         --ttf-content-bg: {{ $styles['content_background'] ?? '#ffffff' }};
         --ttf-card-bg: {{ $styles['card_background'] ?? '#fffdf9' }};
         --ttf-card-border: {{ $styles['card_border_color'] ?? '#e3d6ca' }};
