@@ -4308,7 +4308,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
 /* Social Icons in Footer */
 .footer-social-list {
     display: flex !important;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
@@ -4391,7 +4391,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
 
 /* Newsletter Input and Button styling */
 .footer-widget.iuytrey {
-    
+
     border-top: 1px solid rgba(255, 255, 255, 0.35);
     border-bottom: 1px solid rgba(104, 91, 78, 0.2);
     color: #39322a !important;
@@ -4436,7 +4436,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
     letter-spacing: 0.2px;
     line-height: 1.35;
     font-size: 26px !important;
-    
+
 }
 
 .footer-widget.iuytrey input[type="email"] {
@@ -4775,13 +4775,15 @@ li.slick-active {
 }
 
 .bottom-div {
-	background-color: #5b4a3b;
-	opacity: 0,5;
+    background-color: #5b4a3b;
+    opacity: 0, 5;
 }
+
 .footer-content {
-    color:white;
+    color: white;
 }
-   .ttf-mobile-accordion .aiz-accordion {
+
+.ttf-mobile-accordion .aiz-accordion {
     width: 100%;
     padding: 16px 0;
     background: transparent !important;
@@ -4801,7 +4803,9 @@ li.slick-active {
     align-items: center;
     justify-content: space-between;
 }
+
 @media (max-width: 991px) {
+
     .ttf-mobile-accordion .aiz-accordion,
     .ttf-mobile-direct-link {
         width: 100%;
@@ -4841,6 +4845,7 @@ li.slick-active {
         display: none !important;
     }
 }
+
 @media (max-width: 576px) {
     .ttf-footer-links-section .container.px-xs-0 {
         padding-left: 0 !important;
@@ -4856,7 +4861,7 @@ li.slick-active {
         gap: 6px !important;
     }
 
-    .ttf-footer-links-section .bottom-div > div {
+    .ttf-footer-links-section .bottom-div>div {
         width: 100% !important;
         max-width: 100% !important;
         flex: 0 0 100% !important;
@@ -4879,9 +4884,8 @@ li.slick-active {
         font-size: 12px !important;
     }
 }
-.secure-payment-box {
-  
-}
+
+.secure-payment-box {}
 
 .secure-payment-title {
     font-size: 18px;
@@ -4912,7 +4916,7 @@ li.slick-active {
     height: auto;
     display: block;
     object-fit: contain;
-    
+
 }
 
 /* Mobile View */
@@ -4941,6 +4945,7 @@ li.slick-active {
         margin-top: 16px;
     }
 }
+
 /* Mobile footer accordion plus icon replace with arrow */
 .ttf-mobile-accordion .aiz-accordion {
     position: relative;
@@ -4965,7 +4970,9 @@ li.slick-active {
 .ttf-mobile-accordion .aiz-accordion[aria-expanded="true"]::after {
     transform: translateY(-50%) rotate(-135deg);
 }
-.textheading{
+
+.textheading {
     font-family: "Playfair Display", serif !important;
 }
+
 bjhkk
