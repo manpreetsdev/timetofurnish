@@ -14,19 +14,21 @@
         --ttf-page-bg: {{ $styles['page_background'] ?? '#FAF8F5' }};
         --ttf-content-bg: {{ $styles['content_background'] ?? '#ffffff' }};
         --ttf-card-bg: {{ $styles['card_background'] ?? '#fffdf9' }};
-        --ttf-card-border: {{ $styles['card_border_color'] ?? '#e3d6ca' }};
-        --ttf-accent: {{ $styles['accent_color'] ?? '#c8883a' }};
+        --ttf-card-border: {{ $styles['card_border_color'] ?? '#21252933' }};
+        --ttf-accent: {{ $styles['accent_color'] ?? '#C27325' }};
         --ttf-heading: {{ $styles['heading_color'] ?? '#2c2218' }};
         --ttf-subheading: {{ $styles['subheading_color'] ?? '#5b4839' }};
-        --ttf-text: {{ $styles['paragraph_color'] ?? '#564638' }};
+        --ttf-text: {{ $styles['paragraph_color'] ?? '#393939' }};
         --ttf-muted: {{ $styles['muted_color'] ?? '#8a786a' }};
         --ttf-heading-font: {{ $styles['heading_font_family'] ?? 'Playfair Display, serif' }};
         --ttf-subheading-font: {{ $styles['subheading_font_family'] ?? 'Poppins, sans-serif' }};
         --ttf-text-font: {{ $styles['paragraph_font_family'] ?? 'Poppins, sans-serif' }};
+        --ttf-heading-weight: {{ $styles['heading_font_weight'] ?? '700' }};
+        --ttf-body-weight: {{ $styles['body_font_weight'] ?? '400' }};
         --ttf-container-width: {{ (int) ($styles['container_width'] ?? 1440) }}px;
         --ttf-section-gap: {{ (int) ($styles['section_spacing'] ?? 54) }}px;
         --ttf-toc-bg: {{ $styles['toc_background'] ?? '#fffdf9' }};
-        --ttf-toc-border: {{ $styles['toc_border_color'] ?? '#d8cabd' }};
+        --ttf-toc-border: {{ $styles['toc_border_color'] ?? '#21252933' }};
         --ttf-toc-heading: {{ $styles['toc_heading_color'] ?? '#3a2a1f' }};
         --ttf-toc-text: {{ $styles['toc_text_color'] ?? '#6f5f52' }};
     "

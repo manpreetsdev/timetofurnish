@@ -2,53 +2,6 @@
     $group = array_merge(\App\Support\CustomPageTemplate::sectionGroupTemplate(), $group);
     $groupName = trim((string) ($group['name'] ?? ''));
     $widgets = $group['widgets'] ?? [];
-    $widgetLibrary = [
-        'header_widget' => [
-            'label' => translate('Heading'),
-            'icon' => 'las la-heading',
-            'description' => translate('Standalone heading block'),
-        ],
-        'rich_text' => [
-            'label' => translate('Text Editor'),
-            'icon' => 'las la-align-left',
-            'description' => translate('Rich text, policies and long copy'),
-        ],
-        'image_widget' => [
-            'label' => translate('Single Image'),
-            'icon' => 'las la-image',
-            'description' => translate('Standalone responsive image'),
-        ],
-        'button_widget' => [
-            'label' => translate('Action Button'),
-            'icon' => 'las la-link',
-            'description' => translate('Call to action link button'),
-        ],
-        'split' => [
-            'label' => translate('Two Column'),
-            'icon' => 'las la-columns',
-            'description' => translate('Image + content with checklist'),
-        ],
-        'full_width' => [
-            'label' => translate('Full Width'),
-            'icon' => 'las la-window-maximize',
-            'description' => translate('Wide content block with image order control'),
-        ],
-        'image_grid' => [
-            'label' => translate('Grid Cards'),
-            'icon' => 'las la-th-large',
-            'description' => translate('Repeatable cards with image and content'),
-        ],
-        'full_image' => [
-            'label' => translate('Image Showcase'),
-            'icon' => 'las la-image',
-            'description' => translate('Large visual section with text support'),
-        ],
-        'toc_content' => [
-            'label' => translate('TOC + Content'),
-            'icon' => 'las la-list-alt',
-            'description' => translate('Privacy policy sidebar with linked content'),
-        ],
-    ];
     $visibleOn = collect([
         ($group['show_on_desktop'] ?? '1') === '1' ? translate('Desktop') : null,
         ($group['show_on_ipad_pro'] ?? '1') === '1' ? translate('iPad Pro') : null,
@@ -59,25 +12,16 @@
         ? translate('All Devices')
         : ($visibleOn->isEmpty() ? translate('Hidden Everywhere') : $visibleOn->implode(', '));
 
-    $columnsCount = (int) ($group['columns'] ?? 1);
-    if ($columnsCount < 1) $columnsCount = 1;
-
-    // Group widgets by column_index
+    $columnsCount = max(1, (int) ($group['columns'] ?? 1));
     $columnsWidgets = [];
     for ($i = 0; $i < $columnsCount; $i++) {
         $columnsWidgets[$i] = [];
     }
     foreach ($widgets as $widgetIndex => $widget) {
-        $colIdx = (int) ($widget['column_index'] ?? 0);
-        if ($colIdx >= $columnsCount) {
-            $colIdx = $columnsCount - 1;
-        }
-        if ($colIdx < 0) {
-            $colIdx = 0;
-        }
+        $colIdx = max(0, min($columnsCount - 1, (int) ($widget['column_index'] ?? 0)));
         $columnsWidgets[$colIdx][] = [
             'index' => $widgetIndex,
-            'data' => $widget
+            'data' => $widget,
         ];
     }
 @endphp
@@ -97,10 +41,20 @@
                     <span class="ttf-section-chip ttf-section-chip--muted" data-group-widget-count>{{ count($widgets) }} {{ translate('Widgets') }}</span>
                 </div>
                 <h6 class="mb-1" data-group-label>{{ $groupName !== '' ? $groupName : translate('Untitled Section') }}</h6>
-                <small class="text-muted d-block">{{ translate('Widgets inside this section share the same container and visibility settings.') }}</small>
+                <small class="text-muted d-block">{{ translate('Keep the canvas simple. Use the settings icon to edit section columns, gap, spacing, and visibility.') }}</small>
             </div>
         </div>
+
         <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-icon btn-sm btn-soft-primary" data-move-group-up title="{{ translate('Move Up') }}">
+                <i class="las la-arrow-up"></i>
+            </button>
+            <button type="button" class="btn btn-icon btn-sm btn-soft-primary" data-move-group-down title="{{ translate('Move Down') }}">
+                <i class="las la-arrow-down"></i>
+            </button>
+            <button type="button" class="btn btn-icon btn-sm btn-soft-primary" data-copy-group title="{{ translate('Copy Section') }}">
+                <i class="las la-copy"></i>
+            </button>
             <button type="button" class="btn btn-sm btn-soft-primary" data-toggle-group data-label-open="{{ translate('Expand') }}" data-label-close="{{ translate('Collapse') }}">
                 {{ translate('Expand') }}
             </button>
@@ -114,86 +68,82 @@
     </div>
 
     <div class="card-body d-none" data-group-body>
-        <div class="ttf-section-block mb-3">
-            <div class="ttf-section-block__header">
-                <h6 class="mb-1">{{ translate('Section Info') }}</h6>
-                <small class="text-muted">{{ translate('Configure columns and gaps. Drag elements from the global sidebar into the columns below.') }}</small>
+        <div class="ttf-group-canvas">
+            <div class="ttf-group-canvas__header">
+                <span>{{ translate('Section Canvas') }}</span>
+                <small>{{ translate('Drag widgets into any column. Use arrows or drag handles to reorder.') }}</small>
             </div>
-            <div class="ttf-section-block__body">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="form-group mb-lg-0">
-                            <label>{{ translate('Section Name') }}</label>
-                            <input type="text" class="form-control" name="builder[sections][{{ $groupIndex }}][name]" value="{{ $group['name'] ?? '' }}" data-group-name-input placeholder="{{ translate('About Intro Section') }}">
+
+            <div class="ttf-admin-columns-grid ttf-columns-count-{{ $columnsCount }}" data-columns-grid>
+                @for ($col = 0; $col < $columnsCount; $col++)
+                    <div class="ttf-admin-column" data-admin-column="{{ $col }}">
+                        <div class="ttf-admin-column-header">
+                            <span>{{ translate('Column') }} {{ $col + 1 }}</span>
+                        </div>
+
+                        <div class="ttf-widget-list" data-widget-container data-column-index="{{ $col }}">
+                            @foreach ($columnsWidgets[$col] as $item)
+                                @include('backend.website_settings.pages.partials.structured_section', [
+                                    'widget' => $item['data'],
+                                    'groupIndex' => $groupIndex,
+                                    'widgetIndex' => $item['index'],
+                                    'fontFamilyOptions' => $fontFamilyOptions,
+                                ])
+                            @endforeach
+                        </div>
+
+                        <div class="ttf-sections-empty-state @if(!empty($columnsWidgets[$col])) d-none @endif" data-widget-empty-state>
+                            <small class="text-muted">{{ translate('Empty column. Drag or add a widget here.') }}</small>
                         </div>
                     </div>
-                    <div class="col-lg-3">
-                        <div class="form-group mb-0">
-                            <label>{{ translate('Grid Columns') }}</label>
-                            <select class="form-control aiz-selectpicker" name="builder[sections][{{ $groupIndex }}][columns]" data-group-columns-select>
-                                <option value="1" @selected($columnsCount === 1)>{{ translate('1 Column') }}</option>
-                                <option value="2" @selected($columnsCount === 2)>{{ translate('2 Columns') }}</option>
-                                <option value="3" @selected($columnsCount === 3)>{{ translate('3 Columns') }}</option>
-                                <option value="4" @selected($columnsCount === 4)>{{ translate('4 Columns') }}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="form-group mb-0">
-                            <label>{{ translate('Widget Gap') }}</label>
-                            <input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][section_gap]" value="{{ $group['section_gap'] ?? '18' }}" min="0" max="80">
-                        </div>
-                    </div>
-                </div>
+                @endfor
             </div>
+
+            @foreach (array_keys(\App\Support\CustomPageTemplate::structuredSectionTemplates()) as $widgetKey)
+                <template data-widget-template="{{ $widgetKey }}">
+                    @include('backend.website_settings.pages.partials.structured_section', [
+                        'widget' => \App\Support\CustomPageTemplate::structuredSectionTemplates()[$widgetKey],
+                        'groupIndex' => $groupIndex,
+                        'widgetIndex' => '__WIDGET_INDEX__',
+                        'fontFamilyOptions' => $fontFamilyOptions,
+                    ])
+                </template>
+            @endforeach
         </div>
 
-        <div class="ttf-section-block">
-            <div class="ttf-section-block__body p-0">
-                <!-- Columns Grid container -->
-                <div class="ttf-admin-columns-grid p-0 ttf-columns-count-{{ $columnsCount }}" data-columns-grid>
-                    @for ($col = 0; $col < $columnsCount; $col++)
-                        <div class="ttf-admin-column" data-admin-column="{{ $col }}">
-                            <div class="ttf-admin-column-header">
-                                <span>{{ translate('Column') }} {{ $col + 1 }}</span>
-                            </div>
-                            
-                            <div class="ttf-widget-list" data-widget-container data-column-index="{{ $col }}">
-                                @foreach ($columnsWidgets[$col] as $item)
-                                    @include('backend.website_settings.pages.partials.structured_section', [
-                                        'widget' => $item['data'],
-                                        'groupIndex' => $groupIndex,
-                                        'widgetIndex' => $item['index'],
-                                        'fontFamilyOptions' => $fontFamilyOptions,
-                                    ])
-                                @endforeach
-                            </div>
-                            
-                            <div class="ttf-sections-empty-state @if(!empty($columnsWidgets[$col])) d-none @endif" data-widget-empty-state>
-                                <small class="text-muted">{{ translate('Empty Column. Add/drag widgets here.') }}</small>
-                            </div>
-                        </div>
-                    @endfor
-                </div>
-
-                @foreach (array_keys(\App\Support\CustomPageTemplate::structuredSectionTemplates()) as $widgetKey)
-                    <template data-widget-template="{{ $widgetKey }}">
-                        @include('backend.website_settings.pages.partials.structured_section', [
-                            'widget' => \App\Support\CustomPageTemplate::structuredSectionTemplates()[$widgetKey],
-                            'groupIndex' => $groupIndex,
-                            'widgetIndex' => '__WIDGET_INDEX__',
-                            'fontFamilyOptions' => $fontFamilyOptions,
-                        ])
-                    </template>
-                @endforeach
-            </div>
-        </div>
-
-        <!-- Section Settings Portal Source Wrapper -->
         <div class="d-none" data-section-settings-portal>
             <div class="ttf-section-settings">
                 <details class="ttf-setting-group" open>
-                    <summary>{{ translate('Section Layout & Spacing') }}</summary>
+                    <summary>{{ translate('Section Basics') }}</summary>
+                    <div class="ttf-setting-group__body">
+                        <div class="form-group">
+                            <label>{{ translate('Section Name') }}</label>
+                            <input type="text" class="form-control" name="builder[sections][{{ $groupIndex }}][name]" value="{{ $group['name'] ?? '' }}" data-group-name-input placeholder="{{ translate('About Intro Section') }}">
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>{{ translate('Grid Columns') }}</label>
+                                    <select class="form-control aiz-selectpicker" name="builder[sections][{{ $groupIndex }}][columns]" data-group-columns-select>
+                                        <option value="1" @selected($columnsCount === 1)>{{ translate('1 Column') }}</option>
+                                        <option value="2" @selected($columnsCount === 2)>{{ translate('2 Columns') }}</option>
+                                        <option value="3" @selected($columnsCount === 3)>{{ translate('3 Columns') }}</option>
+                                        <option value="4" @selected($columnsCount === 4)>{{ translate('4 Columns') }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group mb-0">
+                                    <label>{{ translate('Widget Gap') }}</label>
+                                    <input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][section_gap]" value="{{ $group['section_gap'] ?? '18' }}" min="0" max="80">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="ttf-setting-group">
+                    <summary>{{ translate('Layout & Spacing') }}</summary>
                     <div class="ttf-setting-group__body">
                         <div class="ttf-toggle-list">
                             <label class="ttf-toggle-option">
@@ -233,7 +183,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label>{{ translate('Border Color') }}</label>
-                                    <input type="color" class="form-control" name="builder[sections][{{ $groupIndex }}][border_color]" value="{{ $group['border_color'] ?? '#e3d6ca' }}">
+                                    <input type="text" class="form-control" name="builder[sections][{{ $groupIndex }}][border_color]" value="{{ $group['border_color'] ?? '#21252933' }}">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -278,7 +228,7 @@
                 </details>
 
                 <details class="ttf-setting-group">
-                    <summary>{{ translate('Section Visibility') }}</summary>
+                    <summary>{{ translate('Visibility') }}</summary>
                     <div class="ttf-setting-group__body">
                         <div class="ttf-toggle-list">
                             <label class="ttf-toggle-option">

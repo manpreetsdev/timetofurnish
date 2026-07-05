@@ -2,6 +2,7 @@
     $title = (string) ($section['title'] ?? '');
     $highlight = (string) ($section['highlight_text'] ?? '');
     $titleHtml = e($title);
+    $showTitle = ($section['show_title'] ?? '1') === '1';
     $displayMode = $section['display_mode'] ?? 'content_only';
     $imagePosition = $section['image_position'] ?? 'bottom';
     $showBackground = ($section['show_background'] ?? '0') === '1';
@@ -46,10 +47,11 @@
     --section-text-align: {{ $section['text_align'] ?? 'left' }};
     --section-image-height: {{ (int) ($section['image_height'] ?? 520) }}px;
     --section-title-size: {{ !empty($section['title_font_size']) ? (int) $section['title_font_size'] . 'px' : '' }};
-    --section-title-height: {{ !empty($section['title_line_height']) ? $section['title_line_height'] : '' }};
+    --section-title-height: {{ !empty($section['title_line_height']) ? (is_numeric($section['title_line_height']) ? $section['title_line_height'] . 'px' : $section['title_line_height']) : '' }};
     --section-body-size: {{ !empty($section['body_font_size']) ? (int) $section['body_font_size'] . 'px' : '' }};
-    --section-body-height: {{ !empty($section['body_line_height']) ? $section['body_line_height'] : '' }};
+    --section-body-height: {{ !empty($section['body_line_height']) ? (is_numeric($section['body_line_height']) ? $section['body_line_height'] . 'px' : $section['body_line_height']) : '' }};
     --section-highlight-color: {{ !empty($section['highlight_color']) ? $section['highlight_color'] : 'var(--section-accent)' }};
+    --section-image-radius: {{ !empty($section['image_border_radius']) ? (int) $section['image_border_radius'] . 'px' : '24px' }};
 ">
     @if ($displayMode === 'content_image' && !empty($section['image']) && $imagePosition === 'top')
         <div class="ttf-story-section__full-media">
@@ -59,7 +61,7 @@
 
     @if ($displayMode !== 'image_only')
         <div class="ttf-story-section__full-content">
-            @if ($title !== '')
+            @if ($showTitle && $title !== '')
                 <h2>{!! $titleHtml !!}</h2>
             @endif
             @if (!empty($section['subtitle']))

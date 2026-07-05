@@ -91,6 +91,7 @@ class CustomPageTemplate
     {
         $shared = [
             'title' => '',
+            'show_title' => '1',
             'subtitle' => '',
             'highlight_text' => '',
             'content' => '',
@@ -132,7 +133,7 @@ class CustomPageTemplate
                 'mobile_stack_order' => 'content_first',
                 'image' => '',
                 'image_alt' => '',
-                'check_icon_color' => '#c8883a',
+                'check_icon_color' => '#C27325',
                 'items' => [
                     ['text' => ''],
                 ],
@@ -180,6 +181,7 @@ class CustomPageTemplate
                     [
                         'title' => '',
                         'anchor_id' => '',
+                        'image' => '',
                         'summary' => '',
                         'content' => '',
                     ],
@@ -204,7 +206,7 @@ class CustomPageTemplate
                 'button_text' => 'Click Here',
                 'button_link' => '',
                 'button_align' => 'left',
-                'button_bg_color' => '#c8883a',
+                'button_bg_color' => '#C27325',
                 'button_text_color' => '#ffffff',
                 'button_font_size' => '16',
                 'button_border_radius' => '6',
@@ -445,19 +447,21 @@ class CustomPageTemplate
             'page_background' => '#FAF8F5',
             'content_background' => '#ffffff',
             'card_background' => '#fffdf9',
-            'card_border_color' => '#e3d6ca',
-            'accent_color' => '#c8883a',
+            'card_border_color' => '#21252933',
+            'accent_color' => '#C27325',
             'heading_color' => '#2c2218',
             'subheading_color' => '#5b4839',
-            'paragraph_color' => '#564638',
+            'paragraph_color' => '#393939',
             'muted_color' => '#8a786a',
             'heading_font_family' => 'Playfair Display, serif',
             'subheading_font_family' => 'Poppins, sans-serif',
             'paragraph_font_family' => 'Poppins, sans-serif',
+            'heading_font_weight' => '700',
+            'body_font_weight' => '400',
             'container_width' => '1440',
             'section_spacing' => '54',
             'toc_background' => '#fffdf9',
-            'toc_border_color' => '#d8cabd',
+            'toc_border_color' => '#21252933',
             'toc_heading_color' => '#3a2a1f',
             'toc_text_color' => '#6f5f52',
         ];
@@ -589,6 +593,7 @@ class CustomPageTemplate
                 $normalized['items'][] = [
                     'title' => $title,
                     'anchor_id' => (string) ($item['anchor_id'] ?? self::makeAnchorId($title)),
+                    'image' => (string) ($item['image'] ?? ''),
                     'summary' => (string) ($item['summary'] ?? ''),
                     'content' => (string) ($item['content'] ?? ''),
                 ];
@@ -598,6 +603,7 @@ class CustomPageTemplate
                 $normalized['items'][] = [
                     'title' => '',
                     'anchor_id' => '',
+                    'image' => '',
                     'summary' => '',
                     'content' => '',
                 ];
