@@ -181,10 +181,10 @@ html {
     opacity: 1;
 }
 
-.hov-scale-img:hover img,
+/* .hov-scale-img:hover img,
 .hov-scale:hover {
     transform: scale(1.05);
-}
+} */
 
 .fullscreen {
     min-height: 100vh;
@@ -11620,7 +11620,6 @@ div.footable-loader>span.fooicon:after {
 
 .aiz-carousel.dots-inside-bottom .slick-dots {
     position: absolute;
-    bottom: 10px !important;
     left: 50%;
     transform: translateX(-50%);
     -webkit-transform: translateX(-50%);
@@ -12513,15 +12512,19 @@ ul.apps a:hover i {
     }
 }
 
+.home_banner_111 .slick-track {
+    gap: 10px !important;
+}
+
 /*slider mobile auto height*/
 @media (max-width: 767.98px) {
     .mobile-img-auto-height img {
         height: auto;
     }
 
-    .aiz-carousel.dots-inside-bottom .slick-dots {
+    /* .aiz-carousel.dots-inside-bottom .slick-dots {
         bottom: -30px !important;
-    }
+    } */
 
     div#todays_deal {
         margin-top: 30px;
