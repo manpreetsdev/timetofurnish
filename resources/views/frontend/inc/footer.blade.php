@@ -291,17 +291,25 @@
             >
         </div>
 
-        <div class="secure-payment-box mb-3">
-            <h5 class="secure-payment-title textheading">
-                Pay Securely With
-            </h5>
+       <div class="secure-payment-box mb-3">
+    <h5 class="secure-payment-title textheading">
+        Pay Securely With
+    </h5>
 
-            <img 
-                src="{{ asset('assets/img/securelypayments.png') }}" 
-                alt="Pay Securely With" 
-                class="secure-payment-img"
-            >
-        </div>
+    @if (get_setting('payment_method_images') != null)
+        <ul class="list-inline mb-0 secure-payment-list">
+            @foreach (explode(',', get_setting('payment_method_images')) as $key => $value)
+                <li class="list-inline-item visa-card">
+                    <img 
+                        src="{{ uploaded_asset($value) }}" 
+                        alt="{{ translate('payment_method') }}"
+                        class="secure-payment-img"
+                    >
+                </li>
+            @endforeach
+        </ul>
+    @endif
+</div>
 
         <div class="secure-payment-box">
             <h5 class="secure-payment-title textheading">
