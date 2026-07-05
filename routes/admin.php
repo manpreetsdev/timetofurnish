@@ -77,6 +77,8 @@ Route::controller(UpdateController::class)->group(function () {
 
 Route::get('/admin', [AdminController::class, 'admin_dashboard'])->name('admin.dashboard')->middleware(['auth', 'admin', 'prevent-back-history']);
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-back-history']], function() {
+    Route::get('/run-migrations', [AdminController::class, 'runMigrationsPage'])->name('admin.run_migrations.page');
+    Route::post('/run-migrations', [AdminController::class, 'runMigrations'])->name('admin.run_migrations');
 
     // category
     Route::resource('categories', CategoryController::class);
@@ -415,6 +417,7 @@ Route::resource('sellers', SellerController::class);
         Route::get('/user_search_report', 'user_search_report')->name('user_search_report.index');
         Route::get('/commission-log', 'commission_history')->name('commission-log.index');
         Route::get('/wallet-history', 'wallet_transaction_history')->name('wallet-history.index');
+        Route::get('/event-viewer', 'event_viewer')->name('event-viewer.index');
     });
 
     //Blog Section
