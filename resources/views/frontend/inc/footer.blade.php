@@ -12,26 +12,32 @@
         </div>
     </section>
 @endif
+
+
+@php
+    $col_values = 'ttf-footer-col col-md-6 col-sm-6';
+@endphp
+<section class="py-lg-5 text-light footer-widget ttf-footer-links-section">
 <section class="py-4 text-light footer-widget iuytrey footer-newsletter-section">
     <div class="container">
         <div class="row align-items-center footer-newsletter-row">
             <!-- about & subscription -->
-            <div class="col-lg-7 newsletter-column">
+            <div class="col-lg-7  col-md-9 mx-auto text-center newsletter-column">
                 <!--<div class="mb-4 text-secondary text-justify">
                     {!! get_setting('about_us_description', null, App::getLocale()) !!}
                 </div>-->
                 <h5 class="fs-14 fw-700 mb-3">
-                    {{ translate('Subscribe to our newsletter for regular updates about Offers, Coupons & more') }}</h5>
+                    {{ translate('Subscribe to our newsletter for regular updates about Offers, Coupons  more') }}</h5>
                 <div class="mb-3">
                     <form method="POST" action="{{ route('subscribers.store') }}">
                         @csrf
                         <div class="position-relative newsletter-form-wrap">
                             <input type="email" class="form-control w-100 email_input_footer"
                                 placeholder="{{ translate('Your Email') }}" name="email" required
-                                style="padding: 12px 160px 12px 24px; border-radius:50px; background: #fff; border:1.5px solid #eadfd3; color:#39322a;">
+                                style="padding: 12px 160px 12px 24px; background: #fff; border:1.5px solid #eadfd3; color:#39322a;">
                             <button type="submit"
                                 class="btn footer_submit_btn borderbtn position-absolute d-flex align-items-center justify-content-center"
-                                style="right: 4px; top: 4px; bottom: 4px; min-width: 130px; border-radius: 50px; background:#685b4e; color:#fff; border:none;">
+                                style="right: 4px; top: 4px; bottom: 4px; min-width: 130px; background:#685b4e; color:#fff; border:none;">
                                 <span class="d-sm-block  d-lg-block">{{ translate('Subscribe') }}</span>
                                 <!-- <i class="las la-arrow-right d-sm-none" style="font-size: 20px;"></i> -->
                             </button>
@@ -43,116 +49,13 @@
 
 
 
-            <!-- Follow & Apps -->
-            <div class="col-lg-5 footer-social">
-                <!-- Social -->
-                @if (get_setting('show_social_links'))
-                    <h5 class="fs-14 fw-700 text-secondary text-right text-uppercase mt-3 mt-lg-0 socal_sec_label">
-                        {{ translate('Follow Us') }}</h5>
-                    <ul class="list-inline social footer-social-list mb-0 justify-content-right ">
-                        @if (!empty(get_setting('facebook_link')))
-                            <li class="list-inline-item ml-2 mr-2">
-                                <a href="{{ get_setting('facebook_link') }}" target="_blank" class="facebook" aria-label="Facebook">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-                                    </svg>
-                                </a>
-                            </li>
-                        @endif
-                        @if (!empty(get_setting('twitter_link')))
-                            <li class="list-inline-item ml-2 mr-2">
-                                <a href="{{ get_setting('twitter_link') }}" target="_blank" class="twitter" aria-label="X">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                                    </svg>
-                                </a>
-                            </li>
-                        @endif
-                        @if (!empty(get_setting('instagram_link')))
-                            <li class="list-inline-item ml-2 mr-2">
-                                <a href="{{ get_setting('instagram_link') }}" target="_blank" class="instagram" aria-label="Instagram">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-                                    </svg>
-                                </a>
-                            </li>
-                        @endif
-                        @if (!empty(get_setting('youtube_link')))
-                            <li class="list-inline-item ml-2 mr-2">
-                                <a href="{{ get_setting('youtube_link') }}" target="_blank" class="youtube" aria-label="YouTube">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/>
-                                        <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="currentColor"/>
-                                    </svg>
-                                </a>
-                            </li>
-                        @endif
-                        @if (!empty(get_setting('linkedin_link')))
-                            <li class="list-inline-item ml-2 mr-2">
-                                <a href="{{ get_setting('linkedin_link') }}" target="_blank" class="linkedin" aria-label="LinkedIn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                                        <rect x="2" y="9" width="4" height="12"/>
-                                        <circle cx="4" cy="4" r="2" fill="currentColor"/>
-                                    </svg>
-                                </a>
-                            </li>
-                        @endif
-                        @if (!empty(get_setting('pinterest_link')))
-                            <li class="list-inline-item ml-2 mr-2">
-                                <a href="{{ get_setting('pinterest_link') }}" target="_blank" class="pinterest" aria-label="Pinterest">
-                                    <i class="lab la-pinterest-p"></i>
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                @endif
-
-
-
-                <!-- Apps link -->
-                @if (get_setting('play_store_link') != null || get_setting('app_store_link') != null)
-                    <h5 class="fs-14 fw-700 text-secondary text-uppercase mt-3">{{ translate('Mobile Apps') }}</h5>
-                    <div class="d-flex mt-3">
-                        <div class="">
-                            <a href="{{ get_setting('play_store_link') }}" target="_blank"
-                                class="mr-2 mb-2 overflow-hidden hov-scale-img">
-                                <img class="lazyload has-transition"
-                                    src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"
-                                    data-src="{{ static_asset('assets/img/play.png') }}" alt="{{ env('APP_NAME') }}"
-                                    height="44">
-                            </a>
-                        </div>
-                        <div class="">
-                            <a href="{{ get_setting('app_store_link') }}" target="_blank"
-                                class="overflow-hidden hov-scale-img">
-                                <img class="lazyload has-transition"
-                                    src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"
-                                    data-src="{{ static_asset('assets/img/app.png') }}" alt="{{ env('APP_NAME') }}"
-                                    height="44">
-                            </a>
-                        </div>
-                    </div>
-                @endif
-            </div>
-
+           
 
 
 
         </div>
     </div>
 </section>
-
-@php
-    $col_values =
-        get_setting('vendor_system_activation') == 1 || addon_is_activated('delivery_boy')
-            ? 'col-lg-3 col-md-6 col-sm-6'
-            : 'col-md-4 col-sm-6';
-@endphp
-<section class="py-lg-5 text-light footer-widget ttf-footer-links-section">
-
     <!-- Desktop Footer Widgets -->
     <div class="container d-none d-lg-block">
         <div class="row gutters-20">
@@ -160,7 +63,7 @@
             <!-- Quick Links -->
             <div class="{{ $col_values }}">
                 <div class="ttf-footer-card">
-                    <h4 class="fs-14 text-light text-uppercase fw-700 mb-3">
+                    <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
                         Quick Links
                     </h4>
 
@@ -212,7 +115,7 @@
             <!-- Important Links -->
             <div class="{{ $col_values }}">
                 <div class="ttf-footer-card">
-                    <h4 class="fs-14 text-light text-uppercase fw-700 mb-3">
+                    <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
                         {{ translate('Important Links') }}
                     </h4>
 
@@ -235,7 +138,7 @@
             <!-- My Account -->
             <div class="{{ $col_values }}">
                 <div class="ttf-footer-card">
-                    <h4 class="fs-14 text-light text-uppercase fw-700 mb-3">
+                    <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
                         {{ translate('My Account') }}
                     </h4>
 
@@ -289,11 +192,11 @@
 
             <!-- Seller & Delivery Boy -->
             @if (get_setting('vendor_system_activation') == 1 || addon_is_activated('delivery_boy'))
-                <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="ttf-footer-col col-md-6 col-sm-6">
                     <div class="ttf-footer-card">
 
                         @if (get_setting('vendor_system_activation') == 1)
-                            <h4 class="fs-14 text-light text-uppercase fw-700 mb-3">
+                            <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
                                 {{ translate('Seller Zone') }}
                             </h4>
 
@@ -351,7 +254,7 @@
                         @endif
 
                         <div class="ttf-partner-box mt-4">
-                            <h4 class="fs-14 text-light fw-700 mb-3 partner-network-title">
+                            <h4 class="fs-14 text-light fw-700 mb-3 partner-network-title textheading">
                                 Join Our Partner Network
                             </h4>
 
@@ -368,12 +271,52 @@
                                 </li>
                             </ul>
                         </div>
-						
-						 
-
-                    </div>
+</div>
+                    
                 </div>
             @endif
+            <!-- Delivery Partners / Payments / Trustpilot -->
+<div class="ttf-footer-col col-md-6 col-sm-6">
+    <div class="ttf-footer-card">
+
+        <div class="secure-payment-box mb-3">
+            <h5 class="secure-payment-title textheading">
+                Delivery Partners
+            </h5>
+
+            <img 
+                src="{{ asset('assets/img/delivery_partners_logo.png') }}" 
+                alt="Delivery Partners" 
+                class="secure-payment-img"
+            >
+        </div>
+
+        <div class="secure-payment-box mb-3">
+            <h5 class="secure-payment-title textheading">
+                Pay Securely With
+            </h5>
+
+            <img 
+                src="{{ asset('assets/img/securelypayments.png') }}" 
+                alt="Pay Securely With" 
+                class="secure-payment-img"
+            >
+        </div>
+
+        <div class="secure-payment-box">
+            <h5 class="secure-payment-title textheading">
+                What Trustpilot Say’s
+            </h5>
+
+            <img 
+                src="{{ asset('assets/img/trustpilot.png') }}" 
+                alt="Trustpilot Reviews" 
+                class="secure-payment-img trustpilot-img"
+            >
+        </div>
+
+    </div>
+</div>
 
         </div>
     </div>
@@ -639,40 +582,45 @@
         @endif
 
 		
-		     <!-- Careers - Direct Link No Dropdown -->
-<div class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-career-link-wrap">
+		<!-- Join Delivery Partner - Direct Link -->
+<div class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-direct-link-wrap">
     <div class="aiz-accordion-heading container">
         <a href="{{ route('become_delivery_partner') }}"
-           class="ttf-mobile-career-link fs-14 text-white bg-transparent">
-            {{ translate('join our delivery partner') }}
+           class="ttf-mobile-direct-link bg-transparent">
+            {{ translate('Join Our Delivery Partner') }}
         </a>
     </div>
 </div>
-		
-		
-	
-		
-		
-        <!-- Careers -->
-     <!-- Careers - Direct Link No Dropdown -->
-<div class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-career-link-wrap">
+
+<!-- Careers - Direct Link -->
+<div class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-direct-link-wrap">
     <div class="aiz-accordion-heading container">
         <a href="{{ route('career') }}"
-           class="ttf-mobile-career-link fs-14 text-white bg-transparent">
+           class="ttf-mobile-direct-link bg-transparent">
             {{ translate('Careers') }}
         </a>
     </div>
 </div>
-		
-		        <!-- Meet Our Team -->
-<!-- Meet Our Team - Direct Link Same Accordion Style -->
-<div class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-single-link-wrap">
+
+<!-- Meet Our Team - Direct Link -->
+<div class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-direct-link-wrap">
     <div class="aiz-accordion-heading container">
         <a href="{{ route('meet.the.team') }}"
-           class="ttf-mobile-single-link fs-14 text-white bg-transparent">
-            Meet Our Teams
+           class="ttf-mobile-direct-link bg-transparent">
+            {{ translate('Meet Our Team') }}
         </a>
     </div>
+</div>
+<div class="secure-payment-box mt-3 ms-2">
+    <h5 class="secure-payment-title">
+        Pay Securely With
+    </h5>
+
+    <img 
+        src="{{ asset('assets/img/securelypayments.png') }}" 
+        alt="Pay Securely With" 
+        class="secure-payment-img"
+    >
 </div>
 
         <!-- Delivery Boy -->
@@ -712,105 +660,20 @@
         @endif
 
     </div>
-</section>
 
-<!-- FOOTER -->
-<footer class="pt-3 pb-7 pb-xl-3  text-soft-light" style="background:#39322a;">
-    <div class="container">
-        <div class="row align-items-center mt-3">
-            <div class="col-lg-6 mb-4 mb-lg-0">
-                <div class="text-center text-lg-left">
-                    <p>Delivery Partners</p>
-                    <ul class="list-inline mb-0 logos">
-                        <li class="list-inline-item mr-1">
-                            <img class="img-fluid logo"lo src="{{ asset('public/assets/img/evri-logo.jpg') }}"
-                                alt="evri-log">
 
-                        </li>
-                        <li class="list-inline-item mr-1">
-                            <img style="width:80px;" class="img-fluid logo"lo
-                                src="{{ asset('public/assets/img/dhl.png') }}" alt="DHL Logo">
-
-                        </li>
-                        <li class="list-inline-item  mr-1">
-                            <img class="img-fluid logo" src="{{ asset('public/assets/img/ups.png') }}"
-                                alt="UPS Logo">
-
-                        </li>
-                        <li class="list-inline-item  mr-1">
-                            <img class="img-fluid logo" src="{{ asset('public/assets/img/royal mail.png') }}"
-                                alt="ROYAL MAIL">
-
-                        </li>
-                        <li class="list-inline-item  mr-1">
-                            <img class="img-fluid logo" src="{{ asset('public/assets/img/dpd.png') }}"
-                                alt="DPD Logo">
-                        </li>
-                    </ul>
+    <div class="container px-xs-0">
+      <div class="row bottom-div">
+          <div class="col-lg-6 order-1 order-lg-0 mt-2  mb-sm-50">
+                <div class=" text-justify fs-14" current-verison="{{ get_setting('current_version') }}">
+                    <p class="footer-content" style="letter-spacing:0.5px; line-height: 1.6;">
+                        Copyright © 2025 Time to Furnish. All Right Reserved. 
+                    </p>
                 </div>
             </div>
 
-            <!-- Payment Method Images -->
-            <div class="col-lg-6 mb-4 mb-lg-0">
-                <div class="text-center text-lg-right">
-                    <p>Pay Securely with </p>
-                    <ul class="list-inline mb-0">
-                        @if (get_setting('payment_method_images') != null)
-                            @foreach (explode(',', get_setting('payment_method_images')) as $key => $value)
-                                <li class="list-inline-item  visa-card">
-                                    <img src="{{ uploaded_asset($value) }}" height="30" class="mw-100 h-auto"
-                                        style="max-height: 30px" alt="{{ translate('payment_method') }}">
-                                </li>
-                            @endforeach
-                        @endif
-                    </ul>
-                </div>
-            </div>
 
-            <!--copy-->
-            <div class="col-lg-6 mb-4 mb-lg-0">
-                <div class="text-center text-lg-left">
-                    <div class="copyright fs-14  text-lg-start">
-                        {!! get_setting('frontend_copyright_text', null, App::getLocale()) !!}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Payment Method Images -->
-            <!-- Payment Method Images -->
-            <div class="col-lg-6 mb-4 mb-lg-0 mt-3">
-                <div class="text-center text-lg-right">
-
-                    <div class="trustpilot-box d-flex flex-column align-items-lg-end align-items-center">
-
-                        <!-- Trustpilot Text with Icon -->
-                        <span class="tp-title">
-                            <span class="green-star rotate">★</span>Trustpilot
-                        </span>
-                        <!-- Stars Image -->
-                        <a href="https://www.trustpilot.com/review/timetofurnish.com" target="_blank">
-                            <img src="{{ asset('public/assets/img/pilot.jpg') }}" class="pilot"
-                                alt="Trustpilot Reviews">
-                        </a>
-
-                        <!-- Review Text -->
-                        <span class="tp-review"> Trust Score 4.5 </span>
-
-                    </div>
-
-                </div>
-            </div>
-            <!--copy-->
-
-            <!-- Bottom Row -->
-        </div>
-
-    </div>
-
-</footer>
-<!--<section class= mt-auto">-->
-<div class="container px-xs-0">
-    <div class="col-lg-12 order-1 order-lg-0 mt-2  mb-sm-50">
+    <div class="col-lg-6 order-1 order-lg-0 mt-2  mb-sm-50">
         <div class=" text-justify fs-14" current-verison="{{ get_setting('current_version') }}">
             <p class="footer-content" style="letter-spacing:0.5px; line-height: 1.6;">
                 <span class="footer-text-short">We operate as an independent third-party marketplace and are not liable...</span>
@@ -819,7 +682,15 @@
             </p>
         </div>
     </div>
+
+      </div>
 </div>
+</section>
+
+<!-- FOOTER -->
+
+<!--<section class= mt-auto">-->
+
 <!--</section>-->
 
 
@@ -1116,9 +987,7 @@
     ============================== */
 
     .ttf-footer-links-section {
-        background:
-            radial-gradient(circle at top left, rgba(255, 255, 255, 0.10), transparent 30%),
-            linear-gradient(135deg, #746655 0%, #5f5245 45%, #43392f 100%) !important;
+          background-image: url("/assets/img/footer-bg-image.jpeg");
         position: relative;
         overflow: hidden;
         padding-top: 45px !important;
@@ -1153,21 +1022,17 @@
     }
 
     .ttf-footer-card {
-        background: #fff;
+       
         border: 1px solid rgba(255, 255, 255, 0.14);
         border-radius: 22px;
         padding: 26px 24px;
-        height: 100%;
         min-height: 300px;
         backdrop-filter: blur(8px);
         transition: all 0.3s ease;
+        font-family: 'Poppins';
     }
 
-    .ttf-footer-card:hover {
-        transform: translateY(-5px);
-        
-        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
-    }
+   
 
     .ttf-footer-card h4 {
         position: relative;
@@ -1218,7 +1083,7 @@
 
     /* Mobile Accordion Design */
     .ttf-mobile-footer {
-        background: #685b4e !important;
+        
         padding: 12px 0;
     }
 
@@ -1231,27 +1096,18 @@
         background: transparent !important;
     }
 
-    .ttf-mobile-accordion .aiz-accordion {
-        width: 100%;
-        padding: 16px 0;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        text-align: left;
-        border: none;
-        outline: none;
-        color: #fff !important;
-    }
+   
 
     .ttf-mobile-accordion .aiz-accordion-panel {
         background: rgba(255, 255, 255, 0.045) !important;
     }
 
     .ttf-mobile-accordion a {
-        color: rgba(255, 255, 255, 0.92) !important;
+        color: #393939 !important;
     }
 
     .ttf-mobile-accordion a:hover {
-        color: #fff !important;
+        color: #393939  !important;
     }
 
     @media (max-width: 991px) {
@@ -1310,6 +1166,58 @@
     color: #fff !important;
     text-decoration: none !important;
 }
+
+
+/* ===== Desktop footer 5 columns fix ===== */
+@media (min-width: 992px) {
+    .ttf-footer-links-section .row.gutters-20 {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .ttf-footer-links-section .ttf-footer-col {
+        flex: 0 0 20% !important;
+        max-width: 20% !important;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+.ttf-footer-links-section .ttf-footer-card {
+    min-height: auto !important;
+}
+
+.secure-payment-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 12px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.secure-payment-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 45px;
+    height: 2px;
+    background: #876a4b;
+    border-radius: 20px;
+}
+
+.secure-payment-img {
+    max-width: 100%;
+    height: auto;
+    background: #fff;
+    border-radius: 6px;
+}
+
+.trustpilot-img {
+    max-width: 150px;
+}
+
 </style>
 <script>
     function toggleFlags(event) {
