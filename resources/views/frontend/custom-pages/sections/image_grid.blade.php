@@ -2,6 +2,7 @@
     $title = (string) ($section['title'] ?? '');
     $highlight = (string) ($section['highlight_text'] ?? '');
     $titleHtml = e($title);
+    $showTitle = ($section['show_title'] ?? '1') === '1';
     $showBackground = ($section['show_background'] ?? '0') === '1';
     $showBorder = ($section['show_border'] ?? '0') === '1';
     $usePadding = ($section['use_padding'] ?? '0') === '1';
@@ -44,15 +45,15 @@
     --ttf-grid-columns: {{ max(2, min(4, (int) ($section['columns'] ?? 3))) }};
     --ttf-grid-image-height: {{ (int) ($section['card_image_height'] ?? 240) }}px;
     --section-title-size: {{ !empty($section['title_font_size']) ? (int) $section['title_font_size'] . 'px' : '' }};
-    --section-title-height: {{ !empty($section['title_line_height']) ? $section['title_line_height'] : '' }};
+    --section-title-height: {{ !empty($section['title_line_height']) ? (is_numeric($section['title_line_height']) ? $section['title_line_height'] . 'px' : $section['title_line_height']) : '' }};
     --section-body-size: {{ !empty($section['body_font_size']) ? (int) $section['body_font_size'] . 'px' : '' }};
-    --section-body-height: {{ !empty($section['body_line_height']) ? $section['body_line_height'] : '' }};
+    --section-body-height: {{ !empty($section['body_line_height']) ? (is_numeric($section['body_line_height']) ? $section['body_line_height'] . 'px' : $section['body_line_height']) : '' }};
     --section-highlight-color: {{ !empty($section['highlight_color']) ? $section['highlight_color'] : 'var(--section-accent)' }};
 ">
     @if (!empty($section['subtitle']))
         <p class="ttf-story-section__eyebrow">{{ $section['subtitle'] }}</p>
     @endif
-    @if ($title !== '')
+    @if ($showTitle && $title !== '')
         <h2>{!! $titleHtml !!}</h2>
     @endif
     @if (!empty($section['content']))

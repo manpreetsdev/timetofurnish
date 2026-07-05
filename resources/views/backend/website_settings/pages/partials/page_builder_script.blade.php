@@ -4,19 +4,25 @@
         const groupEmptyState = document.querySelector('[data-group-empty-state]');
         const groupTemplate = document.querySelector('template[data-group-template]');
         const pageForm = document.querySelector('.ttf-admin-page-form');
-        const pageBuilderLayout = document.querySelector('[data-page-builder-layout]');
+        const pageTitleInput = document.querySelector('#ttf-page-title');
+        const pageSlugInput = document.querySelector('[data-page-slug-input]');
+        const pageSlugAutofillToggle = document.querySelector('[data-page-slug-autofill]');
+        const builderLayout = document.querySelector('[data-page-builder-layout]');
+        const sidebarToggles = document.querySelectorAll('[data-sidebar-toggle]');
+
         let draggedGroupCard = null;
         let draggedWidgetCard = null;
         let draggedSidebarWidgetType = null;
-
-        // Settings portal state variables
         let activePortalOwner = null;
         let activePortalElement = null;
+        let slugEditedManually = pageSlugInput ? pageSlugInput.value.trim() !== '' : false;
 
         const activeSettingsHeader = document.getElementById('active-settings-header');
         const activeSettingsTitle = document.getElementById('active-settings-title');
         const activeSettingsPortalTarget = document.getElementById('active-settings-portal-target');
         const defaultPageSettings = document.getElementById('default-page-settings');
+        const widgetSidebar = document.querySelector('[data-builder-sidebar="widgets"]');
+        const settingsSidebar = document.querySelector('[data-builder-sidebar="settings"]');
 
         function refreshPlugins() {
             if (window.AIZ && AIZ.plugins) {
@@ -32,12 +38,91 @@
             }
         }
 
+        function slugify(text) {
+            return text.toString().toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-')
+                .replace(/^-+/, '')
+                .replace(/-+$/, '');
+        }
+
+        function syncSlugFromTitle(force) {
+            if (!pageTitleInput || !pageSlugInput || !pageSlugAutofillToggle) {
+                return;
+            }
+
+            if (!pageSlugAutofillToggle.checked && !force) {
+                return;
+            }
+
+            if (slugEditedManually && !force) {
+                return;
+            }
+
+            pageSlugInput.value = slugify(pageTitleInput.value || '');
+        }
+
+        function isSidebarOpen(sidebarName) {
+            const sidebar = sidebarName === 'widgets' ? widgetSidebar : settingsSidebar;
+            return !!(sidebar && sidebar.classList.contains('is-open'));
+        }
+
+        function syncSidebarButtons() {
+            const sidebarMap = {
+                widgets: widgetSidebar,
+                settings: settingsSidebar,
+            };
+
+            Object.keys(sidebarMap).forEach(function (sidebarName) {
+                const isOpen = isSidebarOpen(sidebarName);
+                const sidebar = sidebarMap[sidebarName];
+
+                if (sidebar) {
+                    sidebar.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+                }
+
+                sidebarToggles.forEach(function (button) {
+                    if (button.getAttribute('data-sidebar-toggle') !== sidebarName) {
+                        return;
+                    }
+
+                    button.classList.toggle('is-active', isOpen);
+                    button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                });
+            });
+        }
+
+        function setSidebarState(sidebarName, shouldOpen) {
+            const sidebar = sidebarName === 'widgets' ? widgetSidebar : settingsSidebar;
+            if (!sidebar) {
+                return;
+            }
+
+            sidebar.classList.toggle('is-open', shouldOpen);
+            sidebar.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+
+            if (sidebarName === 'settings' && !shouldOpen) {
+                closeSettingsPortal();
+            }
+
+            syncSidebarButtons();
+        }
+
+        function toggleSidebarState(sidebarName) {
+            setSidebarState(sidebarName, !isSidebarOpen(sidebarName));
+        }
+
+        function ensureSidebarOpen(sidebarName) {
+            if (!isSidebarOpen(sidebarName)) {
+                setSidebarState(sidebarName, true);
+            }
+        }
+
         function closeSettingsPortal() {
             if (activePortalOwner && activePortalElement) {
-                // Remove visual active class
                 activePortalOwner.classList.remove('is-active-editing');
-                
-                // Return portal element back to owner
+
                 const isWidget = activePortalOwner.hasAttribute('data-widget-card');
                 const selector = isWidget ? '[data-widget-settings-portal]' : '[data-section-settings-portal]';
                 const portalSource = activePortalOwner.querySelector(selector);
@@ -49,54 +134,52 @@
             activePortalOwner = null;
             activePortalElement = null;
 
-            if (activeSettingsHeader) activeSettingsHeader.classList.add('d-none');
+            if (activeSettingsHeader) {
+                activeSettingsHeader.classList.add('d-none');
+            }
             if (activeSettingsPortalTarget) {
                 activeSettingsPortalTarget.classList.add('d-none');
                 activeSettingsPortalTarget.innerHTML = '';
             }
-            if (defaultPageSettings) defaultPageSettings.classList.remove('d-none');
+            if (defaultPageSettings) {
+                defaultPageSettings.classList.remove('d-none');
+            }
         }
 
         function openSettingsPortal(ownerElement, portalSelector, titleText) {
-            // Restore any current portal first
             closeSettingsPortal();
 
             const portalSource = ownerElement.querySelector(portalSelector);
-            if (!portalSource) return;
+            if (!portalSource) {
+                return;
+            }
 
             const settingsDiv = portalSource.firstElementChild;
-            if (!settingsDiv) return;
+            if (!settingsDiv) {
+                return;
+            }
 
             activePortalOwner = ownerElement;
             activePortalElement = settingsDiv;
-
-            // Mark active element visually
             ownerElement.classList.add('is-active-editing');
+            ensureSidebarOpen('settings');
 
-            // Move settingsDiv physically to sidebar target
             if (activeSettingsPortalTarget) {
                 activeSettingsPortalTarget.appendChild(settingsDiv);
                 activeSettingsPortalTarget.classList.remove('d-none');
             }
 
-            if (activeSettingsTitle) activeSettingsTitle.textContent = titleText;
-            if (activeSettingsHeader) activeSettingsHeader.classList.remove('d-none');
-            if (defaultPageSettings) defaultPageSettings.classList.add('d-none');
-
-            // Open sidebar layout if hidden
-            if (pageBuilderLayout) {
-                pageBuilderLayout.classList.remove('is-sidebar-hidden');
-                const label = document.querySelector('[data-toggle-page-sidebar] [data-sidebar-toggle-label]');
-                if (label) {
-                    label.textContent = 'Hide Page Settings';
-                }
+            if (activeSettingsTitle) {
+                activeSettingsTitle.textContent = titleText;
+            }
+            if (activeSettingsHeader) {
+                activeSettingsHeader.classList.remove('d-none');
+            }
+            if (defaultPageSettings) {
+                defaultPageSettings.classList.add('d-none');
             }
 
-            // Ensure settings tab is active
-            const tabBtn = document.querySelector('[data-tab-target="settings-tab"]');
-            if (tabBtn) {
-                tabBtn.click();
-            }
+            refreshPlugins();
         }
 
         function syncGroupEmptyState() {
@@ -108,6 +191,10 @@
         }
 
         function syncWidgetEmptyState(groupCard) {
+            if (!groupCard) {
+                return;
+            }
+
             groupCard.querySelectorAll('[data-widget-container]').forEach(function (widgetContainer) {
                 const column = widgetContainer.closest('[data-admin-column]');
                 const widgetEmptyState = column ? column.querySelector('[data-widget-empty-state]') : null;
@@ -123,7 +210,19 @@
             });
         }
 
+        function getOwnerScope(owner) {
+            if (owner && activePortalOwner === owner && activePortalElement) {
+                return activePortalElement;
+            }
+
+            return owner;
+        }
+
         function setExpanded(card, bodySelector, buttonSelector, expanded) {
+            if (!card) {
+                return;
+            }
+
             const body = card.querySelector(bodySelector);
             const button = card.querySelector(buttonSelector);
 
@@ -141,33 +240,61 @@
         }
 
         function syncAppearance(card) {
-            const backgroundToggle = card.querySelector('[data-style-toggle="background"]');
-            const borderToggle = card.querySelector('[data-style-toggle="border"]');
-            const paddingToggle = card.querySelector('[data-style-toggle="padding"]');
+            if (!card) {
+                return;
+            }
+
+            const scope = getOwnerScope(card);
+            const backgroundToggle = scope.querySelector('[data-style-toggle="background"]');
+            const borderToggle = scope.querySelector('[data-style-toggle="border"]');
+            const paddingToggle = scope.querySelector('[data-style-toggle="padding"]');
             const backgroundEnabled = backgroundToggle ? backgroundToggle.checked : false;
             const borderEnabled = borderToggle ? borderToggle.checked : false;
             const paddingEnabled = paddingToggle ? paddingToggle.checked : false;
 
-            card.querySelectorAll('[data-style-target="background"]').forEach(function (element) {
+            scope.querySelectorAll('[data-style-target="background"]').forEach(function (element) {
                 element.classList.toggle('d-none', !backgroundEnabled);
             });
-            card.querySelectorAll('[data-style-target="border"]').forEach(function (element) {
+            scope.querySelectorAll('[data-style-target="border"]').forEach(function (element) {
                 element.classList.toggle('d-none', !borderEnabled);
             });
-            card.querySelectorAll('[data-style-target="padding"]').forEach(function (element) {
+            scope.querySelectorAll('[data-style-target="padding"]').forEach(function (element) {
                 element.classList.toggle('d-none', !paddingEnabled);
             });
-            card.querySelectorAll('[data-style-target="radius"]').forEach(function (element) {
+            scope.querySelectorAll('[data-style-target="radius"]').forEach(function (element) {
                 element.classList.toggle('d-none', !(backgroundEnabled || borderEnabled));
             });
         }
 
+        function syncToggleFields(card) {
+            if (!card) {
+                return;
+            }
+
+            const scope = getOwnerScope(card);
+            scope.querySelectorAll('[data-toggle-field]').forEach(function (toggle) {
+                const fieldName = toggle.getAttribute('data-toggle-field');
+                if (!fieldName) {
+                    return;
+                }
+
+                scope.querySelectorAll('[data-toggle-target="' + fieldName + '"]').forEach(function (target) {
+                    target.classList.toggle('d-none', !toggle.checked);
+                });
+            });
+        }
+
         function syncVisibilitySummary(card, summarySelector) {
+            if (!card) {
+                return;
+            }
+
             const summary = card.querySelector(summarySelector);
             if (!summary) {
                 return;
             }
 
+            const scope = getOwnerScope(card);
             const labels = [];
             const devices = {
                 desktop: 'Desktop',
@@ -177,7 +304,7 @@
             };
 
             Object.keys(devices).forEach(function (deviceKey) {
-                const toggle = card.querySelector('[data-visibility-toggle="' + deviceKey + '"]');
+                const toggle = scope.querySelector('[data-visibility-toggle="' + deviceKey + '"]');
                 if (toggle && toggle.checked) {
                     labels.push(devices[deviceKey]);
                 }
@@ -197,7 +324,11 @@
         }
 
         function syncGroupLabel(groupCard) {
-            const input = groupCard.querySelector('[data-group-name-input]');
+            if (!groupCard) {
+                return;
+            }
+
+            const input = getOwnerScope(groupCard).querySelector('[data-group-name-input]');
             const label = groupCard.querySelector('[data-group-label]');
 
             if (label) {
@@ -205,12 +336,8 @@
             }
         }
 
-        function syncWidgetLabel(widgetCard) {
-            const headingInput = widgetCard.querySelector('[data-widget-heading-input]');
-            const subheadingInput = widgetCard.querySelector('[data-widget-subheading-input]');
-            const label = widgetCard.querySelector('[data-widget-label]');
-            const preview = widgetCard.querySelector('[data-widget-preview]');
-            const typeInput = widgetCard.querySelector('input[name*="[type]"]');
+        function getWidgetTypeLabel(widgetCard) {
+            const typeInput = widgetCard ? widgetCard.querySelector('input[name*="[type]"]') : null;
             const labels = {
                 rich_text: 'Text Editor',
                 split: 'Two Column',
@@ -222,7 +349,21 @@
                 image_widget: 'Single Image',
                 button_widget: 'Action Button'
             };
-            const fallback = labels[typeInput ? typeInput.value : 'rich_text'] || 'Widget';
+
+            return labels[typeInput ? typeInput.value : 'rich_text'] || 'Widget';
+        }
+
+        function syncWidgetLabel(widgetCard) {
+            if (!widgetCard) {
+                return;
+            }
+
+            const scope = getOwnerScope(widgetCard);
+            const headingInput = scope.querySelector('[data-widget-heading-input]');
+            const subheadingInput = scope.querySelector('[data-widget-subheading-input]');
+            const label = widgetCard.querySelector('[data-widget-label]');
+            const preview = widgetCard.querySelector('[data-widget-preview]');
+            const fallback = getWidgetTypeLabel(widgetCard);
 
             if (label) {
                 label.textContent = fallback;
@@ -233,9 +374,17 @@
                 const subheading = subheadingInput ? subheadingInput.value.trim() : '';
                 preview.textContent = heading || subheading || fallback;
             }
+
+            if (activePortalOwner === widgetCard && activeSettingsTitle) {
+                activeSettingsTitle.textContent = 'Widget: ' + fallback;
+            }
         }
 
         function syncWidgetCount(groupCard) {
+            if (!groupCard) {
+                return;
+            }
+
             const countLabel = groupCard.querySelector('[data-group-widget-count]');
             const widgetCount = groupCard.querySelectorAll('[data-widget-card]').length;
 
@@ -277,7 +426,47 @@
             });
         }
 
+        function replaceRepeaterIndex(itemRow, oldIndex, newIndex) {
+            if (String(oldIndex) === String(newIndex)) {
+                return;
+            }
+
+            const pattern = new RegExp('\\[items\\]\\[' + oldIndex + '\\]', 'g');
+
+            itemRow.querySelectorAll('[name]').forEach(function (field) {
+                field.name = field.name.replace(pattern, '[items][' + newIndex + ']');
+            });
+        }
+
+        function reindexRepeater(container) {
+            if (!container) {
+                return;
+            }
+
+            const rows = container.querySelectorAll('[data-item-row]');
+            rows.forEach(function (row, index) {
+                const oldIndex = row.getAttribute('data-item-index') || String(index);
+                replaceRepeaterIndex(row, oldIndex, index);
+                row.setAttribute('data-item-index', String(index));
+            });
+            container.setAttribute('data-next-index', String(rows.length));
+        }
+
+        function reindexAllRepeaters(scope) {
+            if (!scope) {
+                return;
+            }
+
+            scope.querySelectorAll('[data-item-target]').forEach(function (container) {
+                reindexRepeater(container);
+            });
+        }
+
         function reindexWidgets(groupCard) {
+            if (!groupCard) {
+                return;
+            }
+
             let widgetIndex = 0;
             const containers = groupCard.querySelectorAll('[data-widget-container]');
             if (containers.length === 0) {
@@ -286,21 +475,20 @@
 
             containers.forEach(function (container) {
                 const columnIndex = container.getAttribute('data-column-index') || '0';
-                
+
                 container.querySelectorAll('[data-widget-card]').forEach(function (widgetCard) {
                     const oldIndex = widgetCard.getAttribute('data-widget-index');
                     replaceWidgetIndex(groupCard, widgetCard, oldIndex, widgetIndex);
                     widgetCard.setAttribute('data-widget-index', String(widgetIndex));
-                    
-                    // Update column index hidden input
+
                     const colInput = widgetCard.querySelector('[data-widget-column-input]');
                     if (colInput) {
                         colInput.value = columnIndex;
                     }
+
+                    reindexAllRepeaters(widgetCard);
                     widgetIndex++;
                 });
-                
-                container.setAttribute('data-next-widget-index', String(container.querySelectorAll('[data-widget-card]').length));
             });
 
             syncWidgetCount(groupCard);
@@ -339,7 +527,103 @@
             syncWidgetLabel(widgetCard);
             syncVisibilitySummary(widgetCard, '[data-widget-visibility-summary]');
             syncAppearance(widgetCard);
+            syncToggleFields(widgetCard);
+            reindexAllRepeaters(widgetCard);
             setExpanded(widgetCard, '[data-widget-body]', '[data-toggle-widget]', expanded);
+        }
+
+        function syncEditorValues(scope) {
+            if (!scope || !window.jQuery || !window.jQuery.fn || !window.jQuery.fn.summernote) {
+                return;
+            }
+
+            window.jQuery(scope).find('.aiz-text-editor').each(function () {
+                const $textarea = window.jQuery(this);
+                if ($textarea.next('.note-editor').length) {
+                    $textarea.val($textarea.summernote('code'));
+                }
+            });
+        }
+
+        function copyFormState(source, clone) {
+            if (!source || !clone) {
+                return;
+            }
+
+            const selectors = 'input, select, textarea';
+            const sourceFields = source.querySelectorAll(selectors);
+            const cloneFields = clone.querySelectorAll(selectors);
+
+            sourceFields.forEach(function (field, index) {
+                const cloneField = cloneFields[index];
+                if (!cloneField) {
+                    return;
+                }
+
+                if (field.type === 'checkbox' || field.type === 'radio') {
+                    cloneField.checked = field.checked;
+                    return;
+                }
+
+                cloneField.value = field.value;
+
+                if (cloneField.tagName === 'TEXTAREA') {
+                    cloneField.textContent = field.value;
+                }
+            });
+        }
+
+        function cleanupClonedEditors(scope) {
+            if (!scope) {
+                return;
+            }
+
+            scope.querySelectorAll('.note-editor').forEach(function (editor) {
+                editor.remove();
+            });
+
+            scope.querySelectorAll('.aiz-text-editor').forEach(function (textarea) {
+                textarea.style.display = '';
+            });
+        }
+
+        function duplicateGroup(groupCard) {
+            if (!groupCard || !sectionGroups) {
+                return;
+            }
+
+            syncEditorValues(groupCard);
+            closeSettingsPortal();
+
+            const clone = groupCard.cloneNode(true);
+            copyFormState(groupCard, clone);
+            cleanupClonedEditors(clone);
+            groupCard.insertAdjacentElement('afterend', clone);
+            initializeGroupCard(clone, true);
+            reindexGroups();
+            refreshPlugins();
+        }
+
+        function duplicateWidget(widgetCard) {
+            if (!widgetCard) {
+                return;
+            }
+
+            const groupCard = widgetCard.closest('[data-group-card]');
+            if (!groupCard) {
+                return;
+            }
+
+            syncEditorValues(widgetCard);
+            closeSettingsPortal();
+
+            const clone = widgetCard.cloneNode(true);
+            copyFormState(widgetCard, clone);
+            cleanupClonedEditors(clone);
+            widgetCard.insertAdjacentElement('afterend', clone);
+            initializeWidgetCard(clone, true);
+            reindexWidgets(groupCard);
+            refreshPlugins();
         }
 
         function addGroup() {
@@ -358,19 +642,11 @@
             refreshPlugins();
         }
 
-        function slugify(text) {
-            return text.toString().toLowerCase()
-                .replace(/\s+/g, '-')
-                .replace(/[^\w\-]+/g, '')
-                .replace(/\-\-+/g, '-')
-                .replace(/^-+/, '')
-                .replace(/-+$/, '');
-        }
-
         function addItem(button, itemType) {
-            const widgetCard = button.closest('[data-widget-card]');
-            const target = widgetCard ? widgetCard.querySelector('[data-item-target="' + itemType + '"]') : null;
-            const template = widgetCard ? widgetCard.querySelector('template[data-item-template="' + itemType + '"]') : null;
+            const widgetCard = button.closest('[data-widget-card]') || (activePortalOwner && activePortalOwner.hasAttribute('data-widget-card') ? activePortalOwner : null);
+            const scope = widgetCard ? getOwnerScope(widgetCard) : null;
+            const target = scope ? scope.querySelector('[data-item-target="' + itemType + '"]') : null;
+            const template = scope ? scope.querySelector('template[data-item-template="' + itemType + '"]') : null;
 
             if (!target || !template) {
                 return;
@@ -378,9 +654,27 @@
 
             const itemIndex = Number(target.getAttribute('data-next-index') || 0);
             const html = template.innerHTML.split('__ITEM_INDEX__').join(itemIndex);
-            target.insertAdjacentHTML('afterbegin', html);
-            target.setAttribute('data-next-index', String(itemIndex + 1));
+            target.insertAdjacentHTML('beforeend', html);
+            reindexRepeater(target);
             refreshPlugins();
+        }
+
+        function moveElementBeforeCurrent(element) {
+            if (!element || !element.previousElementSibling) {
+                return false;
+            }
+
+            element.parentNode.insertBefore(element, element.previousElementSibling);
+            return true;
+        }
+
+        function moveElementAfterCurrent(element) {
+            if (!element || !element.nextElementSibling) {
+                return false;
+            }
+
+            element.parentNode.insertBefore(element.nextElementSibling, element);
+            return true;
         }
 
         function getDragAfterWidget(container, clientY) {
@@ -414,65 +708,82 @@
         }
 
         document.addEventListener('input', function (event) {
+            if (event.target === pageTitleInput) {
+                syncSlugFromTitle(false);
+            }
+
+            if (event.target === pageSlugInput) {
+                slugEditedManually = true;
+                if (pageSlugAutofillToggle) {
+                    pageSlugAutofillToggle.checked = false;
+                }
+            }
+
             if (event.target.matches('[data-group-name-input]')) {
-                const groupCard = event.target.closest('[data-group-card]');
+                const groupCard = event.target.closest('[data-group-card]') || (activePortalOwner && activePortalOwner.hasAttribute('data-group-card') ? activePortalOwner : null);
                 syncGroupLabel(groupCard);
-                // If it is currently active in the portal, update the title
                 if (activePortalOwner === groupCard && activeSettingsTitle) {
                     activeSettingsTitle.textContent = 'Section: ' + (event.target.value.trim() || 'Untitled Section');
                 }
             }
 
             if (event.target.matches('[data-widget-heading-input], [data-widget-subheading-input]')) {
-                syncWidgetLabel(event.target.closest('[data-widget-card]'));
+                syncWidgetLabel(event.target.closest('[data-widget-card]') || (activePortalOwner && activePortalOwner.hasAttribute('data-widget-card') ? activePortalOwner : null));
             }
 
             if (event.target.matches('[data-toc-title-input]')) {
                 const row = event.target.closest('[data-item-row]');
                 const anchorInput = row ? row.querySelector('[data-toc-anchor-input]') : null;
-                if (anchorInput) {
+                if (anchorInput && anchorInput.value.trim() === '') {
                     anchorInput.value = slugify(event.target.value);
                 }
             }
         });
 
         document.addEventListener('change', function (event) {
-            const groupCard = event.target.closest('[data-group-card]');
-            const widgetCard = event.target.closest('[data-widget-card]');
+            const groupCard = event.target.closest('[data-group-card]') || (activePortalOwner && activePortalOwner.hasAttribute('data-group-card') ? activePortalOwner : null);
+            const widgetCard = event.target.closest('[data-widget-card]') || (activePortalOwner && activePortalOwner.hasAttribute('data-widget-card') ? activePortalOwner : null);
 
-            // Find style toggle within active settings portal target or owner card
+            if (event.target === pageSlugAutofillToggle) {
+                slugEditedManually = !event.target.checked;
+                if (event.target.checked) {
+                    syncSlugFromTitle(true);
+                }
+            }
+
             if (event.target.matches('[data-style-toggle]')) {
                 syncAppearance(widgetCard || groupCard || activePortalOwner);
+            }
+
+            if (event.target.matches('[data-toggle-field]')) {
+                syncToggleFields(widgetCard || groupCard || activePortalOwner);
+                syncWidgetLabel(widgetCard || (activePortalOwner && activePortalOwner.hasAttribute('data-widget-card') ? activePortalOwner : null));
             }
 
             if (event.target.matches('[data-visibility-toggle]')) {
                 const targetOwner = widgetCard || groupCard || activePortalOwner;
                 if (targetOwner) {
                     const isWidget = targetOwner.hasAttribute('data-widget-card');
-                    if (isWidget) {
-                        syncVisibilitySummary(targetOwner, '[data-widget-visibility-summary]');
-                    } else {
-                        syncVisibilitySummary(targetOwner, '[data-group-visibility-summary]');
-                    }
+                    syncVisibilitySummary(targetOwner, isWidget ? '[data-widget-visibility-summary]' : '[data-group-visibility-summary]');
                 }
             }
 
-            // Handle Grid Columns change
             if (event.target.matches('[data-group-columns-select]')) {
                 const select = event.target;
                 const columnsGrid = groupCard ? groupCard.querySelector('[data-columns-grid]') : null;
-                if (!groupCard || !columnsGrid) return;
-                
+                if (!groupCard || !columnsGrid) {
+                    return;
+                }
+
                 const oldColumnsCount = columnsGrid.querySelectorAll('[data-admin-column]').length;
-                const newColumnsCount = parseInt(select.value) || 1;
-                
-                if (oldColumnsCount === newColumnsCount) return;
-                
-                // Update grid columns class
+                const newColumnsCount = parseInt(select.value, 10) || 1;
+                if (oldColumnsCount === newColumnsCount) {
+                    return;
+                }
+
                 columnsGrid.className = 'ttf-admin-columns-grid ttf-columns-count-' + newColumnsCount;
-                
+
                 if (newColumnsCount > oldColumnsCount) {
-                    // Add columns
                     for (let col = oldColumnsCount; col < newColumnsCount; col++) {
                         const colHtml = `
                             <div class="ttf-admin-column" data-admin-column="${col}">
@@ -481,67 +792,53 @@
                                 </div>
                                 <div class="ttf-widget-list" data-widget-container data-column-index="${col}"></div>
                                 <div class="ttf-sections-empty-state" data-widget-empty-state>
-                                    <small class="text-muted">Empty Column. Add/drag widgets here.</small>
+                                    <small class="text-muted">Empty column. Drag or add a widget here.</small>
                                 </div>
                             </div>
                         `;
                         columnsGrid.insertAdjacentHTML('beforeend', colHtml);
                     }
                 } else {
-                    // Reduce columns: migrate widgets to the last remaining column
                     const targetContainer = columnsGrid.querySelector('[data-admin-column="' + (newColumnsCount - 1) + '"] [data-widget-container]');
-                    
+
                     for (let col = newColumnsCount; col < oldColumnsCount; col++) {
                         const sourceColumn = columnsGrid.querySelector('[data-admin-column="' + col + '"]');
                         if (sourceColumn) {
                             const sourceContainer = sourceColumn.querySelector('[data-widget-container]');
                             if (sourceContainer && targetContainer) {
-                                sourceContainer.querySelectorAll('[data-widget-card]').forEach(function (widgetCard) {
-                                    targetContainer.appendChild(widgetCard);
+                                sourceContainer.querySelectorAll('[data-widget-card]').forEach(function (widgetCardEl) {
+                                    targetContainer.appendChild(widgetCardEl);
                                 });
                             }
                             sourceColumn.remove();
                         }
                     }
                 }
-                
+
                 reindexWidgets(groupCard);
                 refreshPlugins();
             }
         });
 
         document.addEventListener('click', function (event) {
-            // Sidebar tab toggling
-            const tabBtn = event.target.closest('[data-tab-target]');
-            if (tabBtn) {
-                // If switching to widgets tab, close settings portal
-                if (tabBtn.getAttribute('data-tab-target') === 'widgets-tab') {
-                    closeSettingsPortal();
-                }
-                
-                const tabTarget = tabBtn.getAttribute('data-tab-target');
-                const sidebar = tabBtn.closest('[data-page-sidebar]');
-                if (sidebar) {
-                    sidebar.querySelectorAll('[data-tab-target]').forEach(btn => btn.classList.remove('active'));
-                    sidebar.querySelectorAll('[data-tab-content]').forEach(content => content.classList.remove('active'));
-                    
-                    tabBtn.classList.add('active');
-                    const targetContent = sidebar.querySelector('#' + tabTarget);
-                    if (targetContent) {
-                        targetContent.classList.add('active');
-                    }
-                }
+            const sidebarToggleButton = event.target.closest('[data-sidebar-toggle]');
+            if (sidebarToggleButton) {
+                toggleSidebarState(sidebarToggleButton.getAttribute('data-sidebar-toggle'));
                 return;
             }
 
-            // Close active settings button
+            const sidebarCloseButton = event.target.closest('[data-sidebar-close]');
+            if (sidebarCloseButton) {
+                setSidebarState(sidebarCloseButton.getAttribute('data-sidebar-close'), false);
+                return;
+            }
+
             const closeSettingsBtn = event.target.closest('#close-active-settings');
             if (closeSettingsBtn) {
                 closeSettingsPortal();
                 return;
             }
 
-            // Edit Section Settings button (Gear button)
             const editSectionSettingsBtn = event.target.closest('[data-edit-section-settings]');
             if (editSectionSettingsBtn) {
                 const groupCard = editSectionSettingsBtn.closest('[data-group-card]');
@@ -553,42 +850,73 @@
                 return;
             }
 
-            // Edit Widget Settings button (Gear button)
             const editWidgetSettingsBtn = event.target.closest('[data-edit-widget-settings]');
             if (editWidgetSettingsBtn) {
                 const widgetCard = editWidgetSettingsBtn.closest('[data-widget-card]');
                 if (widgetCard) {
-                    const typeInput = widgetCard.querySelector('input[name*="[type]"]');
-                    const labels = {
-                        rich_text: 'Text Editor',
-                        split: 'Two Column',
-                        full_width: 'Full Width',
-                        image_grid: 'Grid Cards',
-                        full_image: 'Image Showcase',
-                        toc_content: 'TOC + Content',
-                        header_widget: 'Heading',
-                        image_widget: 'Single Image',
-                        button_widget: 'Action Button'
-                    };
-                    const typeLabel = labels[typeInput ? typeInput.value : 'rich_text'] || 'Widget';
-                    openSettingsPortal(widgetCard, '[data-widget-settings-portal]', 'Widget: ' + typeLabel);
-                }
-                return;
-            }
-
-            const toggleSidebar = event.target.closest('[data-toggle-page-sidebar]');
-            if (toggleSidebar) {
-                pageBuilderLayout.classList.toggle('is-sidebar-hidden');
-                const label = toggleSidebar.querySelector('[data-sidebar-toggle-label]');
-                if (label) {
-                    label.textContent = pageBuilderLayout.classList.contains('is-sidebar-hidden') ? 'Show Page Settings' : 'Hide Page Settings';
+                    openSettingsPortal(widgetCard, '[data-widget-settings-portal]', 'Widget: ' + getWidgetTypeLabel(widgetCard));
                 }
                 return;
             }
 
             const addGroupButton = event.target.closest('[data-add-group]');
             if (addGroupButton) {
+                closeSettingsPortal();
                 addGroup();
+                return;
+            }
+
+            const moveGroupUpButton = event.target.closest('[data-move-group-up]');
+            if (moveGroupUpButton) {
+                const groupCard = moveGroupUpButton.closest('[data-group-card]');
+                closeSettingsPortal();
+                if (moveElementBeforeCurrent(groupCard)) {
+                    reindexGroups();
+                }
+                return;
+            }
+
+            const moveGroupDownButton = event.target.closest('[data-move-group-down]');
+            if (moveGroupDownButton) {
+                const groupCard = moveGroupDownButton.closest('[data-group-card]');
+                closeSettingsPortal();
+                if (moveElementAfterCurrent(groupCard)) {
+                    reindexGroups();
+                }
+                return;
+            }
+
+            const copyGroupButton = event.target.closest('[data-copy-group]');
+            if (copyGroupButton) {
+                duplicateGroup(copyGroupButton.closest('[data-group-card]'));
+                return;
+            }
+
+            const moveWidgetUpButton = event.target.closest('[data-move-widget-up]');
+            if (moveWidgetUpButton) {
+                const widgetCard = moveWidgetUpButton.closest('[data-widget-card]');
+                const groupCard = moveWidgetUpButton.closest('[data-group-card]');
+                closeSettingsPortal();
+                if (moveElementBeforeCurrent(widgetCard)) {
+                    reindexWidgets(groupCard);
+                }
+                return;
+            }
+
+            const moveWidgetDownButton = event.target.closest('[data-move-widget-down]');
+            if (moveWidgetDownButton) {
+                const widgetCard = moveWidgetDownButton.closest('[data-widget-card]');
+                const groupCard = moveWidgetDownButton.closest('[data-group-card]');
+                closeSettingsPortal();
+                if (moveElementAfterCurrent(widgetCard)) {
+                    reindexWidgets(groupCard);
+                }
+                return;
+            }
+
+            const copyWidgetButton = event.target.closest('[data-copy-widget]');
+            if (copyWidgetButton) {
+                duplicateWidget(copyWidgetButton.closest('[data-widget-card]'));
                 return;
             }
 
@@ -603,14 +931,7 @@
             if (removeGroupButton) {
                 const groupCard = removeGroupButton.closest('[data-group-card]');
                 if (groupCard) {
-                    if (activePortalOwner === groupCard) {
-                        closeSettingsPortal();
-                    }
-                    groupCard.querySelectorAll('[data-widget-card]').forEach(function (widgetCard) {
-                        if (activePortalOwner === widgetCard) {
-                            closeSettingsPortal();
-                        }
-                    });
+                    closeSettingsPortal();
                     groupCard.remove();
                     reindexGroups();
                 }
@@ -629,9 +950,7 @@
                 const widgetCard = removeWidgetButton.closest('[data-widget-card]');
                 const groupCard = removeWidgetButton.closest('[data-group-card]');
                 if (widgetCard) {
-                    if (activePortalOwner === widgetCard) {
-                        closeSettingsPortal();
-                    }
+                    closeSettingsPortal();
                     widgetCard.remove();
                     reindexWidgets(groupCard);
                 }
@@ -644,11 +963,33 @@
                 return;
             }
 
+            const moveItemUpButton = event.target.closest('[data-move-item-up]');
+            if (moveItemUpButton) {
+                const itemRow = moveItemUpButton.closest('[data-item-row]');
+                const repeater = moveItemUpButton.closest('[data-item-target]');
+                if (moveElementBeforeCurrent(itemRow)) {
+                    reindexRepeater(repeater);
+                }
+                return;
+            }
+
+            const moveItemDownButton = event.target.closest('[data-move-item-down]');
+            if (moveItemDownButton) {
+                const itemRow = moveItemDownButton.closest('[data-item-row]');
+                const repeater = moveItemDownButton.closest('[data-item-target]');
+                if (moveElementAfterCurrent(itemRow)) {
+                    reindexRepeater(repeater);
+                }
+                return;
+            }
+
             const removeItemButton = event.target.closest('[data-remove-item]');
             if (removeItemButton) {
                 const itemRow = removeItemButton.closest('[data-item-row]');
+                const repeater = removeItemButton.closest('[data-item-target]');
                 if (itemRow) {
                     itemRow.remove();
+                    reindexRepeater(repeater);
                 }
             }
         });
@@ -698,7 +1039,7 @@
                 event.dataTransfer.effectAllowed = 'move';
                 return;
             }
-            
+
             const widgetCard = event.target.closest('[data-widget-card]');
             if (widgetCard) {
                 draggedWidgetCard = widgetCard;
@@ -725,12 +1066,12 @@
             if (draggedWidgetCard) {
                 draggedWidgetCard.classList.remove('is-dragging');
                 draggedWidgetCard.setAttribute('draggable', 'false');
-                
+
                 const groupCard = draggedWidgetCard.closest('[data-group-card]');
                 if (groupCard) {
                     reindexWidgets(groupCard);
                 }
-                
+
                 draggedWidgetCard = null;
                 reindexGroups();
                 return;
@@ -811,20 +1152,18 @@
                         return;
                     }
 
-                    const widgetIndex = Number(widgetContainer.getAttribute('data-next-widget-index') || 0);
-                    
+                    const widgetIndex = Number(widgetContainer.querySelectorAll('[data-widget-card]').length);
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = widgetTemplate.innerHTML.split('__WIDGET_INDEX__').join(widgetIndex);
                     const widgetCard = tempDiv.firstElementChild;
-                    
+
                     const afterElement = getDragAfterWidget(widgetContainer, event.clientY);
                     if (!afterElement) {
                         widgetContainer.appendChild(widgetCard);
                     } else {
                         widgetContainer.insertBefore(widgetCard, afterElement);
                     }
-                    
-                    widgetContainer.setAttribute('data-next-widget-index', String(widgetIndex + 1));
+
                     initializeWidgetCard(widgetCard, true);
                     reindexWidgets(groupCard);
                     refreshPlugins();
@@ -834,7 +1173,7 @@
 
         if (pageForm) {
             pageForm.addEventListener('submit', function () {
-                closeSettingsPortal(); // Restore active inputs to form DOM before submit
+                closeSettingsPortal();
                 reindexGroups();
             });
         }
@@ -842,8 +1181,11 @@
         document.querySelectorAll('[data-group-card]').forEach(function (groupCard) {
             initializeGroupCard(groupCard, false);
         });
+
+        syncSlugFromTitle(false);
         reindexGroups();
         syncGroupEmptyState();
+        syncSidebarButtons();
         refreshPlugins();
     })();
 </script>

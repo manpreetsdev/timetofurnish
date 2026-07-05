@@ -2,6 +2,7 @@
     $title = (string) ($section['title'] ?? '');
     $highlight = (string) ($section['highlight_text'] ?? '');
     $titleHtml = e($title);
+    $showTitle = ($section['show_title'] ?? '1') === '1';
     $showBackground = ($section['show_background'] ?? '0') === '1';
     $showBorder = ($section['show_border'] ?? '0') === '1';
     $usePadding = ($section['use_padding'] ?? '0') === '1';
@@ -61,15 +62,15 @@
     --section-padding-right: {{ $paddingLeftRight }}px;
     --section-sidebar-width: {{ (int) ($section['sidebar_width'] ?? 290) }}px;
     --section-title-size: {{ !empty($section['title_font_size']) ? (int) $section['title_font_size'] . 'px' : '' }};
-    --section-title-height: {{ !empty($section['title_line_height']) ? $section['title_line_height'] : '' }};
+    --section-title-height: {{ !empty($section['title_line_height']) ? (is_numeric($section['title_line_height']) ? $section['title_line_height'] . 'px' : $section['title_line_height']) : '' }};
     --section-body-size: {{ !empty($section['body_font_size']) ? (int) $section['body_font_size'] . 'px' : '' }};
-    --section-body-height: {{ !empty($section['body_line_height']) ? $section['body_line_height'] : '' }};
+    --section-body-height: {{ !empty($section['body_line_height']) ? (is_numeric($section['body_line_height']) ? $section['body_line_height'] . 'px' : $section['body_line_height']) : '' }};
     --section-highlight-color: {{ !empty($section['highlight_color']) ? $section['highlight_color'] : 'var(--section-accent)' }};
 ">
     @if (!empty($section['subtitle']))
         <p class="ttf-story-section__eyebrow">{{ $section['subtitle'] }}</p>
     @endif
-    @if ($title !== '')
+    @if ($showTitle && $title !== '')
         <h2>{!! $titleHtml !!}</h2>
     @endif
     @if (!empty($section['content']))
@@ -112,65 +113,64 @@
 
 <script>
     (function () {
-        function initTocTabs() {
+        function initTocSections() {
             const tocSections = document.querySelectorAll('.ttf-story-section--toc');
             tocSections.forEach(function (section) {
                 const tabs = section.querySelectorAll('.ttf-policy-toc a');
                 const contents = section.querySelectorAll('.ttf-policy-content .ttf-policy-section');
-                
-                if (tabs.length === 0 || contents.length === 0) return;
-
-                function activateTab(targetId) {
-                    let found = false;
-                    contents.forEach(function (content) {
-                        if (content.id === targetId) {
-                            content.classList.add('active');
-                            found = true;
-                        } else {
-                            content.classList.remove('active');
-                        }
-                    });
-
-                    tabs.forEach(function (tab) {
-                        const href = tab.getAttribute('href').replace('#', '');
-                        const li = tab.closest('li');
-                        if (href === targetId) {
-                            tab.classList.add('active');
-                            if (li) li.classList.add('active');
-                        } else {
-                            tab.classList.remove('active');
-                            if (li) li.classList.remove('active');
-                        }
-                    });
-                    return found;
+                if (tabs.length === 0 || contents.length === 0) {
+                    return;
                 }
 
-                // Set first tab active by default
-                const firstAnchor = tabs[0].getAttribute('href').replace('#', '');
-                activateTab(firstAnchor);
-
-                // Click event listeners
-                tabs.forEach(function (tab) {
-                    tab.addEventListener('click', function (e) {
-                        const sidebar = section.querySelector('.ttf-policy-toc');
-                        if (!sidebar) return;
-                        
-                        const isMobile = window.getComputedStyle(sidebar).display === 'none';
-                        if (!isMobile) {
-                            e.preventDefault();
-                            const targetId = this.getAttribute('href').replace('#', '');
-                            activateTab(targetId);
+                function setActive(targetId) {
+                    tabs.forEach(function (tab) {
+                        const li = tab.closest('li');
+                        const isActive = tab.getAttribute('href') === '#' + targetId;
+                        tab.classList.toggle('active', isActive);
+                        if (li) {
+                            li.classList.toggle('active', isActive);
                         }
                     });
+                }
+
+                tabs.forEach(function (tab) {
+                    tab.addEventListener('click', function () {
+                        const targetId = this.getAttribute('href').replace('#', '');
+                        setActive(targetId);
+                    });
                 });
+
+                if ('IntersectionObserver' in window) {
+                    const observer = new IntersectionObserver(function (entries) {
+                        const visibleEntry = entries
+                            .filter(function (entry) {
+                                return entry.isIntersecting;
+                            })
+                            .sort(function (a, b) {
+                                return b.intersectionRatio - a.intersectionRatio;
+                            })[0];
+
+                        if (visibleEntry) {
+                            setActive(visibleEntry.target.id);
+                        }
+                    }, {
+                        rootMargin: '-20% 0px -55% 0px',
+                        threshold: [0.2, 0.4, 0.65]
+                    });
+
+                    contents.forEach(function (content) {
+                        observer.observe(content);
+                    });
+                }
+
+                setActive(contents[0].id);
             });
         }
 
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initTocTabs);
+            document.addEventListener('DOMContentLoaded', initTocSections);
         } else {
-            initTocTabs();
+            initTocSections();
         }
     })();
 </script>
-

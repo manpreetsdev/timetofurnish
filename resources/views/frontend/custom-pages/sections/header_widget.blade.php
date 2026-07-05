@@ -2,6 +2,7 @@
     $title = (string) ($section['title'] ?? '');
     $highlight = (string) ($section['highlight_text'] ?? '');
     $titleHtml = e($title);
+    $showTitle = ($section['show_title'] ?? '1') === '1';
     $tag = $section['header_tag'] ?? 'h2';
     if (!in_array($tag, ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])) {
         $tag = 'h2';
@@ -28,7 +29,7 @@
     }
 @endphp
 
-@if ($title !== '')
+@if ($showTitle && $title !== '')
     <div class="ttf-story-section ttf-story-section--header {{ $alignmentClass }} {{ $visibilityClasses }}" style="
         --section-bg: {{ $showBackground ? $backgroundColor : 'transparent' }};
         --section-heading: {{ $section['title_color'] ?? 'var(--ttf-heading)' }};
@@ -44,7 +45,7 @@
         --section-padding-right: {{ (isset($section['padding_left_right']) && $section['padding_left_right'] !== '') ? (int) $section['padding_left_right'] : 0 }}px;
         --section-text-align: {{ $textAlign }};
         --section-title-size: {{ !empty($section['title_font_size']) ? (int) $section['title_font_size'] . 'px' : '' }};
-        --section-title-height: {{ !empty($section['title_line_height']) ? $section['title_line_height'] : '' }};
+        --section-title-height: {{ !empty($section['title_line_height']) ? (is_numeric($section['title_line_height']) ? $section['title_line_height'] . 'px' : $section['title_line_height']) : '' }};
         --section-highlight-color: {{ !empty($section['highlight_color']) ? $section['highlight_color'] : 'var(--section-accent)' }};
     ">
         <{{ $tag }} class="ttf-header-element">{!! $titleHtml !!}</{{ $tag }}>

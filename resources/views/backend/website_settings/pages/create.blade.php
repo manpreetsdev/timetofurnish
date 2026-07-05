@@ -11,7 +11,7 @@
     </div>
 </div>
 
-<div class="card">
+<div class="ttf-admin-page-shell">
     @include('backend.website_settings.pages.partials.form', [
         'pageBuilderData' => $pageBuilderData,
         'fontFamilyOptions' => $fontFamilyOptions,

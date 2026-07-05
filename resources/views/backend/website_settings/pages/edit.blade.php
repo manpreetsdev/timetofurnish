@@ -11,8 +11,8 @@
     </div>
 </div>
 
-<div class="card">
-    <ul class="nav nav-tabs nav-fill border-light">
+<div class="ttf-admin-page-shell">
+    <ul class="nav nav-tabs nav-fill border-light ttf-language-tabs">
         @foreach (get_all_active_language() as $key => $language)
             <li class="nav-item">
                 <a class="nav-link text-reset @if ($language->code == $lang) active @else bg-soft-dark border-light border-left-0 @endif py-3" href="{{ route('custom-pages.edit', ['id'=>$page->slug, 'lang'=> $language->code] ) }}">
