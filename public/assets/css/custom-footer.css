@@ -159,8 +159,8 @@
 }
 
 .footer-newsletter-section .container {
-    /* border-top: var(--foot-news-border-top, 1px solid rgba(104, 91, 78, 0.039)) !important; */
-    border-bottom: var(--foot-news-border-bottom, 1px solid rgba(104, 91, 78, 0.039)) !important;
+    border-top: var(--foot-news-border-top, none) !important;
+    border-bottom: var(--foot-news-border-bottom, none) !important;
     border-left: var(--foot-news-border-left, none) !important;
     border-right: var(--foot-news-border-right, none) !important;
     padding-top: 20px;
@@ -309,12 +309,20 @@
 
 /* Mobile Accordion Drawer Styles */
 .ttf-mobile-footer {
-    padding: 6px 0 10px;
+    padding: 0 !important;
+}
+
+.ttf-mobile-section {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+    border-bottom: 1px solid var(--foot-border-color, rgba(104, 91, 78, 0.2)) !important;
+    background: transparent !important;
 }
 
 .ttf-mobile-accordion {
     background: transparent !important;
-    border-bottom: 1px solid var(--foot-border-color, rgba(104, 91, 78, 0.2)) !important;
 }
 
 .ttf-mobile-accordion .aiz-accordion-heading {
@@ -331,13 +339,13 @@
 }
 
 .ttf-mobile-direct-link-wrap {
-    border-bottom: 1px solid var(--foot-border-color, rgba(104, 91, 78, 0.2)) !important;
+    background: transparent !important;
 }
 
 .ttf-mobile-direct-link-wrap a {
     display: block;
     width: 100%;
-    padding: 18px 0;
+    padding: 0;
     font-size: 14px !important;
     font-weight: 700 !important;
     background: transparent !important;
@@ -415,18 +423,18 @@
 
     .ttf-mobile-footer {
         padding-top: 0 !important;
-        padding-bottom: 8px !important;
+        padding-bottom: 0 !important;
     }
 
     .ttf-mobile-accordion .aiz-accordion,
     .ttf-mobile-direct-link {
-        padding: 11px 0 !important;
+        padding: 0 !important;
         margin-bottom: 0 !important;
         line-height: 1.3 !important;
     }
 
     .ttf-mobile-direct-link-wrap a {
-        padding: 10px 0 !important;
+        padding: 0 !important;
     }
 
     .ttf-footer-links-section::before,
@@ -436,16 +444,15 @@
 
     .ttf-mobile-footer>.secure-payment-box,
     .ttf-mobile-footer>.ttf-mobile-widget {
-        margin: 14px 0 0 !important;
+        margin: 0 !important;
         padding-left: 15px !important;
         padding-right: 15px !important;
     }
 
-    .ttf-mobile-footer .sub-widget-title,
     .ttf-mobile-footer .secure-payment-title {
-        margin-top: 12px !important;
-        margin-bottom: 10px !important;
-        padding-bottom: 7px !important;
+        margin-top: 0 !important;
+        margin-bottom: 12px !important;
+        padding-bottom: 8px !important;
     }
 
     .ttf-mobile-footer .footer-social-list {

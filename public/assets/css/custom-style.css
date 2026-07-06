@@ -4499,7 +4499,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
     .footer-social-list {
         width: 70% !important;
         flex: 0 0 70% !important;
-        justify-content: end !important;
+        justify-content: flex-start !important;
     }
 
 

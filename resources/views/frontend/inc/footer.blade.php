@@ -114,7 +114,7 @@
 </style>
 <link rel="stylesheet" href="{{ static_asset('assets/css/custom-footer.css') }}">
 
-<section class="footer-widget ttf-footer-links-section">
+<footer class="footer-widget ttf-footer-links-section">
     @if ($foot_news_show == 'on')
         <section class="footer-widget iuytrey footer-newsletter-section">
             <div class="container">
@@ -432,14 +432,14 @@
                     @endphp
                     
                     @if (in_array($wType, ['menu_links', 'important_links', 'my_account', 'seller_zone', 'text_html']))
-                        <div id="{{ $widget_id }}" class="aiz-accordion-wrap ttf-mobile-accordion">
-                            <div class="aiz-accordion-heading container">
+                        <div id="{{ $widget_id }}" class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-section container">
+                            <div class="aiz-accordion-heading">
                                 <button class="aiz-accordion fs-14 text-white bg-transparent">
                                     {{ $w['title'] ?? 'Section' }}
                                 </button>
                             </div>
                             <div class="aiz-accordion-panel bg-transparent">
-                                <div class="container py-3">
+                                <div class="py-3">
                                     @if ($wType == 'menu_links')
                                         <ul class="list-unstyled">
                                             @if(!empty($w['lbls']))
@@ -521,8 +521,8 @@
                                 $has_social_links = $fb || $tw || $ig || $yt || $pt || $tk;
                             @endphp
                             @if(!empty($w['subheading_3']) && $has_social_links)
-                                <div class="ttf-mobile-widget">
-                                    <div class="sub-widget-title">{{ $w['subheading_3'] }}</div>
+                                <div class="ttf-mobile-widget ttf-mobile-section container">
+                                    <h5 class="secure-payment-title textheading">{{ $w['subheading_3'] }}</h5>
                                     <ul class="footer-social-list mt-2">
                                         @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
                                         @if ($tw)
@@ -549,7 +549,7 @@
                             $show_trust = ($w['show_trust'] ?? 'on') == 'on';
                         @endphp
                         @if($show_deliv)
-                            <div id="{{ $widget_id }}" class="secure-payment-box mt-3 ms-2">
+                            <div id="{{ $widget_id }}" class="secure-payment-box ttf-mobile-section container mt-3">
                                 <h5 class="secure-payment-title textheading">
                                     {{ $w['title'] ?? translate('Delivery Partners') }}
                                 </h5>
@@ -561,7 +561,7 @@
                         @endif
 
                         @if($show_pay)
-                            <div id="{{ $widget_id }}-pay" class="secure-payment-box mt-3 ms-2">
+                            <div id="{{ $widget_id }}-pay" class="secure-payment-box ttf-mobile-section container mt-3">
                                 <h5 class="secure-payment-title textheading">
                                     {{ $show_deliv ? translate('Pay Securely With') : ($w['title'] ?? translate('Pay Securely With')) }}
                                 </h5>
@@ -573,7 +573,7 @@
                         @endif
 
                         @if($show_trust)
-                            <div id="{{ $widget_id }}-trust" class="secure-payment-box mt-3 ms-2">
+                            <div id="{{ $widget_id }}-trust" class="secure-payment-box ttf-mobile-section container mt-3">
                                 <h5 class="secure-payment-title textheading">
                                     {{ translate('What Trustpilot Say’s') }}
                                 </h5>
@@ -587,7 +587,7 @@
                             </div>
                         @endif
                     @elseif ($wType == 'social_icons')
-                        <div id="{{ $widget_id }}" class="secure-payment-box mt-3 ms-2">
+                        <div id="{{ $widget_id }}" class="secure-payment-box ttf-mobile-section container mt-3">
                             <h5 class="secure-payment-title textheading">
                                 {{ $w['title'] ?? translate('Follow Us') }}
                             </h5>
@@ -621,7 +621,7 @@
             @endif
         @endforeach
     </div>
-</section>
+</footer>
 
 <!-- Full Width Bottom Copyright & Disclaimer Section -->
 <div class="ttf-footer-bottom-bar">
