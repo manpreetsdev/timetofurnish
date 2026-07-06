@@ -8,7 +8,6 @@ pi_kart (1).zip
 /public/hot
 /public/storage
 /public/uploads
-/storage/*.key
 /storage/debugbar
 /vendor
 /temp

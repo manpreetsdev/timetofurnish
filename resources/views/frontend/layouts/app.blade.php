@@ -577,6 +577,7 @@
         gtag('js', new Date());
         gtag('config', '{{ env('TRACKING_ID') }}');
     </script>
+    @endif
     @php
         echo get_setting('header_script');
     @endphp
