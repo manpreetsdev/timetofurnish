@@ -9,8 +9,31 @@ git pull origin staging
 git config --global --add safe.directory /var/www/vhosts/timetofurnish.com/staging
 /var/www/vhosts/timetofurnish.com/staging
 ```
+COMPOSER_ALLOW_SUPERUSER=1 /opt/plesk/php/8.3/bin/php /usr/lib/plesk-9.0/composer.phar install --ignore-platform-reqs --no-dev --optimize-autoloader
 
 ---
+
+
+# 1. Navigate to the staging directory
+cd /var/www/vhosts/timetofurnish.com/staging
+
+mkdir -p storage/app/public
+mkdir -p storage/framework/cache/data
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+mkdir -p storage/framework/testing
+mkdir -p storage/logs
+
+mkdir -p bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+
+find storage -type d -exec chmod 775 {} \;
+find storage -type f -exec chmod 664 {} \;
+chmod -R 775 storage bootstrap/cache
+
+/opt/plesk/php/8.3/bin/php artisan optimize:clear
+
+
 
 # 1. Go to the staging directory
 
