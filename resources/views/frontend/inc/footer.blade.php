@@ -193,7 +193,7 @@
     @if ($foot_news_show == 'on')
         <section class="footer-widget iuytrey footer-newsletter-section">
             <div class="container">
-                <div class="row align-items-center footer-newsletter-row">
+                <div class="align-items-center footer-newsletter-row">
                     <div class="col-lg-7 col-md-9 mx-auto text-center newsletter-column">
                         <h5 class="fs-14 fw-700 mb-3 textheading">
                             {!! str_ireplace('newsletter', '<span class="text-highlight">newsletter</span>', $foot_news_title) !!}
@@ -756,7 +756,7 @@
 <!-- Mobile bottom nav -->
 <div class="aiz-mobile-bottom-nav d-xl-none fixed-bottom border-top border-sm-bottom border-sm-left border-sm-right mx-auto mb-sm-2"
     style="background-color: #fff !important;">
-    <div class="row align-items-center gutters-5">
+    <div class="row align-items-center gutters-5 h-100">
         <!-- Home -->
         <div class="col">
             <a href="{{ route('home') }}"

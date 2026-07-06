@@ -136,6 +136,7 @@
     font-size: var(--foot-head-font-size, 14px) !important;
     font-weight: 700;
     margin-top: 16px;
+    font-family: "Playfair Display", serif !important;
     margin-bottom: 10px;
     position: relative;
     padding-bottom: 6px;
@@ -251,7 +252,7 @@
     padding-left: var(--foot-bar-pad-left, 0px) !important;
     padding-right: var(--foot-bar-pad-right, 0px) !important;
     color: var(--foot-copy-text, #ffffff) !important;
-    z-index: 99999999;
+    z-index: 99;
     position: relative;
 }
 
@@ -306,7 +307,7 @@
     flex-wrap: wrap;
     gap: 8px;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 0px;
 }
 
 .logo-image-item {
@@ -429,6 +430,26 @@
 }
 
 @media (max-width: 767.98px) {
+    .ttf-mobile-section:last-child {
+        padding-bottom: 0 !important;
+        border-bottom: 0 !important;
+    }
+
+    .ttf-mobile-accordion .container,
+    .ttf-mobile-footer .container {
+        padding: 0 !important;
+    }
+
+    .ttf-mobile-footer {
+        padding-right: 15px !important;
+        padding-left: 15px !important;
+    }
+
+
+
+    .newsletter-column {
+        padding: 0;
+    }
 
     /* Enforce newsletter form desktop layout on mobile */
     .newsletter-form-wrap {
@@ -557,4 +578,37 @@
 
 .textheading {
     font-family: "Playfair Display", serif !important;
+}
+
+/* Mobile bottom nav custom styles */
+.aiz-mobile-bottom-nav {
+    z-index: 99999 !important;
+    /* Make sure it stays on top of other content */
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+}
+
+@media (max-width: 575.98px) {
+    .aiz-mobile-bottom-nav {
+        height: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 1199.98px) {
+    .aiz-mobile-bottom-nav {
+        height: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+/* Adjust page content padding so nothing is hidden behind the fixed bottom nav */
+@media (max-width: 1199.98px) {
+    body {
+        padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 1199.98px) {
+    body {
+        padding-bottom: 88px !important;
+        /* height + margin-bottom + safety padding */
+    }
 }
