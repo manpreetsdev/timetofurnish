@@ -9,6 +9,8 @@
     background-position: center;
     padding-top: var(--foot-pad-top, 45px) !important;
     padding-bottom: var(--foot-pad-bot, 45px) !important;
+    padding-left: var(--foot-pad-left, 0px) !important;
+    padding-right: var(--foot-pad-right, 0px) !important;
     border-top: none !important;
     border-bottom: none !important;
     bottom: 0;
@@ -16,8 +18,11 @@
 
 @media (max-width: 767.98px) {
     .ttf-footer-links-section {
+        background-image: var(--foot-mob-bg-img, var(--foot-bg-img, none)) !important;
         padding-top: var(--foot-mob-pad-top, 12px) !important;
         padding-bottom: var(--foot-mob-pad-bot, 12px) !important;
+        padding-left: var(--foot-mob-pad-left, 0px) !important;
+        padding-right: var(--foot-mob-pad-right, 0px) !important;
     }
 }
 
@@ -154,8 +159,10 @@
 
 /* Newsletter section width & borders (1440px container constrained) */
 .footer-newsletter-section {
-    border: none !important;
-    padding: 24px 0 !important;
+    padding-top: var(--foot-news-pad-top, 24px) !important;
+    padding-bottom: var(--foot-news-pad-bot, 24px) !important;
+    padding-left: var(--foot-news-pad-left, 0px) !important;
+    padding-right: var(--foot-news-pad-right, 0px) !important;
 }
 
 .footer-newsletter-section .container {
@@ -239,7 +246,10 @@
 /* Full Width Bottom Bar background, 1440px centered content */
 .ttf-footer-bottom-bar {
     background-color: var(--foot-copy-bg, #5f4d3e) !important;
-    padding: 10px 0;
+    padding-top: var(--foot-bar-pad-top, 10px) !important;
+    padding-bottom: var(--foot-bar-pad-bot, 10px) !important;
+    padding-left: var(--foot-bar-pad-left, 0px) !important;
+    padding-right: var(--foot-bar-pad-right, 0px) !important;
     color: var(--foot-copy-text, #ffffff) !important;
     z-index: 99999999;
     position: relative;
@@ -288,6 +298,49 @@
     background: transparent !important;
     border-radius: 0px !important;
     padding: 0px !important;
+}
+
+/* Multiple Logo Images support */
+.logo-images-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.logo-image-item {
+    background-color: #ffffff;
+    border: 1px solid var(--foot-border-color, rgba(104, 91, 78, 0.2));
+    border-radius: 4px;
+    padding: 3px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    transition: all 0.2s ease;
+}
+
+.logo-image-item img {
+    height: 24px !important;
+    width: auto !important;
+    max-width: 80px !important;
+    object-fit: contain !important;
+    margin-bottom: 0 !important;
+}
+
+/* Accordion Arrow Chevron direction override (sync with closed=down, active=up) */
+.aiz-accordion-heading .aiz-accordion:after {
+    transform: rotate(45deg) !important;
+    -webkit-transform: rotate(45deg) !important;
+    border-color: var(--foot-head-color, #232323) !important;
+    transition: transform 0.3s ease, -webkit-transform 0.3s ease;
+}
+
+.aiz-accordion-heading.active .aiz-accordion:after {
+    transform: rotate(-135deg) !important;
+    -webkit-transform: rotate(-135deg) !important;
+    border-color: var(--foot-head-color, #232323) !important;
 }
 
 /* Desktop & iPad flexible columns with adjustable spacing */
@@ -402,9 +455,12 @@
         justify-content: center !important;
     }
 
-    /* Remove mobile spacing gaps */
+    /* Apply mobile newsletter padding */
     .footer-newsletter-section {
-        padding: 8px 0 !important;
+        padding-top: var(--foot-news-mob-pad-top, 8px) !important;
+        padding-bottom: var(--foot-news-mob-pad-bot, 8px) !important;
+        padding-left: var(--foot-news-mob-pad-left, 0px) !important;
+        padding-right: var(--foot-news-mob-pad-right, 0px) !important;
     }
 
     .footer-newsletter-section .container {
@@ -416,14 +472,33 @@
         margin-bottom: 12px !important;
     }
 
+    /* Apply mobile main footer padding */
     .ttf-footer-links-section {
-        padding-top: 0px !important;
-        padding-bottom: 0 !important;
+        padding-top: var(--foot-mob-pad-top, 12px) !important;
+        padding-bottom: var(--foot-mob-pad-bot, 12px) !important;
+        padding-left: var(--foot-mob-pad-left, 0px) !important;
+        padding-right: var(--foot-mob-pad-right, 0px) !important;
     }
 
     .ttf-mobile-footer {
         padding-top: 0 !important;
         padding-bottom: 0 !important;
+    }
+
+    /* Apply Mobile Font Sizes */
+    .ttf-footer-card h4,
+    .secure-payment-title,
+    .ttf-mobile-accordion .aiz-accordion,
+    .ttf-mobile-direct-link-wrap a {
+        font-size: var(--foot-mob-head-font-size, 14px) !important;
+    }
+
+    .ttf-footer-card a,
+    .ttf-footer-card p,
+    .ttf-mobile-accordion a,
+    .ttf-mobile-accordion p,
+    .ttf-mobile-accordion .aiz-accordion-panel ul li a {
+        font-size: var(--foot-mob-body-font-size, 13px) !important;
     }
 
     .ttf-mobile-accordion .aiz-accordion,
@@ -442,11 +517,12 @@
         width: 220px;
     }
 
+    /* Remove outer double padding because inner .container handles it */
     .ttf-mobile-footer>.secure-payment-box,
     .ttf-mobile-footer>.ttf-mobile-widget {
         margin: 0 !important;
-        padding-left: 15px !important;
-        padding-right: 15px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 
     .ttf-mobile-footer .secure-payment-title {
@@ -460,18 +536,12 @@
         margin-top: 10px !important;
     }
 
-    .ttf-mobile-footer .secure-payment-img {
-        margin-bottom: 4px !important;
-        max-width: 100% !important;
-    }
-
-    .ttf-mobile-footer .trustpilot-img {
-        max-width: 180px !important;
-        height: auto !important;
-    }
-
+    /* Apply mobile bottom bar padding */
     .ttf-footer-bottom-bar {
-        padding: 10px 0 12px !important;
+        padding-top: var(--foot-bar-mob-pad-top, 10px) !important;
+        padding-bottom: var(--foot-bar-mob-pad-bot, 12px) !important;
+        padding-left: var(--foot-bar-mob-pad-left, 0px) !important;
+        padding-right: var(--foot-bar-mob-pad-right, 0px) !important;
     }
 
     .ttf-footer-bottom-bar .text-right,

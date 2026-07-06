@@ -204,9 +204,14 @@
                     $foot_hover_color = get_setting('foot_hover_color', '#876a4b');
                     $foot_pad_top = get_setting('foot_pad_top', '45px');
                     $foot_pad_bot = get_setting('foot_pad_bot', '45px');
+                    $foot_pad_left = get_setting('foot_pad_left', '0px');
+                    $foot_pad_right = get_setting('foot_pad_right', '0px');
                     $foot_mob_pad_top = get_setting('foot_mob_pad_top', '12px');
                     $foot_mob_pad_bot = get_setting('foot_mob_pad_bot', '12px');
+                    $foot_mob_pad_left = get_setting('foot_mob_pad_left', '0px');
+                    $foot_mob_pad_right = get_setting('foot_mob_pad_right', '0px');
                     $foot_bg_img = get_setting('foot_bg_img');
+                    $foot_mob_bg_img = get_setting('foot_mob_bg_img');
                     $foot_bg_pattern_left = get_setting('foot_bg_pattern_left');
                     $foot_bg_pattern_right = get_setting('foot_bg_pattern_right');
                     $foot_social_radius = get_setting('foot_social_radius', '4px');
@@ -222,12 +227,33 @@
                     $foot_news_border_pos = get_setting('foot_news_border_pos', 'top-bottom');
                     $foot_news_border_color = get_setting('foot_news_border_color', 'rgba(104, 91, 78, 0.2)');
                     $foot_news_border_width = get_setting('foot_news_border_width', '1.5px');
+                    $foot_news_pad_top = get_setting('foot_news_pad_top', '24px');
+                    $foot_news_pad_bot = get_setting('foot_news_pad_bot', '24px');
+                    $foot_news_pad_left = get_setting('foot_news_pad_left', '0px');
+                    $foot_news_pad_right = get_setting('foot_news_pad_right', '0px');
+                    $foot_news_mob_pad_top = get_setting('foot_news_mob_pad_top', '8px');
+                    $foot_news_mob_pad_bot = get_setting('foot_news_mob_pad_bot', '8px');
+                    $foot_news_mob_pad_left = get_setting('foot_news_mob_pad_left', '0px');
+                    $foot_news_mob_pad_right = get_setting('foot_news_mob_pad_right', '0px');
                     
                     // Bottom Copyright Bar
                     $foot_copy_bg = get_setting('foot_copy_bg', '#5f4d3e');
                     $foot_copy_text = get_setting('foot_copy_text', '#ffffff');
                     $frontend_copyright_text = get_setting('frontend_copyright_text', 'Copyright &copy; 2026 Time to Furnish. All Right Reserved.', $lang);
                     $footer_disclaimer_text = get_setting('footer_disclaimer_text', 'We operate as an independent third-party marketplace.', $lang);
+                    $foot_bar_pad_top = get_setting('foot_bar_pad_top', '10px');
+                    $foot_bar_pad_bot = get_setting('foot_bar_pad_bot', '10px');
+                    $foot_bar_pad_left = get_setting('foot_bar_pad_left', '0px');
+                    $foot_bar_pad_right = get_setting('foot_bar_pad_right', '0px');
+                    $foot_bar_mob_pad_top = get_setting('foot_bar_mob_pad_top', '10px');
+                    $foot_bar_mob_pad_bot = get_setting('foot_bar_mob_pad_bot', '12px');
+                    $foot_bar_mob_pad_left = get_setting('foot_bar_mob_pad_left', '0px');
+                    $foot_bar_mob_pad_right = get_setting('foot_bar_mob_pad_right', '0px');
+                    
+                    // Mobile Font Sizes
+                    $foot_mob_head_font_size = get_setting('foot_mob_head_font_size', '14px');
+                    $foot_mob_body_font_size = get_setting('foot_mob_body_font_size', '13px');
+
                     $columns = \App\Support\FooterDefaults::columns($lang);
                 @endphp
                 
@@ -422,6 +448,19 @@
                         <div class="file-preview box sm"></div>
                     </div>
 
+                    <div class="form-group">
+                        <label class="form-label font-weight-medium">{{ translate('Mobile Background Image') }}</label>
+                        <div class="input-group" data-toggle="aizuploader" data-type="image">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                            <input type="hidden" name="types[]" value="foot_mob_bg_img">
+                            <input type="hidden" name="foot_mob_bg_img" class="selected-files" value="{{ get_setting('foot_mob_bg_img') }}">
+                        </div>
+                        <div class="file-preview box sm"></div>
+                    </div>
+
                     <!-- Figma Pattern Images Left and Right -->
                     <div class="form-group">
                         <label class="form-label font-weight-medium">{{ translate('Background Left Pattern Image') }}</label>
@@ -450,35 +489,63 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-3">
                             <div class="form-group">
                                 <label class="form-label">{{ translate('Padding Top') }}</label>
                                 <input type="hidden" name="types[]" value="foot_pad_top">
                                 <input type="text" class="form-control" name="foot_pad_top" value="{{ $foot_pad_top }}" placeholder="45px" oninput="updateLiveStyle('foot_pad_top', this.value)">
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-3">
                             <div class="form-group">
                                 <label class="form-label">{{ translate('Padding Bottom') }}</label>
                                 <input type="hidden" name="types[]" value="foot_pad_bot">
                                 <input type="text" class="form-control" name="foot_pad_bot" value="{{ $foot_pad_bot }}" placeholder="45px" oninput="updateLiveStyle('foot_pad_bot', this.value)">
                             </div>
                         </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label">{{ translate('Padding Left') }}</label>
+                                <input type="hidden" name="types[]" value="foot_pad_left">
+                                <input type="text" class="form-control" name="foot_pad_left" value="{{ $foot_pad_left }}" placeholder="0px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label">{{ translate('Padding Right') }}</label>
+                                <input type="hidden" name="types[]" value="foot_pad_right">
+                                <input type="text" class="form-control" name="foot_pad_right" value="{{ $foot_pad_right }}" placeholder="0px">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-3">
                             <div class="form-group">
                                 <label class="form-label">{{ translate('Mobile Padding Top') }}</label>
                                 <input type="hidden" name="types[]" value="foot_mob_pad_top">
                                 <input type="text" class="form-control" name="foot_mob_pad_top" value="{{ $foot_mob_pad_top }}" placeholder="12px">
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-3">
                             <div class="form-group">
                                 <label class="form-label">{{ translate('Mobile Padding Bottom') }}</label>
                                 <input type="hidden" name="types[]" value="foot_mob_pad_bot">
                                 <input type="text" class="form-control" name="foot_mob_pad_bot" value="{{ $foot_mob_pad_bot }}" placeholder="12px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label">{{ translate('Mobile Padding Left') }}</label>
+                                <input type="hidden" name="types[]" value="foot_mob_pad_left">
+                                <input type="text" class="form-control" name="foot_mob_pad_left" value="{{ $foot_mob_pad_left }}" placeholder="0px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label">{{ translate('Mobile Padding Right') }}</label>
+                                <input type="hidden" name="types[]" value="foot_mob_pad_right">
+                                <input type="text" class="form-control" name="foot_mob_pad_right" value="{{ $foot_mob_pad_right }}" placeholder="0px">
                             </div>
                         </div>
                     </div>
@@ -497,6 +564,23 @@
                                 <label class="form-label">{{ translate('Body Font Size') }}</label>
                                 <input type="hidden" name="types[]" value="foot_body_font_size">
                                 <input type="text" class="form-control" name="foot_body_font_size" value="{{ get_setting('foot_body_font_size', '13px') }}" placeholder="13px" oninput="updateLiveStyle('foot_body_font_size', this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">{{ translate('Mobile Header Font Size') }}</label>
+                                <input type="hidden" name="types[]" value="foot_mob_head_font_size">
+                                <input type="text" class="form-control" name="foot_mob_head_font_size" value="{{ $foot_mob_head_font_size }}" placeholder="14px">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">{{ translate('Mobile Body Font Size') }}</label>
+                                <input type="hidden" name="types[]" value="foot_mob_body_font_size">
+                                <input type="text" class="form-control" name="foot_mob_body_font_size" value="{{ $foot_mob_body_font_size }}" placeholder="13px">
                             </div>
                         </div>
                     </div>
@@ -671,6 +755,69 @@
                         <label class="form-label">{{ translate('Newsletter Section Border Width') }}</label>
                         <input type="hidden" name="types[]" value="foot_news_border_width">
                         <input type="text" class="form-control" name="foot_news_border_width" value="{{ $foot_news_border_width }}" placeholder="e.g. 1.5px">
+                    </div>
+
+                    <h6 class="fw-700 text-dark mb-2 mt-3 border-bottom pb-1 fs-12">{{ translate('Newsletter Padding Settings') }}</h6>
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Padding Top') }}</label>
+                                <input type="hidden" name="types[]" value="foot_news_pad_top">
+                                <input type="text" class="form-control" name="foot_news_pad_top" value="{{ $foot_news_pad_top }}" placeholder="24px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Padding Bottom') }}</label>
+                                <input type="hidden" name="types[]" value="foot_news_pad_bot">
+                                <input type="text" class="form-control" name="foot_news_pad_bot" value="{{ $foot_news_pad_bot }}" placeholder="24px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Padding Left') }}</label>
+                                <input type="hidden" name="types[]" value="foot_news_pad_left">
+                                <input type="text" class="form-control" name="foot_news_pad_left" value="{{ $foot_news_pad_left }}" placeholder="0px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Padding Right') }}</label>
+                                <input type="hidden" name="types[]" value="foot_news_pad_right">
+                                <input type="text" class="form-control" name="foot_news_pad_right" value="{{ $foot_news_pad_right }}" placeholder="0px">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Mobile Top') }}</label>
+                                <input type="hidden" name="types[]" value="foot_news_mob_pad_top">
+                                <input type="text" class="form-control" name="foot_news_mob_pad_top" value="{{ $foot_news_mob_pad_top }}" placeholder="8px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Mobile Bottom') }}</label>
+                                <input type="hidden" name="types[]" value="foot_news_mob_pad_bot">
+                                <input type="text" class="form-control" name="foot_news_mob_pad_bot" value="{{ $foot_news_mob_pad_bot }}" placeholder="8px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Mobile Left') }}</label>
+                                <input type="hidden" name="types[]" value="foot_news_mob_pad_left">
+                                <input type="text" class="form-control" name="foot_news_mob_pad_left" value="{{ $foot_news_mob_pad_left }}" placeholder="0px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Mobile Right') }}</label>
+                                <input type="hidden" name="types[]" value="foot_news_mob_pad_right">
+                                <input type="text" class="form-control" name="foot_news_mob_pad_right" value="{{ $foot_news_mob_pad_right }}" placeholder="0px">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -943,8 +1090,8 @@
 
                                                             <!-- Delivery Image -->
                                                             <div class="form-group">
-                                                                <label class="form-label">{{ translate('Delivery Image') }}</label>
-                                                                <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                                                <label class="form-label">{{ translate('Delivery Image(s)') }}</label>
+                                                                <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="true">
                                                                     <div class="input-group-prepend">
                                                                         <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse') }}</div>
                                                                     </div>
@@ -956,8 +1103,8 @@
 
                                                             <!-- Payment Image -->
                                                             <div class="form-group">
-                                                                <label class="form-label">{{ translate('Pay Securely Image') }}</label>
-                                                                <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                                                <label class="form-label">{{ translate('Pay Securely Image(s)') }}</label>
+                                                                <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="true">
                                                                     <div class="input-group-prepend">
                                                                         <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse') }}</div>
                                                                     </div>
@@ -969,8 +1116,8 @@
 
                                                             <!-- Trustpilot Image -->
                                                             <div class="form-group">
-                                                                <label class="form-label">{{ translate('Trustpilot Image') }}</label>
-                                                                <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                                                <label class="form-label">{{ translate('Trustpilot Image(s)') }}</label>
+                                                                <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="true">
                                                                     <div class="input-group-prepend">
                                                                         <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse') }}</div>
                                                                     </div>
@@ -1089,6 +1236,69 @@
                         <label class="form-label">{{ translate('Disclaimer Text') }} ({{ translate('Translatable') }})</label>
                         <input type="hidden" name="types[][{{ $lang }}]" value="footer_disclaimer_text">
                         <textarea class="form-control aiz-text-editor" name="footer_disclaimer_text" rows="5" data-buttons='[["font", ["bold", "underline", "italic"]],["insert", ["link"]],["view", ["undo","redo"]]]'>{{ $footer_disclaimer_text }}</textarea>
+                    </div>
+
+                    <h6 class="fw-700 text-dark mb-2 mt-3 border-bottom pb-1 fs-12">{{ translate('Bottom Bar Padding Settings') }}</h6>
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Padding Top') }}</label>
+                                <input type="hidden" name="types[]" value="foot_bar_pad_top">
+                                <input type="text" class="form-control" name="foot_bar_pad_top" value="{{ $foot_bar_pad_top }}" placeholder="10px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Padding Bottom') }}</label>
+                                <input type="hidden" name="types[]" value="foot_bar_pad_bot">
+                                <input type="text" class="form-control" name="foot_bar_pad_bot" value="{{ $foot_bar_pad_bot }}" placeholder="10px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Padding Left') }}</label>
+                                <input type="hidden" name="types[]" value="foot_bar_pad_left">
+                                <input type="text" class="form-control" name="foot_bar_pad_left" value="{{ $foot_bar_pad_left }}" placeholder="0px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Padding Right') }}</label>
+                                <input type="hidden" name="types[]" value="foot_bar_pad_right">
+                                <input type="text" class="form-control" name="foot_bar_pad_right" value="{{ $foot_bar_pad_right }}" placeholder="0px">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Mobile Top') }}</label>
+                                <input type="hidden" name="types[]" value="foot_bar_mob_pad_top">
+                                <input type="text" class="form-control" name="foot_bar_mob_pad_top" value="{{ $foot_bar_mob_pad_top }}" placeholder="10px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Mobile Bottom') }}</label>
+                                <input type="hidden" name="types[]" value="foot_bar_mob_pad_bot">
+                                <input type="text" class="form-control" name="foot_bar_mob_pad_bot" value="{{ $foot_bar_mob_pad_bot }}" placeholder="12px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Mobile Left') }}</label>
+                                <input type="hidden" name="types[]" value="foot_bar_mob_pad_left">
+                                <input type="text" class="form-control" name="foot_bar_mob_pad_left" value="{{ $foot_bar_mob_pad_left }}" placeholder="0px">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label fs-10">{{ translate('Mobile Right') }}</label>
+                                <input type="hidden" name="types[]" value="foot_bar_mob_pad_right">
+                                <input type="text" class="form-control" name="foot_bar_mob_pad_right" value="{{ $foot_bar_mob_pad_right }}" placeholder="0px">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 

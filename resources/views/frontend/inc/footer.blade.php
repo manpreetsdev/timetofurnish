@@ -13,7 +13,28 @@
     </section>
 @endif
 
+
 @php
+    if (!function_exists('get_footer_images_helper')) {
+        function get_footer_images_helper($img_val, $default_asset = null) {
+            if (empty($img_val)) {
+                return $default_asset ? [$default_asset] : [];
+            }
+            $ids = explode(',', $img_val);
+            $urls = [];
+            foreach ($ids as $id) {
+                $id = trim($id);
+                if (!empty($id)) {
+                    $asset = uploaded_asset($id);
+                    if ($asset) {
+                        $urls[] = $asset;
+                    }
+                }
+            }
+            return count($urls) > 0 ? $urls : ($default_asset ? [$default_asset] : []);
+        }
+    }
+
     // Read styling settings
     $foot_bg_color = get_setting('foot_bg_color', '#fdfbf9');
     $foot_border_color = get_setting('foot_border_color', 'rgba(104, 91, 78, 0.2)');
@@ -22,9 +43,14 @@
     $foot_hover_color = get_setting('foot_hover_color', '#876a4b');
     $foot_pad_top = get_setting('foot_pad_top', '45px');
     $foot_pad_bot = get_setting('foot_pad_bot', '45px');
+    $foot_pad_left = get_setting('foot_pad_left', '0px');
+    $foot_pad_right = get_setting('foot_pad_right', '0px');
     $foot_mob_pad_top = get_setting('foot_mob_pad_top', '12px');
     $foot_mob_pad_bot = get_setting('foot_mob_pad_bot', '12px');
+    $foot_mob_pad_left = get_setting('foot_mob_pad_left', '0px');
+    $foot_mob_pad_right = get_setting('foot_mob_pad_right', '0px');
     $foot_bg_img = get_setting('foot_bg_img');
+    $foot_mob_bg_img = get_setting('foot_mob_bg_img');
     $foot_bg_pattern_left = get_setting('foot_bg_pattern_left');
     $foot_bg_pattern_right = get_setting('foot_bg_pattern_right');
     $foot_social_radius = get_setting('foot_social_radius', '4px');
@@ -40,6 +66,14 @@
     $foot_news_border_pos = get_setting('foot_news_border_pos', 'top-bottom');
     $foot_news_border_color = get_setting('foot_news_border_color', 'rgba(104, 91, 78, 0.2)');
     $foot_news_border_width = get_setting('foot_news_border_width', '1.5px');
+    $foot_news_pad_top = get_setting('foot_news_pad_top', '24px');
+    $foot_news_pad_bot = get_setting('foot_news_pad_bot', '24px');
+    $foot_news_pad_left = get_setting('foot_news_pad_left', '0px');
+    $foot_news_pad_right = get_setting('foot_news_pad_right', '0px');
+    $foot_news_mob_pad_top = get_setting('foot_news_mob_pad_top', '8px');
+    $foot_news_mob_pad_bot = get_setting('foot_news_mob_pad_bot', '8px');
+    $foot_news_mob_pad_left = get_setting('foot_news_mob_pad_left', '0px');
+    $foot_news_mob_pad_right = get_setting('foot_news_mob_pad_right', '0px');
     
     $news_border_top = 'none';
     $news_border_bottom = 'none';
@@ -65,6 +99,18 @@
     $foot_copy_text = get_setting('foot_copy_text', '#ffffff');
     $frontend_copyright_text = get_setting('frontend_copyright_text', 'Copyright &copy; 2026 Time to Furnish. All Right Reserved.', App::getLocale());
     $footer_disclaimer_text = get_setting('footer_disclaimer_text', 'We operate as an independent third-party marketplace and are not liable for the accuracy, originality, or legality of any images or content uploaded by sellers. All such materials are the sole responsibility of the seller, including any content copied or reproduced from external platforms. Please read our <a href="/seller-terms-conditions" target="_blank" rel="noopener"><b>Terms and Conditions</b></a>.', App::getLocale());
+    $foot_bar_pad_top = get_setting('foot_bar_pad_top', '10px');
+    $foot_bar_pad_bot = get_setting('foot_bar_pad_bot', '10px');
+    $foot_bar_pad_left = get_setting('foot_bar_pad_left', '0px');
+    $foot_bar_pad_right = get_setting('foot_bar_pad_right', '0px');
+    $foot_bar_mob_pad_top = get_setting('foot_bar_mob_pad_top', '10px');
+    $foot_bar_mob_pad_bot = get_setting('foot_bar_mob_pad_bot', '12px');
+    $foot_bar_mob_pad_left = get_setting('foot_bar_mob_pad_left', '0px');
+    $foot_bar_mob_pad_right = get_setting('foot_bar_mob_pad_right', '0px');
+    
+    // Mobile Font Sizes
+    $foot_mob_head_font_size = get_setting('foot_mob_head_font_size', '14px');
+    $foot_mob_body_font_size = get_setting('foot_mob_body_font_size', '13px');
 
     $columns = \App\Support\FooterDefaults::columns(App::getLocale());
 @endphp
@@ -79,8 +125,12 @@
         --foot-hover-color: {{ $foot_hover_color }};
         --foot-pad-top: {{ $foot_pad_top }};
         --foot-pad-bot: {{ $foot_pad_bot }};
+        --foot-pad-left: {{ $foot_pad_left }};
+        --foot-pad-right: {{ $foot_pad_right }};
         --foot-mob-pad-top: {{ $foot_mob_pad_top }};
         --foot-mob-pad-bot: {{ $foot_mob_pad_bot }};
+        --foot-mob-pad-left: {{ $foot_mob_pad_left }};
+        --foot-mob-pad-right: {{ $foot_mob_pad_right }};
         --foot-copy-bg: {{ $foot_copy_bg }};
         --foot-copy-text: {{ $foot_copy_text }};
         --foot-news-bg: {{ $foot_news_bg }};
@@ -92,8 +142,26 @@
         --foot-news-border-bottom: {{ $news_border_bottom }};
         --foot-news-border-left: {{ $news_border_left }};
         --foot-news-border-right: {{ $news_border_right }};
+        --foot-news-pad-top: {{ $foot_news_pad_top }};
+        --foot-news-pad-bot: {{ $foot_news_pad_bot }};
+        --foot-news-pad-left: {{ $foot_news_pad_left }};
+        --foot-news-pad-right: {{ $foot_news_pad_right }};
+        --foot-news-mob-pad-top: {{ $foot_news_mob_pad_top }};
+        --foot-news-mob-pad-bot: {{ $foot_news_mob_pad_bot }};
+        --foot-news-mob-pad-left: {{ $foot_news_mob_pad_left }};
+        --foot-news-mob-pad-right: {{ $foot_news_mob_pad_right }};
+        --foot-bar-pad-top: {{ $foot_bar_pad_top }};
+        --foot-bar-pad-bot: {{ $foot_bar_pad_bot }};
+        --foot-bar-pad-left: {{ $foot_bar_pad_left }};
+        --foot-bar-pad-right: {{ $foot_bar_pad_right }};
+        --foot-bar-mob-pad-top: {{ $foot_bar_mob_pad_top }};
+        --foot-bar-mob-pad-bot: {{ $foot_bar_mob_pad_bot }};
+        --foot-bar-mob-pad-left: {{ $foot_bar_mob_pad_left }};
+        --foot-bar-mob-pad-right: {{ $foot_bar_mob_pad_right }};
         --foot-head-font-size: {{ get_setting('foot_head_font_size', '16px') }};
         --foot-body-font-size: {{ get_setting('foot_body_font_size', '13px') }};
+        --foot-mob-head-font-size: {{ $foot_mob_head_font_size }};
+        --foot-mob-body-font-size: {{ $foot_mob_body_font_size }};
         --foot-body-line-height: {{ get_setting('foot_body_line_height', '1.8') }};
         --foot-col-spacing: {{ get_setting('foot_col_spacing', '20px') }};
         --foot-head-margin-bottom: {{ get_setting('foot_head_margin_bottom', '18px') }};
@@ -101,6 +169,11 @@
             --foot-bg-img: url("{{ uploaded_asset($foot_bg_img) }}");
         @else
             --foot-bg-img: none;
+        @endif
+        @if (!empty($foot_mob_bg_img) && $foot_mob_bg_img != 'none')
+            --foot-mob-bg-img: url("{{ uploaded_asset($foot_mob_bg_img) }}");
+        @else
+            --foot-mob-bg-img: none;
         @endif
         @if (!empty($foot_bg_pattern_left))
             --foot-bg-pattern-left: url("{{ uploaded_asset($foot_bg_pattern_left) }}");
@@ -342,49 +415,60 @@
                                             </ul>
                                         @endif
                                     @elseif ($wType == 'images_widget')
-                                        @php
-                                            $show_deliv = ($w['show_deliv'] ?? 'on') == 'on';
-                                            $show_pay = ($w['show_pay'] ?? 'on') == 'on';
-                                            $show_trust = ($w['show_trust'] ?? 'on') == 'on';
-                                        @endphp
-                                        @if($show_deliv)
-                                            <div class="secure-payment-box mb-3">
-                                                <h5 class="secure-payment-title textheading">
-                                                    {{ $w['title'] ?? translate('Delivery Partners') }}
-                                                </h5>
-                                                @php
-                                                    $deliv_img = !empty($w['deliv_img']) ? uploaded_asset($w['deliv_img']) : (get_setting('foot_img_deliv') ? uploaded_asset(get_setting('foot_img_deliv')) : static_asset('assets/img/delivery_partners_logo.png'));
-                                                @endphp
-                                                <img src="{{ $deliv_img }}" alt="Delivery Partners" class="secure-payment-img">
-                                            </div>
-                                        @endif
+                                         @php
+                                             $show_deliv = ($w['show_deliv'] ?? 'on') == 'on';
+                                             $show_pay = ($w['show_pay'] ?? 'on') == 'on';
+                                             $show_trust = ($w['show_trust'] ?? 'on') == 'on';
 
-                                        @if($show_pay)
-                                            <div class="secure-payment-box mb-3">
-                                                <h5 class="secure-payment-title textheading">
-                                                    {{ $show_deliv ? translate('Pay Securely With') : ($w['title'] ?? translate('Pay Securely With')) }}
-                                                </h5>
-                                                @php
-                                                    $pay_img = !empty($w['pay_img']) ? uploaded_asset($w['pay_img']) : (get_setting('foot_img_pay') ? uploaded_asset(get_setting('foot_img_pay')) : static_asset('assets/img/securelypayments.png'));
-                                                @endphp
-                                                <img src="{{ $pay_img }}" alt="Pay Securely With" class="secure-payment-img">
-                                            </div>
-                                        @endif
+                                             $deliv_imgs = get_footer_images_helper(!empty($w['deliv_img']) ? $w['deliv_img'] : get_setting('foot_img_deliv'), static_asset('assets/img/delivery_partners_logo.png'));
+                                             $pay_imgs = get_footer_images_helper(!empty($w['pay_img']) ? $w['pay_img'] : get_setting('foot_img_pay'), static_asset('assets/img/securelypayments.png'));
+                                             $trust_imgs = get_footer_images_helper(!empty($w['trust_img']) ? $w['trust_img'] : get_setting('foot_img_trust'), static_asset('assets/img/trustpilot.png'));
+                                             $trust_lnk = !empty($w['trustpilot_lnk']) ? $w['trustpilot_lnk'] : get_setting('foot_lnk_trust', '#');
+                                         @endphp
+                                         @if($show_deliv)
+                                             <div class="secure-payment-box mb-3">
+                                                 <h5 class="secure-payment-title textheading">
+                                                     {{ $w['title'] ?? translate('Delivery Partners') }}
+                                                 </h5>
+                                                 <div class="logo-images-row">
+                                                     @foreach($deliv_imgs as $img)
+                                                         <div class="logo-image-item">
+                                                             <img src="{{ $img }}" alt="Delivery Partner">
+                                                         </div>
+                                                     @endforeach
+                                                 </div>
+                                             </div>
+                                         @endif
 
-                                        @if($show_trust)
-                                            <div class="secure-payment-box">
-                                                <h5 class="secure-payment-title textheading">
-                                                    {{ translate('What Trustpilot Say’s') }}
-                                                </h5>
-                                                @php
-                                                    $trust_img = !empty($w['trust_img']) ? uploaded_asset($w['trust_img']) : (get_setting('foot_img_trust') ? uploaded_asset(get_setting('foot_img_trust')) : static_asset('assets/img/trustpilot.png'));
-                                                    $trust_lnk = !empty($w['trustpilot_lnk']) ? $w['trustpilot_lnk'] : get_setting('foot_lnk_trust', '#');
-                                                @endphp
-                                                <a href="{{ $trust_lnk }}" target="_blank">
-                                                    <img src="{{ $trust_img }}" alt="Trustpilot Reviews" class="secure-payment-img trustpilot-img">
-                                                </a>
-                                            </div>
-                                        @endif
+                                         @if($show_pay)
+                                             <div class="secure-payment-box mb-3">
+                                                 <h5 class="secure-payment-title textheading">
+                                                     {{ $show_deliv ? translate('Pay Securely With') : ($w['title'] ?? translate('Pay Securely With')) }}
+                                                 </h5>
+                                                 <div class="logo-images-row">
+                                                     @foreach($pay_imgs as $img)
+                                                         <div class="logo-image-item">
+                                                             <img src="{{ $img }}" alt="Pay Securely With">
+                                                         </div>
+                                                     @endforeach
+                                                 </div>
+                                             </div>
+                                         @endif
+
+                                         @if($show_trust)
+                                             <div class="secure-payment-box">
+                                                 <h5 class="secure-payment-title textheading">
+                                                     {{ translate('What Trustpilot Say’s') }}
+                                                 </h5>
+                                                 <a href="{{ $trust_lnk }}" target="_blank" class="logo-images-row">
+                                                     @foreach($trust_imgs as $img)
+                                                         <div class="logo-image-item">
+                                                             <img src="{{ $img }}" alt="Trustpilot Reviews" style="height:28px !important; max-width:140px !important;">
+                                                         </div>
+                                                     @endforeach
+                                                 </a>
+                                             </div>
+                                         @endif
                                     @elseif ($wType == 'social_icons')
                                         <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
                                             {{ $w['title'] ?? 'Follow Us' }}
@@ -421,9 +505,7 @@
                 @endif
             @endforeach
         </div>
-    </div>
-
-    <!-- Mobile Accordion Footer (under 768px) -->
+    </div>    <!-- Mobile Accordion Footer (under 768px) -->
     <div class="d-md-none bg-transparent ttf-mobile-footer">
         @foreach($columns as $col => $c)
             @if ($c['status'] == 'on')
@@ -434,81 +516,82 @@
                     @endphp
                     
                     @if (in_array($wType, ['menu_links', 'important_links', 'my_account', 'seller_zone', 'text_html']))
-                        <div id="{{ $widget_id }}" class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-section container">
-                            <div class="aiz-accordion-heading">
-                                <button class="aiz-accordion fs-14 text-white bg-transparent">
-                                    {{ $w['title'] ?? 'Section' }}
-                                </button>
-                            </div>
-                            <div class="aiz-accordion-panel bg-transparent">
-                                <div class="py-3">
-                                    @if ($wType == 'menu_links')
-                                        <ul class="list-unstyled">
-                                            @if(!empty($w['lbls']))
-                                                @foreach ($w['lbls'] as $key => $label)
-                                                    @if(!empty(trim($label)))
-                                                        @php $url = isset($w['lnks'][$key]) ? $w['lnks'][$key] : '#'; @endphp
-                                                        <li class="mb-2 pb-2">
-                                                            <a href="{{ url($url) }}" class="fs-13 text-light animate-underline-white">
-                                                                {{ $label }}
-                                                            </a>
-                                                        </li>
-                                                    @endif
-                                                @endforeach
-                                            @endif
-                                        </ul>
-                                    @elseif ($wType == 'important_links')
-                                        <ul class="list-unstyled">
-                                            @php $pages = get_pages_footer('2,3,4,5,6,7,8,10,11'); @endphp
-                                            @foreach ($pages as $key => $value)
-                                                <li class="mb-2">
-                                                    <a href="{{ url($value->slug) }}" class="fs-13 text-light animate-underline-white">
-                                                        {{ $value->title }}
-                                                    </a>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    @elseif ($wType == 'my_account')
-                                        <ul class="list-unstyled">
-                                            @auth
-                                                <li class="mb-2 pb-2">
-                                                    <a class="fs-13 text-light animate-underline-white" href="{{ route('logout') }}">{{ translate('Logout') }}</a>
-                                                </li>
-                                            @else
-                                                <li class="mb-2 pb-2">
-                                                    <a class="fs-13 text-light animate-underline-white" href="{{ route('user.login') }}">{{ translate('Login') }}</a>
-                                                </li>
-                                            @endauth
-                                            <li class="mb-2 pb-2">
-                                                <a class="fs-13 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ translate('Order History') }}</a>
-                                            </li>
-                                            <li class="mb-2 pb-2">
-                                                <a class="fs-13 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ translate('My Wishlist') }}</a>
-                                            </li>
-                                        </ul>
-                                    @elseif ($wType == 'text_html')
-                                        <div class="fs-13 text-light" style="line-height: 1.8;">
-                                            {!! $w['html'] ?? '' !!}
-                                        </div>
-                                    @elseif ($wType == 'seller_zone')
-                                        @if (get_setting('vendor_system_activation') == 1)
-                                            <ul class="list-unstyled mb-3">
-                                                @guest
-                                                    <li class="mb-2 pb-2">
-                                                        <a class="fs-13 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
-                                                            {{ translate('Login to Seller Panel') }}
+                        <div id="{{ $widget_id }}" class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-section">
+                            <div class="container">
+                                <div class="aiz-accordion-heading">
+                                    <button class="aiz-accordion fs-14 text-white bg-transparent">
+                                        {{ $w['title'] ?? 'Section' }}
+                                    </button>
+                                </div>
+                                <div class="aiz-accordion-panel bg-transparent">
+                                    <div class="py-3">
+                                        @if ($wType == 'menu_links')
+                                            <ul class="list-unstyled">
+                                                @if(!empty($w['lbls']))
+                                                    @foreach ($w['lbls'] as $key => $label)
+                                                        @if(!empty(trim($label)))
+                                                            @php $url = isset($w['lnks'][$key]) ? $w['lnks'][$key] : '#'; @endphp
+                                                            <li class="mb-2 pb-2">
+                                                                <a href="{{ url($url) }}" class="fs-13 text-light animate-underline-white">
+                                                                    {{ $label }}
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </ul>
+                                        @elseif ($wType == 'important_links')
+                                            <ul class="list-unstyled">
+                                                @php $pages = get_pages_footer('2,3,4,5,6,7,8,10,11'); @endphp
+                                                @foreach ($pages as $key => $value)
+                                                    <li class="mb-2">
+                                                        <a href="{{ url($value->slug) }}" class="fs-13 text-light animate-underline-white">
+                                                            {{ $value->title }}
                                                         </a>
                                                     </li>
-                                                @endguest
-                                                <li class="mb-2">
-                                                    <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-13 text-light animate-underline-white">
-                                                        {{ translate('Become A Seller') }}
-                                                    </a>
+                                                @endforeach
+                                            </ul>
+                                        @elseif ($wType == 'my_account')
+                                            <ul class="list-unstyled">
+                                                @auth
+                                                    <li class="mb-2 pb-2">
+                                                        <a class="fs-13 text-light animate-underline-white" href="{{ route('logout') }}">{{ translate('Logout') }}</a>
+                                                    </li>
+                                                @else
+                                                    <li class="mb-2 pb-2">
+                                                        <a class="fs-13 text-light animate-underline-white" href="{{ route('user.login') }}">{{ translate('Login') }}</a>
+                                                    </li>
+                                                @endauth
+                                                <li class="mb-2 pb-2">
+                                                    <a class="fs-13 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ translate('Order History') }}</a>
+                                                </li>
+                                                <li class="mb-2 pb-2">
+                                                    <a class="fs-13 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ translate('My Wishlist') }}</a>
                                                 </li>
                                             </ul>
+                                        @elseif ($wType == 'text_html')
+                                            <div class="fs-13 text-light" style="line-height: 1.8;">
+                                                {!! $w['html'] ?? '' !!}
+                                            </div>
+                                        @elseif ($wType == 'seller_zone')
+                                            @if (get_setting('vendor_system_activation') == 1)
+                                                <ul class="list-unstyled mb-3">
+                                                    @guest
+                                                        <li class="mb-2 pb-2">
+                                                            <a class="fs-13 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
+                                                                {{ translate('Login to Seller Panel') }}
+                                                            </a>
+                                                        </li>
+                                                    @endguest
+                                                    <li class="mb-2">
+                                                        <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-13 text-light animate-underline-white">
+                                                            {{ translate('Become A Seller') }}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            @endif
                                         @endif
-
-                                    @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -523,24 +606,26 @@
                                 $has_social_links = $fb || $tw || $ig || $yt || $pt || $tk;
                             @endphp
                             @if(!empty($w['subheading_3']) && $has_social_links)
-                                <div class="ttf-mobile-widget ttf-mobile-section container">
-                                    <h5 class="secure-payment-title textheading">{{ $w['subheading_3'] }}</h5>
-                                    <ul class="footer-social-list mt-2">
-                                        @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
-                                        @if ($tw)
-                                            <li>
-                                                <a href="{{ $tw }}" target="_blank">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                                                        <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
-                                                    </svg>
-                                                </a>
-                                            </li>
-                                        @endif
-                                        @if ($ig) <li><a href="{{ $ig }}" target="_blank"><i class="lab la-instagram"></i></a></li> @endif
-                                        @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
-                                        @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
-                                        @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
-                                    </ul>
+                                <div class="ttf-mobile-widget ttf-mobile-section">
+                                    <div class="container">
+                                        <h5 class="secure-payment-title textheading">{{ $w['subheading_3'] }}</h5>
+                                        <ul class="footer-social-list mt-2">
+                                            @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
+                                            @if ($tw)
+                                                <li>
+                                                    <a href="{{ $tw }}" target="_blank">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+                                                        </svg>
+                                                    </a>
+                                                </li>
+                                            @endif
+                                            @if ($ig) <li><a href="{{ $ig }}" target="_blank"><i class="lab la-instagram"></i></a></li> @endif
+                                            @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
+                                            @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
+                                            @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
+                                        </ul>
+                                    </div>
                                 </div>
                             @endif
                         @endif
@@ -549,74 +634,93 @@
                             $show_deliv = ($w['show_deliv'] ?? 'on') == 'on';
                             $show_pay = ($w['show_pay'] ?? 'on') == 'on';
                             $show_trust = ($w['show_trust'] ?? 'on') == 'on';
+
+                            $deliv_imgs = get_footer_images_helper(!empty($w['deliv_img']) ? $w['deliv_img'] : get_setting('foot_img_deliv'), static_asset('assets/img/delivery_partners_logo.png'));
+                            $pay_imgs = get_footer_images_helper(!empty($w['pay_img']) ? $w['pay_img'] : get_setting('foot_img_pay'), static_asset('assets/img/securelypayments.png'));
+                            $trust_imgs = get_footer_images_helper(!empty($w['trust_img']) ? $w['trust_img'] : get_setting('foot_img_trust'), static_asset('assets/img/trustpilot.png'));
+                            $trust_lnk = !empty($w['trustpilot_lnk']) ? $w['trustpilot_lnk'] : get_setting('foot_lnk_trust', '#');
                         @endphp
                         @if($show_deliv)
-                            <div id="{{ $widget_id }}" class="secure-payment-box ttf-mobile-section container mt-3">
-                                <h5 class="secure-payment-title textheading">
-                                    {{ $w['title'] ?? translate('Delivery Partners') }}
-                                </h5>
-                                @php
-                                    $deliv_img = !empty($w['deliv_img']) ? uploaded_asset($w['deliv_img']) : (get_setting('foot_img_deliv') ? uploaded_asset(get_setting('foot_img_deliv')) : static_asset('assets/img/delivery_partners_logo.png'));
-                                @endphp
-                                <img src="{{ $deliv_img }}" alt="Delivery Partners" class="secure-payment-img">
+                            <div id="{{ $widget_id }}" class="secure-payment-box ttf-mobile-section mt-3">
+                                <div class="container">
+                                    <h5 class="secure-payment-title textheading">
+                                        {{ $w['title'] ?? translate('Delivery Partners') }}
+                                    </h5>
+                                    <div class="logo-images-row">
+                                        @foreach($deliv_imgs as $img)
+                                            <div class="logo-image-item">
+                                                <img src="{{ $img }}" alt="Delivery Partner">
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
                         @endif
 
                         @if($show_pay)
-                            <div id="{{ $widget_id }}-pay" class="secure-payment-box ttf-mobile-section container mt-3">
-                                <h5 class="secure-payment-title textheading">
-                                    {{ $show_deliv ? translate('Pay Securely With') : ($w['title'] ?? translate('Pay Securely With')) }}
-                                </h5>
-                                @php
-                                    $pay_img = !empty($w['pay_img']) ? uploaded_asset($w['pay_img']) : (get_setting('foot_img_pay') ? uploaded_asset(get_setting('foot_img_pay')) : static_asset('assets/img/securelypayments.png'));
-                                @endphp
-                                <img src="{{ $pay_img }}" alt="Pay Securely With" class="secure-payment-img">
+                            <div id="{{ $widget_id }}-pay" class="secure-payment-box ttf-mobile-section mt-3">
+                                <div class="container">
+                                    <h5 class="secure-payment-title textheading">
+                                        {{ $show_deliv ? translate('Pay Securely With') : ($w['title'] ?? translate('Pay Securely With')) }}
+                                    </h5>
+                                    <div class="logo-images-row">
+                                        @foreach($pay_imgs as $img)
+                                            <div class="logo-image-item">
+                                                <img src="{{ $img }}" alt="Pay Securely With">
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
                         @endif
 
                         @if($show_trust)
-                            <div id="{{ $widget_id }}-trust" class="secure-payment-box ttf-mobile-section container mt-3">
-                                <h5 class="secure-payment-title textheading">
-                                    {{ translate('What Trustpilot Say’s') }}
-                                </h5>
-                                @php
-                                    $trust_img = !empty($w['trust_img']) ? uploaded_asset($w['trust_img']) : (get_setting('foot_img_trust') ? uploaded_asset(get_setting('foot_img_trust')) : static_asset('assets/img/trustpilot.png'));
-                                    $trust_lnk = !empty($w['trustpilot_lnk']) ? $w['trustpilot_lnk'] : get_setting('foot_lnk_trust', '#');
-                                @endphp
-                                <a href="{{ $trust_lnk }}" target="_blank">
-                                    <img src="{{ $trust_img }}" alt="Trustpilot Reviews" class="secure-payment-img trustpilot-img">
-                                </a>
+                            <div id="{{ $widget_id }}-trust" class="secure-payment-box ttf-mobile-section mt-3">
+                                <div class="container">
+                                    <h5 class="secure-payment-title textheading">
+                                        {{ translate('What Trustpilot Say’s') }}
+                                    </h5>
+                                    <a href="{{ $trust_lnk }}" target="_blank" class="logo-images-row">
+                                        @foreach($trust_imgs as $img)
+                                            <div class="logo-image-item">
+                                                <img src="{{ $img }}" alt="Trustpilot Reviews" style="height:28px !important; max-width:140px !important;">
+                                            </div>
+                                        @endforeach
+                                    </a>
+                                </div>
                             </div>
                         @endif
                     @elseif ($wType == 'social_icons')
-                        <div id="{{ $widget_id }}" class="secure-payment-box ttf-mobile-section container mt-3">
-                            <h5 class="secure-payment-title textheading">
-                                {{ $w['title'] ?? translate('Follow Us') }}
-                            </h5>
-                            @php
-                                $fb = !empty($w['facebook_link']) ? $w['facebook_link'] : get_setting('facebook_link');
-                                $tw = !empty($w['twitter_link']) ? $w['twitter_link'] : get_setting('twitter_link');
-                                $ig = !empty($w['instagram_link']) ? $w['instagram_link'] : get_setting('instagram_link');
-                                $yt = !empty($w['youtube_link']) ? $w['youtube_link'] : get_setting('youtube_link');
-                                $pt = !empty($w['pinterest_link']) ? $w['pinterest_link'] : get_setting('pinterest_link');
-                                $tk = !empty($w['tiktok_link']) ? $w['tiktok_link'] : get_setting('foot_social_tk');
-                            @endphp
-                            <ul class="footer-social-list mt-2">
-                                @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
-                                @if ($tw)
-                                    <li>
-                                        <a href="{{ $tw }}" target="_blank">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
-                                            </svg>
-                                        </a>
-                                    </li>
-                                @endif
-                                @if ($ig) <li><a href="{{ $ig }}" target="_blank"><i class="lab la-instagram"></i></a></li> @endif
-                                @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
-                                @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
-                                @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
-                            </ul>
+                        <div id="{{ $widget_id }}" class="secure-payment-box ttf-mobile-section mt-3">
+                            <div class="container">
+                                <h5 class="secure-payment-title textheading">
+                                    {{ $w['title'] ?? translate('Follow Us') }}
+                                </h5>
+                                @php
+                                    $fb = !empty($w['facebook_link']) ? $w['facebook_link'] : get_setting('facebook_link');
+                                    $tw = !empty($w['twitter_link']) ? $w['twitter_link'] : get_setting('twitter_link');
+                                    $ig = !empty($w['instagram_link']) ? $w['instagram_link'] : get_setting('instagram_link');
+                                    $yt = !empty($w['youtube_link']) ? $w['youtube_link'] : get_setting('youtube_link');
+                                    $pt = !empty($w['pinterest_link']) ? $w['pinterest_link'] : get_setting('pinterest_link');
+                                    $tk = !empty($w['tiktok_link']) ? $w['tiktok_link'] : get_setting('foot_social_tk');
+                                @endphp
+                                <ul class="footer-social-list mt-2">
+                                    @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
+                                    @if ($tw)
+                                        <li>
+                                            <a href="{{ $tw }}" target="_blank">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @if ($ig) <li><a href="{{ $ig }}" target="_blank"><i class="lab la-instagram"></i></a></li> @endif
+                                    @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
+                                    @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
+                                    @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
+                                </ul>
+                            </div>
                         </div>
                     @endif
                 @endforeach
@@ -625,7 +729,6 @@
     </div>
 </footer>
 
-<!-- Full Width Bottom Copyright & Disclaimer Section -->
 <div class="ttf-footer-bottom-bar">
     <div class="container px-xs-0">
         <div class="row align-items-center">
@@ -889,6 +992,10 @@
                             const btn = wrap.querySelector('.aiz-accordion');
                             const panel = wrap.querySelector('.aiz-accordion-panel');
 
+                            const heading = wrap.querySelector('.aiz-accordion-heading');
+                            if (heading) {
+                                heading.classList.remove('active');
+                            }
                             if (btn) {
                                 btn.classList.remove('active');
                             }
