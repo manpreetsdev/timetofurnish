@@ -112,7 +112,7 @@
         @endif
     }
 </style>
-<link rel="stylesheet" href="{{ asset('assets/css/custom-footer.css') }}">
+<link rel="stylesheet" href="{{ static_asset('assets/css/custom-footer.css') }}">
 
 <section class="footer-widget ttf-footer-links-section">
     @if ($foot_news_show == 'on')
@@ -351,7 +351,7 @@
                                                     {{ $w['title'] ?? translate('Delivery Partners') }}
                                                 </h5>
                                                 @php
-                                                    $deliv_img = !empty($w['deliv_img']) ? uploaded_asset($w['deliv_img']) : (get_setting('foot_img_deliv') ? uploaded_asset(get_setting('foot_img_deliv')) : asset('assets/img/delivery_partners_logo.png'));
+                                                    $deliv_img = !empty($w['deliv_img']) ? uploaded_asset($w['deliv_img']) : (get_setting('foot_img_deliv') ? uploaded_asset(get_setting('foot_img_deliv')) : static_asset('assets/img/delivery_partners_logo.png'));
                                                 @endphp
                                                 <img src="{{ $deliv_img }}" alt="Delivery Partners" class="secure-payment-img">
                                             </div>
@@ -363,7 +363,7 @@
                                                     {{ $show_deliv ? translate('Pay Securely With') : ($w['title'] ?? translate('Pay Securely With')) }}
                                                 </h5>
                                                 @php
-                                                    $pay_img = !empty($w['pay_img']) ? uploaded_asset($w['pay_img']) : (get_setting('foot_img_pay') ? uploaded_asset(get_setting('foot_img_pay')) : asset('assets/img/securelypayments.png'));
+                                                    $pay_img = !empty($w['pay_img']) ? uploaded_asset($w['pay_img']) : (get_setting('foot_img_pay') ? uploaded_asset(get_setting('foot_img_pay')) : static_asset('assets/img/securelypayments.png'));
                                                 @endphp
                                                 <img src="{{ $pay_img }}" alt="Pay Securely With" class="secure-payment-img">
                                             </div>
@@ -375,7 +375,7 @@
                                                     {{ translate('What Trustpilot Say’s') }}
                                                 </h5>
                                                 @php
-                                                    $trust_img = !empty($w['trust_img']) ? uploaded_asset($w['trust_img']) : (get_setting('foot_img_trust') ? uploaded_asset(get_setting('foot_img_trust')) : asset('assets/img/trustpilot.png'));
+                                                    $trust_img = !empty($w['trust_img']) ? uploaded_asset($w['trust_img']) : (get_setting('foot_img_trust') ? uploaded_asset(get_setting('foot_img_trust')) : static_asset('assets/img/trustpilot.png'));
                                                     $trust_lnk = !empty($w['trustpilot_lnk']) ? $w['trustpilot_lnk'] : get_setting('foot_lnk_trust', '#');
                                                 @endphp
                                                 <a href="{{ $trust_lnk }}" target="_blank">
@@ -554,7 +554,7 @@
                                     {{ $w['title'] ?? translate('Delivery Partners') }}
                                 </h5>
                                 @php
-                                    $deliv_img = !empty($w['deliv_img']) ? uploaded_asset($w['deliv_img']) : (get_setting('foot_img_deliv') ? uploaded_asset(get_setting('foot_img_deliv')) : asset('assets/img/delivery_partners_logo.png'));
+                                    $deliv_img = !empty($w['deliv_img']) ? uploaded_asset($w['deliv_img']) : (get_setting('foot_img_deliv') ? uploaded_asset(get_setting('foot_img_deliv')) : static_asset('assets/img/delivery_partners_logo.png'));
                                 @endphp
                                 <img src="{{ $deliv_img }}" alt="Delivery Partners" class="secure-payment-img">
                             </div>
@@ -566,7 +566,7 @@
                                     {{ $show_deliv ? translate('Pay Securely With') : ($w['title'] ?? translate('Pay Securely With')) }}
                                 </h5>
                                 @php
-                                    $pay_img = !empty($w['pay_img']) ? uploaded_asset($w['pay_img']) : (get_setting('foot_img_pay') ? uploaded_asset(get_setting('foot_img_pay')) : asset('assets/img/securelypayments.png'));
+                                    $pay_img = !empty($w['pay_img']) ? uploaded_asset($w['pay_img']) : (get_setting('foot_img_pay') ? uploaded_asset(get_setting('foot_img_pay')) : static_asset('assets/img/securelypayments.png'));
                                 @endphp
                                 <img src="{{ $pay_img }}" alt="Pay Securely With" class="secure-payment-img">
                             </div>
@@ -578,7 +578,7 @@
                                     {{ translate('What Trustpilot Say’s') }}
                                 </h5>
                                 @php
-                                    $trust_img = !empty($w['trust_img']) ? uploaded_asset($w['trust_img']) : (get_setting('foot_img_trust') ? uploaded_asset(get_setting('foot_img_trust')) : asset('assets/img/trustpilot.png'));
+                                    $trust_img = !empty($w['trust_img']) ? uploaded_asset($w['trust_img']) : (get_setting('foot_img_trust') ? uploaded_asset(get_setting('foot_img_trust')) : static_asset('assets/img/trustpilot.png'));
                                     $trust_lnk = !empty($w['trustpilot_lnk']) ? $w['trustpilot_lnk'] : get_setting('foot_lnk_trust', '#');
                                 @endphp
                                 <a href="{{ $trust_lnk }}" target="_blank">

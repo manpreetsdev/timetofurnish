@@ -1,7 +1,7 @@
 @extends('backend.layouts.app')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('assets/css/custom-footer.css') }}">
+<link rel="stylesheet" href="{{ static_asset('assets/css/custom-footer.css') }}">
 <style>
     /* Premium Visual Editor Layout Styles */
     .ttf-editor-layout {
@@ -322,7 +322,7 @@
                                                     <div class="secure-payment-box mb-3">
                                                         <h5 class="secure-payment-title textheading">{{ $w['title'] ?? translate('Delivery Partners') }}</h5>
                                                         @php
-                                                            $deliv_img = !empty($w['deliv_img']) ? uploaded_asset($w['deliv_img']) : (get_setting('foot_img_deliv') ? uploaded_asset(get_setting('foot_img_deliv')) : asset('assets/img/delivery_partners_logo.png'));
+                                                            $deliv_img = !empty($w['deliv_img']) ? uploaded_asset($w['deliv_img']) : (get_setting('foot_img_deliv') ? uploaded_asset(get_setting('foot_img_deliv')) : static_asset('assets/img/delivery_partners_logo.png'));
                                                         @endphp
                                                         <img src="{{ $deliv_img }}" alt="" class="secure-payment-img">
                                                     </div>
@@ -331,7 +331,7 @@
                                                     <div class="secure-payment-box mb-3">
                                                         <h5 class="secure-payment-title textheading">{{ $show_deliv ? translate('Pay Securely With') : ($w['title'] ?? translate('Pay Securely With')) }}</h5>
                                                         @php
-                                                            $pay_img = !empty($w['pay_img']) ? uploaded_asset($w['pay_img']) : (get_setting('foot_img_pay') ? uploaded_asset(get_setting('foot_img_pay')) : asset('assets/img/securelypayments.png'));
+                                                            $pay_img = !empty($w['pay_img']) ? uploaded_asset($w['pay_img']) : (get_setting('foot_img_pay') ? uploaded_asset(get_setting('foot_img_pay')) : static_asset('assets/img/securelypayments.png'));
                                                         @endphp
                                                         <img src="{{ $pay_img }}" alt="" class="secure-payment-img">
                                                     </div>
@@ -340,7 +340,7 @@
                                                     <div class="secure-payment-box">
                                                         <h5 class="secure-payment-title textheading">{{ translate('What Trustpilot Say’s') }}</h5>
                                                         @php
-                                                            $trust_img = !empty($w['trust_img']) ? uploaded_asset($w['trust_img']) : (get_setting('foot_img_trust') ? uploaded_asset(get_setting('foot_img_trust')) : asset('assets/img/trustpilot.png'));
+                                                            $trust_img = !empty($w['trust_img']) ? uploaded_asset($w['trust_img']) : (get_setting('foot_img_trust') ? uploaded_asset(get_setting('foot_img_trust')) : static_asset('assets/img/trustpilot.png'));
                                                         @endphp
                                                         <img src="{{ $trust_img }}" alt="" class="secure-payment-img trustpilot-img">
                                                     </div>
