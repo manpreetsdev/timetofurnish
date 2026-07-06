@@ -310,7 +310,7 @@
     margin-bottom: 0px;
 }
 
-.logo-image-item {
+/* .logo-image-item {
     background-color: #ffffff;
     border: 1px solid var(--foot-border-color, rgba(104, 91, 78, 0.2));
     border-radius: 4px;
@@ -320,12 +320,12 @@
     justify-content: center;
     height: 36px;
     transition: all 0.2s ease;
-}
+} */
 
 .logo-image-item img {
-    height: 24px !important;
-    width: auto !important;
-    max-width: 80px !important;
+    height: 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
     object-fit: contain !important;
     margin-bottom: 0 !important;
 }
@@ -417,7 +417,7 @@
 }
 
 .ttf-mobile-accordion .aiz-accordion-panel ul li {
-    margin-bottom: 6px !important;
+    margin-bottom: 10px !important;
     padding-bottom: 0 !important;
     border-bottom: none !important;
 }
@@ -426,13 +426,43 @@
     display: inline-block;
     padding: 2px 0;
     line-height: 1.55 !important;
-    font-size: var(--foot-body-font-size, 13px) !important;
+    font-size: var(--foot-body-font-size, 14px) !important;
+    font-family: "Playfair Display", serif !important;
+}
+
+.ttf-footer-card h4,
+.secure-payment-title,
+.ttf-mobile-accordion .aiz-accordion,
+.ttf-mobile-direct-link-wrap a {
+    font-family: "Playfair Display";
 }
 
 @media (max-width: 767.98px) {
     .ttf-mobile-section:last-child {
         padding-bottom: 0 !important;
         border-bottom: 0 !important;
+    }
+
+    .ttf-mobile-accordion .aiz-accordion-panel ul {
+        margin: 0 !important;
+    }
+
+    .footer-newsletter-section h5 {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .newsletter-form-wrap .form-control {
+        font-size: 13px !important;
+    }
+
+    .newsletter-form-wrap .btn.footer_submit_btn {
+        font-size: 14px;
+
+    }
+
+    .aiz-accordion-panel .py-3 {
+        padding: 0 !important;
     }
 
     .ttf-mobile-accordion .container,
@@ -519,7 +549,7 @@
     .ttf-mobile-accordion a,
     .ttf-mobile-accordion p,
     .ttf-mobile-accordion .aiz-accordion-panel ul li a {
-        font-size: var(--foot-mob-body-font-size, 13px) !important;
+        font-size: var(--foot-mob-body-font-size, 14px) !important;
     }
 
     .ttf-mobile-accordion .aiz-accordion,
