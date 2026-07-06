@@ -27,6 +27,7 @@
     $foot_bg_img = get_setting('foot_bg_img');
     $foot_bg_pattern_left = get_setting('foot_bg_pattern_left');
     $foot_bg_pattern_right = get_setting('foot_bg_pattern_right');
+    $foot_social_radius = get_setting('foot_social_radius', '4px');
     
     // Newsletter settings
     $foot_news_show = get_setting('foot_news_show', 'on');
@@ -85,6 +86,7 @@
         --foot-news-bg: {{ $foot_news_bg }};
         --foot-news-border: {{ $foot_news_border }};
         --foot-news-btn_bg: {{ $foot_news_btn_bg }};
+        --foot-social-radius: {{ $foot_social_radius }};
         --foot-news-btn-tx: {{ $foot_news_btn_tx }};
         --foot-news-border-top: {{ $news_border_top }};
         --foot-news-border-bottom: {{ $news_border_bottom }};
@@ -173,7 +175,7 @@
                                     $style_text_weight = $w['style_text_weight'] ?? '';
                                     
                                     // Social Icons specific overrides
-                                    $style_social_radius = $w['style_social_radius'] ?? '50%';
+                                    $style_social_radius = $w['style_social_radius'] ?? '';
                                     $style_social_bg = $w['style_social_bg'] ?? '';
                                     $style_social_color = $w['style_social_color'] ?? '';
                                     $style_social_hover_bg = $w['style_social_hover_bg'] ?? '';

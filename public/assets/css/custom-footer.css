@@ -210,7 +210,7 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    border-radius: 50% !important;
+    border-radius: var(--foot-social-radius, 4px) !important;
     background-color: var(--foot-news-btn_bg, #685b4e) !important;
     border: none !important;
     transition: all 0.2s ease;

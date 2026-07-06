@@ -111,7 +111,7 @@
                 <div class="col-6">
                     <div class="form-group mb-2">
                         <label class="form-label fs-10">{{ translate('Border Radius') }}</label>
-                        <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][style_social_radius]" value="{{ $w['style_social_radius'] ?? '50%' }}" placeholder="50%" oninput="updateColumnPreview({{ $col }})">
+                        <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][style_social_radius]" value="{{ $w['style_social_radius'] ?? '' }}" placeholder="e.g. 50% or 4px" oninput="updateColumnPreview({{ $col }})">
                     </div>
                 </div>
             </div>

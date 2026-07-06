@@ -209,6 +209,7 @@
                     $foot_bg_img = get_setting('foot_bg_img');
                     $foot_bg_pattern_left = get_setting('foot_bg_pattern_left');
                     $foot_bg_pattern_right = get_setting('foot_bg_pattern_right');
+                    $foot_social_radius = get_setting('foot_social_radius', '4px');
                     
                     // Newsletter
                     $foot_news_show = get_setting('foot_news_show', 'on');
@@ -231,7 +232,8 @@
                 @endphp
                 
                 <!-- Simulated Frontend Footer Container with CSS Variables mapping -->
-                <div class="footer-widget ttf-footer-links-section ttf-hotspot" id="hotspot-general" onclick="activateSection('tab-general', this)" style="--foot-bg-color: {{ $foot_bg_color }}; --foot-head-color: {{ $foot_head_color }}; --foot-text-color: {{ $foot_text_color }}; --foot-hover-color: {{ $foot_hover_color }}; --foot-pad-top: {{ $foot_pad_top }}; --foot-pad-bot: {{ $foot_pad_bot }}; --foot-border-color: {{ $foot_border_color }}; --foot-copy-bg: {{ $foot_copy_bg }}; --foot-copy-text: {{ $foot_copy_text }}; --foot-news-bg: {{ $foot_news_bg }}; --foot-news-border: {{ $foot_news_border }}; --foot-news-btn_bg: {{ $foot_news_btn_bg }}; --foot-news-btn-tx: {{ $foot_news_btn_tx }}; --foot-head-font-size: {{ get_setting('foot_head_font_size', '16px') }}; --foot-body-font-size: {{ get_setting('foot_body_font_size', '13px') }}; --foot-body-line-height: {{ get_setting('foot_body_line_height', '1.8') }}; --foot-col-spacing: {{ get_setting('foot_col_spacing', '20px') }}; --foot-head-margin-bottom: {{ get_setting('foot_head_margin_bottom', '18px') }}; @if(!empty($foot_bg_pattern_left)) --foot-bg-pattern-left: url('{{ uploaded_asset($foot_bg_pattern_left) }}'); @else --foot-bg-pattern-left: none; @endif @if(!empty($foot_bg_pattern_right)) --foot-bg-pattern-right: url('{{ uploaded_asset($foot_bg_pattern_right) }}'); @else --foot-bg-pattern-right: none; @endif">
+                <div class="footer-widget ttf-footer-links-section ttf-hotspot" id="hotspot-general" onclick="activateSection('tab-general', this)" style="--foot-bg-color: {{ $foot_bg_color }}; --foot-head-color: {{ $foot_head_color }}; --foot-text-color: {{ $foot_text_color }}; --foot-hover-color: {{ $foot_hover_color }}; --foot-pad-top: {{ $foot_pad_top }}; --foot-pad-bot: {{ $foot_pad_bot }}; --foot-border-color: {{ $foot_border_color }}; --foot-copy-bg: {{ $foot_copy_bg }}; --foot-copy-text: {{ $foot_copy_text }}; --foot-news-bg: {{ $foot_news_bg }}; --foot-news-border: {{ $foot_news_border }}; --foot-news-btn_bg: {{ $foot_news_btn_bg }}; --foot-social-radius: {{ $foot_social_radius }};
+                --foot-news-btn-tx: {{ $foot_news_btn_tx }}; --foot-head-font-size: {{ get_setting('foot_head_font_size', '16px') }}; --foot-body-font-size: {{ get_setting('foot_body_font_size', '13px') }}; --foot-body-line-height: {{ get_setting('foot_body_line_height', '1.8') }}; --foot-col-spacing: {{ get_setting('foot_col_spacing', '20px') }}; --foot-head-margin-bottom: {{ get_setting('foot_head_margin_bottom', '18px') }}; @if(!empty($foot_bg_pattern_left)) --foot-bg-pattern-left: url('{{ uploaded_asset($foot_bg_pattern_left) }}'); @else --foot-bg-pattern-left: none; @endif @if(!empty($foot_bg_pattern_right)) --foot-bg-pattern-right: url('{{ uploaded_asset($foot_bg_pattern_right) }}'); @else --foot-bg-pattern-right: none; @endif">
                     <span class="ttf-edit-badge"><i class="las la-cog"></i> {{ translate('General Styles') }}</span>
                     
                     <!-- Sim Newsletter Section -->
@@ -562,6 +564,11 @@
                                 <input type="color" class="form-control p-0" style="width: 40px; height: 38px; border: 1px solid #ced4da; cursor: pointer;" value="{{ str_starts_with($foot_hover_color, '#') && strlen($foot_hover_color) == 7 ? $foot_hover_color : '#ffffff' }}" oninput="document.getElementById('color-input-foot_hover_color').value = this.value; updateLiveStyle('foot_hover_color', this.value)">
                             </div>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">{{ translate('Social Icons Radius') }}</label>
+                        <input type="hidden" name="types[]" value="foot_social_radius">
+                        <input type="text" class="form-control" name="foot_social_radius" value="{{ $foot_social_radius }}" placeholder="4px" oninput="updateLiveStyle('foot_social_radius', this.value)">
                     </div>
                 </div>
                 
@@ -1210,6 +1217,8 @@
             root.style.setProperty('--foot-body-line-height', val);
         } else if (key === 'foot_head_margin_bottom') {
             root.style.setProperty('--foot-head-margin-bottom', val);
+        } else if (key === 'foot_social_radius') {
+            root.style.setProperty('--foot-social-radius', val);
         }
     }
     
@@ -1287,7 +1296,7 @@
         let style_text_color = data.style_text_color || '';
         let style_hover_color = data.style_hover_color || '';
         
-        let style_social_radius = data.style_social_radius || '50%';
+        let style_social_radius = data.style_social_radius || '';
         let style_social_bg = data.style_social_bg || '';
         let style_social_color = data.style_social_color || '';
         let style_social_hover_bg = data.style_social_hover_bg || '';
@@ -1408,7 +1417,7 @@
                             <div class="col-6">
                                 <div class="form-group mb-2">
                                     <label class="form-label fs-10">Border Radius</label>
-                                    <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][style_social_radius]" value="${style_social_radius}" placeholder="50%" oninput="updateColumnPreview(${col})">
+                                    <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][style_social_radius]" value="${style_social_radius}" placeholder="e.g. 50% or 4px" oninput="updateColumnPreview(${col})">
                                 </div>
                             </div>
                         </div>
