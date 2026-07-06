@@ -4308,7 +4308,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
 /* Social Icons in Footer */
 .footer-social-list {
     display: flex !important;
-    justify-content: flex-start;
+    justify-content: flex-start !important;
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
