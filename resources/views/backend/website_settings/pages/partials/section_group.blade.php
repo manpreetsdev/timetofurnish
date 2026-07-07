@@ -124,7 +124,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label>{{ translate('Grid Columns') }}</label>
-                                    <select class="form-control aiz-selectpicker" name="builder[sections][{{ $groupIndex }}][columns]" data-group-columns-select>
+                                    <select class="form-control aiz-selectpicker" data-container="body" name="builder[sections][{{ $groupIndex }}][columns]" data-group-columns-select>
                                         <option value="1" @selected($columnsCount === 1)>{{ translate('1 Column') }}</option>
                                         <option value="2" @selected($columnsCount === 2)>{{ translate('2 Columns') }}</option>
                                         <option value="3" @selected($columnsCount === 3)>{{ translate('3 Columns') }}</option>

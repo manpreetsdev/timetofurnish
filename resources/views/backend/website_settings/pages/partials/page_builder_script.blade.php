@@ -1047,7 +1047,12 @@
                 isSidebarOpen('settings') &&
                 settingsSidebar &&
                 !event.target.closest('[data-builder-sidebar="settings"]') &&
-                !event.target.closest('[data-sidebar-toggle="settings"]')
+                !event.target.closest('[data-sidebar-toggle="settings"]') &&
+                !event.target.closest('#aizUploaderModal') &&
+                !event.target.closest('.modal') &&
+                !event.target.closest('.modal-backdrop') &&
+                !event.target.closest('.aiz-uploader-all') &&
+                !event.target.closest('.dropdown-menu')
             ) {
                 setSidebarState('settings', false);
             }

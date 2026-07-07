@@ -244,7 +244,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>{{ translate('Title Font Family') }}</label>
-                                        <select class="form-control aiz-selectpicker" name="builder[banner][title_font_family]">
+                                        <select class="form-control aiz-selectpicker" data-container="body" name="builder[banner][title_font_family]">
                                             @foreach ($fontFamilyOptions as $fontValue => $fontLabel)
                                                 <option value="{{ $fontValue }}" @selected(($banner['title_font_family'] ?? '') === $fontValue)>{{ $fontLabel }}</option>
                                             @endforeach
@@ -252,7 +252,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>{{ translate('Subtitle Font Family') }}</label>
-                                        <select class="form-control aiz-selectpicker" name="builder[banner][subtitle_font_family]">
+                                        <select class="form-control aiz-selectpicker" data-container="body" name="builder[banner][subtitle_font_family]">
                                             @foreach ($fontFamilyOptions as $fontValue => $fontLabel)
                                                 <option value="{{ $fontValue }}" @selected(($banner['subtitle_font_family'] ?? '') === $fontValue)>{{ $fontLabel }}</option>
                                             @endforeach
@@ -260,7 +260,7 @@
                                     </div>
                                     <div class="form-group mb-0">
                                         <label>{{ translate('Text Align') }}</label>
-                                        <select class="form-control aiz-selectpicker" name="builder[banner][text_align]">
+                                        <select class="form-control aiz-selectpicker" data-container="body" name="builder[banner][text_align]">
                                             <option value="left" @selected(($banner['text_align'] ?? '') === 'left')>{{ translate('Left') }}</option>
                                             <option value="center" @selected(($banner['text_align'] ?? '') === 'center')>{{ translate('Center') }}</option>
                                             <option value="right" @selected(($banner['text_align'] ?? '') === 'right')>{{ translate('Right') }}</option>
@@ -274,7 +274,7 @@
                                 <div class="ttf-setting-group__body">
                                     <div class="form-group">
                                         <label>{{ translate('Heading Font Family') }}</label>
-                                        <select class="form-control aiz-selectpicker" name="builder[styles][heading_font_family]">
+                                        <select class="form-control aiz-selectpicker" data-container="body" name="builder[styles][heading_font_family]">
                                             @foreach ($fontFamilyOptions as $fontValue => $fontLabel)
                                                 <option value="{{ $fontValue }}" @selected(($styles['heading_font_family'] ?? '') === $fontValue)>{{ $fontLabel }}</option>
                                             @endforeach
@@ -282,7 +282,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>{{ translate('Sub Heading Font Family') }}</label>
-                                        <select class="form-control aiz-selectpicker" name="builder[styles][subheading_font_family]">
+                                        <select class="form-control aiz-selectpicker" data-container="body" name="builder[styles][subheading_font_family]">
                                             @foreach ($fontFamilyOptions as $fontValue => $fontLabel)
                                                 <option value="{{ $fontValue }}" @selected(($styles['subheading_font_family'] ?? '') === $fontValue)>{{ $fontLabel }}</option>
                                             @endforeach
@@ -290,7 +290,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>{{ translate('Paragraph Font Family') }}</label>
-                                        <select class="form-control aiz-selectpicker" name="builder[styles][paragraph_font_family]">
+                                        <select class="form-control aiz-selectpicker" data-container="body" name="builder[styles][paragraph_font_family]">
                                             @foreach ($fontFamilyOptions as $fontValue => $fontLabel)
                                                 <option value="{{ $fontValue }}" @selected(($styles['paragraph_font_family'] ?? '') === $fontValue)>{{ $fontLabel }}</option>
                                             @endforeach

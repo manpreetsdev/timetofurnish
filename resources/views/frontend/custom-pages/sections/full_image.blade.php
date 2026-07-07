@@ -43,9 +43,9 @@
     --section-padding-left: {{ $paddingLeftRight }}px;
     --section-padding-right: {{ $paddingLeftRight }}px;
     --section-image-height: {{ (int) ($section['image_height'] ?? 520) }}px;
-    --section-title-size: {{ !empty($section['title_font_size']) ? (int) $section['title_font_size'] . 'px' : '' }};
+    --section-title-size: {{ !empty($section['title_font_size']) ? (is_numeric($section['title_font_size']) ? $section['title_font_size'] . 'px' : $section['title_font_size']) : '' }};
     --section-title-height: {{ !empty($section['title_line_height']) ? (is_numeric($section['title_line_height']) ? $section['title_line_height'] . 'px' : $section['title_line_height']) : '' }};
-    --section-body-size: {{ !empty($section['body_font_size']) ? (int) $section['body_font_size'] . 'px' : '' }};
+    --section-body-size: {{ !empty($section['body_font_size']) ? (is_numeric($section['body_font_size']) ? $section['body_font_size'] . 'px' : $section['body_font_size']) : '' }};
     --section-body-height: {{ !empty($section['body_line_height']) ? (is_numeric($section['body_line_height']) ? $section['body_line_height'] . 'px' : $section['body_line_height']) : '' }};
     --section-highlight-color: {{ !empty($section['highlight_color']) ? $section['highlight_color'] : 'var(--section-accent)' }};
     --section-image-radius: {{ !empty($section['image_border_radius']) ? (int) $section['image_border_radius'] . 'px' : '24px' }};

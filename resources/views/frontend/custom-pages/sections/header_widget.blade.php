@@ -44,7 +44,7 @@
         --section-padding-left: {{ (isset($section['padding_left_right']) && $section['padding_left_right'] !== '') ? (int) $section['padding_left_right'] : 0 }}px;
         --section-padding-right: {{ (isset($section['padding_left_right']) && $section['padding_left_right'] !== '') ? (int) $section['padding_left_right'] : 0 }}px;
         --section-text-align: {{ $textAlign }};
-        --section-title-size: {{ !empty($section['title_font_size']) ? (int) $section['title_font_size'] . 'px' : '' }};
+        --section-title-size: {{ !empty($section['title_font_size']) ? (is_numeric($section['title_font_size']) ? $section['title_font_size'] . 'px' : $section['title_font_size']) : '' }};
         --section-title-height: {{ !empty($section['title_line_height']) ? (is_numeric($section['title_line_height']) ? $section['title_line_height'] . 'px' : $section['title_line_height']) : '' }};
         --section-highlight-color: {{ !empty($section['highlight_color']) ? $section['highlight_color'] : 'var(--section-accent)' }};
     ">

@@ -699,7 +699,7 @@
                                         <a href="{{ $trust_lnk }}" target="_blank" class="logo-images-row">
                                             @foreach($trust_imgs as $img)
                                                 <div class="logo-image-item">
-                                                    <img src="{{ $img }}" alt="Trustpilot Reviews" style="height:28px !important; max-width:140px !important;">
+                                                    <img src="{{ $img }}" alt="Trustpilot Reviews">
                                                 </div>
                                             @endforeach
                                         </a>
@@ -707,7 +707,7 @@
                                         <div class="logo-images-row">
                                             @foreach($trust_imgs as $img)
                                                 <div class="logo-image-item">
-                                                    <img src="{{ $img }}" alt="Trustpilot Reviews" style="height:28px !important; max-width:140px !important;">
+                                                    <img src="{{ $img }}" alt="Trustpilot Reviews">
                                                 </div>
                                             @endforeach
                                         </div>

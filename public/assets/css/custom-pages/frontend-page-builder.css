@@ -723,6 +723,7 @@
 }
 
 @media (max-width: 991.98px) {
+
     .ttf-grid-cols-3,
     .ttf-grid-cols-4 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -730,6 +731,7 @@
 }
 
 @media (max-width: 767.98px) {
+
     .ttf-grid-cols-2,
     .ttf-grid-cols-3,
     .ttf-grid-cols-4 {
@@ -789,6 +791,11 @@
 }
 
 /* --- Strict TOC + Content Frontend Typography Overrides --- */
+.ttf-section-settings.ttf-section-settings--widget .col-12,
+.ttf-section-settings.ttf-section-settings--widget .col-6 {
+    margin-left: 10px;
+    margin-right: 10px;
+}
 
 /* Right Side Heading Font Size (40px) */
 .ttf-policy-content h1,
