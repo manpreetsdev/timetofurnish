@@ -177,7 +177,7 @@
 
 .footer-newsletter-section h5 {
     color: var(--foot-head-color, #000000) !important;
-    font-size: 15px;
+    font-size: 30px !important;
     font-weight: 700;
 }
 
