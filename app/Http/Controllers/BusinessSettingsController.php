@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\BusinessSetting;
+use App\Support\FooterDefaults;
 use Artisan;
 use CoreComponentRepository;
 use Illuminate\Support\Facades\Redirect;
@@ -391,6 +392,46 @@ class BusinessSettingsController extends Controller
 
     public function update(Request $request)
     {
+        if ($request->input('tab') == 'footer-builder') {
+            $types = $request->input('types', []);
+            $lang = $request->input('lang_edit');
+
+            if (!is_array($types)) {
+                $types = [];
+            }
+
+            if (!in_array('footer_builder_schema_version', $types, true)) {
+                $types[] = 'footer_builder_schema_version';
+            }
+
+            $request->merge([
+                'footer_builder_schema_version' => FooterDefaults::SCHEMA_VERSION,
+            ]);
+
+            for ($col = 1; $col <= FooterDefaults::MAX_COLUMNS; $col++) {
+                $widgetType = 'foot_col_'.$col.'_widgets';
+                $hasWidgetType = false;
+
+                foreach ($types as $type) {
+                    if (is_array($type) && in_array($widgetType, $type)) {
+                        $hasWidgetType = true;
+                        break;
+                    }
+
+                    if ($type === $widgetType) {
+                        $hasWidgetType = true;
+                        break;
+                    }
+                }
+
+                if (!$hasWidgetType) {
+                    $types[] = $lang ? [$lang => $widgetType] : $widgetType;
+                }
+            }
+
+            $request->merge(['types' => $types]);
+        }
+
         foreach ($request->types as $key => $type) {
             if($type == 'site_name'){
                 $this->overWriteEnvFile('APP_NAME', $request[$type]);
@@ -408,12 +449,18 @@ class BusinessSettingsController extends Controller
                     $business_settings = BusinessSetting::where('type', $type)->first();
                 }
 
+                $settingValue = $request->input($type);
+
+                if (str_ends_with($type, '_widgets')) {
+                    $settingValue = is_array($settingValue) ? $settingValue : [];
+                }
+
                 if($business_settings!=null){
-                    if(gettype($request[$type]) == 'array'){
-                        $business_settings->value = json_encode($request[$type]);
+                    if(is_array($settingValue)){
+                        $business_settings->value = json_encode($settingValue);
                     }
                     else {
-                        $business_settings->value = $request[$type];
+                        $business_settings->value = $settingValue;
                     }
                     $business_settings->lang = $lang;
                     $business_settings->save();
@@ -421,11 +468,11 @@ class BusinessSettingsController extends Controller
                 else{
                     $business_settings = new BusinessSetting;
                     $business_settings->type = $type;
-                    if(gettype($request[$type]) == 'array'){
-                        $business_settings->value = json_encode($request[$type]);
+                    if(is_array($settingValue)){
+                        $business_settings->value = json_encode($settingValue);
                     }
                     else {
-                        $business_settings->value = $request[$type];
+                        $business_settings->value = $settingValue;
                     }
                     $business_settings->lang = $lang;
                     $business_settings->save();

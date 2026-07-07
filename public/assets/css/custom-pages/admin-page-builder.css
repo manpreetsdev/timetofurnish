@@ -266,7 +266,11 @@
     overflow: hidden;
 }
 
-.ttf-group-card > .card-header {
+.ttf-group-card>.card-body {
+    padding: 10px !important;
+}
+
+.ttf-group-card>.card-header {
     padding: 18px 20px;
     background: linear-gradient(180deg, #fffdf9 0%, #fbf5ed 100%);
     border-bottom: 1px solid #eadfce;
@@ -308,7 +312,7 @@
     margin-bottom: 8px;
 }
 
-.ttf-widget-editor > .card-header {
+.ttf-widget-editor>.card-header {
     padding: 10px 12px;
     background: transparent;
     border-bottom: none;
@@ -490,11 +494,11 @@
     background: #fcfaf7;
 }
 
-.ttf-toc-editor-card + .ttf-toc-editor-card {
+.ttf-toc-editor-card+.ttf-toc-editor-card {
     margin-top: 14px;
 }
 
-.ttf-grid-card-editor + .ttf-grid-card-editor {
+.ttf-grid-card-editor+.ttf-grid-card-editor {
     margin-top: 14px;
 }
 
@@ -570,6 +574,7 @@
 .ttf-admin-page-form textarea.form-control {
     min-height: 110px;
     border-radius: 6px;
+    resize: vertical;
 }
 
 .ttf-builder-shell .input-group-text,
@@ -651,6 +656,7 @@
 }
 
 @media (max-width: 1199.98px) {
+
     .ttf-editor-layout,
     .ttf-group-editor {
         grid-template-columns: 1fr;
@@ -719,12 +725,15 @@
 .ttf-columns-count-1 {
     grid-template-columns: 1fr;
 }
+
 .ttf-columns-count-2 {
     grid-template-columns: repeat(2, 1fr);
 }
+
 .ttf-columns-count-3 {
     grid-template-columns: repeat(3, 1fr);
 }
+
 .ttf-columns-count-4 {
     grid-template-columns: repeat(4, 1fr);
 }
@@ -771,6 +780,7 @@
 }
 
 @media (max-width: 991.98px) {
+
     .ttf-columns-count-2,
     .ttf-columns-count-3,
     .ttf-columns-count-4 {
@@ -951,7 +961,7 @@
     margin-bottom: 20px !important;
 }
 
-.ttf-group-card > .card-body {
+.ttf-group-card>.card-body {
     padding: 12px !important;
 }
 
@@ -1099,6 +1109,8 @@
     top: 88px;
     bottom: 24px;
     width: 340px;
+    min-width: 320px;
+    max-width: min(68vw, 760px);
     z-index: 1050;
     display: none;
 }
@@ -1109,11 +1121,45 @@
 
 .ttf-settings-sidebar {
     right: 22px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 .ttf-widget-sidebar.is-open,
 .ttf-settings-sidebar.is-open {
     display: block;
+}
+
+.ttf-settings-sidebar.is-resizing {
+    user-select: none;
+}
+
+.ttf-sidebar-resizer {
+    position: absolute;
+    top: 0;
+    left: -8px;
+    width: 16px;
+    height: 100%;
+    cursor: ew-resize;
+    z-index: 3;
+}
+
+.ttf-sidebar-resizer::after {
+    content: "";
+    position: absolute;
+    top: 20px;
+    bottom: 20px;
+    left: 7px;
+    width: 2px;
+    border-radius: 999px;
+    background: rgba(139, 94, 60, 0.16);
+    transition: background 0.2s ease;
+}
+
+.ttf-sidebar-resizer:hover::after,
+.ttf-settings-sidebar.is-resizing .ttf-sidebar-resizer::after {
+    background: rgba(139, 94, 60, 0.45);
 }
 
 .ttf-sidebar-panel,
@@ -1133,6 +1179,13 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    min-height: 0;
+}
+
+.ttf-settings-sidebar .ttf-sidebar-panel {
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
 }
 
 .ttf-sidebar-panel__header,
@@ -1169,6 +1222,9 @@
 
 .ttf-sidebar-panel--settings {
     padding-bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 .ttf-sidebar-widgets-grid {
@@ -1236,12 +1292,12 @@
     background: transparent;
 }
 
-.ttf-group-card > .card-header {
+.ttf-group-card>.card-header {
     padding: 18px 20px;
     background: #ffffff;
 }
 
-.ttf-group-card > .card-body {
+.ttf-group-card>.card-body {
     padding: 18px 20px !important;
 }
 
@@ -1249,7 +1305,7 @@
     border-radius: 14px;
     outline: 2px dashed #e3c9b5;
     outline-offset: -10px;
-    padding: 22px;
+    padding: 12px;
     background: #ffffff;
 }
 
@@ -1274,7 +1330,7 @@
 }
 
 .ttf-admin-column {
-    padding: 14px;
+    padding: 5px;
     border-style: dashed;
     border-radius: 12px;
     background: #fcfaf8;
@@ -1291,12 +1347,12 @@
     background: transparent;
 }
 
-.ttf-widget-editor > .card-header {
+.ttf-widget-editor>.card-header {
     padding: 14px 16px;
 }
 
-.ttf-widget-editor > .card-body {
-    padding: 0 16px 16px !important;
+.ttf-widget-editor>.card-body {
+    padding: 0 5px 5px !important;
 }
 
 .ttf-widget-stage {
@@ -1339,9 +1395,13 @@
 }
 
 .ttf-sidebar-stack {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
     gap: 16px;
     padding: 16px;
-    overflow-y: auto;
+    min-height: 0;
+    overflow: visible;
 }
 
 .ttf-settings-sidebar .ttf-builder-card {
@@ -1349,12 +1409,15 @@
 }
 
 .ttf-active-settings-header {
+    flex: 0 0 auto;
     margin: 16px 16px 0;
 }
 
 .ttf-active-settings-portal-target {
+    flex: 0 0 auto;
+    min-height: auto;
     padding: 16px;
-    overflow-y: auto;
+    overflow: visible;
 }
 
 .ttf-section-settings {
@@ -1470,9 +1533,11 @@
 .ttf-builder-shell textarea.form-control,
 .ttf-admin-page-form textarea.form-control {
     border-radius: 12px;
+    resize: vertical;
 }
 
 @media (max-width: 1399.98px) {
+
     .ttf-widget-sidebar,
     .ttf-settings-sidebar {
         width: 320px;
@@ -1517,10 +1582,16 @@
         left: 10px;
         right: 10px;
         width: auto;
+        min-width: 0;
+        max-width: none;
+    }
+
+    .ttf-sidebar-resizer {
+        display: none;
     }
 
     .ttf-canvas-panel,
-    .ttf-group-card > .card-body,
+    .ttf-group-card>.card-body,
     .ttf-group-canvas,
     .ttf-editor-toolbar,
     .ttf-page-basics-card .card-header,

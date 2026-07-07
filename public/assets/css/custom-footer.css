@@ -1,0 +1,676 @@
+/* CSS variables-driven footer stylesheet with advanced styling settings */
+
+.ttf-footer-links-section {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--foot-bg-color, #fdfbf9) !important;
+    background-image: var(--foot-bg-img, none) !important;
+    background-size: cover;
+    background-position: center;
+    padding-top: var(--foot-pad-top, 45px) !important;
+    padding-bottom: var(--foot-pad-bot, 45px) !important;
+    padding-left: var(--foot-pad-left, 0px) !important;
+    padding-right: var(--foot-pad-right, 0px) !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    bottom: 0;
+}
+
+@media (max-width: 767.98px) {
+    .ttf-footer-links-section {
+        background-image: var(--foot-mob-bg-img, var(--foot-bg-img, none)) !important;
+        padding-top: var(--foot-mob-pad-top, 12px) !important;
+        padding-bottom: var(--foot-mob-pad-bot, 12px) !important;
+        padding-left: var(--foot-mob-pad-left, 0px) !important;
+        padding-right: var(--foot-mob-pad-right, 0px) !important;
+    }
+}
+
+/* Background Left Pattern Circle */
+.ttf-footer-links-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 350px;
+    height: 100%;
+    background-image: var(--foot-bg-pattern-left, none) !important;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: contain;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Background Right Pattern Circle */
+.ttf-footer-links-section::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 350px;
+    height: 100%;
+    background-image: var(--foot-bg-pattern-right, none) !important;
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: contain;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.ttf-footer-links-section .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Card overrides (removed borders by default) */
+.ttf-footer-card {
+    border: none !important;
+    border-radius: 22px;
+    padding: 8px 0;
+    min-height: auto !important;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    line-height: 20.8px;
+}
+
+/* Headings and decorative underlines */
+.ttf-footer-card h4,
+.secure-payment-title,
+.ttf-mobile-accordion .aiz-accordion {
+    color: var(--foot-head-color, #000000) !important;
+    font-size: var(--foot-head-font-size, 16px) !important;
+    font-weight: 700;
+    margin-bottom: var(--foot-head-margin-bottom, 18px) !important;
+    letter-spacing: 0.7px;
+    position: relative;
+    padding-bottom: 10px;
+    text-transform: none !important;
+}
+
+.sub-widget-title {
+    width: fit-content;
+}
+
+.sub-widget-title::after {
+    width: 100%;
+}
+
+.ttf-footer-card h4::after,
+.secure-payment-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--foot-hover-color, #876a4b) !important;
+    border-radius: 20px;
+}
+
+/* Links & Text Styles */
+.ttf-footer-card a,
+.ttf-footer-card p,
+.ttf-mobile-accordion a,
+.ttf-mobile-accordion p,
+.ttf-mobile-direct-link-wrap a {
+    color: var(--foot-text-color, #39322a) !important;
+    font-size: var(--foot-body-font-size, 13px) !important;
+    line-height: var(--foot-body-line-height, 1.8) !important;
+    transition: all 0.25s ease;
+    text-decoration: none !important;
+}
+
+.ttf-footer-card a:hover,
+.ttf-mobile-accordion a:hover,
+.ttf-mobile-direct-link-wrap a:hover {
+    color: var(--foot-hover-color, #876a4b) !important;
+    padding-left: 4px;
+}
+
+.ttf-footer-card ul {
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.ttf-footer-card ul li {
+    margin-bottom: 6px;
+}
+
+/* Sub-headers inside widget columns (Seller Zone custom styles) */
+.sub-widget-title {
+    color: var(--foot-head-color, #000000) !important;
+    font-size: var(--foot-head-font-size, 14px) !important;
+    font-weight: 700;
+    margin-top: 16px;
+    font-family: "Playfair Display", serif !important;
+    margin-bottom: 10px;
+    position: relative;
+    padding-bottom: 6px;
+}
+
+.sub-widget-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 35px;
+    height: 2px;
+    background-color: var(--foot-hover-color, #876a4b) !important;
+}
+
+/* Highlighted Text */
+.text-highlight {
+    color: #C27325 !important;
+    position: relative;
+}
+
+.ttf-footer-bottom-bar .col-lg-6 {
+    margin: 0 !important;
+}
+
+.footer-newsletter-section h5 span.text-highlight:after {
+    right: 0%;
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: var(--foot-news-highlight-img, url(https://staging.timetofurnish.com/public/uploads/all/yodjGMvCV4X7U7en83pxXojFb4FpKGDYRj3AqTV1.png));
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+}
+
+/* Newsletter section width & borders (1440px container constrained) */
+.footer-newsletter-section {
+    padding-top: var(--foot-news-pad-top, 24px) !important;
+    padding-bottom: var(--foot-news-pad-bot, 24px) !important;
+    padding-left: var(--foot-news-pad-left, 0px) !important;
+    padding-right: var(--foot-news-pad-right, 0px) !important;
+}
+
+.footer-newsletter-section .container {
+    border-top: var(--foot-news-border-top, none) !important;
+    border-bottom: var(--foot-news-border-bottom, none) !important;
+    border-left: var(--foot-news-border-left, none) !important;
+    border-right: var(--foot-news-border-right, none) !important;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+}
+
+.footer-newsletter-section h5 {
+    color: var(--foot-head-color, #000000) !important;
+
+    font-size: 36px !important;
+    line-height: 50px;
+    font-weight: 700;
+}
+
+.footer-newsletter-section input.email_input_footer {
+    background: var(--foot-news-bg, #ffffff) !important;
+    color: var(--foot-text-color, #39322a) !important;
+    border: 1.5px solid var(--foot-news-border, #eadfd3) !important;
+    border-radius: 4px;
+    height: 48px;
+}
+
+.footer-newsletter-section .btn.footer_submit_btn {
+    background-color: var(--foot-news-btn_bg, #685b4e) !important;
+    color: var(--foot-news-btn-tx, #ffffff) !important;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.footer-newsletter-section .btn.footer_submit_btn:hover {
+    opacity: 0.9;
+}
+
+/* Social follow icon button styling (Figma exact match) */
+.footer-social-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0;
+    list-style: none;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.footer-social-list li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--foot-social-radius, 4px) !important;
+    background-color: var(--foot-news-btn_bg, #685b4e) !important;
+    border: none !important;
+    transition: all 0.2s ease;
+}
+
+.footer-social-list li a i,
+.footer-social-list li a svg {
+    color: var(--foot-news-btn-tx, #ffffff) !important;
+    font-size: 16px;
+}
+
+.footer-social-list li a svg[fill="none"] {
+    stroke: var(--foot-news-btn-tx, #ffffff) !important;
+}
+
+.footer-social-list li a svg[fill="currentColor"],
+.footer-social-list li a.twitter svg {
+    fill: var(--foot-news-btn-tx, #ffffff) !important;
+}
+
+.footer-social-list li a:hover {
+    background-color: var(--foot-hover-color, #876a4b) !important;
+    transform: scale(1.1);
+}
+
+/* Full Width Bottom Bar background, 1440px centered content */
+.ttf-footer-bottom-bar {
+    background-color: var(--foot-copy-bg, #5f4d3e) !important;
+    padding-top: var(--foot-bar-pad-top, 10px) !important;
+    padding-bottom: var(--foot-bar-pad-bot, 10px) !important;
+    padding-left: var(--foot-bar-pad-left, 0px) !important;
+    padding-right: var(--foot-bar-pad-right, 0px) !important;
+    color: var(--foot-copy-text, #ffffff) !important;
+    z-index: 99;
+    position: relative;
+}
+
+.ttf-footer-bottom-bar a,
+.ttf-footer-bottom-bar p,
+.ttf-footer-bottom-bar span {
+    color: var(--foot-copy-text, #ffffff) !important;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+.ttf-footer-bottom-bar a b {
+    color: var(--foot-copy-text, #ffffff) !important;
+}
+
+.ttf-footer-bottom-bar .footer-read-more-btn {
+    text-decoration: underline;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Enforce standard sizing constraints for footer images regardless of uploaded resolution */
+.secure-payment-img {
+    display: block;
+    max-width: 250px !important;
+    width: auto !important;
+    height: 35px !important;
+    object-fit: contain !important;
+    object-position: left !important;
+    background: transparent !important;
+    border-radius: 0px !important;
+    padding: 0px !important;
+    margin-bottom: 12px !important;
+}
+
+.trustpilot-img {
+    display: block;
+    max-width: 160px !important;
+    width: auto !important;
+    height: 50px !important;
+    object-fit: contain !important;
+    object-position: left !important;
+    background: transparent !important;
+    border-radius: 0px !important;
+    padding: 0px !important;
+}
+
+/* Multiple Logo Images support */
+.logo-images-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 0px;
+}
+
+/* .logo-image-item {
+    background-color: #ffffff;
+    border: 1px solid var(--foot-border-color, rgba(104, 91, 78, 0.2));
+    border-radius: 4px;
+    padding: 3px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    transition: all 0.2s ease;
+} */
+
+.logo-image-item img {
+    height: 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    object-fit: contain !important;
+    margin-bottom: 0 !important;
+}
+
+/* Accordion Arrow Chevron direction override (sync with closed=down, active=up) */
+.aiz-accordion-heading .aiz-accordion:after {
+    transform: rotate(45deg) !important;
+    -webkit-transform: rotate(45deg) !important;
+    border-color: var(--foot-head-color, #232323) !important;
+    transition: transform 0.3s ease, -webkit-transform 0.3s ease;
+}
+
+.aiz-accordion-heading.active .aiz-accordion:after {
+    transform: rotate(-135deg) !important;
+    -webkit-transform: rotate(-135deg) !important;
+    border-color: var(--foot-head-color, #232323) !important;
+}
+
+/* Desktop & iPad flexible columns with adjustable spacing */
+@media (min-width: 768px) {
+    .ttf-footer-links-section .row.gutters-20 {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        margin-left: calc(var(--foot-col-spacing, 20px) / -2) !important;
+        margin-right: calc(var(--foot-col-spacing, 20px) / -2) !important;
+    }
+
+    .ttf-footer-links-section .ttf-footer-col {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        min-width: 140px;
+    }
+}
+
+/* Mobile Accordion Drawer Styles */
+.ttf-mobile-footer {
+    padding: 0 !important;
+}
+
+.ttf-mobile-section {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+    border-bottom: 1px solid var(--foot-border-color, rgba(104, 91, 78, 0.2)) !important;
+    background: transparent !important;
+}
+
+.ttf-mobile-accordion {
+    background: transparent !important;
+}
+
+.ttf-mobile-accordion .aiz-accordion-heading {
+    background: transparent !important;
+    border: none !important;
+}
+
+.ttf-mobile-accordion .aiz-accordion-panel {
+    background: transparent !important;
+}
+
+.ttf-mobile-accordion a {
+    color: var(--foot-text-color, #39322a) !important;
+}
+
+.ttf-mobile-direct-link-wrap {
+    background: transparent !important;
+}
+
+.ttf-mobile-direct-link-wrap a {
+    display: block;
+    width: 100%;
+    padding: 0;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    background: transparent !important;
+}
+
+/* Compact Mobile Accordion Spacing Rules to match Figma */
+.ttf-mobile-accordion .aiz-accordion-panel .container {
+    padding-top: 0 !important;
+    padding-bottom: 10px !important;
+}
+
+.ttf-mobile-accordion .aiz-accordion-panel ul {
+    margin-bottom: 0 !important;
+    padding-left: 0 !important;
+}
+
+.ttf-mobile-accordion .aiz-accordion-panel ul li {
+    margin-bottom: 10px !important;
+    padding-bottom: 0 !important;
+    border-bottom: none !important;
+}
+
+.ttf-mobile-accordion .aiz-accordion-panel ul li a {
+    display: inline-block;
+    padding: 2px 0;
+    line-height: 20.8px !important;
+    font-size: var(--foot-body-font-size, 14px) !important;
+    font-family: "Poppins", sans-serif !important;
+}
+
+.ttf-footer-card h4,
+.secure-payment-title,
+.ttf-mobile-accordion .aiz-accordion,
+.ttf-mobile-direct-link-wrap a {
+    font-family: "Playfair Display";
+}
+
+.textheading {
+    width: fit-content !important;
+}
+
+@media (max-width: 767.98px) {
+    .ttf-mobile-section:last-child {
+        padding-bottom: 0 !important;
+        border-bottom: 0 !important;
+    }
+
+    .ttf-mobile-accordion .aiz-accordion-panel ul {
+        margin: 10px 0px 0px !important;
+    }
+
+    .footer-newsletter-section h5 {
+        font-size: 24px !important;
+        line-height: 32px;
+    }
+
+    .newsletter-form-wrap .form-control {
+        font-size: 13px !important;
+    }
+
+    .newsletter-form-wrap .btn.footer_submit_btn {
+        font-size: 14px;
+
+    }
+
+    .aiz-accordion-panel .py-3 {
+        padding: 0 !important;
+    }
+
+    .ttf-mobile-accordion .container,
+    .ttf-mobile-footer .container {
+        padding: 0 !important;
+    }
+
+    .ttf-mobile-footer {
+        padding-right: 15px !important;
+        padding-left: 15px !important;
+    }
+
+
+
+    .newsletter-column {
+        padding: 0;
+    }
+
+    /* Enforce newsletter form desktop layout on mobile */
+    .newsletter-form-wrap {
+        display: block !important;
+        position: relative !important;
+    }
+
+    .newsletter-form-wrap input.email_input_footer {
+        padding: 12px 140px 12px 18px !important;
+        width: 100% !important;
+    }
+
+    .newsletter-form-wrap .btn.footer_submit_btn {
+        position: absolute !important;
+        right: 4px !important;
+        top: 4px !important;
+        bottom: 4px !important;
+        width: auto !important;
+        min-width: 110px !important;
+        margin: 0 !important;
+        height: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* Apply mobile newsletter padding */
+    .footer-newsletter-section {
+        padding-top: var(--foot-news-mob-pad-top, 8px) !important;
+        padding-bottom: var(--foot-news-mob-pad-bot, 8px) !important;
+        padding-left: var(--foot-news-mob-pad-left, 0px) !important;
+        padding-right: var(--foot-news-mob-pad-right, 0px) !important;
+    }
+
+    .footer-newsletter-section .container {
+        padding-top: 12px !important;
+        padding-bottom: 0px !important;
+    }
+
+    .footer-newsletter-section h5 {
+        margin-bottom: 12px !important;
+    }
+
+    /* Apply mobile main footer padding */
+    .ttf-footer-links-section {
+        padding-top: var(--foot-mob-pad-top, 12px) !important;
+        padding-bottom: var(--foot-mob-pad-bot, 12px) !important;
+        padding-left: var(--foot-mob-pad-left, 0px) !important;
+        padding-right: var(--foot-mob-pad-right, 0px) !important;
+    }
+
+    .ttf-mobile-footer {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* Apply Mobile Font Sizes */
+    .ttf-footer-card h4,
+    .secure-payment-title,
+    .ttf-mobile-accordion .aiz-accordion,
+    .ttf-mobile-direct-link-wrap a {
+        font-size: var(--foot-mob-head-font-size, 14px) !important;
+    }
+
+    .ttf-footer-card a,
+    .ttf-footer-card p,
+    .ttf-mobile-accordion a,
+    .ttf-mobile-accordion p,
+    .ttf-mobile-accordion .aiz-accordion-panel ul li a {
+        font-size: var(--foot-mob-body-font-size, 14px) !important;
+    }
+
+    .ttf-mobile-accordion .aiz-accordion,
+    .ttf-mobile-direct-link {
+        padding: 0 !important;
+        margin-bottom: 0 !important;
+        line-height: 1.3 !important;
+    }
+
+    .ttf-mobile-direct-link-wrap a {
+        padding: 0 !important;
+    }
+
+    .ttf-footer-links-section::before,
+    .ttf-footer-links-section::after {
+        width: 220px;
+    }
+
+    /* Remove outer double padding because inner .container handles it */
+    .ttf-mobile-footer>.secure-payment-box,
+    .ttf-mobile-footer>.ttf-mobile-widget {
+        margin: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    .ttf-mobile-footer .secure-payment-title {
+        margin-top: 0 !important;
+        margin-bottom: 12px !important;
+        padding-bottom: 8px !important;
+    }
+
+    .ttf-mobile-footer .footer-social-list {
+        gap: 10px;
+        margin-top: 10px !important;
+    }
+
+    /* Apply mobile bottom bar padding */
+    .ttf-footer-bottom-bar {
+        padding-top: var(--foot-bar-mob-pad-top, 10px) !important;
+        padding-bottom: var(--foot-bar-mob-pad-bot, 12px) !important;
+        padding-left: var(--foot-bar-mob-pad-left, 0px) !important;
+        padding-right: var(--foot-bar-mob-pad-right, 0px) !important;
+    }
+
+    .ttf-footer-bottom-bar .text-right,
+    .ttf-footer-bottom-bar .text-justify {
+        text-align: left !important;
+    }
+
+    .ttf-footer-bottom-bar p {
+        line-height: 1.55 !important;
+        margin-bottom: 4px !important;
+    }
+}
+
+.textheading {
+    font-family: "Playfair Display", serif !important;
+}
+
+/* Mobile bottom nav custom styles */
+.aiz-mobile-bottom-nav {
+    z-index: 99999 !important;
+    /* Make sure it stays on top of other content */
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+}
+
+@media (max-width: 575.98px) {
+    .aiz-mobile-bottom-nav {
+        height: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 1199.98px) {
+    .aiz-mobile-bottom-nav {
+        height: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+/* Adjust page content padding so nothing is hidden behind the fixed bottom nav */
+@media (max-width: 1199.98px) {
+    body {
+        padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 1199.98px) {
+    body {
+        padding-bottom: 88px !important;
+        /* height + margin-bottom + safety padding */
+    }
+}

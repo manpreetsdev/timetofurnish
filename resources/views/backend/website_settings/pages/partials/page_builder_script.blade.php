@@ -23,6 +23,7 @@
         const defaultPageSettings = document.getElementById('default-page-settings');
         const widgetSidebar = document.querySelector('[data-builder-sidebar="widgets"]');
         const settingsSidebar = document.querySelector('[data-builder-sidebar="settings"]');
+        const settingsSidebarResizer = document.querySelector('[data-sidebar-resizer="settings"]');
 
         function refreshPlugins() {
             if (window.AIZ && AIZ.plugins) {
@@ -119,6 +120,21 @@
             }
         }
 
+        function clampSettingsSidebarWidth(width) {
+            const minWidth = 320;
+            const maxWidth = Math.max(minWidth, Math.min(Math.round(window.innerWidth * 0.68), 760));
+
+            return Math.max(minWidth, Math.min(width, maxWidth));
+        }
+
+        function setSettingsSidebarWidth(width) {
+            if (!settingsSidebar || window.innerWidth <= 767.98) {
+                return;
+            }
+
+            settingsSidebar.style.width = clampSettingsSidebarWidth(width) + 'px';
+        }
+
         function closeSettingsPortal() {
             if (activePortalOwner && activePortalElement) {
                 activePortalOwner.classList.remove('is-active-editing');
@@ -180,6 +196,39 @@
             }
 
             refreshPlugins();
+        }
+
+        let isResizingSettingsSidebar = false;
+
+        function beginSettingsSidebarResize(event) {
+            if (!settingsSidebar || window.innerWidth <= 767.98) {
+                return;
+            }
+
+            isResizingSettingsSidebar = true;
+            settingsSidebar.classList.add('is-resizing');
+            document.body.classList.add('ttf-is-resizing-sidebar');
+            event.preventDefault();
+        }
+
+        function handleSettingsSidebarResize(event) {
+            if (!isResizingSettingsSidebar || !settingsSidebar) {
+                return;
+            }
+
+            const sidebarRect = settingsSidebar.getBoundingClientRect();
+            const rightOffset = Math.max(0, window.innerWidth - sidebarRect.right);
+            setSettingsSidebarWidth(window.innerWidth - event.clientX - rightOffset);
+        }
+
+        function endSettingsSidebarResize() {
+            if (!isResizingSettingsSidebar || !settingsSidebar) {
+                return;
+            }
+
+            isResizingSettingsSidebar = false;
+            settingsSidebar.classList.remove('is-resizing');
+            document.body.classList.remove('ttf-is-resizing-sidebar');
         }
 
         function syncGroupEmptyState() {
@@ -991,6 +1040,16 @@
                     itemRow.remove();
                     reindexRepeater(repeater);
                 }
+                return;
+            }
+
+            if (
+                isSidebarOpen('settings') &&
+                settingsSidebar &&
+                !event.target.closest('[data-builder-sidebar="settings"]') &&
+                !event.target.closest('[data-sidebar-toggle="settings"]')
+            ) {
+                setSidebarState('settings', false);
             }
         });
 
@@ -1027,6 +1086,8 @@
                     groupCard.setAttribute('draggable', 'false');
                 }
             });
+
+            endSettingsSidebarResize();
         });
 
         document.addEventListener('dragstart', function (event) {
@@ -1173,10 +1234,33 @@
 
         if (pageForm) {
             pageForm.addEventListener('submit', function () {
+                syncEditorValues(pageForm);
                 closeSettingsPortal();
                 reindexGroups();
             });
         }
+
+        if (settingsSidebarResizer) {
+            settingsSidebarResizer.addEventListener('mousedown', beginSettingsSidebarResize);
+        }
+
+        document.addEventListener('mousemove', handleSettingsSidebarResize);
+
+        window.addEventListener('resize', function () {
+            if (!settingsSidebar) {
+                return;
+            }
+
+            if (window.innerWidth <= 767.98) {
+                settingsSidebar.style.removeProperty('width');
+                return;
+            }
+
+            const currentWidth = parseInt(settingsSidebar.style.width || settingsSidebar.offsetWidth, 10);
+            if (!Number.isNaN(currentWidth)) {
+                setSettingsSidebarWidth(currentWidth);
+            }
+        });
 
         document.querySelectorAll('[data-group-card]').forEach(function (groupCard) {
             initializeGroupCard(groupCard, false);

@@ -15,696 +15,773 @@
 
 
 @php
-    $col_values = 'ttf-footer-col col-md-6 col-sm-6';
+    if (!function_exists('get_footer_images_helper')) {
+        function get_footer_images_helper($img_val, $default_asset = null) {
+            if (empty($img_val)) {
+                return $default_asset ? [$default_asset] : [];
+            }
+            $ids = explode(',', $img_val);
+            $urls = [];
+            foreach ($ids as $id) {
+                $id = trim($id);
+                if (!empty($id)) {
+                    $asset = uploaded_asset($id);
+                    if ($asset) {
+                        $urls[] = $asset;
+                    }
+                }
+            }
+            return count($urls) > 0 ? $urls : ($default_asset ? [$default_asset] : []);
+        }
+    }
+
+    // Read styling settings
+    $foot_bg_color = get_setting('foot_bg_color', '#fdfbf9');
+    $foot_border_color = get_setting('foot_border_color', 'rgba(104, 91, 78, 0.2)');
+    $foot_head_color = get_setting('foot_head_color', '#000000');
+    $foot_text_color = get_setting('foot_text_color', '#39322a');
+    $foot_hover_color = get_setting('foot_hover_color', '#876a4b');
+    $foot_pad_top = get_setting('foot_pad_top', '45px');
+    $foot_pad_bot = get_setting('foot_pad_bot', '45px');
+    $foot_pad_left = get_setting('foot_pad_left', '0px');
+    $foot_pad_right = get_setting('foot_pad_right', '0px');
+    $foot_mob_pad_top = get_setting('foot_mob_pad_top', '12px');
+    $foot_mob_pad_bot = get_setting('foot_mob_pad_bot', '12px');
+    $foot_mob_pad_left = get_setting('foot_mob_pad_left', '0px');
+    $foot_mob_pad_right = get_setting('foot_mob_pad_right', '0px');
+    $foot_bg_img = get_setting('foot_bg_img');
+    $foot_mob_bg_img = get_setting('foot_mob_bg_img');
+    $foot_bg_pattern_left = get_setting('foot_bg_pattern_left');
+    $foot_bg_pattern_right = get_setting('foot_bg_pattern_right');
+    $foot_social_radius = get_setting('foot_social_radius', '4px');
+    $foot_news_highlight_img = get_setting('foot_news_highlight_img');
+    
+    // Newsletter settings
+    $foot_news_show = get_setting('foot_news_show', 'on');
+    $foot_news_title = get_setting('foot_news_title', 'Subscribe to our newsletter for regular updates about Offers, Coupons & more', App::getLocale());
+    $foot_news_btn = get_setting('foot_news_btn', 'Subscribe', App::getLocale());
+    $foot_news_bg = get_setting('foot_news_bg', '#ffffff');
+    $foot_news_border = get_setting('foot_news_border', '#eadfd3');
+    $foot_news_btn_bg = get_setting('foot_news_btn_bg', '#685b4e');
+    $foot_news_btn_tx = get_setting('foot_news_btn_tx', '#ffffff');
+    $foot_news_border_pos = get_setting('foot_news_border_pos', 'top-bottom');
+    $foot_news_border_color = get_setting('foot_news_border_color', 'rgba(104, 91, 78, 0.2)');
+    $foot_news_border_width = get_setting('foot_news_border_width', '1.5px');
+    $foot_news_pad_top = get_setting('foot_news_pad_top', '24px');
+    $foot_news_pad_bot = get_setting('foot_news_pad_bot', '24px');
+    $foot_news_pad_left = get_setting('foot_news_pad_left', '0px');
+    $foot_news_pad_right = get_setting('foot_news_pad_right', '0px');
+    $foot_news_mob_pad_top = get_setting('foot_news_mob_pad_top', '8px');
+    $foot_news_mob_pad_bot = get_setting('foot_news_mob_pad_bot', '8px');
+    $foot_news_mob_pad_left = get_setting('foot_news_mob_pad_left', '0px');
+    $foot_news_mob_pad_right = get_setting('foot_news_mob_pad_right', '0px');
+    
+    $news_border_top = 'none';
+    $news_border_bottom = 'none';
+    $news_border_left = 'none';
+    $news_border_right = 'none';
+    
+    if ($foot_news_border_pos == 'top-bottom') {
+        $news_border_top = "{$foot_news_border_width} solid {$foot_news_border_color}";
+        $news_border_bottom = "{$foot_news_border_width} solid {$foot_news_border_color}";
+    } elseif ($foot_news_border_pos == 'top') {
+        $news_border_top = "{$foot_news_border_width} solid {$foot_news_border_color}";
+    } elseif ($foot_news_border_pos == 'bottom') {
+        $news_border_bottom = "{$foot_news_border_width} solid {$foot_news_border_color}";
+    } elseif ($foot_news_border_pos == 'all') {
+        $news_border_top = "{$foot_news_border_width} solid {$foot_news_border_color}";
+        $news_border_bottom = "{$foot_news_border_width} solid {$foot_news_border_color}";
+        $news_border_left = "{$foot_news_border_width} solid {$foot_news_border_color}";
+        $news_border_right = "{$foot_news_border_width} solid {$foot_news_border_color}";
+    }
+    
+    // Copyright & Disclaimer settings
+    $foot_copy_bg = get_setting('foot_copy_bg', '#5f4d3e');
+    $foot_copy_text = get_setting('foot_copy_text', '#ffffff');
+    $frontend_copyright_text = get_setting('frontend_copyright_text', 'Copyright &copy; 2026 Time to Furnish. All Right Reserved.', App::getLocale());
+    $footer_disclaimer_text = get_setting('footer_disclaimer_text', 'We operate as an independent third-party marketplace and are not liable for the accuracy, originality, or legality of any images or content uploaded by sellers. All such materials are the sole responsibility of the seller, including any content copied or reproduced from external platforms. Please read our <a href="/seller-terms-conditions" target="_blank" rel="noopener"><b>Terms and Conditions</b></a>.', App::getLocale());
+    $foot_bar_pad_top = get_setting('foot_bar_pad_top', '10px');
+    $foot_bar_pad_bot = get_setting('foot_bar_pad_bot', '10px');
+    $foot_bar_pad_left = get_setting('foot_bar_pad_left', '0px');
+    $foot_bar_pad_right = get_setting('foot_bar_pad_right', '0px');
+    $foot_bar_mob_pad_top = get_setting('foot_bar_mob_pad_top', '10px');
+    $foot_bar_mob_pad_bot = get_setting('foot_bar_mob_pad_bot', '12px');
+    $foot_bar_mob_pad_left = get_setting('foot_bar_mob_pad_left', '0px');
+    $foot_bar_mob_pad_right = get_setting('foot_bar_mob_pad_right', '0px');
+    
+    // Mobile Font Sizes
+    $foot_mob_head_font_size = get_setting('foot_mob_head_font_size', '14px');
+    $foot_mob_body_font_size = get_setting('foot_mob_body_font_size', '13px');
+
+    $columns = \App\Support\FooterDefaults::columns(App::getLocale());
 @endphp
-<section class="py-lg-5 text-light footer-widget ttf-footer-links-section">
-<section class="py-4 text-light footer-widget iuytrey footer-newsletter-section">
-    <div class="container">
-        <div class="row align-items-center footer-newsletter-row">
-            <!-- about & subscription -->
-            <div class="col-lg-7  col-md-9 mx-auto text-center newsletter-column">
-                <!--<div class="mb-4 text-secondary text-justify">
-                    {!! get_setting('about_us_description', null, App::getLocale()) !!}
-                </div>-->
-                <h5 class="fs-14 fw-700 mb-3">
-                    {{ translate('Subscribe to our newsletter for regular updates about Offers, Coupons  more') }}</h5>
-                <div class="mb-3">
-                    <form method="POST" action="{{ route('subscribers.store') }}">
-                        @csrf
-                        <div class="position-relative newsletter-form-wrap">
-                            <input type="email" class="form-control w-100 email_input_footer"
-                                placeholder="{{ translate('Your Email') }}" name="email" required
-                                style="padding: 12px 160px 12px 24px; background: #fff; border:1.5px solid #eadfd3; color:#39322a;">
-                            <button type="submit"
-                                class="btn footer_submit_btn borderbtn position-absolute d-flex align-items-center justify-content-center"
-                                style="right: 4px; top: 4px; bottom: 4px; min-width: 130px; background:#685b4e; color:#fff; border:none;">
-                                <span class="d-sm-block  d-lg-block">{{ translate('Subscribe') }}</span>
-                                <!-- <i class="las la-arrow-right d-sm-none" style="font-size: 20px;"></i> -->
-                            </button>
+
+<!-- CSS Variables injection block -->
+<style>
+    :root {
+        --foot-bg-color: {{ $foot_bg_color }};
+        --foot-border-color: {{ $foot_border_color }};
+        --foot-head-color: {{ $foot_head_color }};
+        --foot-text-color: {{ $foot_text_color }};
+        --foot-hover-color: {{ $foot_hover_color }};
+        --foot-pad-top: {{ $foot_pad_top }};
+        --foot-pad-bot: {{ $foot_pad_bot }};
+        --foot-pad-left: {{ $foot_pad_left }};
+        --foot-pad-right: {{ $foot_pad_right }};
+        --foot-mob-pad-top: {{ $foot_mob_pad_top }};
+        --foot-mob-pad-bot: {{ $foot_mob_pad_bot }};
+        --foot-mob-pad-left: {{ $foot_mob_pad_left }};
+        --foot-mob-pad-right: {{ $foot_mob_pad_right }};
+        --foot-copy-bg: {{ $foot_copy_bg }};
+        --foot-copy-text: {{ $foot_copy_text }};
+        --foot-news-bg: {{ $foot_news_bg }};
+        --foot-news-border: {{ $foot_news_border }};
+        --foot-news-btn_bg: {{ $foot_news_btn_bg }};
+        --foot-social-radius: {{ $foot_social_radius }};
+        --foot-news-btn-tx: {{ $foot_news_btn_tx }};
+        --foot-news-border-top: {{ $news_border_top }};
+        --foot-news-border-bottom: {{ $news_border_bottom }};
+        --foot-news-border-left: {{ $news_border_left }};
+        --foot-news-border-right: {{ $news_border_right }};
+        --foot-news-pad-top: {{ $foot_news_pad_top }};
+        --foot-news-pad-bot: {{ $foot_news_pad_bot }};
+        --foot-news-pad-left: {{ $foot_news_pad_left }};
+        --foot-news-pad-right: {{ $foot_news_pad_right }};
+        --foot-news-mob-pad-top: {{ $foot_news_mob_pad_top }};
+        --foot-news-mob-pad-bot: {{ $foot_news_mob_pad_bot }};
+        --foot-news-mob-pad-left: {{ $foot_news_mob_pad_left }};
+        --foot-news-mob-pad-right: {{ $foot_news_mob_pad_right }};
+        --foot-bar-pad-top: {{ $foot_bar_pad_top }};
+        --foot-bar-pad-bot: {{ $foot_bar_pad_bot }};
+        --foot-bar-pad-left: {{ $foot_bar_pad_left }};
+        --foot-bar-pad-right: {{ $foot_bar_pad_right }};
+        --foot-bar-mob-pad-top: {{ $foot_bar_mob_pad_top }};
+        --foot-bar-mob-pad-bot: {{ $foot_bar_mob_pad_bot }};
+        --foot-bar-mob-pad-left: {{ $foot_bar_mob_pad_left }};
+        --foot-bar-mob-pad-right: {{ $foot_bar_mob_pad_right }};
+        --foot-head-font-size: {{ get_setting('foot_head_font_size', '16px') }};
+        --foot-body-font-size: {{ get_setting('foot_body_font_size', '13px') }};
+        --foot-mob-head-font-size: {{ $foot_mob_head_font_size }};
+        --foot-mob-body-font-size: {{ $foot_mob_body_font_size }};
+        --foot-body-line-height: {{ get_setting('foot_body_line_height', '1.8') }};
+        --foot-col-spacing: {{ get_setting('foot_col_spacing', '20px') }};
+        --foot-head-margin-bottom: {{ get_setting('foot_head_margin_bottom', '18px') }};
+        @if (!empty($foot_bg_img) && $foot_bg_img != 'none')
+            --foot-bg-img: url("{{ uploaded_asset($foot_bg_img) }}");
+        @else
+            --foot-bg-img: none;
+        @endif
+        @if (!empty($foot_mob_bg_img) && $foot_mob_bg_img != 'none')
+            --foot-mob-bg-img: url("{{ uploaded_asset($foot_mob_bg_img) }}");
+        @else
+            --foot-mob-bg-img: none;
+        @endif
+        @if (!empty($foot_bg_pattern_left))
+            --foot-bg-pattern-left: url("{{ uploaded_asset($foot_bg_pattern_left) }}");
+        @else
+            --foot-bg-pattern-left: none;
+        @endif
+        @if (!empty($foot_bg_pattern_right))
+            --foot-bg-pattern-right: url("{{ uploaded_asset($foot_bg_pattern_right) }}");
+        @else
+            --foot-bg-pattern-right: none;
+        @endif
+        @if (!empty($foot_news_highlight_img))
+            --foot-news-highlight-img: url("{{ uploaded_asset($foot_news_highlight_img) }}");
+        @endif
+    }
+</style>
+<link rel="stylesheet" href="{{ static_asset('assets/css/custom-footer.css') }}">
+
+<footer class="footer-widget ttf-footer-links-section">
+    @if ($foot_news_show == 'on')
+        <section class="footer-widget iuytrey footer-newsletter-section">
+            <div class="container">
+                <div class="align-items-center footer-newsletter-row">
+                    <div class="col-lg-7 col-md-9 mx-auto text-center newsletter-column">
+                        <h5 class="fs-14 fw-700 mb-3 textheading">
+                            {!! str_ireplace('newsletter', '<span class="text-highlight">newsletter</span>', $foot_news_title) !!}
+                        </h5>
+                        <div class="mb-3">
+                            <form method="POST" action="{{ route('subscribers.store') }}">
+                                @csrf
+                                <div class="position-relative newsletter-form-wrap">
+                                    <input type="email" class="form-control w-100 email_input_footer"
+                                        placeholder="{{ translate('Your Email') }}" name="email" required
+                                        style="padding: 12px 160px 12px 24px;">
+                                    <button type="submit"
+                                        class="btn footer_submit_btn borderbtn position-absolute d-flex align-items-center justify-content-center"
+                                        style="right: 4px; top: 4px; bottom: 4px; min-width: 130px; border:none;">
+                                        <span class="d-sm-block d-lg-block">{{ $foot_news_btn }}</span>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
-            <!--col-xxl-6-->
+        </section>
+    @endif
 
-
-
-           
-
-
-
-        </div>
-    </div>
-</section>
-    <!-- Desktop Footer Widgets -->
-    <div class="container d-none d-lg-block">
+    <!-- Desktop & iPad Footer Widgets (min-width: 768px) -->
+    <div class="container d-none d-md-block">
         <div class="row gutters-20">
+            @foreach($columns as $col => $c)
+                @if ($c['status'] == 'on')
+                    @php
+                        $custom_width = $c['width'];
+                        $is_bootstrap = str_starts_with($custom_width, 'col-') || str_starts_with($custom_width, 'ttf-');
+                    @endphp
+                    <div class="ttf-footer-col {{ $is_bootstrap ? $custom_width : '' }}"
+                         style="@if(!$is_bootstrap) width: {{ $custom_width }} !important; flex: 0 0 {{ $custom_width }} !important; max-width: {{ $custom_width }} !important; @endif">
+                        <div class="ttf-footer-card">
+                            @foreach($c['widgets'] as $wIndex => $w)
+                                @php 
+                                    $wType = $w['type'] ?? 'menu_links'; 
+                                    $widget_id = "widget-col-{$col}-{$wIndex}";
+                                    
+                                    // Custom Styling Variables for each specific widget
+                                    $style_text_align = $w['style_text_align'] ?? '';
+                                    $style_font_size = $w['style_font_size'] ?? '';
+                                    $style_text_color = $w['style_text_color'] ?? '';
+                                    $style_head_color = $w['style_head_color'] ?? '';
+                                    $style_hover_color = $w['style_hover_color'] ?? '';
+                                    $style_line_height = $w['style_line_height'] ?? '';
+                                    $style_margin_bottom = $w['style_margin_bottom'] ?? '';
+                                    $style_head_weight = $w['style_head_weight'] ?? '';
+                                    $style_text_weight = $w['style_text_weight'] ?? '';
+                                    
+                                    // Social Icons specific overrides
+                                    $style_social_radius = $w['style_social_radius'] ?? '';
+                                    $style_social_bg = $w['style_social_bg'] ?? '';
+                                    $style_social_color = $w['style_social_color'] ?? '';
+                                    $style_social_hover_bg = $w['style_social_hover_bg'] ?? '';
+                                    $style_social_hover_color = $w['style_social_hover_color'] ?? '';
+                                    $style_social_width = $w['style_social_width'] ?? '36px';
+                                @endphp
+                                
+                                <style>
+                                    #{{ $widget_id }}, #{{ $widget_id }}-mob {
+                                        @if(!empty($style_text_align)) text-align: {{ $style_text_align }} !important; @endif
+                                    }
+                                    #{{ $widget_id }} h4, #{{ $widget_id }}-mob h4, 
+                                    #{{ $widget_id }} .sub-widget-title, #{{ $widget_id }}-mob .sub-widget-title,
+                                    #{{ $widget_id }} .secure-payment-title, #{{ $widget_id }}-mob .secure-payment-title,
+                                    #{{ $widget_id }}-mob .aiz-accordion {
+                                        @if(!empty($style_head_color)) color: {{ $style_head_color }} !important; @endif
+                                        @if(!empty($style_margin_bottom)) margin-bottom: {{ $style_margin_bottom }} !important; @endif
+                                        @if(!empty($style_head_weight)) font-weight: {{ $style_head_weight }} !important; @endif
+                                    }
+                                    #{{ $widget_id }} a, #{{ $widget_id }}-mob a, 
+                                    #{{ $widget_id }} p, #{{ $widget_id }}-mob p, 
+                                    #{{ $widget_id }} span, #{{ $widget_id }}-mob span,
+                                    #{{ $widget_id }} li, #{{ $widget_id }}-mob li {
+                                        @if(!empty($style_font_size)) font-size: {{ $style_font_size }} !important; @endif
+                                        @if(!empty($style_text_color)) color: {{ $style_text_color }} !important; @endif
+                                        @if(!empty($style_line_height)) line-height: {{ $style_line_height }} !important; @endif
+                                        @if(!empty($style_text_weight)) font-weight: {{ $style_text_weight }} !important; @endif
+                                    }
+                                    #{{ $widget_id }} a:hover, #{{ $widget_id }}-mob a:hover {
+                                        @if(!empty($style_hover_color)) color: {{ $style_hover_color }} !important; @endif
+                                    }
+                                    #{{ $widget_id }} .footer-social-list li a, #{{ $widget_id }}-mob .footer-social-list li a {
+                                        @if(!empty($style_social_width)) width: {{ $style_social_width }} !important; height: {{ $style_social_width }} !important; @endif
+                                        @if(!empty($style_social_radius)) border-radius: {{ $style_social_radius }} !important; @endif
+                                        @if(!empty($style_social_bg)) background-color: {{ $style_social_bg }} !important; @endif
+                                    }
+                                    #{{ $widget_id }} .footer-social-list li a i, #{{ $widget_id }}-mob .footer-social-list li a i,
+                                    #{{ $widget_id }} .footer-social-list li a svg, #{{ $widget_id }}-mob .footer-social-list li a svg {
+                                        @if(!empty($style_social_color)) color: {{ $style_social_color }} !important; @endif
+                                    }
+                                    #{{ $widget_id }} .footer-social-list li a:hover, #{{ $widget_id }}-mob .footer-social-list li a:hover {
+                                        @if(!empty($style_social_hover_bg)) background-color: {{ $style_social_hover_bg }} !important; @endif
+                                    }
+                                    #{{ $widget_id }} .footer-social-list li a:hover i, #{{ $widget_id }}-mob .footer-social-list li a:hover i,
+                                    #{{ $widget_id }} .footer-social-list li a:hover svg, #{{ $widget_id }}-mob .footer-social-list li a:hover svg {
+                                        @if(!empty($style_social_hover_color)) color: {{ $style_social_hover_color }} !important; @endif
+                                    }
+                                </style>
 
-            <!-- Quick Links -->
-            <div class="{{ $col_values }}">
-                <div class="ttf-footer-card">
-                    <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
-                        Quick Links
-                    </h4>
+                                <div id="{{ $widget_id }}" class="mb-4">
+                                    @if ($wType == 'menu_links')
+                                        <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
+                                            {{ $w['title'] ?? 'Menu' }}
+                                        </h4>
+                                        <ul class="list-unstyled">
+                                            @if(!empty($w['lbls']))
+                                                @foreach ($w['lbls'] as $key => $label)
+                                                    @if(!empty(trim($label)))
+                                                        @php $url = isset($w['lnks'][$key]) ? $w['lnks'][$key] : '#'; @endphp
+                                                        <li>
+                                                            <a href="{{ url($url) }}" class="fs-14 text-light animate-underline-white">
+                                                                {{ $label }}
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                        </ul>
+                                    @elseif ($wType == 'important_links')
+                                        <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
+                                            {{ $w['title'] ?? 'Important Links' }}
+                                        </h4>
+                                        <ul class="list-unstyled">
+                                            @php $pages = get_pages_footer('2,3,4,5,6,7,8,10,11'); @endphp
+                                            @foreach ($pages as $key => $value)
+                                                <li>
+                                                    <a href="{{ url($value->slug) }}" class="fs-14 text-light animate-underline-white">
+                                                        {{ $value->title }}
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @elseif ($wType == 'my_account')
+                                        <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
+                                            {{ $w['title'] ?? 'My Account' }}
+                                        </h4>
+                                        <ul class="list-unstyled">
+                                            @if (Auth::check())
+                                                <li><a class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}">{{ translate('Logout') }}</a></li>
+                                            @else
+                                                <li><a class="fs-14 text-light animate-underline-white" href="{{ route('user.login') }}">{{ translate('Login') }}</a></li>
+                                            @endif
+                                            <li><a class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ translate('Order History') }}</a></li>
+                                            <li><a class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ translate('My Wishlist') }}</a></li>
+                                            <li><a class="fs-14 text-light animate-underline-white" href="{{ route('orders.track') }}">{{ translate('Track Order') }}</a></li>
+                                        </ul>
+                                    @elseif ($wType == 'text_html')
+                                        @if(!empty($w['title']))
+                                            <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
+                                                {{ $w['title'] }}
+                                            </h4>
+                                        @endif
+                                        <div class="fs-13 text-light" style="line-height: 1.8;">
+                                            {!! $w['html'] ?? '' !!}
+                                        </div>
+                                    @elseif ($wType == 'seller_zone')
+                                        <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
+                                            {{ $w['title'] ?? 'Seller Zone' }}
+                                        </h4>
+                                        @if (get_setting('vendor_system_activation') == 1)
+                                            <ul class="list-unstyled mb-3">
+                                                @guest
+                                                    <li>
+                                                        <a class="fs-14 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
+                                                            {{ translate('Login to Seller Panel') }}
+                                                        </a>
+                                                    </li>
+                                                @endguest
+                                                @if (get_setting('seller_app_link'))
+                                                    <li>
+                                                        <a class="fs-14 text-light animate-underline-white" target="_blank" href="{{ get_setting('seller_app_link') }}">
+                                                            {{ translate('Download Seller App') }}
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                            </ul>
+                                        @endif
+                                        
+                                        <div class="sub-widget-title">{{ $w['subheading_2'] ?? translate('Join Our Partner Network') }}</div>
+                                        <ul class="list-unstyled mb-3">
+                                            <li>
+                                                 <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-14 text-light animate-underline-white">
+                                                    {{ translate('Become A Seller') }}
+                                                </a>
+                                            </li>
+                                        </ul>
 
-                    <ul class="list-unstyled">
-                        <li>
-                            <a href="{{ url('') }}" class="fs-13 text-light animate-underline-white">
-                                Home
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url('about-us') }}" class="fs-13 text-light animate-underline-white">
-                                About Us
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url('categories') }}" class="fs-13 text-light animate-underline-white">
-                                Categories
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url('blog') }}" class="fs-13 text-light animate-underline-white">
-                                Blogs
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url('contact-us') }}" class="fs-13 text-light animate-underline-white">
-                                Contact Us
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('career') }}" class="fs-13 text-light animate-underline-white">
-                                Careers
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('meet.the.team') }}" class="fs-13 text-light animate-underline-white">
-                                Meet Our Team
-                            </a>
-                        </li>
-						 <li>
-                            <a href="{{ route('become_delivery_partner') }}" class="fs-13 text-light animate-underline-white">
-                                Join Our Delivery Partner 
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+                                        @php
+                                            $fb = !empty($w['facebook_link']) ? $w['facebook_link'] : get_setting('facebook_link');
+                                            $tw = !empty($w['twitter_link']) ? $w['twitter_link'] : get_setting('twitter_link');
+                                            $ig = !empty($w['instagram_link']) ? $w['instagram_link'] : get_setting('instagram_link');
+                                            $yt = !empty($w['youtube_link']) ? $w['youtube_link'] : get_setting('youtube_link');
+                                            $pt = !empty($w['pinterest_link']) ? $w['pinterest_link'] : get_setting('pinterest_link');
+                                            $tk = !empty($w['tiktok_link']) ? $w['tiktok_link'] : get_setting('foot_social_tk');
+                                            $has_social_links = $fb || $tw || $ig || $yt || $pt || $tk;
+                                        @endphp
+                                        @if(!empty($w['subheading_3']) && $has_social_links)
+                                            <div class="sub-widget-title">{{ $w['subheading_3'] }}</div>
+                                            <ul class="footer-social-list mt-2">
+                                                @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
+                                                @if ($tw)
+                                                    <li>
+                                                        <a href="{{ $tw }}" target="_blank">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                                                <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+                                                            </svg>
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                                @if ($ig) <li><a href="{{ $ig }}" target="_blank"><i class="lab la-instagram"></i></a></li> @endif
+                                                @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
+                                                @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
+                                                @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
+                                            </ul>
+                                        @endif
+                                    @elseif ($wType == 'images_widget')
+                                         @php
+                                             $show_deliv = ($w['show_deliv'] ?? 'on') == 'on';
+                                             $show_pay = ($w['show_pay'] ?? 'on') == 'on';
+                                             $show_trust = ($w['show_trust'] ?? 'on') == 'on';
 
-            <!-- Important Links -->
-            <div class="{{ $col_values }}">
-                <div class="ttf-footer-card">
-                    <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
-                        {{ translate('Important Links') }}
-                    </h4>
+                                             $deliv_imgs = get_footer_images_helper(!empty($w['deliv_img']) ? $w['deliv_img'] : get_setting('foot_img_deliv'), static_asset('assets/img/delivery_partners_logo.png'));
+                                             $pay_imgs = get_footer_images_helper(!empty($w['pay_img']) ? $w['pay_img'] : get_setting('foot_img_pay'), static_asset('assets/img/securelypayments.png'));
+                                             $trust_imgs = get_footer_images_helper(!empty($w['trust_img']) ? $w['trust_img'] : get_setting('foot_img_trust'), static_asset('assets/img/trustpilot.png'));
+                                             $trust_lnk = !empty($w['trustpilot_lnk']) ? $w['trustpilot_lnk'] : get_setting('foot_lnk_trust', '#');
+                                         @endphp
+                                         @if($show_deliv)
+                                             <div class="secure-payment-box mb-3">
+                                                 <h5 class="secure-payment-title textheading">
+                                                     {{ $w['title'] ?? translate('Delivery Partners') }}
+                                                 </h5>
+                                                 <div class="logo-images-row">
+                                                     @foreach($deliv_imgs as $img)
+                                                         <div class="logo-image-item">
+                                                             <img src="{{ $img }}" alt="Delivery Partner">
+                                                         </div>
+                                                     @endforeach
+                                                 </div>
+                                             </div>
+                                         @endif
 
-                    <ul class="list-unstyled">
-                        @php
-                            $pages = get_pages_footer('2,3,4,5,6,7,8,10,11');
-                        @endphp
+                                         @if($show_pay)
+                                             <div class="secure-payment-box mb-3">
+                                                 <h5 class="secure-payment-title textheading">
+                                                     {{ $show_deliv ? translate('Pay Securely With') : ($w['title'] ?? translate('Pay Securely With')) }}
+                                                 </h5>
+                                                 <div class="logo-images-row">
+                                                     @foreach($pay_imgs as $img)
+                                                         <div class="logo-image-item">
+                                                             <img src="{{ $img }}" alt="Pay Securely With">
+                                                         </div>
+                                                     @endforeach
+                                                 </div>
+                                             </div>
+                                         @endif
 
-                        @foreach ($pages as $key => $value)
-                            <li>
-                                <a href="{{ url($value->slug) }}" class="fs-13 text-light animate-underline-white">
-                                    {{ $value->title }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-
-            <!-- My Account -->
-            <div class="{{ $col_values }}">
-                <div class="ttf-footer-card">
-                    <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
-                        {{ translate('My Account') }}
-                    </h4>
-
-                    <ul class="list-unstyled">
-                        @if (Auth::check())
-                            <li>
-                                <a class="fs-13 text-light animate-underline-white" href="{{ route('logout') }}">
-                                    {{ translate('Logout') }}
-                                </a>
-                            </li>
-                        @else
-                            <li>
-                                <a class="fs-13 text-light animate-underline-white" href="{{ route('user.login') }}">
-                                    {{ translate('Login') }}
-                                </a>
-                            </li>
-                        @endif
-
-                        <li>
-                            <a class="fs-13 text-light animate-underline-white"
-                                href="{{ route('purchase_history.index') }}">
-                                {{ translate('Order History') }}
-                            </a>
-                        </li>
-
-                        <li>
-                            <a class="fs-13 text-light animate-underline-white"
-                                href="{{ route('wishlists.index') }}">
-                                {{ translate('My Wishlist') }}
-                            </a>
-                        </li>
-
-                        <li>
-                            <a class="fs-13 text-light animate-underline-white"
-                                href="{{ route('orders.track') }}">
-                                {{ translate('Track Order') }}
-                            </a>
-                        </li>
-
-                        @if (addon_is_activated('affiliate_system'))
-                            <li>
-                                <a class="fs-13 text-light animate-underline-white"
-                                    href="{{ route('affiliate.apply') }}">
-                                    {{ translate('Be an affiliate partner') }}
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Seller & Delivery Boy -->
-            @if (get_setting('vendor_system_activation') == 1 || addon_is_activated('delivery_boy'))
-                <div class="ttf-footer-col col-md-6 col-sm-6">
-                    <div class="ttf-footer-card">
-
-                        @if (get_setting('vendor_system_activation') == 1)
-                            <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
-                                {{ translate('Seller Zone') }}
-                            </h4>
-
-                            <ul class="list-unstyled">
-                                <li>
-                                   
-                                </li>
-
-                                @guest
-                                    <li>
-                                        <a class="fs-13 text-light animate-underline-white"
-                                            href="{{ route('seller.login') }}">
-                                            {{ translate('Login to Seller Panel') }}
-                                        </a>
-                                    </li>
-                                @endguest
-
-                                @if (get_setting('seller_app_link'))
-                                    <li>
-                                        <a class="fs-13 text-light animate-underline-white"
-                                            target="_blank"
-                                            href="{{ get_setting('seller_app_link') }}">
-                                            {{ translate('Download Seller App') }}
-                                        </a>
-                                    </li>
-                                @endif
-                            </ul>
-                        @endif
-
-                        @if (addon_is_activated('delivery_boy'))
-                            <h4 class="fs-14 text-light text-uppercase fw-700 mt-4 mb-3">
-                                {{ translate('Delivery Boy') }}
-                            </h4>
-
-                            <ul class="list-unstyled">
-                                @guest
-                                    <li>
-                                        <a class="fs-13 text-light animate-underline-white"
-                                            href="{{ route('deliveryboy.login') }}">
-                                            {{ translate('Login to Delivery Boy Panel') }}
-                                        </a>
-                                    </li>
-                                @endguest
-
-                                @if (get_setting('delivery_boy_app_link'))
-                                    <li>
-                                        <a class="fs-13 text-light animate-underline-white"
-                                            target="_blank"
-                                            href="{{ get_setting('delivery_boy_app_link') }}">
-                                            {{ translate('Download Delivery Boy App') }}
-                                        </a>
-                                    </li>
-                                @endif
-                            </ul>
-                        @endif
-
-                        <div class="ttf-partner-box mt-4">
-                            <h4 class="fs-14 text-light fw-700 mb-3 partner-network-title textheading">
-                                Join Our Partner Network
-                            </h4>
-
-                            <ul class="list-unstyled">
-                                <li>
-                                  {{-- <a href="{{ route('become_delivery_partner') }}"
-                                        class="fs-13 text-light animate-underline-white">
-                                        {{ translate('Send us Request') }}
-                                    </a>--}}
-									 <a href="{{ route('shops.create') }}"
-                                        class="fs-13 text-light animate-underline-white">
-                                        {{ translate('Become A Seller') }}
-                                    </a>
-                                </li>
-                            </ul>
+                                         @if($show_trust)
+                                             <div class="secure-payment-box">
+                                                 <h5 class="secure-payment-title textheading">
+                                                     {{ translate('What Trustpilot Say’s') }}
+                                                 </h5>
+                                                 @if(!empty($trust_lnk))
+                                                     <a href="{{ $trust_lnk }}" target="_blank" class="logo-images-row">
+                                                         @foreach($trust_imgs as $img)
+                                                             <div class="logo-image-item">
+                                                                 <img src="{{ $img }}" alt="Trustpilot Reviews" >
+                                                             </div>
+                                                         @endforeach
+                                                     </a>
+                                                 @else
+                                                     <div class="logo-images-row">
+                                                         @foreach($trust_imgs as $img)
+                                                             <div class="logo-image-item">
+                                                                 <img src="{{ $img }}" alt="Trustpilot Reviews" >
+                                                             </div>
+                                                         @endforeach
+                                                     </div>
+                                                 @endif
+                                                 
+                                             </div>
+                                         @endif
+                                    @elseif ($wType == 'social_icons')
+                                        <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
+                                            {{ $w['title'] ?? 'Follow Us' }}
+                                        </h4>
+                                        @php
+                                            $fb = !empty($w['facebook_link']) ? $w['facebook_link'] : get_setting('facebook_link');
+                                            $tw = !empty($w['twitter_link']) ? $w['twitter_link'] : get_setting('twitter_link');
+                                            $ig = !empty($w['instagram_link']) ? $w['instagram_link'] : get_setting('instagram_link');
+                                            $yt = !empty($w['youtube_link']) ? $w['youtube_link'] : get_setting('youtube_link');
+                                            $pt = !empty($w['pinterest_link']) ? $w['pinterest_link'] : get_setting('pinterest_link');
+                                            $tk = !empty($w['tiktok_link']) ? $w['tiktok_link'] : get_setting('foot_social_tk');
+                                        @endphp
+                                        <ul class="footer-social-list mt-3">
+                                            @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
+                                            @if ($tw)
+                                                <li>
+                                                    <a href="{{ $tw }}" target="_blank">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+                                                        </svg>
+                                                    </a>
+                                                </li>
+                                            @endif
+                                            @if ($ig) <li><a href="{{ $ig }}" target="_blank"><i class="lab la-instagram"></i></a></li> @endif
+                                            @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
+                                            @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
+                                            @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
+                                        </ul>
+                                    @endif
+                                </div>
+                            @endforeach
                         </div>
-</div>
+                    </div>
+                @endif
+            @endforeach
+        </div>
+    </div>    <!-- Mobile Accordion Footer (under 768px) -->
+    <div class="d-md-none bg-transparent ttf-mobile-footer">
+        @foreach($columns as $col => $c)
+            @if ($c['status'] == 'on')
+                @foreach($c['widgets'] as $wIndex => $w)
+                    @php 
+                        $wType = $w['type'] ?? 'menu_links';
+                        $widget_id = "widget-col-{$col}-{$wIndex}-mob";
+                    @endphp
                     
-                </div>
-            @endif
-            <!-- Delivery Partners / Payments / Trustpilot -->
-<div class="ttf-footer-col col-md-6 col-sm-6">
-    <div class="ttf-footer-card">
-
-        <div class="secure-payment-box mb-3">
-            <h5 class="secure-payment-title textheading">
-                Delivery Partners
-            </h5>
-
-            <img 
-                src="{{ asset('assets/img/delivery_partners_logo.png') }}" 
-                alt="Delivery Partners" 
-                class="secure-payment-img"
-            >
-        </div>
-
-        <div class="secure-payment-box mb-3">
-            <h5 class="secure-payment-title textheading">
-                Pay Securely With
-            </h5>
-
-            <img 
-                src="{{ asset('assets/img/securelypayments.png') }}" 
-                alt="Pay Securely With" 
-                class="secure-payment-img"
-            >
-        </div>
-
-        <div class="secure-payment-box">
-            <h5 class="secure-payment-title textheading">
-                What Trustpilot Say’s
-            </h5>
-
-            <img 
-                src="{{ asset('assets/img/trustpilot.png') }}" 
-                alt="Trustpilot Reviews" 
-                class="secure-payment-img trustpilot-img"
-            >
-        </div>
-
-    </div>
-</div>
-
-        </div>
-    </div>
-
-    <!-- Mobile Accordion Footer -->
-    <div class="d-lg-none bg-transparent ttf-mobile-footer">
-
-        <!-- Quick Links -->
-        <div class="aiz-accordion-wrap ttf-mobile-accordion">
-            <div class="aiz-accordion-heading container">
-                <button class="aiz-accordion fs-14 text-white bg-transparent">Quick Links</button>
-            </div>
-
-            <div class="aiz-accordion-panel bg-transparent">
-                <div class="container">
-                    <ul class="list-unstyled">
-                        <li class="mb-2 pb-2">
-                            <a href="{{ asset('') }}" class="fs-13 text-light animate-underline-white">
-                                Home
-                            </a>
-                        </li>
-                        <li class="mb-2 pb-2">
-                            <a href="http://localhost:8082/multivendor/categories"
-                                class="fs-13 text-light animate-underline-white">
-                                Categories
-                            </a>
-                        </li>
-                        <li class="mb-2 pb-2">
-                            <a href="{{ url('about-us') }}" class="fs-13 text-light animate-underline-white">
-                                About Us
-                            </a>
-                        </li>
-                        <li class="mb-2 pb-2">
-                            <a href="http://localhost:8082/multivendor/brands"
-                                class="fs-13 text-light animate-underline-white">
-                                Blogs
-                            </a>
-                        </li>
-                        <li class="mb-2 pb-2">
-                            <a href="http://localhost:8082/multivendor/contact-us"
-                                class="fs-13 text-light animate-underline-white">
-                                Contact Us
-                            </a>
-                        </li>
-                        <li class="mb-2 pb-2">
-                            <a href="{{ route('career') }}" class="fs-13 text-light animate-underline-white">
-                                Careers
-                            </a>
-                        </li>
-                        <li class="mb-2 pb-2">
-                            <a href="{{ route('meet.the.team') }}" class="fs-13 text-light animate-underline-white">
-                                Meet Our Team
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Important Links -->
-        <div class="aiz-accordion-wrap ttf-mobile-accordion">
-            <div class="aiz-accordion-heading container">
-                <button class="aiz-accordion fs-14 text-white bg-transparent">Important Links</button>
-            </div>
-
-            <div class="aiz-accordion-panel bg-transparent">
-                <div class="container">
-                    <ul class="list-unstyled mt-3">
-                        @php
-                            $pages = get_pages_footer('2,3,4,5,6,7,8,10,11');
-                        @endphp
-
-                        @foreach ($pages as $key => $value)
-                            <li class="mb-2">
-                                <a href="{{ url($value->slug) }}" class="fs-13 text-light animate-underline-white">
-                                    {{ $value->title }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Contacts -->
-        <div class="aiz-accordion-wrap ttf-mobile-accordion">
-            <div class="aiz-accordion-heading container">
-                <button class="aiz-accordion fs-14 text-white bg-transparent">
-                    {{ translate('Contacts') }}
-                </button>
-            </div>
-
-            <div class="aiz-accordion-panel bg-transparent">
-                <div class="container mb-3">
-                    <ul class="list-unstyled mt-3">
-                        <li class="mb-2">
-                            <p class="fs-13 mb-2 text-white">{{ translate('Address') }}</p>
-                            <p class="fs-13 text-white">
-                                20 Wenlock Road<br>
-                                London, England <br>
-                                N1 7GU
-                            </p>
-                            <p class="fs-13 text-light">
-                                <strong>Registered VAT NO :</strong> 519774256
-                            </p>
-                        </li>
-
-                        <li class="mb-3">
-                            <p class="fs-13 mb-1">{{ translate('WhatsApp') }}</p>
-
-                            <a href="https://wa.me/447751510365"
-                                target="_blank"
-                                class="fs-13 text-light d-flex align-items-center mb-3">
-                                <i class="lab la-whatsapp mr-2" style="font-size:16px;"></i>
-                                <span>+44 7751510365</span>
-                            </a>
-                        </li>
-
-                        <li class="mb-2">
-                            <p class="fs-13 mb-2">{{ translate('Email') }}</p>
-                            <p>
-                                <a href="mailto:{{ get_setting('contact_email') }}"
-                                    class="fs-13 text-light hov-text-primary">
-                                    {{ get_setting('contact_email') }}
-                                </a>
-                            </p>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- My Account -->
-        <div class="aiz-accordion-wrap ttf-mobile-accordion">
-            <div class="aiz-accordion-heading container">
-                <button class="aiz-accordion fs-14 text-white bg-transparent">
-                    {{ translate('My Account') }}
-                </button>
-            </div>
-
-            <div class="aiz-accordion-panel bg-transparent">
-                <div class="container">
-                    <ul class="list-unstyled mt-3">
-                        @auth
-                            <li class="mb-2 pb-2">
-                                <a class="fs-13 text-light animate-underline-white" href="{{ route('logout') }}">
-                                    {{ translate('Logout') }}
-                                </a>
-                            </li>
-                        @else
-                            <li class="mb-2 pb-2 {{ areActiveRoutes(['user.login'], ' active') }}">
-                                <a class="fs-13 text-light animate-underline-white" href="{{ route('user.login') }}">
-                                    {{ translate('Login') }}
-                                </a>
-                            </li>
-                        @endauth
-
-                        <li class="mb-2 pb-2 {{ areActiveRoutes(['purchase_history.index'], ' active') }}">
-                            <a class="fs-13 text-light animate-underline-white"
-                                href="{{ route('purchase_history.index') }}">
-                                {{ translate('Order History') }}
-                            </a>
-                        </li>
-
-                        <li class="mb-2 pb-2 {{ areActiveRoutes(['wishlists.index'], ' active') }}">
-                            <a class="fs-13 text-light animate-underline-white"
-                                href="{{ route('wishlists.index') }}">
-                                {{ translate('My Wishlist') }}
-                            </a>
-                        </li>
-
-                        <li class="mb-2 pb-2 {{ areActiveRoutes(['orders.track'], ' active') }}">
-                            <a class="fs-13 text-light animate-underline-white"
-                                href="{{ route('orders.track') }}">
-                                {{ translate('Track Order') }}
-                            </a>
-                        </li>
-
-                        @if (addon_is_activated('affiliate_system'))
-                            <li class="mb-2 pb-2 {{ areActiveRoutes(['affiliate.apply'], ' active') }}">
-                                <a class="fs-13 text-light animate-underline-white"
-                                    href="{{ route('affiliate.apply') }}">
-                                    {{ translate('Be an affiliate partner') }}
-                                </a>
-                            </li>
+                    @if (in_array($wType, ['menu_links', 'important_links', 'my_account', 'seller_zone', 'text_html']))
+                        <div id="{{ $widget_id }}" class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-section">
+                            <div class="container">
+                                <div class="aiz-accordion-heading">
+                                    <button class="aiz-accordion fs-14 text-white bg-transparent">
+                                        {{ $w['title'] ?? 'Section' }}
+                                    </button>
+                                </div>
+                                <div class="aiz-accordion-panel bg-transparent">
+                                    <div class="py-3">
+                                        @if ($wType == 'menu_links')
+                                            <ul class="list-unstyled">
+                                                @if(!empty($w['lbls']))
+                                                    @foreach ($w['lbls'] as $key => $label)
+                                                        @if(!empty(trim($label)))
+                                                            @php $url = isset($w['lnks'][$key]) ? $w['lnks'][$key] : '#'; @endphp
+                                                            <li class="mb-2 pb-2">
+                                                                <a href="{{ url($url) }}" class="fs-14 text-light animate-underline-white">
+                                                                    {{ $label }}
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </ul>
+                                        @elseif ($wType == 'important_links')
+                                            <ul class="list-unstyled">
+                                                @php $pages = get_pages_footer('2,3,4,5,6,7,8,10,11'); @endphp
+                                                @foreach ($pages as $key => $value)
+                                                    <li class="mb-2">
+                                                        <a href="{{ url($value->slug) }}" class="fs-14 text-light animate-underline-white">
+                                                            {{ $value->title }}
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @elseif ($wType == 'my_account')
+                                            <ul class="list-unstyled">
+                                                @auth
+                                                    <li class="mb-2 pb-2">
+                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}">{{ translate('Logout') }}</a>
+                                                    </li>
+                                                @else
+                                                    <li class="mb-2 pb-2">
+                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('user.login') }}">{{ translate('Login') }}</a>
+                                                    </li>
+                                                @endauth
+                                                <li class="mb-2 pb-2">
+                                                    <a class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ translate('Order History') }}</a>
+                                                </li>
+                                                <li class="mb-2 pb-2">
+                                                    <a class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ translate('My Wishlist') }}</a>
+                                                </li>
+                                            </ul>
+                                        @elseif ($wType == 'text_html')
+                                            <div class="fs-13 text-light" style="line-height: 1.8;">
+                                                {!! $w['html'] ?? '' !!}
+                                            </div>
+                                        @elseif ($wType == 'seller_zone')
+                                            @if (get_setting('vendor_system_activation') == 1)
+                                                <ul class="list-unstyled mb-3">
+                                                    @guest
+                                                        <li class="mb-2 pb-2">
+                                                            <a class="fs-14 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
+                                                                {{ translate('Login to Seller Panel') }}
+                                                            </a>
+                                                        </li>
+                                                    @endguest
+                                                    <li class="mb-2">
+                                                        <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-14 text-light animate-underline-white">
+                                                            {{ translate('Become A Seller') }}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @if ($wType == 'seller_zone')
+                            @php
+                                $fb = !empty($w['facebook_link']) ? $w['facebook_link'] : get_setting('facebook_link');
+                                $tw = !empty($w['twitter_link']) ? $w['twitter_link'] : get_setting('twitter_link');
+                                $ig = !empty($w['instagram_link']) ? $w['instagram_link'] : get_setting('instagram_link');
+                                $yt = !empty($w['youtube_link']) ? $w['youtube_link'] : get_setting('youtube_link');
+                                $pt = !empty($w['pinterest_link']) ? $w['pinterest_link'] : get_setting('pinterest_link');
+                                $tk = !empty($w['tiktok_link']) ? $w['tiktok_link'] : get_setting('foot_social_tk');
+                                $has_social_links = $fb || $tw || $ig || $yt || $pt || $tk;
+                            @endphp
+                            @if(!empty($w['subheading_3']) && $has_social_links)
+                                <div class="ttf-mobile-widget ttf-mobile-section">
+                                    <div class="container">
+                                        <h5 class="secure-payment-title textheading">{{ $w['subheading_3'] }}</h5>
+                                        <ul class="footer-social-list mt-2">
+                                            @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
+                                            @if ($tw)
+                                                <li>
+                                                    <a href="{{ $tw }}" target="_blank">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+                                                        </svg>
+                                                    </a>
+                                                </li>
+                                            @endif
+                                            @if ($ig) <li><a href="{{ $ig }}" target="_blank"><i class="lab la-instagram"></i></a></li> @endif
+                                            @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
+                                            @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
+                                            @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
+                                        </ul>
+                                    </div>
+                                </div>
+                            @endif
                         @endif
-                    </ul>
-                </div>
-            </div>
-        </div>
+                    @elseif ($wType == 'images_widget')
+                        @php
+                            $show_deliv = ($w['show_deliv'] ?? 'on') == 'on';
+                            $show_pay = ($w['show_pay'] ?? 'on') == 'on';
+                            $show_trust = ($w['show_trust'] ?? 'on') == 'on';
 
-        <!-- Seller -->
-        @if (get_setting('vendor_system_activation') == 1)
-            <div class="aiz-accordion-wrap ttf-mobile-accordion">
-                <div class="aiz-accordion-heading container">
-                    <button class="aiz-accordion fs-14 text-white bg-transparent">
-                        {{ translate('Seller Zone') }}
-                    </button>
-                </div>
+                            $deliv_imgs = get_footer_images_helper(!empty($w['deliv_img']) ? $w['deliv_img'] : get_setting('foot_img_deliv'), static_asset('assets/img/delivery_partners_logo.png'));
+                            $pay_imgs = get_footer_images_helper(!empty($w['pay_img']) ? $w['pay_img'] : get_setting('foot_img_pay'), static_asset('assets/img/securelypayments.png'));
+                            $trust_imgs = get_footer_images_helper(!empty($w['trust_img']) ? $w['trust_img'] : get_setting('foot_img_trust'), static_asset('assets/img/trustpilot.png'));
+                            $trust_lnk = !empty($w['trustpilot_lnk']) ? $w['trustpilot_lnk'] : get_setting('foot_lnk_trust', '#');
+                        @endphp
+                        @if($show_deliv)
+                            <div id="{{ $widget_id }}" class="secure-payment-box ttf-mobile-section mt-3">
+                                <div class="container">
+                                    <h5 class="secure-payment-title textheading">
+                                        {{ $w['title'] ?? translate('Delivery Partners') }}
+                                    </h5>
+                                    <div class="logo-images-row">
+                                        @foreach($deliv_imgs as $img)
+                                            <div class="logo-image-item">
+                                                <img src="{{ $img }}" alt="Delivery Partner">
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
-                <div class="aiz-accordion-panel bg-transparent">
-                    <div class="container">
-                        <ul class="list-unstyled mt-3">
-                           {{-- <li class="mb-2 pb-2">
-                               <a href="{{ route('shops.create') }}"
-                                    class="fs-13 text-light animate-underline-white">
-                                    {{ translate('Become A Seller') }}
-                                </a>
-                            </li>--}}
+                        @if($show_pay)
+                            <div id="{{ $widget_id }}-pay" class="secure-payment-box ttf-mobile-section mt-3">
+                                <div class="container">
+                                    <h5 class="secure-payment-title textheading">
+                                        {{ $show_deliv ? translate('Pay Securely With') : ($w['title'] ?? translate('Pay Securely With')) }}
+                                    </h5>
+                                    <div class="logo-images-row">
+                                        @foreach($pay_imgs as $img)
+                                            <div class="logo-image-item">
+                                                <img src="{{ $img }}" alt="Pay Securely With">
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
-                            @guest
-                                <li class="mb-2 pb-2 {{ areActiveRoutes(['deliveryboy.login'], ' active') }}">
-                                    <a class="fs-13 text-light animate-underline-white"
-                                        href="{{ route('seller.login') }}">
-                                        {{ translate('Login to Seller Panel') }}
-                                    </a>
-                                </li>
-                            @endguest
-
-                            @if (get_setting('seller_app_link'))
-                                <li class="mb-2 pb-2">
-                                    <a class="fs-13 text-light animate-underline-white"
-                                        target="_blank"
-                                        href="{{ get_setting('seller_app_link') }}">
-                                        {{ translate('Download Seller App') }}
-                                    </a>
-                                </li>
-                            @endif
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="aiz-accordion-wrap ttf-mobile-accordion">
-                <div class="aiz-accordion-heading container">
-                    <button class="aiz-accordion fs-14 text-white bg-transparent">
-                        {{ translate('Join Our Partner Network') }}
-                    </button>
-                </div>
-
-                <div class="aiz-accordion-panel bg-transparent">
-                    <div class="container">
-                        <ul class="list-unstyled mt-3">
-                            <li class="mb-2">
-                             {{--   <a href="{{ route('become_delivery_partner') }}"
-                                    class="fs-13 text-light animate-underline-white">
-                                    {{ translate('Send us Request') }}
-                                </a>--}}
-								 <a href="{{ route('shops.create') }}"
-                                        class="fs-13 text-light animate-underline-white">
-                                        {{ translate('Become A Seller') }}
-                                    </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-				
-				
-				
-				
-            </div>
-        @endif
-
-		
-		<!-- Join Delivery Partner - Direct Link -->
-<div class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-direct-link-wrap">
-    <div class="aiz-accordion-heading container">
-        <a href="{{ route('become_delivery_partner') }}"
-           class="ttf-mobile-direct-link bg-transparent">
-            {{ translate('Join Our Delivery Partner') }}
-        </a>
+                        @if($show_trust)
+                            <div id="{{ $widget_id }}-trust" class="secure-payment-box ttf-mobile-section mt-3">
+                                <div class="container">
+                                    <h5 class="secure-payment-title textheading">
+                                        {{ translate('What Trustpilot Say’s') }}
+                                    </h5>
+                                    @if(!empty($trust_lnk))
+                                        <a href="{{ $trust_lnk }}" target="_blank" class="logo-images-row">
+                                            @foreach($trust_imgs as $img)
+                                                <div class="logo-image-item">
+                                                    <img src="{{ $img }}" alt="Trustpilot Reviews" style="height:28px !important; max-width:140px !important;">
+                                                </div>
+                                            @endforeach
+                                        </a>
+                                    @else
+                                        <div class="logo-images-row">
+                                            @foreach($trust_imgs as $img)
+                                                <div class="logo-image-item">
+                                                    <img src="{{ $img }}" alt="Trustpilot Reviews" style="height:28px !important; max-width:140px !important;">
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                    @elseif ($wType == 'social_icons')
+                        <div id="{{ $widget_id }}" class="secure-payment-box ttf-mobile-section mt-3">
+                            <div class="container">
+                                <h5 class="secure-payment-title textheading">
+                                    {{ $w['title'] ?? translate('Follow Us') }}
+                                </h5>
+                                @php
+                                    $fb = !empty($w['facebook_link']) ? $w['facebook_link'] : get_setting('facebook_link');
+                                    $tw = !empty($w['twitter_link']) ? $w['twitter_link'] : get_setting('twitter_link');
+                                    $ig = !empty($w['instagram_link']) ? $w['instagram_link'] : get_setting('instagram_link');
+                                    $yt = !empty($w['youtube_link']) ? $w['youtube_link'] : get_setting('youtube_link');
+                                    $pt = !empty($w['pinterest_link']) ? $w['pinterest_link'] : get_setting('pinterest_link');
+                                    $tk = !empty($w['tiktok_link']) ? $w['tiktok_link'] : get_setting('foot_social_tk');
+                                @endphp
+                                <ul class="footer-social-list mt-2">
+                                    @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
+                                    @if ($tw)
+                                        <li>
+                                            <a href="{{ $tw }}" target="_blank">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @if ($ig) <li><a href="{{ $ig }}" target="_blank"><i class="lab la-instagram"></i></a></li> @endif
+                                    @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
+                                    @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
+                                    @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
+                                </ul>
+                            </div>
+                        </div>
+                    @endif
+                @endforeach
+            @endif
+        @endforeach
     </div>
-</div>
+</footer>
 
-<!-- Careers - Direct Link -->
-<div class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-direct-link-wrap">
-    <div class="aiz-accordion-heading container">
-        <a href="{{ route('career') }}"
-           class="ttf-mobile-direct-link bg-transparent">
-            {{ translate('Careers') }}
-        </a>
-    </div>
-</div>
-
-<!-- Meet Our Team - Direct Link -->
-<div class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-direct-link-wrap">
-    <div class="aiz-accordion-heading container">
-        <a href="{{ route('meet.the.team') }}"
-           class="ttf-mobile-direct-link bg-transparent">
-            {{ translate('Meet Our Team') }}
-        </a>
-    </div>
-</div>
-<div class="secure-payment-box mt-3 ms-2">
-    <h5 class="secure-payment-title">
-        Pay Securely With
-    </h5>
-
-    <img 
-        src="{{ asset('assets/img/securelypayments.png') }}" 
-        alt="Pay Securely With" 
-        class="secure-payment-img"
-    >
-</div>
-
-        <!-- Delivery Boy -->
-        @if (addon_is_activated('delivery_boy'))
-            <div class="aiz-accordion-wrap ttf-mobile-accordion">
-                <div class="aiz-accordion-heading container">
-                    <button class="aiz-accordion fs-14 text-white bg-transparent">
-                        {{ translate('Delivery Boy') }}
-                    </button>
-                </div>
-
-                <div class="aiz-accordion-panel bg-transparent">
-                    <div class="container">
-                        <ul class="list-unstyled mt-3">
-                            @guest
-                                <li class="mb-2 pb-2 {{ areActiveRoutes(['deliveryboy.login'], ' active') }}">
-                                    <a class="fs-13 text-light animate-underline-white"
-                                        href="{{ route('deliveryboy.login') }}">
-                                        {{ translate('Login to Delivery Boy Panel') }}
-                                    </a>
-                                </li>
-                            @endguest
-
-                            @if (get_setting('delivery_boy_app_link'))
-                                <li class="mb-2 pb-2">
-                                    <a class="fs-13 text-light animate-underline-white"
-                                        target="_blank"
-                                        href="{{ get_setting('delivery_boy_app_link') }}">
-                                        {{ translate('Download Delivery Boy App') }}
-                                    </a>
-                                </li>
-                            @endif
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        @endif
-
-    </div>
-
-
+<div class="ttf-footer-bottom-bar">
     <div class="container px-xs-0">
-      <div class="row bottom-div">
-          <div class="col-lg-6 order-1 order-lg-0 mt-2  mb-sm-50">
-                <div class=" text-justify fs-14" current-verison="{{ get_setting('current_version') }}">
+        <div class="row align-items-center">
+            <div class="col-lg-6 order-1 order-lg-0 mt-2 mb-sm-50">
+                <div class="text-justify fs-14" current-verison="{{ get_setting('current_version') }}">
                     <p class="footer-content" style="letter-spacing:0.5px; line-height: 1.6;">
-                        Copyright © 2025 Time to Furnish. All Right Reserved. 
+                        {!! $frontend_copyright_text !!}
                     </p>
                 </div>
             </div>
 
-
-    <div class="col-lg-6 order-1 order-lg-0 mt-2  mb-sm-50">
-        <div class=" text-justify fs-14" current-verison="{{ get_setting('current_version') }}">
-            <p class="footer-content" style="letter-spacing:0.5px; line-height: 1.6;">
-                <span class="footer-text-short">We operate as an independent third-party marketplace and are not liable...</span>
-                <span class="footer-text-full d-none">We operate as an independent third-party marketplace and are not liable for the accuracy, originality, or legality of any images or content uploaded by sellers. All such materials are the sole responsibility of the seller, including any content copied or reproduced from external platforms. Please read our <a href="/seller-terms-conditions" target="_blank" rel="noopener"><b>Terms and Conditions</b></a>.</span>
-                <a href="javascript:void(0);" class="footer-read-more-btn ml-1" style="color: #685b4e; font-weight: 700; font-size: 13px; text-decoration: underline;">Read More</a>
-            </p>
+            <div class="col-lg-6 order-1 order-lg-0 mt-2 mb-sm-50">
+                <div class="text-right fs-14 " current-verison="{{ get_setting('current_version') }}">
+                    <p class="footer-content" style="letter-spacing:0.5px; line-height: 1.6;">
+                        <span class="footer-text-short">{{ Str::limit(strip_tags($footer_disclaimer_text), 90) }}</span>
+                        <span class="footer-text-full d-none">{!! $footer_disclaimer_text !!}</span>
+                        <a href="javascript:void(0);" class="footer-read-more-btn ml-1">Read More</a>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
-
-      </div>
 </div>
-</section>
-
-<!-- FOOTER -->
-
-<!--<section class= mt-auto">-->
-
-<!--</section>-->
-
-
-
-
-
-
-
-
 
 <!-- Mobile bottom nav -->
 <div class="aiz-mobile-bottom-nav d-xl-none fixed-bottom border-top border-sm-bottom border-sm-left border-sm-right mx-auto mb-sm-2"
     style="background-color: #fff !important;">
-    <div class="row align-items-center gutters-5">
+    <div class="row align-items-center gutters-5 h-100">
         <!-- Home -->
         <div class="col">
             <a href="{{ route('home') }}"
@@ -796,7 +873,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="13.6" height="16" viewBox="0 0 13.6 16">
                         <path id="ecf3cc267cd87627e58c1954dc6fbcc2"
                             d="M5.488,14.056a.617.617,0,0,0-.8-.016.6.6,0,0,0-.082.855A2.847,2.847,0,0,0,6.835,16h0l.174-.007a2.846,2.846,0,0,0,2.048-1.1h0l.053-.073a.6.6,0,0,0-.134-.782.616.616,0,0,0-.862.081,1.647,1.647,0,0,1-.334.331,1.591,1.591,0,0,1-2.222-.331H5.55ZM6.828,0C4.372,0,1.618,1.732,1.306,4.512h0v1.45A3,3,0,0,1,.6,7.37a.535.535,0,0,0-.057.077A3.248,3.248,0,0,0,0,9.088H0l.021.148a3.312,3.312,0,0,0,.752,2.2,3.909,3.909,0,0,0,2.5,1.232,32.525,32.525,0,0,0,7.1,0,3.865,3.865,0,0,0,2.456-1.232A3.264,3.264,0,0,0,13.6,9.249h0v-.1a3.361,3.361,0,0,0-.582-1.682h0L12.96,7.4a3.067,3.067,0,0,1-.71-1.408h0V4.54l-.039-.081a.612.612,0,0,0-1.132.208h0v1.45a.363.363,0,0,0,0,.077,4.21,4.21,0,0,0,.979,1.957,2.022,2.022,0,0,1,.312,1h0v.155a2.059,2.059,0,0,1-.468,1.373,2.656,2.656,0,0,1-1.661.788,32.024,32.024,0,0,1-6.87,0,2.663,2.663,0,0,1-1.7-.824,2.037,2.037,0,0,1-.447-1.33h0V9.151a2.1,2.1,0,0,1,.305-1.007A4.212,4.212,0,0,0,2.569,6.187a.363.363,0,0,0,0-.077h0V4.653a4.157,4.157,0,0,1,4.2-3.442,4.608,4.608,0,0,1,2.257.584h0l.084.042A.615.615,0,0,0,9.649,1.8.6.6,0,0,0,9.624.739,5.8,5.8,0,0,0,6.828,0Z"
-                            fill="#91919b" />
+                            transform="translate(-3499.144 602)" fill="#91919b" />
                     </svg>
                     @if (Auth::check() && count(Auth::user()->unreadNotifications) > 0)
                         <span
@@ -885,352 +962,17 @@
     </div>
 @endif
 
-
-<style>
-    .borderbtn:hover {
-        color: black !important;
-    }
-
-    @media (max-width: 576px) {
-        .footer-content {
-            margin-bottom: 70px;
-            padding-bottom: 10px;
-        }
-
-        footer {
-            padding-bottom: 1rem !important;
-        }
-    }
-
-    @media (max-width:576px) {
-        .copyright {
-            text-align: center;
-        }
-
-    }
-
-
-    img.pilot {
-        width: 170px;
-        height: 30px;
-    }
-
-    @media (max-width: 576px) {
-        img.pilot {
-            width: 119px;
-            height: auto;
-            margin: 0px;
-            justify-content: center !important;
-            text-align: center;
-        }
-    }
-
-    .logo {
-        width: 60px;
-        height: 60px;
-        object-fit: contain;
-        /* image distortion avoid karne ke liye */
-    }
-
-    /* Wrapper */
-    .footer-flag-wrapper {
-        position: relative;
-        display: inline-block;
-    }
-
-    /* Button */
-    .flag-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0;
-    }
-
-    .flag-icon {
-        width: 32px;
-    }
-
-    /* Dropdown */
-
-
-    .flag-dropdown a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-
-        padding: 10px 14px;
-        font-size: 14px;
-        color: #000;
-        text-decoration: none;
-
-        background: #fff;
-    }
-
-    .flag-dropdown a:hover {
-        background-color: #f5f5f5;
-    }
-
-    .flag-dropdown img {
-        width: 20px;
-        height: auto;
-    }
-
-
-    .green-star {
-        color: #00b67a;
-        margin-right: 5px;
-        font-size: 22px;
-    }
-	
-	/* ==============================
-       Footer Links Section Only
-    ============================== */
-
-    .ttf-footer-links-section {
-          background-image: url("/assets/img/footer-bg-image.jpeg");
-        position: relative;
-        overflow: hidden;
-        padding-top: 45px !important;
-        padding-bottom: 45px !important;
-    }
-
-    .ttf-footer-links-section::before {
-        content: "";
-        position: absolute;
-        top: -90px;
-        right: -90px;
-        width: 250px;
-        height: 250px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.06);
-    }
-
-    .ttf-footer-links-section::after {
-        content: "";
-        position: absolute;
-        bottom: -120px;
-        left: -120px;
-        width: 300px;
-        height: 300px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.045);
-    }
-
-    .ttf-footer-links-section .container {
-        position: relative;
-        z-index: 2;
-    }
-
-    .ttf-footer-card {
-       
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        border-radius: 22px;
-        padding: 26px 24px;
-        min-height: 300px;
-        backdrop-filter: blur(8px);
-        transition: all 0.3s ease;
-        font-family: 'Poppins';
-    }
-
-   
-
-    .ttf-footer-card h4 {
-        position: relative;
-        padding-bottom: 13px;
-        margin-bottom: 18px !important;
-        letter-spacing: 0.7px;
-    }
-
-    .ttf-footer-card h4::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 45px;
-        height: 2px;
-        background: #876a4b;
-        border-radius: 20px;
-    }
-
-    .ttf-footer-card ul {
-        margin-bottom: 0;
-    }
-
-    .ttf-footer-card ul li {
-        margin-bottom: 11px;
-    }
-
-    .ttf-footer-card ul li:last-child {
-        margin-bottom: 0;
-    }
-
-    .ttf-footer-card a {
-        color: #000 !important;
-        line-height: 1.6;
-        display: inline-block;
-        transition: all 0.25s ease;
-    }
-
-    .ttf-footer-card a:hover {
-        color: #000 !important;
-        padding-left: 6px;
-    }
-
-    .ttf-partner-box {
-        border-top: 1px solid rgba(255, 255, 255, 0.13);
-        padding-top: 18px;
-    }
-
-    /* Mobile Accordion Design */
-    .ttf-mobile-footer {
-        
-        padding: 12px 0;
-    }
-
-    .ttf-mobile-accordion {
-        background: transparent !important;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.39);
-    }
-
-    .ttf-mobile-accordion .aiz-accordion-heading {
-        background: transparent !important;
-    }
-
-   
-
-    .ttf-mobile-accordion .aiz-accordion-panel {
-        background: rgba(255, 255, 255, 0.045) !important;
-    }
-
-    .ttf-mobile-accordion a {
-        color: #393939 !important;
-    }
-
-    .ttf-mobile-accordion a:hover {
-        color: #393939  !important;
-    }
-
-    @media (max-width: 991px) {
-        .ttf-footer-links-section {
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-        }
-    }
-	/* Mobile footer direct link - same accordion style, no dropdown */
-.ttf-mobile-single-link-wrap .ttf-mobile-single-link {
-    display: block;
-    width: 100%;
-    padding: 22px 0;
-    color: #fff !important;
-    font-size: 14px !important;
-    font-weight: 700 !important;
-    line-height: normal;
-    text-decoration: none !important;
-    background: transparent !important;
-    border: 0 !important;
-}
-
-/* hover same rakho */
-.ttf-mobile-single-link-wrap .ttf-mobile-single-link:hover {
-    color: #fff !important;
-    text-decoration: none !important;
-}
-
-/* is section ka plus icon hide */
-.ttf-mobile-single-link-wrap .ttf-mobile-single-link::after {
-    display: none !important;
-    content: none !important;
-}
-	/* Careers direct link - same accordion row style */
-.ttf-mobile-career-link-wrap .ttf-mobile-career-link {
-    display: block;
-    width: 100%;
-    padding: 22px 0;
-    color: #fff !important;
-    font-size: 14px !important;
-    font-weight: 700 !important;
-    line-height: normal;
-    text-decoration: none !important;
-    background: transparent !important;
-    border: none !important;
-}
-
-/* plus icon hide for careers */
-.ttf-mobile-career-link-wrap .aiz-accordion-heading::after,
-.ttf-mobile-career-link-wrap .ttf-mobile-career-link::after {
-    display: none !important;
-    content: none !important;
-}
-
-.ttf-mobile-career-link-wrap .ttf-mobile-career-link:hover {
-    color: #fff !important;
-    text-decoration: none !important;
-}
-
-
-/* ===== Desktop footer 5 columns fix ===== */
-@media (min-width: 992px) {
-    .ttf-footer-links-section .row.gutters-20 {
-        display: flex;
-        flex-wrap: wrap;
-    }
-
-    .ttf-footer-links-section .ttf-footer-col {
-        flex: 0 0 20% !important;
-        max-width: 20% !important;
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-}
-
-.ttf-footer-links-section .ttf-footer-card {
-    min-height: auto !important;
-}
-
-.secure-payment-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: #000;
-    margin-bottom: 12px;
-    position: relative;
-    padding-bottom: 10px;
-}
-
-.secure-payment-title::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 45px;
-    height: 2px;
-    background: #876a4b;
-    border-radius: 20px;
-}
-
-.secure-payment-img {
-    max-width: 100%;
-    height: auto;
-    background: #fff;
-    border-radius: 6px;
-}
-
-.trustpilot-img {
-    max-width: 150px;
-}
-
-</style>
 <script>
     function toggleFlags(event) {
         event.stopPropagation();
-
         const dropdown = document.getElementById('flagDropdown');
-        dropdown.style.display =
-            dropdown.style.display === 'block' ? 'none' : 'block';
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
     }
 
     // Outside click close
     document.addEventListener('click', function() {
-        document.getElementById('flagDropdown').style.display = 'none';
+        const dropdown = document.getElementById('flagDropdown');
+        if (dropdown) dropdown.style.display = 'none';
     });
 
     // Footer read more/less toggle
@@ -1253,7 +995,7 @@
                 }
             });
         }
-		    /* ==========================
+		/* ==========================
            Mobile Footer Accordion
            Only one open at a time
         ========================== */
@@ -1275,6 +1017,10 @@
                             const btn = wrap.querySelector('.aiz-accordion');
                             const panel = wrap.querySelector('.aiz-accordion-panel');
 
+                            const heading = wrap.querySelector('.aiz-accordion-heading');
+                            if (heading) {
+                                heading.classList.remove('active');
+                            }
                             if (btn) {
                                 btn.classList.remove('active');
                             }

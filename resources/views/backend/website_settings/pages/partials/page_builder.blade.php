@@ -148,6 +148,7 @@
         </div>
 
         <aside class="ttf-settings-sidebar" data-page-sidebar data-builder-sidebar="settings" aria-hidden="true">
+            <div class="ttf-sidebar-resizer" data-sidebar-resizer="settings" aria-hidden="true"></div>
             <div class="ttf-sidebar-panel ttf-sidebar-panel--settings">
                 <div class="ttf-sidebar-panel__header">
                     <div>

@@ -334,6 +334,8 @@ Route::resource('sellers', SellerController::class);
         Route::controller(PageController::class)->group(function () {
             Route::get('/custom-pages/edit/{id}', 'edit')->name('custom-pages.edit');
             Route::get('/custom-pages/destroy/{id}', 'destroy')->name('custom-pages.destroy');
+            Route::get('/custom-pages/export/{id}', 'export')->name('custom-pages.export');
+            Route::post('/custom-pages/import', 'import')->name('custom-pages.import');
         });
 
         // Homepage Reviews
