@@ -72,6 +72,7 @@
     backdrop-filter: blur(8px);
     transition: all 0.3s ease;
     font-family: 'Poppins', sans-serif;
+    line-height: 20.8px;
 }
 
 /* Headings and decorative underlines */
@@ -425,9 +426,9 @@
 .ttf-mobile-accordion .aiz-accordion-panel ul li a {
     display: inline-block;
     padding: 2px 0;
-    line-height: 1.55 !important;
+    line-height: 20.8px !important;
     font-size: var(--foot-body-font-size, 14px) !important;
-    font-family: "Playfair Display", serif !important;
+    font-family: poppins !important;
 }
 
 .ttf-footer-card h4,
@@ -447,7 +448,8 @@
         margin: 10px 0px 0px !important;
     }
 
-    .footer-newsletter-section h5 {
+    .footer-newsletter-section h5
+     {
         font-size: 24px;
         line-height: 32px;
     }
