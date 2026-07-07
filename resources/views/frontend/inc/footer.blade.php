@@ -54,6 +54,7 @@
     $foot_bg_pattern_left = get_setting('foot_bg_pattern_left');
     $foot_bg_pattern_right = get_setting('foot_bg_pattern_right');
     $foot_social_radius = get_setting('foot_social_radius', '4px');
+    $foot_news_highlight_img = get_setting('foot_news_highlight_img');
     
     // Newsletter settings
     $foot_news_show = get_setting('foot_news_show', 'on');
@@ -185,6 +186,9 @@
         @else
             --foot-bg-pattern-right: none;
         @endif
+        @if (!empty($foot_news_highlight_img))
+            --foot-news-highlight-img: url("{{ uploaded_asset($foot_news_highlight_img) }}");
+        @endif
     }
 </style>
 <link rel="stylesheet" href="{{ static_asset('assets/css/custom-footer.css') }}">
@@ -309,7 +313,7 @@
                                                     @if(!empty(trim($label)))
                                                         @php $url = isset($w['lnks'][$key]) ? $w['lnks'][$key] : '#'; @endphp
                                                         <li>
-                                                            <a href="{{ url($url) }}" class="fs-13 text-light animate-underline-white">
+                                                            <a href="{{ url($url) }}" class="fs-14 text-light animate-underline-white">
                                                                 {{ $label }}
                                                             </a>
                                                         </li>
@@ -325,7 +329,7 @@
                                             @php $pages = get_pages_footer('2,3,4,5,6,7,8,10,11'); @endphp
                                             @foreach ($pages as $key => $value)
                                                 <li>
-                                                    <a href="{{ url($value->slug) }}" class="fs-13 text-light animate-underline-white">
+                                                    <a href="{{ url($value->slug) }}" class="fs-14 text-light animate-underline-white">
                                                         {{ $value->title }}
                                                     </a>
                                                 </li>
@@ -337,13 +341,13 @@
                                         </h4>
                                         <ul class="list-unstyled">
                                             @if (Auth::check())
-                                                <li><a class="fs-13 text-light animate-underline-white" href="{{ route('logout') }}">{{ translate('Logout') }}</a></li>
+                                                <li><a class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}">{{ translate('Logout') }}</a></li>
                                             @else
-                                                <li><a class="fs-13 text-light animate-underline-white" href="{{ route('user.login') }}">{{ translate('Login') }}</a></li>
+                                                <li><a class="fs-14 text-light animate-underline-white" href="{{ route('user.login') }}">{{ translate('Login') }}</a></li>
                                             @endif
-                                            <li><a class="fs-13 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ translate('Order History') }}</a></li>
-                                            <li><a class="fs-13 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ translate('My Wishlist') }}</a></li>
-                                            <li><a class="fs-13 text-light animate-underline-white" href="{{ route('orders.track') }}">{{ translate('Track Order') }}</a></li>
+                                            <li><a class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ translate('Order History') }}</a></li>
+                                            <li><a class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ translate('My Wishlist') }}</a></li>
+                                            <li><a class="fs-14 text-light animate-underline-white" href="{{ route('orders.track') }}">{{ translate('Track Order') }}</a></li>
                                         </ul>
                                     @elseif ($wType == 'text_html')
                                         @if(!empty($w['title']))
@@ -362,14 +366,14 @@
                                             <ul class="list-unstyled mb-3">
                                                 @guest
                                                     <li>
-                                                        <a class="fs-13 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
+                                                        <a class="fs-14 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
                                                             {{ translate('Login to Seller Panel') }}
                                                         </a>
                                                     </li>
                                                 @endguest
                                                 @if (get_setting('seller_app_link'))
                                                     <li>
-                                                        <a class="fs-13 text-light animate-underline-white" target="_blank" href="{{ get_setting('seller_app_link') }}">
+                                                        <a class="fs-14 text-light animate-underline-white" target="_blank" href="{{ get_setting('seller_app_link') }}">
                                                             {{ translate('Download Seller App') }}
                                                         </a>
                                                     </li>
@@ -380,7 +384,7 @@
                                         <div class="sub-widget-title">{{ $w['subheading_2'] ?? translate('Join Our Partner Network') }}</div>
                                         <ul class="list-unstyled mb-3">
                                             <li>
-                                                 <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-13 text-light animate-underline-white">
+                                                 <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-14 text-light animate-underline-white">
                                                     {{ translate('Become A Seller') }}
                                                 </a>
                                             </li>
@@ -460,13 +464,24 @@
                                                  <h5 class="secure-payment-title textheading">
                                                      {{ translate('What Trustpilot Say’s') }}
                                                  </h5>
-                                                 <a href="{{ $trust_lnk }}" target="_blank" class="logo-images-row">
-                                                     @foreach($trust_imgs as $img)
-                                                         <div class="logo-image-item">
-                                                             <img src="{{ $img }}" alt="Trustpilot Reviews" style="height:28px !important; max-width:140px !important;">
-                                                         </div>
-                                                     @endforeach
-                                                 </a>
+                                                 @if(!empty($trust_lnk))
+                                                     <a href="{{ $trust_lnk }}" target="_blank" class="logo-images-row">
+                                                         @foreach($trust_imgs as $img)
+                                                             <div class="logo-image-item">
+                                                                 <img src="{{ $img }}" alt="Trustpilot Reviews" >
+                                                             </div>
+                                                         @endforeach
+                                                     </a>
+                                                 @else
+                                                     <div class="logo-images-row">
+                                                         @foreach($trust_imgs as $img)
+                                                             <div class="logo-image-item">
+                                                                 <img src="{{ $img }}" alt="Trustpilot Reviews" >
+                                                             </div>
+                                                         @endforeach
+                                                     </div>
+                                                 @endif
+                                                 
                                              </div>
                                          @endif
                                     @elseif ($wType == 'social_icons')
@@ -532,7 +547,7 @@
                                                         @if(!empty(trim($label)))
                                                             @php $url = isset($w['lnks'][$key]) ? $w['lnks'][$key] : '#'; @endphp
                                                             <li class="mb-2 pb-2">
-                                                                <a href="{{ url($url) }}" class="fs-13 text-light animate-underline-white">
+                                                                <a href="{{ url($url) }}" class="fs-14 text-light animate-underline-white">
                                                                     {{ $label }}
                                                                 </a>
                                                             </li>
@@ -545,7 +560,7 @@
                                                 @php $pages = get_pages_footer('2,3,4,5,6,7,8,10,11'); @endphp
                                                 @foreach ($pages as $key => $value)
                                                     <li class="mb-2">
-                                                        <a href="{{ url($value->slug) }}" class="fs-13 text-light animate-underline-white">
+                                                        <a href="{{ url($value->slug) }}" class="fs-14 text-light animate-underline-white">
                                                             {{ $value->title }}
                                                         </a>
                                                     </li>
@@ -555,18 +570,18 @@
                                             <ul class="list-unstyled">
                                                 @auth
                                                     <li class="mb-2 pb-2">
-                                                        <a class="fs-13 text-light animate-underline-white" href="{{ route('logout') }}">{{ translate('Logout') }}</a>
+                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}">{{ translate('Logout') }}</a>
                                                     </li>
                                                 @else
                                                     <li class="mb-2 pb-2">
-                                                        <a class="fs-13 text-light animate-underline-white" href="{{ route('user.login') }}">{{ translate('Login') }}</a>
+                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('user.login') }}">{{ translate('Login') }}</a>
                                                     </li>
                                                 @endauth
                                                 <li class="mb-2 pb-2">
-                                                    <a class="fs-13 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ translate('Order History') }}</a>
+                                                    <a class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ translate('Order History') }}</a>
                                                 </li>
                                                 <li class="mb-2 pb-2">
-                                                    <a class="fs-13 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ translate('My Wishlist') }}</a>
+                                                    <a class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ translate('My Wishlist') }}</a>
                                                 </li>
                                             </ul>
                                         @elseif ($wType == 'text_html')
@@ -578,13 +593,13 @@
                                                 <ul class="list-unstyled mb-3">
                                                     @guest
                                                         <li class="mb-2 pb-2">
-                                                            <a class="fs-13 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
+                                                            <a class="fs-14 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
                                                                 {{ translate('Login to Seller Panel') }}
                                                             </a>
                                                         </li>
                                                     @endguest
                                                     <li class="mb-2">
-                                                        <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-13 text-light animate-underline-white">
+                                                        <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-14 text-light animate-underline-white">
                                                             {{ translate('Become A Seller') }}
                                                         </a>
                                                     </li>
@@ -680,13 +695,23 @@
                                     <h5 class="secure-payment-title textheading">
                                         {{ translate('What Trustpilot Say’s') }}
                                     </h5>
-                                    <a href="{{ $trust_lnk }}" target="_blank" class="logo-images-row">
-                                        @foreach($trust_imgs as $img)
-                                            <div class="logo-image-item">
-                                                <img src="{{ $img }}" alt="Trustpilot Reviews" style="height:28px !important; max-width:140px !important;">
-                                            </div>
-                                        @endforeach
-                                    </a>
+                                    @if(!empty($trust_lnk))
+                                        <a href="{{ $trust_lnk }}" target="_blank" class="logo-images-row">
+                                            @foreach($trust_imgs as $img)
+                                                <div class="logo-image-item">
+                                                    <img src="{{ $img }}" alt="Trustpilot Reviews" style="height:28px !important; max-width:140px !important;">
+                                                </div>
+                                            @endforeach
+                                        </a>
+                                    @else
+                                        <div class="logo-images-row">
+                                            @foreach($trust_imgs as $img)
+                                                <div class="logo-image-item">
+                                                    <img src="{{ $img }}" alt="Trustpilot Reviews" style="height:28px !important; max-width:140px !important;">
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         @endif

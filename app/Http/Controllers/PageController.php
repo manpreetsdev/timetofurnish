@@ -15,8 +15,8 @@ class PageController extends Controller
 {
     public function __construct() {
         // Staff Permission Check
-        $this->middleware(['permission:add_website_page'])->only('create');
-        $this->middleware(['permission:edit_website_page'])->only('edit');
+        $this->middleware(['permission:add_website_page'])->only(['create', 'store', 'import']);
+        $this->middleware(['permission:edit_website_page'])->only(['edit', 'update', 'export']);
         $this->middleware(['permission:delete_website_page'])->only('destroy');
     }
 
@@ -323,6 +323,103 @@ public function become_delivery_partner()
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function export($id)
+    {
+        $page = Page::findOrFail($id);
+        
+        $data = [
+            'title' => $page->title,
+            'slug' => $page->slug,
+            'type' => $page->type,
+            'content' => $page->content,
+            'meta_title' => $page->meta_title,
+            'meta_description' => $page->meta_description,
+            'keywords' => $page->keywords,
+            'meta_image' => $page->meta_image,
+            'translations' => $page->page_translations->map(function ($translation) {
+                return [
+                    'lang' => $translation->lang,
+                    'title' => $translation->title,
+                    'content' => $translation->content,
+                ];
+            })->toArray(),
+        ];
+
+        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $fileName = 'custom-page-' . $page->slug . '-' . date('Y-m-d') . '.json';
+
+        return response($json, 200, [
+            'Content-Type' => 'application/json',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'import_file' => 'required|file|mimes:json,txt',
+        ]);
+
+        try {
+            $file = $request->file('import_file');
+            $data = json_decode(file_get_contents($file->getRealPath()), true);
+
+            if (!$data || !isset($data['title']) || !isset($data['content'])) {
+                flash(translate('Invalid page data file.'))->error();
+                return back();
+            }
+
+            // Check slug and generate unique slug if it exists
+            $slug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $data['slug'] ?? $data['title']));
+            $originalSlug = $slug;
+            $counter = 1;
+            while (Page::where('slug', $slug)->exists()) {
+                $slug = $originalSlug . '-' . $counter;
+                $counter++;
+            }
+
+            $page = new Page;
+            $page->title = $data['title'];
+            $page->slug = $slug;
+            $page->type = $data['type'] ?? 'custom_page';
+            $page->content = $data['content'];
+            $page->meta_title = $data['meta_title'] ?? null;
+            $page->meta_description = $data['meta_description'] ?? null;
+            $page->keywords = $data['keywords'] ?? null;
+            $page->meta_image = $data['meta_image'] ?? null;
+            $page->save();
+
+            // Handle translations
+            if (isset($data['translations']) && is_array($data['translations'])) {
+                foreach ($data['translations'] as $translationData) {
+                    $translation = PageTranslation::firstOrNew([
+                        'page_id' => $page->id,
+                        'lang' => $translationData['lang']
+                    ]);
+                    $translation->title = $translationData['title'];
+                    $translation->content = $translationData['content'];
+                    $translation->save();
+                }
+            } else {
+                // Save default translation
+                $translation = PageTranslation::firstOrNew([
+                    'page_id' => $page->id,
+                    'lang' => env('DEFAULT_LANGUAGE', 'en')
+                ]);
+                $translation->title = $page->title;
+                $translation->content = $page->content;
+                $translation->save();
+            }
+
+            flash(translate('Page imported successfully'))->success();
+            return redirect()->route('website.pages');
+
+        } catch (\Exception $e) {
+            flash(translate('Failed to import page: ') . $e->getMessage())->error();
+            return back();
+        }
+    }
+
     public function destroy($id)
     {
         $page = Page::findOrFail($id);

@@ -98,12 +98,12 @@ class CustomPageTemplate
             'background_color' => '',
             'title_font_family' => '',
             'title_color' => '',
-            'title_font_size' => '',
-            'title_line_height' => '',
+            'title_font_size' => '28',
+            'title_line_height' => '33',
             'body_font_family' => '',
             'body_color' => '',
-            'body_font_size' => '',
-            'body_line_height' => '',
+            'body_font_size' => '18',
+            'body_line_height' => '31',
             'subtitle_color' => '',
             'accent_color' => '',
             'highlight_color' => '',
@@ -485,6 +485,18 @@ class CustomPageTemplate
 
         $normalized = array_merge($defaults, $section);
         $normalized['type'] = $defaults['type'];
+        $normalized['title_font_size'] = trim((string) ($normalized['title_font_size'] ?? '')) !== ''
+            ? (string) $normalized['title_font_size']
+            : (string) ($defaults['title_font_size'] ?? '28');
+        $normalized['title_line_height'] = trim((string) ($normalized['title_line_height'] ?? '')) !== ''
+            ? (string) $normalized['title_line_height']
+            : (string) ($defaults['title_line_height'] ?? '33');
+        $normalized['body_font_size'] = trim((string) ($normalized['body_font_size'] ?? '')) !== ''
+            ? (string) $normalized['body_font_size']
+            : (string) ($defaults['body_font_size'] ?? '18');
+        $normalized['body_line_height'] = trim((string) ($normalized['body_line_height'] ?? '')) !== ''
+            ? (string) $normalized['body_line_height']
+            : (string) ($defaults['body_line_height'] ?? '31');
         $backgroundColor = trim((string) ($normalized['background_color'] ?? ''));
         $borderColor = trim((string) ($normalized['border_color'] ?? ''));
         $paddingValue = (int) ($normalized['section_padding'] ?? 0);

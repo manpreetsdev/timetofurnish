@@ -89,13 +89,21 @@
     text-transform: none !important;
 }
 
+.sub-widget-title {
+    width: fit-content;
+}
+
+.sub-widget-title::after {
+    width: 100%;
+}
+
 .ttf-footer-card h4::after,
 .secure-payment-title::after {
     content: "";
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 45px;
+    width: 100%;
     height: 2px;
     background-color: var(--foot-hover-color, #876a4b) !important;
     border-radius: 20px;
@@ -155,8 +163,23 @@
 
 /* Highlighted Text */
 .text-highlight {
-    color: var(--foot-hover-color, #876a4b) !important;
+    color: #C27325 !important;
     position: relative;
+}
+
+.ttf-footer-bottom-bar .col-lg-6 {
+    margin: 0 !important;
+}
+
+.footer-newsletter-section h5 span.text-highlight:after {
+    right: 0%;
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: var(--foot-news-highlight-img, url(https://staging.timetofurnish.com/public/uploads/all/yodjGMvCV4X7U7en83pxXojFb4FpKGDYRj3AqTV1.png));
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
 }
 
 /* Newsletter section width & borders (1440px container constrained) */
@@ -174,11 +197,15 @@
     border-right: var(--foot-news-border-right, none) !important;
     padding-top: 20px;
     padding-bottom: 20px;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
 }
 
 .footer-newsletter-section h5 {
     color: var(--foot-head-color, #000000) !important;
-    font-size: 30px !important;
+
+    font-size: 36px !important;
+    line-height: 50px;
     font-weight: 700;
 }
 
@@ -356,8 +383,8 @@
     }
 
     .ttf-footer-links-section .ttf-footer-col {
-        padding-left: calc(var(--foot-col-spacing, 20px) / 2) !important;
-        padding-right: calc(var(--foot-col-spacing, 20px) / 2) !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
         min-width: 140px;
     }
 }
@@ -428,7 +455,7 @@
     padding: 2px 0;
     line-height: 20.8px !important;
     font-size: var(--foot-body-font-size, 14px) !important;
-    font-family: poppins !important;
+    font-family: "Poppins", sans-serif !important;
 }
 
 .ttf-footer-card h4,
@@ -436,6 +463,10 @@
 .ttf-mobile-accordion .aiz-accordion,
 .ttf-mobile-direct-link-wrap a {
     font-family: "Playfair Display";
+}
+
+.textheading {
+    width: fit-content !important;
 }
 
 @media (max-width: 767.98px) {
@@ -448,9 +479,8 @@
         margin: 10px 0px 0px !important;
     }
 
-    .footer-newsletter-section h5
-     {
-        font-size: 24px;
+    .footer-newsletter-section h5 {
+        font-size: 24px !important;
         line-height: 32px;
     }
 

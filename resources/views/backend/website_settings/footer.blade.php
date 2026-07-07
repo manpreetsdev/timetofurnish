@@ -220,6 +220,7 @@
                     $foot_news_show = get_setting('foot_news_show', 'on');
                     $foot_news_title = get_setting('foot_news_title', 'Subscribe to our newsletter for regular updates about Offers, Coupons & more', $lang);
                     $foot_news_btn = get_setting('foot_news_btn', 'Subscribe', $lang);
+                    $foot_news_highlight_img = get_setting('foot_news_highlight_img');
                     $foot_news_bg = get_setting('foot_news_bg', '#ffffff');
                     $foot_news_border = get_setting('foot_news_border', '#eadfd3');
                     $foot_news_btn_bg = get_setting('foot_news_btn_bg', '#685b4e');
@@ -259,7 +260,7 @@
                 
                 <!-- Simulated Frontend Footer Container with CSS Variables mapping -->
                 <div class="footer-widget ttf-footer-links-section ttf-hotspot" id="hotspot-general" onclick="activateSection('tab-general', this)" style="--foot-bg-color: {{ $foot_bg_color }}; --foot-head-color: {{ $foot_head_color }}; --foot-text-color: {{ $foot_text_color }}; --foot-hover-color: {{ $foot_hover_color }}; --foot-pad-top: {{ $foot_pad_top }}; --foot-pad-bot: {{ $foot_pad_bot }}; --foot-border-color: {{ $foot_border_color }}; --foot-copy-bg: {{ $foot_copy_bg }}; --foot-copy-text: {{ $foot_copy_text }}; --foot-news-bg: {{ $foot_news_bg }}; --foot-news-border: {{ $foot_news_border }}; --foot-news-btn_bg: {{ $foot_news_btn_bg }}; --foot-social-radius: {{ $foot_social_radius }};
-                --foot-news-btn-tx: {{ $foot_news_btn_tx }}; --foot-head-font-size: {{ get_setting('foot_head_font_size', '16px') }}; --foot-body-font-size: {{ get_setting('foot_body_font_size', '13px') }}; --foot-body-line-height: {{ get_setting('foot_body_line_height', '1.8') }}; --foot-col-spacing: {{ get_setting('foot_col_spacing', '20px') }}; --foot-head-margin-bottom: {{ get_setting('foot_head_margin_bottom', '18px') }}; @if(!empty($foot_bg_pattern_left)) --foot-bg-pattern-left: url('{{ uploaded_asset($foot_bg_pattern_left) }}'); @else --foot-bg-pattern-left: none; @endif @if(!empty($foot_bg_pattern_right)) --foot-bg-pattern-right: url('{{ uploaded_asset($foot_bg_pattern_right) }}'); @else --foot-bg-pattern-right: none; @endif">
+                --foot-news-btn-tx: {{ $foot_news_btn_tx }}; --foot-head-font-size: {{ get_setting('foot_head_font_size', '16px') }}; --foot-body-font-size: {{ get_setting('foot_body_font_size', '13px') }}; --foot-body-line-height: {{ get_setting('foot_body_line_height', '1.8') }}; --foot-col-spacing: {{ get_setting('foot_col_spacing', '20px') }}; --foot-head-margin-bottom: {{ get_setting('foot_head_margin_bottom', '18px') }}; @if(!empty($foot_bg_pattern_left)) --foot-bg-pattern-left: url('{{ uploaded_asset($foot_bg_pattern_left) }}'); @else --foot-bg-pattern-left: none; @endif @if(!empty($foot_bg_pattern_right)) --foot-bg-pattern-right: url('{{ uploaded_asset($foot_bg_pattern_right) }}'); @else --foot-bg-pattern-right: none; @endif @if(!empty($foot_news_highlight_img)) --foot-news-highlight-img: url('{{ uploaded_asset($foot_news_highlight_img) }}'); @endif">
                     <span class="ttf-edit-badge"><i class="las la-cog"></i> {{ translate('General Styles') }}</span>
                     
                     <!-- Sim Newsletter Section -->
@@ -682,6 +683,19 @@
                         <label class="form-label">{{ translate('Button Text') }} ({{ translate('Translatable') }})</label>
                         <input type="hidden" name="types[][{{ $lang }}]" value="foot_news_btn">
                         <input type="text" class="form-control" name="foot_news_btn" value="{{ $foot_news_btn }}" oninput="updateLiveText('preview-news-btn', this.value)">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label font-weight-medium">{{ translate('Newsletter Highlight Image') }}</label>
+                        <div class="input-group" data-toggle="aizuploader" data-type="image">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                            <input type="hidden" name="types[]" value="foot_news_highlight_img">
+                            <input type="hidden" name="foot_news_highlight_img" class="selected-files" value="{{ get_setting('foot_news_highlight_img') }}">
+                        </div>
+                        <div class="file-preview box sm"></div>
                     </div>
 
                     <div class="form-group">

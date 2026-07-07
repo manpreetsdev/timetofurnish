@@ -511,10 +511,10 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-3"><div class="form-group"><label>{{ translate('H Size (px)') }}</label><input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][widgets][{{ $widgetIndex }}][title_font_size]" value="{{ $widget['title_font_size'] ?? '' }}" min="10" max="100" placeholder="32"></div></div>
-                            <div class="col-6 col-md-3"><div class="form-group"><label>{{ translate('H Line H') }}</label><input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][widgets][{{ $widgetIndex }}][title_line_height]" value="{{ $widget['title_line_height'] ?? '' }}" min="1" placeholder="50"></div></div>
+                            <div class="col-6 col-md-3"><div class="form-group"><label>{{ translate('H Size (px)') }}</label><input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][widgets][{{ $widgetIndex }}][title_font_size]" value="{{ $widget['title_font_size'] ?? '' }}" min="10" max="100" placeholder="28"></div></div>
+                            <div class="col-6 col-md-3"><div class="form-group"><label>{{ translate('H Line H') }}</label><input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][widgets][{{ $widgetIndex }}][title_line_height]" value="{{ $widget['title_line_height'] ?? '' }}" min="1" placeholder="33"></div></div>
                             <div class="col-6 col-md-3"><div class="form-group"><label>{{ translate('B Size (px)') }}</label><input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][widgets][{{ $widgetIndex }}][body_font_size]" value="{{ $widget['body_font_size'] ?? '' }}" min="10" max="100" placeholder="18"></div></div>
-                            <div class="col-6 col-md-3"><div class="form-group"><label>{{ translate('B Line H') }}</label><input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][widgets][{{ $widgetIndex }}][body_line_height]" value="{{ $widget['body_line_height'] ?? '' }}" min="1" placeholder="33"></div></div>
+                            <div class="col-6 col-md-3"><div class="form-group"><label>{{ translate('B Line H') }}</label><input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][widgets][{{ $widgetIndex }}][body_line_height]" value="{{ $widget['body_line_height'] ?? '' }}" min="1" placeholder="31"></div></div>
                         </div>
 
                         <div class="row mt-2">

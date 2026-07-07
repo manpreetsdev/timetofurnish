@@ -14,6 +14,9 @@
 		<div class="card-header">
 			<h6 class="mb-0 fw-600">{{ translate('All Pages') }}</h6>
 				<div class="d-flex flex-wrap gap-2 justify-content-end">
+					<button type="button" class="btn btn-circle btn-primary" data-toggle="modal" data-target="#import-page-modal">
+						<i class="las la-upload mr-1"></i>{{ translate('Import Page') }}
+					</button>
 					<a href="{{ route('custom-pages.create') }}" class="btn btn-circle btn-info">{{ translate('Add New Page') }}</a>
 					<a href="{{ route('team-members.index') }}" class="btn btn-circle btn-success">{{ translate('Manage Team Members') }}</a>
 				</div>
@@ -45,6 +48,9 @@
 							<a href="{{route('custom-pages.edit', ['id'=>$page->slug, 'lang'=>env('DEFAULT_LANGUAGE')] )}}" class="btn btn-icon btn-circle btn-sm btn-soft-primary" title="Edit">
 								<i class="las la-pen"></i>
 							</a>
+							<a href="{{ route('custom-pages.export', $page->id) }}" class="btn btn-icon btn-circle btn-sm btn-soft-success" title="{{ translate('Export Page') }}">
+								<i class="las la-download"></i>
+							</a>
 						@endif
 					@endcan
 					@if($page->type == 'custom_page' && auth()->user()->can('delete_website_page'))
@@ -63,4 +69,32 @@
 
 @section('modal')
     @include('modals.delete_modal')
+
+    <!-- Import Page Modal -->
+    <div id="import-page-modal" class="modal fade">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title h6">{{ translate('Import Custom Page') }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <form action="{{ route('custom-pages.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="import_file" class="font-weight-medium">{{ translate('Select JSON File') }}</label>
+                            <input type="file" name="import_file" id="import_file" class="form-control-file" accept=".json,.txt" required>
+                            <small class="form-text text-muted mt-2">
+                                {{ translate('Upload the .json custom page file that was previously exported. If the page slug matches an existing page, a unique slug will be automatically generated to avoid overwriting.') }}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-dismiss="modal">{{ translate('Close') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ translate('Import') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
