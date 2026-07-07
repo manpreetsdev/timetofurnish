@@ -4,8 +4,8 @@
     $align = $section['button_align'] ?? 'left';
     $bgColor = $section['button_bg_color'] ?? '#c8883a';
     $textColor = $section['button_text_color'] ?? '#ffffff';
-    $fontSize = !empty($section['button_font_size']) ? (int) $section['button_font_size'] . 'px' : '16px';
-    $borderRadius = !empty($section['button_border_radius']) ? (int) $section['button_border_radius'] . 'px' : '6px';
+    $fontSize = !empty($section['button_font_size']) ? (is_numeric($section['button_font_size']) ? $section['button_font_size'] . 'px' : $section['button_font_size']) : '16px';
+    $borderRadius = !empty($section['button_border_radius']) ? (is_numeric($section['button_border_radius']) ? $section['button_border_radius'] . 'px' : $section['button_border_radius']) : '6px';
     $padding = $section['button_padding'] ?? '12px 24px';
     
     $showBackground = ($section['show_background'] ?? '0') === '1';

@@ -1444,6 +1444,16 @@
     padding: 16px;
 }
 
+.ttf-setting-group__body .row {
+    margin-left: -6px;
+    margin-right: -6px;
+}
+
+.ttf-setting-group__body .row > [class*="col-"] {
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
 .ttf-setting-actions {
     display: flex;
     justify-content: flex-end;
