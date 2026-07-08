@@ -57,6 +57,22 @@
     margin: 0;
 }
 
+.ttf-policy-toc ul:before {
+    content: '';
+    position: absolute;
+}
+
+.ttf-policy-toc ul {
+    position: relative;
+}
+
+.ttf-policy-toc ul:before {
+    background: #B6C1CC !important;
+    width: 1px !important;
+    top: 0;
+    bottom: 0;
+}
+
 .ttf-page-banner__content p {
     margin: 14px 0 0;
     color: var(--ttf-banner-subtitle-color);
@@ -427,7 +443,7 @@
 .ttf-policy-toc li::before {
     content: "";
     position: absolute;
-    left: 0;
+    left: -1px;
     top: 7px;
     width: 2px;
     height: 16px;
@@ -842,10 +858,9 @@
 /* Sidebar Active Indicators & Highlight Styles */
 .ttf-policy-toc li.active::before {
     background: var(--toc-active-indicator, #3b2d22) !important;
-    /* Bold dark active bar */
     width: 3px !important;
-    height: 20px !important;
-    top: 4px !important;
+    height: 33px !important;
+    top: 0px !important;
 }
 
 .ttf-policy-toc li.active a,
@@ -867,7 +882,7 @@
     font-family: var(--toc-content-heading-font, Playfair Display, serif) !important;
     font-weight: var(--toc-content-heading-weight, 700) !important;
     font-size: var(--toc-content-heading-size-desktop, 40px) !important;
-    line-height: var(--toc-content-heading-height, 20px) !important;
+    line-height: var(--toc-content-heading-height, 50px) !important;
     color: var(--toc-content-heading-color, #2c2218) !important;
     margin: 0 0 16px !important;
 }
@@ -938,7 +953,8 @@
     font-family: var(--section-body-font, 'Poppins', sans-serif) !important;
     font-size: var(--section-body-size, 18px) !important;
     line-height: var(--section-body-height, 32px) !important;
-    font-weight: var(--section-body-weight, 700) !important; /* Bold content weight! */
+    font-weight: var(--section-body-weight, 700) !important;
+    /* Bold content weight! */
 }
 
 /* Full Width Widget: Full Column Layout Content Defaults */
@@ -954,7 +970,8 @@
     font-family: var(--section-body-font, 'Poppins', sans-serif) !important;
     font-size: var(--section-body-size, 18px) !important;
     line-height: var(--section-body-height, 33px) !important;
-    font-weight: var(--section-body-weight, 400) !important; /* Regular content weight! */
+    font-weight: var(--section-body-weight, 400) !important;
+    /* Regular content weight! */
 }
 
 /* Highlight Text color option styling */
@@ -972,6 +989,7 @@
 
 /* Mobile responsive typography override for custom widgets */
 @media (max-width: 767.98px) {
+
     .ttf-story-section h1,
     .ttf-story-section h2,
     .ttf-story-section--header .ttf-header-element {
