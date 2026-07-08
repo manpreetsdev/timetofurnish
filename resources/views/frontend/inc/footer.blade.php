@@ -385,7 +385,7 @@
                                         <ul class="list-unstyled mb-3">
                                             <li>
                                                  <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-14 text-light animate-underline-white">
-                                                    {{ translate('Become A Seller') }}
+                                                    {{ translate('Register your shop') }}
                                                 </a>
                                             </li>
                                         </ul>
@@ -600,7 +600,7 @@
                                                     @endguest
                                                     <li class="mb-2">
                                                         <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-14 text-light animate-underline-white">
-                                                            {{ translate('Become A Seller') }}
+                                                            {{ translate('Register your shop') }}
                                                         </a>
                                                     </li>
                                                 </ul>

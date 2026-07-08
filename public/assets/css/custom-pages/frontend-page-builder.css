@@ -80,7 +80,7 @@
 }
 
 .ttf-custom-page__body {
-    padding: 54px 0 72px;
+    padding: 20px 0 20px;
 }
 
 .ttf-custom-page__container {
@@ -94,7 +94,7 @@
     border: var(--group-border-width, 1px) var(--group-border-style, solid) var(--group-border, transparent);
     border-radius: var(--group-radius, 0);
     padding-top: var(--group-padding-top, 0);
-    padding-bottom: var(--group-padding-bottom, 0);
+    padding-bottom: 0 !important;
     padding-left: var(--group-padding-left, 0);
     padding-right: var(--group-padding-right, 0);
 }
@@ -602,7 +602,7 @@
 
 @media (max-width: 767.98px) {
     .ttf-custom-page__body {
-        padding: 36px 0 54px;
+        padding: 20px 0 10px;
     }
 
     .ttf-custom-page__container,
@@ -768,15 +768,15 @@
 
     /* Mobile Spacing & Padding (30px) */
     .ttf-story-section {
-        padding-top: 30px !important;
-        padding-bottom: 30px !important;
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
     }
 
     /* Mobile Custom Page Headings (28px) */
     .ttf-story-section h1,
     .ttf-story-section h2 {
         font-size: 28px !important;
-        line-height: 30px !important;
+        line-height: 38px !important;
         margin-bottom: 12px !important;
     }
 
@@ -996,7 +996,7 @@
         font-family: 'Playfair Display', serif !important;
         font-weight: 700 !important;
         font-size: 24px !important;
-        line-height: 26px !important;
+        line-height: 34px !important;
     }
 
     .ttf-story-section .ttf-rich-text,
