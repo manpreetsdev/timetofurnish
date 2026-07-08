@@ -488,10 +488,11 @@
 }
 
 .ttf-toc-editor-card {
-    padding: 16px;
-    border: 1px solid #ebdfd3;
-    border-radius: 10px;
-    background: #fcfaf7;
+    border: 1px solid #ebdccb !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+    background: #fffdf9 !important;
+    box-shadow: 0 2px 8px rgba(122, 86, 60, 0.04);
 }
 
 .ttf-toc-editor-card+.ttf-toc-editor-card {
@@ -594,6 +595,10 @@
     border-color: #dccdbb;
     border-radius: 6px;
     padding: 8px 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
 }
 
 .ttf-builder-shell .btn-soft-primary:hover,
@@ -601,6 +606,27 @@
     color: #5e4734;
     background: #f1e7db;
     border-color: #cfbca8;
+    text-decoration: none;
+}
+
+.ttf-builder-shell .btn-soft-success {
+    color: #27794b;
+    background: #eaf6ee;
+    border-color: #cdecd8;
+    border-radius: 6px;
+    padding: 8px 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.ttf-builder-shell .btn-soft-success:hover,
+.ttf-builder-shell .btn-soft-success:focus {
+    color: #1b5b37;
+    background: #daf1e3;
+    border-color: #b5e2c4;
+    text-decoration: none;
 }
 
 .ttf-builder-shell .btn-soft-primary.is-active {
@@ -1578,26 +1604,18 @@
 
 @media (max-width: 767.98px) {
     .ttf-builder-workspace {
-        grid-template-columns: 40px minmax(0, 1fr) 40px;
-        gap: 10px;
+        grid-template-columns: 1fr !important;
+        gap: 16px;
     }
 
     .ttf-sidebar-widgets-grid {
         grid-template-columns: 1fr 1fr;
     }
 
-    .ttf-widget-sidebar,
-    .ttf-settings-sidebar {
-        top: 72px;
-        left: 10px;
-        right: 10px;
-        width: auto;
-        min-width: 0;
-        max-width: none;
-    }
-
-    .ttf-sidebar-resizer {
-        display: none;
+    .ttf-unified-sidebar {
+        height: auto;
+        position: relative;
+        top: 0;
     }
 
     .ttf-canvas-panel,
@@ -1613,4 +1631,204 @@
         flex-direction: column;
         align-items: flex-start;
     }
+}
+
+/* --- Unified Pinned Sidebar Redesign Styles --- */
+.ttf-builder-workspace {
+    display: grid;
+    grid-template-columns: 380px minmax(0, 1fr) !important;
+    gap: 24px !important;
+    align-items: start !important;
+}
+
+/* --- Floating Sidebars & Rails Redesign Styles --- */
+.ttf-builder-workspace {
+    display: block !important;
+    max-width: 100% !important;
+    padding: 0 20px !important;
+    position: relative !important;
+}
+
+.ttf-builder-canvas {
+    width: 100% !important;
+    margin: 0 auto !important;
+    max-width: 1200px !important;
+}
+
+.ttf-builder-rail {
+    position: fixed !important;
+    top: 140px !important;
+    z-index: 1030 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+}
+
+.ttf-builder-rail--left {
+    left: 12px !important;
+}
+
+.ttf-builder-rail--right {
+    right: 12px !important;
+}
+
+.ttf-rail-btn {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    background: #8b5e3c !important;
+    color: #ffffff !important;
+    border: 0 !important;
+    box-shadow: 0 4px 16px rgba(60, 40, 20, 0.18) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    font-size: 20px !important;
+    transition: all 0.2s ease !important;
+}
+
+.ttf-rail-btn:hover {
+    background: #6e472a !important;
+    transform: translateY(-2px) !important;
+}
+
+.ttf-rail-btn.is-active {
+    background: #C27325 !important;
+}
+
+.ttf-widget-sidebar,
+.ttf-settings-sidebar {
+    position: fixed !important;
+    top: 78px !important;
+    bottom: 0 !important;
+    width: 380px !important;
+    z-index: 1040 !important;
+    background: #ffffff !important;
+    border: 1px solid #eadfd6 !important;
+    box-shadow: 0 12px 36px rgba(60, 40, 20, 0.12) !important;
+    transition: transform 0.3s ease, opacity 0.3s ease !important;
+    display: flex !important;
+    flex-direction: column !important;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ttf-widget-sidebar {
+    left: 0 !important;
+    border-radius: 0 14px 14px 0 !important;
+    transform: translateX(-100%);
+}
+
+.ttf-settings-sidebar {
+    right: 0 !important;
+    border-radius: 14px 0 0 14px !important;
+    transform: translateX(100%);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.ttf-widget-sidebar.is-open,
+.ttf-settings-sidebar.is-open {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateX(0) !important;
+}
+
+.ttf-sidebar-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ttf-sidebar-panel--settings {
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+}
+
+/* Section Canvas Style */
+.ttf-group-canvas {
+    border: 2px dashed #eadfd6 !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+    background: #fbf9f6 !important;
+    margin-top: 10px !important;
+    box-shadow: inset 0 2px 8px rgba(60, 40, 20, 0.02) !important;
+    outline: none !important;
+}
+
+.ttf-group-canvas__header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding-bottom: 12px !important;
+    border-bottom: 1px solid #ebdccb !important;
+    margin-bottom: 20px !important;
+}
+
+.ttf-group-canvas__header span {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #6e472a !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+}
+
+.ttf-group-canvas__header small {
+    font-size: 12px !important;
+    color: #8a786a !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+}
+
+.ttf-admin-column {
+    background: #ffffff !important;
+    border: 1px dashed #ebdccb !important;
+    border-radius: 10px !important;
+    padding: 16px !important;
+    min-height: 140px !important;
+    box-shadow: 0 4px 12px rgba(60, 40, 20, 0.01) !important;
+    transition: all 0.2s ease !important;
+}
+
+.ttf-admin-column:hover {
+    border-color: #c4af9c !important;
+    background: #fffdfc !important;
+}
+
+.ttf-admin-column-header {
+    border-bottom: 1px dashed #ebdccb !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 14px !important;
+}
+
+.ttf-admin-column-header span {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #8e715d !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+/* Show Content Editors on Canvas Pages */
+.ttf-widget-editor .ttf-widget-content-editor {
+    display: block !important;
+}
+
+.ttf-widget-editor [data-toggle-widget] {
+    display: inline-block !important;
+}
+
+/* Canvas Toolbar */
+.ttf-editor-toolbar {
+    position: sticky !important;
+    top: 78px !important;
+    z-index: 99 !important;
+    box-shadow: 0 8px 24px rgba(60, 40, 20, 0.04) !important;
+}
+
+.ttf-sidebar-resizer {
+    display: none !important;
 }

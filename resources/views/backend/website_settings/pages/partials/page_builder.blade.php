@@ -97,9 +97,15 @@
             <div class="ttf-editor-toolbar">
                 <div class="ttf-editor-toolbar__copy">
                     <h3>{{ translate('Section Builder') }}</h3>
-                    <p>{{ translate('Create a section first, then place widgets inside it. Edit widget content inside the canvas and use the settings sidebar only for layout, styling, and visibility.') }}</p>
+                    <p>{{ translate('Create a section first, then place widgets inside it. Edit content inside the canvas. Customize styling in the settings panel.') }}</p>
                 </div>
                 <div class="ttf-editor-toolbar__actions">
+                    @if ($isEdit)
+                        <a href="{{ route('custom-pages.export', $page->id) }}" class="btn btn-soft-success">
+                            <i class="las la-download mr-1"></i>
+                            {{ translate('Export Page') }}
+                        </a>
+                    @endif
                     <button type="button" class="btn btn-soft-primary" data-add-group>
                         <i class="las la-plus"></i>
                         {{ translate('Add Section') }}
@@ -112,7 +118,7 @@
                 <div class="ttf-canvas-panel__header">
                     <div>
                         <h6 class="mb-1">{{ translate('Page Sections') }}</h6>
-                        <small class="text-muted">{{ translate('Open a section to manage columns. Edit widget content in the canvas and use the settings sidebar for layout, styling, and visibility.') }}</small>
+                        <small class="text-muted">{{ translate('Open a section to manage columns and widgets. Use the settings gear to customize fonts, colors, and borders in the sidebar.') }}</small>
                     </div>
                 </div>
 
@@ -153,18 +159,21 @@
                 <div class="ttf-sidebar-panel__header">
                     <div>
                         <h6>{{ translate('Settings') }}</h6>
-                        <p>{{ translate('Select a section or widget to edit its settings here.') }}</p>
+                        <p>{{ translate('Configure typography, spacing, and styling here.') }}</p>
                     </div>
                     <button type="button" class="btn btn-icon btn-sm btn-soft-primary" data-sidebar-close="settings" title="{{ translate('Close Settings') }}">
                         <i class="las la-times"></i>
                     </button>
                 </div>
 
-                <div class="ttf-active-settings-header d-none" id="active-settings-header">
-                    <span id="active-settings-title" class="ttf-active-settings-title"></span>
-                    <button type="button" class="btn btn-xs btn-soft-secondary d-flex align-items-center gap-1" id="close-active-settings">
-                        <i class="las la-times"></i> {{ translate('Back') }}
-                    </button>
+                <div class="ttf-active-settings-header d-none" id="active-settings-header" style="flex-direction: column; align-items: stretch; gap: 6px; background: #faf6f0; border: 1px solid #e2cfbd; padding: 12px 14px; border-radius: 8px; margin-bottom: 16px; display: none;">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span style="font-size: 11px; font-weight: 700; color: #8e715d; text-transform: uppercase; letter-spacing: 0.05em;">{{ translate('Customizing Styling') }}</span>
+                        <button type="button" class="btn btn-xs btn-soft-secondary d-flex align-items-center gap-1" id="close-active-settings" style="padding: 2px 8px; font-size: 10px; font-weight: 600; text-transform: uppercase; background: #fff; border: 1px solid #dccdbb; border-radius: 4px;">
+                            <i class="las la-arrow-left"></i> {{ translate('Back') }}
+                        </button>
+                    </div>
+                    <div id="active-settings-title" style="font-size: 15px; font-weight: 800; color: #4a3319; margin-top: 2px;"></div>
                 </div>
 
                 <div id="active-settings-portal-target" class="ttf-active-settings-portal-target d-none"></div>
@@ -177,7 +186,7 @@
                         <div class="card-body">
                             <div class="ttf-sidebar-note mt-0 mb-3">
                                 <strong>{{ translate('Workflow') }}:</strong>
-                                {{ translate('Add sections in the canvas, drag widgets from the left, then click the settings icon on any widget to edit everything from this sidebar.') }}
+                                {{ translate('Configure page banner, styles, colors and SEO keywords.') }}
                             </div>
                             <button type="submit" class="btn btn-primary btn-block btn-lg">{{ $isEdit ? translate('Update Page') : translate('Save Page') }}</button>
                         </div>
@@ -351,5 +360,4 @@
                 </div>
             </div>
         </aside>
-    </div>
 </div>

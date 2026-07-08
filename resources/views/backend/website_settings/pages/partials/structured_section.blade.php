@@ -560,7 +560,7 @@
                             <div class="col-12">
                                 <div class="form-group mb-0">
                                     <label>{{ translate('Corner Radius') }}</label>
-                                    <input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][widgets][{{ $widgetIndex }}][border_radius]" value="{{ $widget['border_radius'] ?? '20' }}" min="0" max="60">
+                                    <input type="number" class="form-control" name="builder[sections][{{ $groupIndex }}][widgets][{{ $widgetIndex }}][border_radius]" value="{{ $widget['border_radius'] ?? '10' }}" min="0" max="60">
                                 </div>
                             </div>
                         </div>
@@ -568,7 +568,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label>{{ translate('Border Color') }}</label>
-                                    <input type="text" class="form-control" name="builder[sections][{{ $groupIndex }}][widgets][{{ $widgetIndex }}][border_color]" value="{{ $widget['border_color'] ?? '#21252933' }}">
+                                    <input type="text" class="form-control" name="builder[sections][{{ $groupIndex }}][widgets][{{ $widgetIndex }}][border_color]" value="{{ $widget['border_color'] ?? '#FAF8F5' }}">
                                 </div>
                             </div>
                             <div class="col-6">
