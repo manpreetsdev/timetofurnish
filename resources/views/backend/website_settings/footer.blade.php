@@ -325,7 +325,7 @@
                                                 </ul>
                                                 <div class="sub-widget-title">{{ $w['subheading_2'] ?? translate('Join Our Partner Network') }}</div>
                                                 <ul>
-                                                    <li><a href="#" onclick="return false;">Become A Seller</a></li>
+                                                    <li><a href="#" onclick="return false;">Register your shop</a></li>
                                                 </ul>
                                                 @if(!empty($w['subheading_3']))
                                                     <div class="sub-widget-title">{{ $w['subheading_3'] }}</div>
@@ -2154,7 +2154,7 @@
                 let sub2Input = card.querySelector('input[name*="[subheading_2]"]');
                 let sub2 = sub2Input ? sub2Input.value : 'Join Our Partner Network';
                 html += `<div class="sub-widget-title">${sub2}</div>
-                    <ul><li><a href="#" onclick="return false;">Become A Seller</a></li></ul>`;
+                    <ul><li><a href="#" onclick="return false;">Register your shop</a></li></ul>`;
                 let sub3Input = card.querySelector('input[name*="[subheading_3]"]');
                 let sub3 = sub3Input ? sub3Input.value : '';
                 if (sub3) {

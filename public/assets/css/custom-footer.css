@@ -19,7 +19,7 @@
 @media (max-width: 767.98px) {
     .ttf-footer-links-section {
         background-image: var(--foot-mob-bg-img, var(--foot-bg-img, none)) !important;
-        padding-top: var(--foot-mob-pad-top, 12px) !important;
+        padding-top: 0px !important;
         padding-bottom: var(--foot-mob-pad-bot, 12px) !important;
         padding-left: var(--foot-mob-pad-left, 0px) !important;
         padding-right: var(--foot-mob-pad-right, 0px) !important;
@@ -370,6 +370,16 @@
     transform: rotate(-135deg) !important;
     -webkit-transform: rotate(-135deg) !important;
     border-color: var(--foot-head-color, #232323) !important;
+}
+
+@media only screen and (min-width:768px) and (max-width:1024px) {
+
+    .ttf-footer-links-section .ttf-footer-col {
+        width: 33% !important;
+        max-width: 33% !important;
+        flex: 0 0 33% !important;
+        min-width: 33% !important;
+    }
 }
 
 /* Desktop & iPad flexible columns with adjustable spacing */
