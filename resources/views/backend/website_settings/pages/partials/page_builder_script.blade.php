@@ -120,21 +120,6 @@
             }
         }
 
-        function clampSettingsSidebarWidth(width) {
-            const minWidth = 320;
-            const maxWidth = Math.max(minWidth, Math.min(Math.round(window.innerWidth * 0.68), 760));
-
-            return Math.max(minWidth, Math.min(width, maxWidth));
-        }
-
-        function setSettingsSidebarWidth(width) {
-            if (!settingsSidebar || window.innerWidth <= 767.98) {
-                return;
-            }
-
-            settingsSidebar.style.width = clampSettingsSidebarWidth(width) + 'px';
-        }
-
         function closeSettingsPortal() {
             if (activePortalOwner && activePortalElement) {
                 activePortalOwner.classList.remove('is-active-editing');
@@ -151,6 +136,7 @@
             activePortalElement = null;
 
             if (activeSettingsHeader) {
+                activeSettingsHeader.style.display = 'none';
                 activeSettingsHeader.classList.add('d-none');
             }
             if (activeSettingsPortalTarget) {
@@ -189,6 +175,7 @@
                 activeSettingsTitle.textContent = titleText;
             }
             if (activeSettingsHeader) {
+                activeSettingsHeader.style.display = 'flex';
                 activeSettingsHeader.classList.remove('d-none');
             }
             if (defaultPageSettings) {
@@ -497,6 +484,10 @@
                 const oldIndex = row.getAttribute('data-item-index') || String(index);
                 replaceRepeaterIndex(row, oldIndex, index);
                 row.setAttribute('data-item-index', String(index));
+                const displayNum = row.querySelector('.entry-display-number');
+                if (displayNum) {
+                    displayNum.textContent = String(index + 1);
+                }
             });
             container.setAttribute('data-next-index', String(rows.length));
         }
@@ -1048,11 +1039,15 @@
                 settingsSidebar &&
                 !event.target.closest('[data-builder-sidebar="settings"]') &&
                 !event.target.closest('[data-sidebar-toggle="settings"]') &&
+                !event.target.closest('[data-edit-section-settings]') &&
+                !event.target.closest('[data-edit-widget-settings]') &&
+                !event.target.closest('#close-active-settings') &&
                 !event.target.closest('#aizUploaderModal') &&
                 !event.target.closest('.modal') &&
                 !event.target.closest('.modal-backdrop') &&
                 !event.target.closest('.aiz-uploader-all') &&
-                !event.target.closest('.dropdown-menu')
+                !event.target.closest('.dropdown-menu') &&
+                !event.target.closest('.sp-container')
             ) {
                 setSidebarState('settings', false);
             }

@@ -49,6 +49,7 @@
     --section-body-height: {{ !empty($section['body_line_height']) ? (is_numeric($section['body_line_height']) ? $section['body_line_height'] . 'px' : $section['body_line_height']) : '' }};
     --section-highlight-color: {{ !empty($section['highlight_color']) ? $section['highlight_color'] : 'var(--section-accent)' }};
     --section-image-radius: {{ !empty($section['image_border_radius']) ? (int) $section['image_border_radius'] . 'px' : '24px' }};
+    --section-image-height: {{ (int) ($section['image_height'] ?? 553) }}px;
 ">
     @if (!empty($section['image']))
         <div class="ttf-story-section__media">

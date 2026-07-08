@@ -1,4 +1,14 @@
 @php
+    if (!function_exists('formatDim')) {
+        function formatDim($val) {
+            $val = trim((string) $val);
+            if ($val === '') {
+                return '';
+            }
+            return is_numeric($val) ? $val . 'px' : $val;
+        }
+    }
+
     $title = (string) ($section['title'] ?? '');
     $highlight = (string) ($section['highlight_text'] ?? '');
     $titleHtml = e($title);
@@ -60,12 +70,54 @@
     --section-padding-bottom: {{ $paddingBottom }}px;
     --section-padding-left: {{ $paddingLeftRight }}px;
     --section-padding-right: {{ $paddingLeftRight }}px;
-    --section-sidebar-width: {{ (int) ($section['sidebar_width'] ?? 290) }}px;
+    --section-sidebar-width: {{ (int) ($section['sidebar_width'] ?? 386) }}px;
     --section-title-size: {{ !empty($section['title_font_size']) ? (is_numeric($section['title_font_size']) ? $section['title_font_size'] . 'px' : $section['title_font_size']) : '' }};
     --section-title-height: {{ !empty($section['title_line_height']) ? (is_numeric($section['title_line_height']) ? $section['title_line_height'] . 'px' : $section['title_line_height']) : '' }};
     --section-body-size: {{ !empty($section['body_font_size']) ? (is_numeric($section['body_font_size']) ? $section['body_font_size'] . 'px' : $section['body_font_size']) : '' }};
     --section-body-height: {{ !empty($section['body_line_height']) ? (is_numeric($section['body_line_height']) ? $section['body_line_height'] . 'px' : $section['body_line_height']) : '' }};
     --section-highlight-color: {{ !empty($section['highlight_color']) ? $section['highlight_color'] : 'var(--section-accent)' }};
+    
+    --toc-bg: {{ $section['toc_bg_color'] ?? '#FAF8F5' }};
+    --toc-border-color: {{ $section['toc_border_color'] ?? '#FAF8F5' }};
+    --toc-border-width: {{ formatDim($section['toc_border_width'] ?? '1') }};
+    --toc-border-style: {{ $section['toc_border_style'] ?? 'solid' }};
+    --toc-border-radius: {{ formatDim($section['toc_border_radius'] ?? '16') }};
+    --toc-padding: {{ formatDim($section['toc_padding'] ?? '22') }};
+    --toc-margin: {{ formatDim($section['toc_margin'] ?? '0') }};
+    
+    --toc-title-font: {{ $section['toc_title_font'] ?? 'Playfair Display, serif' }};
+    --toc-title-size: {{ formatDim($section['toc_title_size'] ?? '26') }};
+    --toc-title-weight: {{ $section['toc_title_weight'] ?? '700' }};
+    --toc-title-height: {{ formatDim($section['toc_title_height'] ?? '24') }};
+    --toc-title-color: {{ $section['toc_title_color'] ?? '#3a2a1f' }};
+    
+    --toc-active-font: {{ $section['toc_active_font'] ?? 'Poppins, sans-serif' }};
+    --toc-active-size: {{ formatDim($section['toc_active_size'] ?? '18') }};
+    --toc-active-weight: {{ $section['toc_active_weight'] ?? '600' }};
+    --toc-active-height: {{ formatDim($section['toc_active_height'] ?? '24') }};
+    --toc-active-color: {{ $section['toc_active_color'] ?? '#393939' }};
+    --toc-active-indicator: {{ $section['toc_active_indicator_color'] ?? '#3b2d22' }};
+    
+    --toc-inactive-font: {{ $section['toc_inactive_font'] ?? 'Poppins, sans-serif' }};
+    --toc-inactive-size: {{ formatDim($section['toc_inactive_size'] ?? '18') }};
+    --toc-inactive-weight: {{ $section['toc_inactive_weight'] ?? '500' }};
+    --toc-inactive-height: {{ formatDim($section['toc_inactive_height'] ?? '24') }};
+    --toc-inactive-color: {{ $section['toc_inactive_color'] ?? '#909090' }};
+    
+    --toc-content-heading-font: {{ $section['content_heading_font'] ?? 'Playfair Display, serif' }};
+    --toc-content-heading-weight: {{ $section['content_heading_weight'] ?? '700' }};
+    --toc-content-heading-size-desktop: {{ formatDim($section['content_heading_size_desktop'] ?? '40') }};
+    --toc-content-heading-size-mobile: {{ formatDim($section['content_heading_size_mobile'] ?? '32') }};
+    --toc-content-heading-height: {{ formatDim($section['content_heading_height'] ?? '20') }};
+    --toc-content-heading-color: {{ $section['content_heading_color'] ?? '#2c2218' }};
+    
+    --toc-content-body-font: {{ $section['content_body_font'] ?? 'Poppins, sans-serif' }};
+    --toc-content-body-weight: {{ $section['content_body_weight'] ?? '400' }};
+    --toc-content-body-size-desktop: {{ formatDim($section['content_body_size_desktop'] ?? '18') }};
+    --toc-content-body-size-mobile: {{ formatDim($section['content_body_size_mobile'] ?? '16') }};
+    --toc-content-body-height-desktop: {{ formatDim($section['content_body_height_desktop'] ?? '31') }};
+    --toc-content-body-height-mobile: {{ formatDim($section['content_body_height_mobile'] ?? '28') }};
+    --toc-content-body-color: {{ $section['content_body_color'] ?? '#393939' }};
 ">
     @if (!empty($section['subtitle']))
         <p class="ttf-story-section__eyebrow">{{ $section['subtitle'] }}</p>
@@ -123,6 +175,9 @@
                 }
 
                 function setActive(targetId) {
+                    const tocSidebar = section.querySelector('.ttf-policy-toc');
+                    const isMobile = tocSidebar ? window.getComputedStyle(tocSidebar).display === 'none' : true;
+
                     tabs.forEach(function (tab) {
                         const li = tab.closest('li');
                         const isActive = tab.getAttribute('href') === '#' + targetId;
@@ -131,27 +186,53 @@
                             li.classList.toggle('active', isActive);
                         }
                     });
+
+                    contents.forEach(function (content) {
+                        if (isMobile) {
+                            content.style.display = 'block';
+                            content.style.animation = 'none';
+                        } else {
+                            const isActiveContent = content.getAttribute('id') === targetId;
+                            if (isActiveContent) {
+                                content.style.display = 'block';
+                                content.style.animation = 'ttfFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+                            } else {
+                                content.style.display = 'none';
+                            }
+                        }
+                    });
                 }
 
                 tabs.forEach(function (tab) {
-                    tab.addEventListener('click', function () {
-                        const targetId = this.getAttribute('href').replace('#', '');
-                        setActive(targetId);
+                    tab.addEventListener('click', function (e) {
+                        const tocSidebar = section.querySelector('.ttf-policy-toc');
+                        const isMobile = tocSidebar ? window.getComputedStyle(tocSidebar).display === 'none' : true;
+
+                        if (!isMobile) {
+                            e.preventDefault();
+                            const targetId = this.getAttribute('href').replace('#', '');
+                            setActive(targetId);
+                        }
                     });
                 });
 
                 if ('IntersectionObserver' in window) {
                     const observer = new IntersectionObserver(function (entries) {
-                        const visibleEntry = entries
-                            .filter(function (entry) {
-                                return entry.isIntersecting;
-                            })
-                            .sort(function (a, b) {
-                                return b.intersectionRatio - a.intersectionRatio;
-                            })[0];
+                        const tocSidebar = section.querySelector('.ttf-policy-toc');
+                        const isMobile = tocSidebar ? window.getComputedStyle(tocSidebar).display === 'none' : true;
+                        
+                        if (isMobile) {
+                            const visibleEntry = entries
+                                .filter(function (entry) {
+                                    return entry.isIntersecting;
+                                })
+                                .sort(function (a, b) {
+                                    return b.intersectionRatio - a.intersectionRatio;
+                                })[0];
 
-                        if (visibleEntry) {
-                            setActive(visibleEntry.target.id);
+                            if (visibleEntry) {
+                                setActive(visibleEntry.target.id);
+                            }
                         }
                     }, {
                         rootMargin: '-20% 0px -55% 0px',
@@ -163,7 +244,18 @@
                     });
                 }
 
-                setActive(contents[0].id);
+                // Initial activation
+                const firstId = contents[0].id;
+                setActive(firstId);
+
+                // Resize handler
+                window.addEventListener('resize', function () {
+                    const activeTab = section.querySelector('.ttf-policy-toc li.active a') || tabs[0];
+                    if (activeTab) {
+                        const targetId = activeTab.getAttribute('href').replace('#', '');
+                        setActive(targetId);
+                    }
+                });
             });
         }
 

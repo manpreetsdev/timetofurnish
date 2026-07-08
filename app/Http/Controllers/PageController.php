@@ -382,7 +382,12 @@ public function become_delivery_partner()
             $page->title = $data['title'];
             $page->slug = $slug;
             $page->type = $data['type'] ?? 'custom_page';
-            $page->content = $data['content'];
+            
+            $content = $data['content'];
+            if (is_array($content)) {
+                $content = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            }
+            $page->content = $content;
             $page->meta_title = $data['meta_title'] ?? null;
             $page->meta_description = $data['meta_description'] ?? null;
             $page->keywords = $data['keywords'] ?? null;
@@ -397,7 +402,12 @@ public function become_delivery_partner()
                         'lang' => $translationData['lang']
                     ]);
                     $translation->title = $translationData['title'];
-                    $translation->content = $translationData['content'];
+                    
+                    $transContent = $translationData['content'];
+                    if (is_array($transContent)) {
+                        $transContent = json_encode($transContent, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    }
+                    $translation->content = $transContent;
                     $translation->save();
                 }
             } else {
@@ -407,7 +417,7 @@ public function become_delivery_partner()
                     'lang' => env('DEFAULT_LANGUAGE', 'en')
                 ]);
                 $translation->title = $page->title;
-                $translation->content = $page->content;
+                $translation->content = $content;
                 $translation->save();
             }
 
