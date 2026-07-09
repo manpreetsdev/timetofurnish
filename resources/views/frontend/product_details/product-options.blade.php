@@ -63,7 +63,7 @@
                                 name="attribute_id_{{ $choice->attribute_id }}"
                                 data-attribute="{{ $choice->attribute_id }}"
                                 data-image-mode="{{ $choice->display_mode ?? 'inline' }}"
-                                onchange="getVariantPrice(); updateVariantOptionPrice(this);">
+                                onchange="updateVariantOptionPrice(this); getVariantPrice();">
 
                                 <option value="" @if (!isset($cartItem) || !$cartItem->variation) selected @endif>Choose Option
                                 </option>
@@ -940,6 +940,7 @@
             let selected = $(selectElement).find(':selected');
             let price = parseFloat(selected.data('price')) || 0;
             let image = selected.data('img') || '';
+            let label = $.trim(selected.data('name') || selected.text() || selected.val() || '');
             let box = $('#attribute-price-info-' + attributeId);
 
             if (!image || image.length === 0) {
@@ -956,7 +957,7 @@
                 previewSelector = $(selectElement).closest('.col-sm-12').find('.product-option-preview').first();
             }
 
-            if (image && imageMode === 'gallery') {
+            if (imageMode === 'gallery' && image) {
                 if (typeof syncProductGalleryToImage === 'function') {
                     syncProductGalleryToImage(image, selected.val() || '');
                 }
@@ -964,7 +965,7 @@
             } else {
                 renderProductOptionPreview(previewSelector, {
                     image: image,
-                    name: selected.val() || ''
+                    name: label
                 });
             }
         }
