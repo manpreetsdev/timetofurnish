@@ -178,6 +178,36 @@
     @endforeach
 </ul>
 
+<!-- Footer Backup & Restore Section -->
+<div class="card shadow-sm mb-3">
+    <div class="card-header py-2 d-flex justify-content-between align-items-center bg-light">
+        <h6 class="mb-0 font-weight-bold text-dark"><i class="las la-sync-alt"></i> {{ translate('Footer Backup & Restore (JSON)') }}</h6>
+    </div>
+    <div class="card-body py-3">
+        <div class="row align-items-center">
+            <div class="col-md-6 border-right">
+                <p class="text-muted fs-12 mb-2">{{ translate('Export your current footer configurations (all widgets, links, text, menus, styling, colors) to a JSON file for backup.') }}</p>
+                <a href="{{ route('website.footer.export') }}" class="btn btn-xs btn-primary">
+                    <i class="las la-download"></i> {{ translate('Export Footer Settings') }}
+                </a>
+            </div>
+            <div class="col-md-6 mt-3 mt-md-0">
+                <p class="text-muted fs-12 mb-2">{{ translate('Restore/import footer configurations from a previously exported JSON file.') }}</p>
+                <form action="{{ route('website.footer.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center">
+                    @csrf
+                    <div class="custom-file custom-file-sm mr-2 flex-grow-1" style="height: auto;">
+                        <input type="file" name="footer_file" class="custom-file-input" id="footerFile" accept=".json" required onchange="$(this).next('.custom-file-label').html(this.files[0].name)">
+                        <label class="custom-file-label" for="footerFile" style="padding: 0.25rem 0.5rem; height: auto; font-size: 11px;">{{ translate('Choose file') }}</label>
+                    </div>
+                    <button type="submit" class="btn btn-xs btn-success flex-shrink-0">
+                        <i class="las la-upload"></i> {{ translate('Import Settings') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data" onsubmit="refreshColumnIndices()">
     @csrf
     
@@ -900,6 +930,8 @@
                                             <div class="d-flex gap-2">
                                                 <select class="form-control form-control-sm mr-2" id="add-widget-select-{{ $col }}">
                                                     <option value="menu_links">{{ translate('Custom Menu Links') }}</option>
+                                                    <option value="important_links">{{ translate('Important Links (Auto Pages)') }}</option>
+                                                    <option value="my_account">{{ translate('My Account Links') }}</option>
                                                     <option value="text_html">{{ translate('Custom Text / HTML') }}</option>
                                                     <option value="seller_zone">{{ translate('Seller Zone Composite') }}</option>
                                                     <option value="images_widget">{{ translate('Delivery & Secure Payment Logos') }}</option>
@@ -962,6 +994,75 @@
                                                             @include('backend.website_settings.footer_widget_styles', ['col' => $col, 'wIndex' => $wIndex, 'w' => $w, 'wType' => 'menu_links'])
                                                         </div>
                                                     </div>
+                                                @elseif ($wType == 'important_links')
+                                                    <div class="widget-card card mb-3 border" data-type="important_links" draggable="true">
+                                                        <div class="card-header py-2 d-flex justify-content-between align-items-center bg-soft-primary">
+                                                            <span class="font-weight-bold text-primary"><i class="las la-link"></i> {{ translate('Important Links (Auto Pages)') }}</span>
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-xs btn-link" onclick="moveWidgetUp(this)"><i class="las la-arrow-up"></i></button>
+                                                                <button type="button" class="btn btn-xs btn-link" onclick="moveWidgetDown(this)"><i class="las la-arrow-down"></i></button>
+                                                                <button type="button" class="btn btn-xs btn-link text-info" onclick="copyWidget(this)"><i class="las la-copy"></i></button>
+                                                                <button type="button" class="btn btn-xs btn-link text-danger" onclick="removeWidget(this)"><i class="las la-trash"></i></button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-body p-3">
+                                                            <input type="hidden" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][type]" value="important_links">
+                                                            <div class="form-group">
+                                                                <label class="form-label">{{ translate('Widget Title') }}</label>
+                                                                <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][title]" value="{{ $wTitle }}" placeholder="Important Links" oninput="updateColumnPreview({{ $col }})">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="form-label">{{ translate('Page IDs (Comma-separated)') }}</label>
+                                                                <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][page_ids]" value="{{ $w['page_ids'] ?? '2,3,4,5,6,7,8,10,11' }}" placeholder="e.g. 2,3,4,5" oninput="updateColumnPreview({{ $col }})">
+                                                                <small class="form-text text-muted">{{ translate('Specify Page IDs to display automatically.') }}</small>
+                                                            </div>
+
+                                                            <!-- Inject Collapsible Style Block -->
+                                                            @include('backend.website_settings.footer_widget_styles', ['col' => $col, 'wIndex' => $wIndex, 'w' => $w, 'wType' => 'important_links'])
+                                                        </div>
+                                                    </div>
+                                                @elseif ($wType == 'my_account')
+                                                    <div class="widget-card card mb-3 border" data-type="my_account" draggable="true">
+                                                        <div class="card-header py-2 d-flex justify-content-between align-items-center bg-soft-primary">
+                                                            <span class="font-weight-bold text-primary"><i class="las la-user"></i> {{ translate('My Account Links') }}</span>
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-xs btn-link" onclick="moveWidgetUp(this)"><i class="las la-arrow-up"></i></button>
+                                                                <button type="button" class="btn btn-xs btn-link" onclick="moveWidgetDown(this)"><i class="las la-arrow-down"></i></button>
+                                                                <button type="button" class="btn btn-xs btn-link text-info" onclick="copyWidget(this)"><i class="las la-copy"></i></button>
+                                                                <button type="button" class="btn btn-xs btn-link text-danger" onclick="removeWidget(this)"><i class="las la-trash"></i></button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-body p-3">
+                                                            <input type="hidden" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][type]" value="my_account">
+                                                            <div class="form-group">
+                                                                <label class="form-label">{{ translate('Widget Title') }}</label>
+                                                                <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][title]" value="{{ $wTitle }}" placeholder="My Account" oninput="updateColumnPreview({{ $col }})">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="form-label">{{ translate('Login Text') }}</label>
+                                                                <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][login_text]" value="{{ $w['login_text'] ?? 'Login' }}" oninput="updateColumnPreview({{ $col }})">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="form-label">{{ translate('Logout Text') }}</label>
+                                                                <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][logout_text]" value="{{ $w['logout_text'] ?? 'Logout' }}" oninput="updateColumnPreview({{ $col }})">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="form-label">{{ translate('Order History Text') }}</label>
+                                                                <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][order_history_text]" value="{{ $w['order_history_text'] ?? 'Order History' }}" oninput="updateColumnPreview({{ $col }})">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="form-label">{{ translate('Wishlist Text') }}</label>
+                                                                <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][wishlist_text]" value="{{ $w['wishlist_text'] ?? 'My Wishlist' }}" oninput="updateColumnPreview({{ $col }})">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="form-label">{{ translate('Track Order Text') }}</label>
+                                                                <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][track_order_text]" value="{{ $w['track_order_text'] ?? 'Track Order' }}" oninput="updateColumnPreview({{ $col }})">
+                                                            </div>
+
+                                                            <!-- Inject Collapsible Style Block -->
+                                                            @include('backend.website_settings.footer_widget_styles', ['col' => $col, 'wIndex' => $wIndex, 'w' => $w, 'wType' => 'my_account'])
+                                                        </div>
+                                                    </div>
                                                 @elseif ($wType == 'text_html')
                                                     <div class="widget-card card mb-3 border" data-type="text_html" draggable="true">
                                                         <div class="card-header py-2 d-flex justify-content-between align-items-center bg-soft-success">
@@ -1010,8 +1111,20 @@
                                                                 <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][seller_url]" value="{{ $w['seller_url'] ?? '' }}" oninput="updateColumnPreview({{ $col }})">
                                                             </div>
                                                             <div class="form-group">
+                                                                <label class="form-label">{{ translate('Seller Login Link Text') }}</label>
+                                                                <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][seller_login_text]" value="{{ $w['seller_login_text'] ?? 'Login to Seller Panel' }}" oninput="updateColumnPreview({{ $col }})">
+                                                            </div>
+                                                            <div class="form-group">
                                                                 <label class="form-label">{{ translate('Become Seller URL') }}</label>
                                                                 <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][become_seller_url]" value="{{ $w['become_seller_url'] ?? '' }}" oninput="updateColumnPreview({{ $col }})">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="form-label">{{ translate('Register Shop Link Text') }}</label>
+                                                                <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][become_seller_text]" value="{{ $w['become_seller_text'] ?? 'Register your shop' }}" oninput="updateColumnPreview({{ $col }})">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="form-label">{{ translate('Download App Link Text') }}</label>
+                                                                <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][download_seller_app_text]" value="{{ $w['download_seller_app_text'] ?? 'Download Seller App' }}" oninput="updateColumnPreview({{ $col }})">
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="form-label">{{ translate('Join Network Header') }}</label>
@@ -1760,11 +1873,89 @@
                     </div>
                 </div>`;
         }
+        else if (type === 'important_links') {
+            let page_ids = data.page_ids || '2,3,4,5,6,7,8,10,11';
+            html = `
+                <div class="widget-card card mb-3 border" data-type="important_links" draggable="true">
+                    <div class="card-header py-2 d-flex justify-content-between align-items-center bg-soft-primary">
+                        <span class="font-weight-bold text-primary"><i class="las la-link"></i> Important Links (Auto Pages)</span>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-xs btn-link" onclick="moveWidgetUp(this)"><i class="las la-arrow-up"></i></button>
+                            <button type="button" class="btn btn-xs btn-link" onclick="moveWidgetDown(this)"><i class="las la-arrow-down"></i></button>
+                            <button type="button" class="btn btn-xs btn-link text-info" onclick="copyWidget(this)"><i class="las la-copy"></i></button>
+                            <button type="button" class="btn btn-xs btn-link text-danger" onclick="removeWidget(this)"><i class="las la-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body p-3">
+                        <input type="hidden" name="foot_col_${col}_widgets[${index}][type]" value="important_links">
+                        <div class="form-group">
+                            <label class="form-label">Widget Title</label>
+                            <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][title]" value="${title || 'Important Links'}" placeholder="Important Links" oninput="updateColumnPreview(${col})">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Page IDs (Comma-separated)</label>
+                            <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][page_ids]" value="${page_ids}" placeholder="e.g. 2,3,4,5" oninput="updateColumnPreview(${col})">
+                            <small class="form-text text-muted">Specify Page IDs to display automatically.</small>
+                        </div>
+                        ${stylesCollapseHtml}
+                    </div>
+                </div>`;
+        }
+        else if (type === 'my_account') {
+            let login_text = data.login_text || 'Login';
+            let logout_text = data.logout_text || 'Logout';
+            let order_history_text = data.order_history_text || 'Order History';
+            let wishlist_text = data.wishlist_text || 'My Wishlist';
+            let track_order_text = data.track_order_text || 'Track Order';
+            html = `
+                <div class="widget-card card mb-3 border" data-type="my_account" draggable="true">
+                    <div class="card-header py-2 d-flex justify-content-between align-items-center bg-soft-primary">
+                        <span class="font-weight-bold text-primary"><i class="las la-user"></i> My Account Links</span>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-xs btn-link" onclick="moveWidgetUp(this)"><i class="las la-arrow-up"></i></button>
+                            <button type="button" class="btn btn-xs btn-link" onclick="moveWidgetDown(this)"><i class="las la-arrow-down"></i></button>
+                            <button type="button" class="btn btn-xs btn-link text-info" onclick="copyWidget(this)"><i class="las la-copy"></i></button>
+                            <button type="button" class="btn btn-xs btn-link text-danger" onclick="removeWidget(this)"><i class="las la-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body p-3">
+                        <input type="hidden" name="foot_col_${col}_widgets[${index}][type]" value="my_account">
+                        <div class="form-group">
+                            <label class="form-label">Widget Title</label>
+                            <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][title]" value="${title || 'My Account'}" placeholder="My Account" oninput="updateColumnPreview(${col})">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Login Text</label>
+                            <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][login_text]" value="${login_text}" oninput="updateColumnPreview(${col})">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Logout Text</label>
+                            <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][logout_text]" value="${logout_text}" oninput="updateColumnPreview(${col})">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Order History Text</label>
+                            <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][order_history_text]" value="${order_history_text}" oninput="updateColumnPreview(${col})">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Wishlist Text</label>
+                            <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][wishlist_text]" value="${wishlist_text}" oninput="updateColumnPreview(${col})">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Track Order Text</label>
+                            <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][track_order_text]" value="${track_order_text}" oninput="updateColumnPreview(${col})">
+                        </div>
+                        ${stylesCollapseHtml}
+                    </div>
+                </div>`;
+        }
         else if (type === 'seller_zone') {
             let seller_url = data.seller_url || '';
             let become_seller_url = data.become_seller_url || '';
             let subheading_2 = data.subheading_2 || 'Join Our Partner Network';
             let subheading_3 = data.subheading_3 || '';
+            let seller_login_text = data.seller_login_text || 'Login to Seller Panel';
+            let become_seller_text = data.become_seller_text || 'Register your shop';
+            let download_seller_app_text = data.download_seller_app_text || 'Download Seller App';
             
             html = `
                 <div class="widget-card card mb-3 border" data-type="seller_zone" draggable="true">
@@ -1788,8 +1979,20 @@
                             <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][seller_url]" value="${seller_url}" oninput="updateColumnPreview(${col})">
                         </div>
                         <div class="form-group">
+                            <label class="form-label">Seller Login Link Text</label>
+                            <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][seller_login_text]" value="${seller_login_text}" oninput="updateColumnPreview(${col})">
+                        </div>
+                        <div class="form-group">
                             <label class="form-label">Become Seller URL</label>
                             <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][become_seller_url]" value="${become_seller_url}" oninput="updateColumnPreview(${col})">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Register Shop Link Text</label>
+                            <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][become_seller_text]" value="${become_seller_text}" oninput="updateColumnPreview(${col})">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Download App Link Text</label>
+                            <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][download_seller_app_text]" value="${download_seller_app_text}" oninput="updateColumnPreview(${col})">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Join Network Header</label>

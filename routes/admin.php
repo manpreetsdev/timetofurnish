@@ -310,6 +310,8 @@ Route::resource('sellers', SellerController::class);
     Route::group(['prefix' => 'website'], function() {
         Route::controller(WebsiteController::class)->group(function () {
             Route::get('/footer', 'footer')->name('website.footer');
+            Route::get('/footer/export', 'exportFooter')->name('website.footer.export');
+            Route::post('/footer/import', 'importFooter')->name('website.footer.import');
             Route::get('/header', 'header')->name('website.header');
             Route::get('/appearance', 'appearance')->name('website.appearance');
             Route::get('/select-homepage', 'select_homepage')->name('website.select-homepage');
