@@ -326,7 +326,7 @@
                                             {{ $w['title'] ?? 'Important Links' }}
                                         </h4>
                                         <ul class="list-unstyled">
-                                            @php $pages = get_pages_footer('2,3,4,5,6,7,8,10,11'); @endphp
+                                            @php $pages = get_pages_footer(!empty($w['page_ids']) ? $w['page_ids'] : '2,3,4,5,6,7,8,10,11'); @endphp
                                             @foreach ($pages as $key => $value)
                                                 <li>
                                                     <a href="{{ url($value->slug) }}" class="fs-14 text-light animate-underline-white">
@@ -341,13 +341,13 @@
                                         </h4>
                                         <ul class="list-unstyled">
                                             @if (Auth::check())
-                                                <li><a class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}">{{ translate('Logout') }}</a></li>
+                                                <li><a class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}">{{ !empty($w['logout_text']) ? translate($w['logout_text']) : translate('Logout') }}</a></li>
                                             @else
-                                                <li><a class="fs-14 text-light animate-underline-white" href="{{ route('user.login') }}">{{ translate('Login') }}</a></li>
+                                                <li><a class="fs-14 text-light animate-underline-white" href="{{ route('user.login') }}">{{ !empty($w['login_text']) ? translate($w['login_text']) : translate('Login') }}</a></li>
                                             @endif
-                                            <li><a class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ translate('Order History') }}</a></li>
-                                            <li><a class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ translate('My Wishlist') }}</a></li>
-                                            <li><a class="fs-14 text-light animate-underline-white" href="{{ route('orders.track') }}">{{ translate('Track Order') }}</a></li>
+                                            <li><a class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ !empty($w['order_history_text']) ? translate($w['order_history_text']) : translate('Order History') }}</a></li>
+                                            <li><a class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ !empty($w['wishlist_text']) ? translate($w['wishlist_text']) : translate('My Wishlist') }}</a></li>
+                                            <li><a class="fs-14 text-light animate-underline-white" href="{{ route('orders.track') }}">{{ !empty($w['track_order_text']) ? translate($w['track_order_text']) : translate('Track Order') }}</a></li>
                                         </ul>
                                     @elseif ($wType == 'text_html')
                                         @if(!empty($w['title']))
@@ -367,14 +367,14 @@
                                                 @guest
                                                     <li>
                                                         <a class="fs-14 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
-                                                            {{ translate('Login to Seller Panel') }}
+                                                            {{ !empty($w['seller_login_text']) ? translate($w['seller_login_text']) : translate('Login to Seller Panel') }}
                                                         </a>
                                                     </li>
                                                 @endguest
                                                 @if (get_setting('seller_app_link'))
                                                     <li>
                                                         <a class="fs-14 text-light animate-underline-white" target="_blank" href="{{ get_setting('seller_app_link') }}">
-                                                            {{ translate('Download Seller App') }}
+                                                            {{ !empty($w['download_seller_app_text']) ? translate($w['download_seller_app_text']) : translate('Download Seller App') }}
                                                         </a>
                                                     </li>
                                                 @endif
@@ -385,7 +385,7 @@
                                         <ul class="list-unstyled mb-3">
                                             <li>
                                                  <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-14 text-light animate-underline-white">
-                                                    {{ translate('Register your shop') }}
+                                                    {{ !empty($w['become_seller_text']) ? translate($w['become_seller_text']) : translate('Register your shop') }}
                                                 </a>
                                             </li>
                                         </ul>
@@ -557,7 +557,7 @@
                                             </ul>
                                         @elseif ($wType == 'important_links')
                                             <ul class="list-unstyled">
-                                                @php $pages = get_pages_footer('2,3,4,5,6,7,8,10,11'); @endphp
+                                                @php $pages = get_pages_footer(!empty($w['page_ids']) ? $w['page_ids'] : '2,3,4,5,6,7,8,10,11'); @endphp
                                                 @foreach ($pages as $key => $value)
                                                     <li class="mb-2">
                                                         <a href="{{ url($value->slug) }}" class="fs-14 text-light animate-underline-white">
@@ -570,18 +570,21 @@
                                             <ul class="list-unstyled">
                                                 @auth
                                                     <li class="mb-2 pb-2">
-                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}">{{ translate('Logout') }}</a>
+                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}">{{ !empty($w['logout_text']) ? translate($w['logout_text']) : translate('Logout') }}</a>
                                                     </li>
                                                 @else
                                                     <li class="mb-2 pb-2">
-                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('user.login') }}">{{ translate('Login') }}</a>
+                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('user.login') }}">{{ !empty($w['login_text']) ? translate($w['login_text']) : translate('Login') }}</a>
                                                     </li>
                                                 @endauth
                                                 <li class="mb-2 pb-2">
-                                                    <a class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ translate('Order History') }}</a>
+                                                    <a class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ !empty($w['order_history_text']) ? translate($w['order_history_text']) : translate('Order History') }}</a>
                                                 </li>
                                                 <li class="mb-2 pb-2">
-                                                    <a class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ translate('My Wishlist') }}</a>
+                                                    <a class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ !empty($w['wishlist_text']) ? translate($w['wishlist_text']) : translate('My Wishlist') }}</a>
+                                                </li>
+                                                <li class="mb-2 pb-2">
+                                                    <a class="fs-14 text-light animate-underline-white" href="{{ route('orders.track') }}">{{ !empty($w['track_order_text']) ? translate($w['track_order_text']) : translate('Track Order') }}</a>
                                                 </li>
                                             </ul>
                                         @elseif ($wType == 'text_html')
@@ -594,13 +597,13 @@
                                                     @guest
                                                         <li class="mb-2 pb-2">
                                                             <a class="fs-14 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
-                                                                {{ translate('Login to Seller Panel') }}
+                                                                {{ !empty($w['seller_login_text']) ? translate($w['seller_login_text']) : translate('Login to Seller Panel') }}
                                                             </a>
                                                         </li>
                                                     @endguest
                                                     <li class="mb-2">
                                                         <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-14 text-light animate-underline-white">
-                                                            {{ translate('Register your shop') }}
+                                                            {{ !empty($w['become_seller_text']) ? translate($w['become_seller_text']) : translate('Register your shop') }}
                                                         </a>
                                                     </li>
                                                 </ul>
