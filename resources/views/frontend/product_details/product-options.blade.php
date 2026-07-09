@@ -921,13 +921,18 @@
             window.lastVariantImageMode = imageMode;
             window.lastVariantImageUrl = image || '';
 
+            let previewSelector = '#attribute-preview-' + attributeId;
+            if (!$(previewSelector).length) {
+                previewSelector = $(selectElement).closest('.col-sm-12').find('.product-option-preview').first();
+            }
+
             if (image && imageMode === 'gallery') {
                 if (typeof syncProductGalleryToImage === 'function') {
                     syncProductGalleryToImage(image, selected.val() || '');
                 }
-                $('#attribute-preview-' + attributeId).addClass('d-none').html('');
+                $(previewSelector).addClass('d-none').html('');
             } else {
-                renderProductOptionPreview('#attribute-preview-' + attributeId, {
+                renderProductOptionPreview(previewSelector, {
                     image: image,
                     name: selected.val() || ''
                 });
