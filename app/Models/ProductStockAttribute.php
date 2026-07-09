@@ -14,6 +14,7 @@ class ProductStockAttribute extends Model
         'attribute_value',
         'attribute_sort_order',
         'value_sort_order',
+        'display_mode',
         'user_id',
         'category_id',
     ];

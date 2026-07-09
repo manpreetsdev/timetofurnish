@@ -105,8 +105,13 @@ class ProductService
 
         $choice_options = array();
         if (isset($collection['choice_no']) && $collection['choice_no']) {
+            $colorsActive = !empty($collection['colors_active']);
             $str = '';
             foreach ($collection['choice_no'] as $key => $no) {
+                if ($colorsActive && is_color_attribute($no)) {
+                    continue;
+                }
+
                 $item = array();
                 $str = 'choice_options_' . $no;
                 $item['attribute_id'] = $no;
@@ -134,7 +139,13 @@ class ProductService
         $choice_options = json_encode($choice_options, JSON_UNESCAPED_UNICODE);
 
         if (isset($collection['choice_no']) && $collection['choice_no']) {
-            $attributes = json_encode($collection['choice_no']);
+            $attributeIds = collect($collection['choice_no'])
+                ->reject(function ($no) use ($collection) {
+                    return !empty($collection['colors_active']) && is_color_attribute($no);
+                })
+                ->values()
+                ->all();
+            $attributes = json_encode($attributeIds);
             unset($collection['choice_no']);
         } else {
             $attributes = json_encode(array());
@@ -282,8 +293,13 @@ class ProductService
 
         $choice_options = array();
         if (isset($collection['choice_no']) && $collection['choice_no']) {
+            $colorsActive = !empty($collection['colors_active']);
             $str = '';
             foreach ($collection['choice_no'] as $key => $no) {
+                if ($colorsActive && is_color_attribute($no)) {
+                    continue;
+                }
+
                 $item = array();
                 $str = 'choice_options_' . $no;
                 $item['attribute_id'] = $no;
@@ -311,7 +327,13 @@ class ProductService
         $choice_options = json_encode($choice_options, JSON_UNESCAPED_UNICODE);
 
         if (isset($collection['choice_no']) && $collection['choice_no']) {
-            $attributes = json_encode($collection['choice_no']);
+            $attributeIds = collect($collection['choice_no'])
+                ->reject(function ($no) use ($collection) {
+                    return !empty($collection['colors_active']) && is_color_attribute($no);
+                })
+                ->values()
+                ->all();
+            $attributes = json_encode($attributeIds);
             unset($collection['choice_no']);
         } else {
             $attributes = json_encode(array());

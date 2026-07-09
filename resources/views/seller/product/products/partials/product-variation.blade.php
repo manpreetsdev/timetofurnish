@@ -1,5 +1,23 @@
 @php
-    $choices = isset($product) ? get_product_stock_choices($product) : [];
+    $allChoices = isset($product) ? get_product_stock_choices($product) : [];
+    $colorChoice = collect($allChoices)->first(function ($choice) {
+        return is_color_attribute($choice->attribute_id ?? null, $choice->name ?? null);
+    });
+    $choices = collect($allChoices)->reject(function ($choice) {
+        return is_color_attribute($choice->attribute_id ?? null, $choice->name ?? null);
+    })->values()->all();
+
+    $productColors = old('colors', isset($product) ? json_decode($product->colors ?? '[]', true) : []);
+    if (empty($productColors) && $colorChoice) {
+        $productColors = color_codes_from_values(
+            collect($colorChoice->values)->map(function ($value) {
+                return is_array($value) ? ($value['value'] ?? '') : $value;
+            })->all()
+        );
+    }
+    $hasProductColors = !empty($productColors);
+    $colorImageMode = old('color_image_mode', $colorChoice->display_mode ?? 'gallery');
+
     $selectedCategories = $selectedCategories ?? (old('category_ids', isset($product) ? $product->categories->pluck('id')->toArray() : []));
 
     // Admin-added attributes for this category should always show up automatically on the seller panel
@@ -24,29 +42,9 @@
 
     // Selected attribute IDs from old input or loaded choices
     $attribute_values = old('choice_attributes', collect($choices)->pluck('attribute_id')->toArray());
-    
-    // Always include category attributes in attribute_values ONLY if NOT in edit mode
-    if (!isset($product)) {
-        foreach ($category_attributes as $cat_attr) {
-            if (!in_array($cat_attr->id, $attribute_values)) {
-                $attribute_values[] = $cat_attr->id;
-            }
-        }
-    }
 
     // Selected choice nos (which attribute inputs to render)
-    $selected_choice_no = old('choice_no');
-    if (!$selected_choice_no) {
-        $selected_choice_no = collect($choices)->pluck('attribute_id')->toArray();
-    }
-    // Always include category attributes in selected_choice_no ONLY if NOT in edit mode
-    if (!isset($product)) {
-        foreach ($category_attributes as $cat_attr) {
-            if (!in_array($cat_attr->id, $selected_choice_no)) {
-                $selected_choice_no[] = $cat_attr->id;
-            }
-        }
-    }
+    $selected_choice_no = old('choice_no', collect($choices)->pluck('attribute_id')->toArray());
 
     // Format choices into options collection for easy mapping in the blade loop below
     $productChoiceOptions = collect($choices)->map(function ($choice) {
@@ -217,14 +215,21 @@
                             <div class="col-lg-7 seller-variation-select-col">
                                 <select class="form-control aiz-selectpicker premium-select" data-live-search="true"
                                     name="colors[]" data-selected-text-format="count" id="colors" multiple
-                                    {{ old('colors_active', $product->colors_active ?? '') ? '' : 'disabled' }}>
+                                    {{ old('colors_active', ($product->colors_active ?? false) || $hasProductColors) ? '' : 'disabled' }}>
                                     @foreach (\App\Models\Color::orderBy('name', 'asc')->get() as $key => $color)
                                         <option value="{{ $color->code }}"
                                             data-content="<span class='mr-2 border rounded-circle d-inline-block align-middle' style='background:{{ $color->code }};width:18px;height:18px;box-shadow: 0 2px 4px rgba(0,0,0,0.1);'></span><span>{{ $color->name }}</span>"
-                                            {{ in_array($color->code, old('colors', isset($product) ? json_decode($product->colors ?? '[]', true) : [])) ? 'selected' : '' }}>
+                                            {{ in_array($color->code, $productColors) ? 'selected' : '' }}>
                                         </option>
                                     @endforeach
                                 </select>
+                                <div class="mt-2 d-flex align-items-center flex-wrap" style="gap: 8px;">
+                                    <small class="seller-select-help text-muted mb-0">{{ translate('Color images') }}</small>
+                                    <select class="form-control form-control-sm" name="color_image_mode">
+                                        <option value="gallery" {{ $colorImageMode === 'gallery' ? 'selected' : '' }}>{{ translate('Show in image slider') }}</option>
+                                        <option value="inline" {{ $colorImageMode === 'inline' ? 'selected' : '' }}>{{ translate('Show below dropdown') }}</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="col-lg-1 text-center d-flex align-items-center justify-content-center">
                                 <button type="button" class="btn premium-btn-circle premium-btn-edit premium-icon-btn" disabled>
@@ -234,7 +239,7 @@
                             <div class="col-lg-1 text-center d-flex align-items-center justify-content-center">
                                 <label class="premium-switch">
                                     <input value="1" type="checkbox" id="colors_active" name="colors_active"
-                                        {{ old('colors_active', $product->colors_active ?? '') ? 'checked' : '' }}>
+                                        {{ old('colors_active', ($product->colors_active ?? false) || $hasProductColors) ? 'checked' : '' }}>
                                     <span class="premium-slider"></span>
                                 </label>
                             </div>
@@ -248,6 +253,10 @@
                                         return isset($choiceOption->attribute_id) && (string) $choiceOption->attribute_id === (string) $choice_no;
                                     });
                                     $opt_att = \App\Models\Attribute::find($choice_no);
+                                    $attributeImageMode = old(
+                                        'attribute_image_mode_' . $choice_no,
+                                        $productChoiceOption->display_mode ?? 'inline'
+                                    );
                                     $choiceName = old(
                                         'choice.' . array_search($choice_no, $selected_choice_no),
                                         $productChoiceOption->name ?? ($opt_att ? $opt_att->getTranslation('name') : '')
@@ -299,9 +308,16 @@
                                                     @if (in_array($value, $old_options)) selected @endif>
                                                     {{ $value }}
                                                 </option>
-                                            @endforeach
+                                        @endforeach
+                                    </select>
+                                    <div class="mt-2 d-flex align-items-center flex-wrap" style="gap: 8px;">
+                                        <small class="seller-select-help text-muted mb-0">{{ translate('Attribute images') }}</small>
+                                        <select class="form-control form-control-sm" name="attribute_image_mode_{{ $choice_no }}">
+                                            <option value="gallery" {{ $attributeImageMode === 'gallery' ? 'selected' : '' }}>{{ translate('Show in image slider') }}</option>
+                                            <option value="inline" {{ $attributeImageMode === 'inline' ? 'selected' : '' }}>{{ translate('Show below dropdown') }}</option>
                                         </select>
                                     </div>
+                                </div>
                                     <div class="col-lg-1 text-center d-flex align-items-center justify-content-center">
                                         <button type="button"
                                             class="btn premium-btn-circle premium-btn-edit rename-attribute-btn premium-icon-btn"
@@ -332,6 +348,10 @@
                                         return isset($choiceOption->attribute_id) && (string) $choiceOption->attribute_id === (string) $choice_no;
                                     });
                                     $opt_att = \App\Models\Attribute::find($choice_no);
+                                    $attributeImageMode = old(
+                                        'attribute_image_mode_' . $choice_no,
+                                        $productChoiceOption->display_mode ?? 'inline'
+                                    );
                                     $choiceName = old(
                                         'choice.' . array_search($choice_no, $selected_choice_no),
                                         $productChoiceOption->name ?? ($opt_att ? $opt_att->getTranslation('name') : '')
@@ -383,9 +403,16 @@
                                                     @if (in_array($value, $old_options)) selected @endif>
                                                     {{ $value }}
                                                 </option>
-                                            @endforeach
+                                        @endforeach
+                                    </select>
+                                    <div class="mt-2 d-flex align-items-center flex-wrap" style="gap: 8px;">
+                                        <small class="seller-select-help text-muted mb-0">{{ translate('Attribute images') }}</small>
+                                        <select class="form-control form-control-sm" name="attribute_image_mode_{{ $choice_no }}">
+                                            <option value="gallery" {{ $attributeImageMode === 'gallery' ? 'selected' : '' }}>{{ translate('Show in image slider') }}</option>
+                                            <option value="inline" {{ $attributeImageMode === 'inline' ? 'selected' : '' }}>{{ translate('Show below dropdown') }}</option>
                                         </select>
                                     </div>
+                                </div>
                                     <div class="col-lg-1 text-center d-flex align-items-center justify-content-center">
                                         <button type="button" class="btn premium-btn-circle premium-btn-edit premium-icon-btn" disabled>
                                             <i class="las la-pen"></i>
@@ -411,8 +438,8 @@
                     @php
                         $initialCombinations = [];
                         $initialOptions = [];
-                        $initialColorsActive = old('colors_active', $product->colors_active ?? 0) ? 1 : 0;
-                        $initialColors = old('colors', isset($product) ? json_decode($product->colors ?? '[]', true) : []);
+                        $initialColorsActive = old('colors_active', ($product->colors_active ?? false) || $hasProductColors) ? 1 : 0;
+                        $initialColors = $productColors;
 
                         if ($initialColorsActive && !empty($initialColors)) {
                             $initialOptions[] = $initialColors;

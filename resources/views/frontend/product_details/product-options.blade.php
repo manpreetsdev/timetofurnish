@@ -62,7 +62,8 @@
                             <select class="form-control custom-dropdown variant-dropdown"
                                 name="attribute_id_{{ $choice->attribute_id }}"
                                 data-attribute="{{ $choice->attribute_id }}"
-                                onchange="getVariantPrice(); updateVariantOptionPrice(this);">
+                                data-image-mode="{{ $choice->display_mode ?? 'inline' }}"
+                                onchange="updateVariantOptionPrice(this); getVariantPrice();">
 
                                 <option value="" @if (!isset($cartItem) || !$cartItem->variation) selected @endif>Choose Option
                                 </option>
@@ -893,6 +894,32 @@
             $target.removeClass('d-none').html(html);
         }
 
+        function findGalleryImageForOption(selectElement, selected) {
+            var image = selected.attr('data-img') || selected.data('img') || '';
+            if (image && image.length) {
+                return image;
+            }
+
+            var selectedText = $.trim(selected.text()) || '';
+            var selectedValue = $.trim(selected.val()) || '';
+            var normalizedSelected = normalizeGalleryVariant(selectedText || selectedValue);
+            if (!normalizedSelected) {
+                return '';
+            }
+
+            var foundImage = '';
+            $('.product-gallery-thumb .carousel-box').each(function() {
+                if (foundImage) return;
+                var thumbVariation = normalizeGalleryVariant($(this).data('variation') || '');
+                if (thumbVariation && thumbVariation === normalizedSelected) {
+                    var $img = $(this).find('img').first();
+                    foundImage = $img.data('src') || $img.attr('src') || '';
+                }
+            });
+
+            return foundImage;
+        }
+
         function updateAddonOptionPreview(addonId, selectElem) {
             var selected = $(selectElem).find('option:selected');
             var image = selected.attr('data-img') || selected.data('img') || '';
@@ -909,17 +936,38 @@
         // ---------------------------------
         function updateVariantOptionPrice(selectElement) {
             let attributeId = $(selectElement).data('attribute');
+            let imageMode = ($(selectElement).data('image-mode') || 'inline').toString();
             let selected = $(selectElement).find(':selected');
             let price = parseFloat(selected.data('price')) || 0;
             let image = selected.data('img') || '';
+            let label = $.trim(selected.data('name') || selected.text() || selected.val() || '');
             let box = $('#attribute-price-info-' + attributeId);
+
+            if (!image || image.length === 0) {
+                image = findGalleryImageForOption(selectElement, selected);
+            }
 
             box.html('');
 
-            renderProductOptionPreview('#attribute-preview-' + attributeId, {
-                image: image,
-                name: selected.val() || ''
-            });
+            window.lastVariantImageMode = imageMode;
+            window.lastVariantImageUrl = image || '';
+
+            let previewSelector = '#attribute-preview-' + attributeId;
+            if (!$(previewSelector).length) {
+                previewSelector = $(selectElement).closest('.col-sm-12').find('.product-option-preview').first();
+            }
+
+            if (imageMode === 'gallery' && image) {
+                if (typeof syncProductGalleryToImage === 'function') {
+                    syncProductGalleryToImage(image, selected.val() || '');
+                }
+                $(previewSelector).addClass('d-none').html('');
+            } else {
+                renderProductOptionPreview(previewSelector, {
+                    image: image,
+                    name: label
+                });
+            }
         }
 
         // ---------------------------------

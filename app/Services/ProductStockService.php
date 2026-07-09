@@ -9,10 +9,28 @@ use Illuminate\Validation\ValidationException;
 
 class ProductStockService
 {
+    protected function hasColorOnlyVariants($collection): bool
+    {
+        $hasColors = !empty($collection['colors_active']) && !empty($collection['colors']) && is_array($collection['colors']);
+        $hasNonColorChoices = false;
+
+        if (!empty($collection['choice_no']) && is_array($collection['choice_no'])) {
+            foreach ($collection['choice_no'] as $choiceNo) {
+                if (empty($collection['colors_active']) || !is_color_attribute($choiceNo)) {
+                    $hasNonColorChoices = true;
+                    break;
+                }
+            }
+        }
+
+        return $hasColors && !$hasNonColorChoices;
+    }
+
     public function validateVariantPrices(array $data): void
     {
         $collection = collect($data);
         $options = ProductUtility::get_attribute_options($collection);
+        $colorOnlyVariants = $this->hasColorOnlyVariants($collection);
         
         $combinations = array();
         foreach ($options as $option_group) {
@@ -31,7 +49,16 @@ class ProductStockService
                 $price_key = 'price_' . $field_key;
 
                 $price = request()->input($price_key);
-                if (is_null($price) || trim((string)$price) === '' || !is_numeric($price) || (float) $price <= 0) {
+                if (is_null($price) || trim((string)$price) === '') {
+                    if ($colorOnlyVariants) {
+                        continue;
+                    }
+
+                    $errors[$price_key] = [translate('Variant price is required for') . ' ' . $str];
+                    continue;
+                }
+
+                if (!is_numeric($price) || (float) $price <= 0) {
                     $errors[$price_key] = [translate('Variant price is required for') . ' ' . $str];
                 }
             }
@@ -47,6 +74,8 @@ class ProductStockService
         $collection = collect($data);
 
         $options = ProductUtility::get_attribute_options($collection);
+        $colorOnlyVariants = $this->hasColorOnlyVariants($collection);
+        $fallbackPrice = is_numeric($collection->get('unit_price')) ? (float) $collection->get('unit_price') : 0;
         
         //Generates the flat combinations of customer choice options
         $combinations = array();
@@ -69,12 +98,24 @@ class ProductStockService
                 $price_key = 'price_' . $field_key;
 
                 $price = request()->input($price_key);
-                
-                // Enforce that we MUST have a valid price for all combinations if variations are present
-                if (is_null($price) || trim((string)$price) === '' || !is_numeric($price) || (float) $price <= 0) {
-                    throw ValidationException::withMessages([
-                        $price_key => [translate('Variant price is required and must be greater than 0 for') . ' ' . $str]
-                    ]);
+                if (is_null($price) || trim((string) $price) === '') {
+                    if ($colorOnlyVariants) {
+                        $price = $fallbackPrice;
+                    } else {
+                        throw ValidationException::withMessages([
+                            $price_key => [translate('Variant price is required and must be greater than 0 for') . ' ' . $str]
+                        ]);
+                    }
+                }
+
+                if (!is_numeric($price)) {
+                    if ($colorOnlyVariants) {
+                        $price = $fallbackPrice;
+                    } else {
+                        throw ValidationException::withMessages([
+                            $price_key => [translate('Variant price is required and must be greater than 0 for') . ' ' . $str]
+                        ]);
+                    }
                 }
 
                 $qty_key = 'qty_' . $field_key;
