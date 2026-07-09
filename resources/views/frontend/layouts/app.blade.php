@@ -1132,6 +1132,10 @@
                         $(this).attr('data-actual-base-price', base_price);
                     });
 
+                    if (data.image && (window.lastVariantImageMode === undefined || window.lastVariantImageMode !== 'inline')) {
+                        syncProductGalleryToImage(data.image, data.variation || '');
+                    }
+
                     /*
                     CHECK IF ANY ATTRIBUTE SELECTED
                     */
@@ -1267,6 +1271,66 @@
                     AIZ.extra.plusMinus();
                 }
             });
+        }
+
+        function normalizeGalleryUrl(url) {
+            if (!url) return '';
+            return String(url).split('#')[0].split('?')[0].replace(/\/+$/, '');
+        }
+
+        function normalizeGalleryVariant(value) {
+            if (!value) return '';
+            return String(value)
+                .toLowerCase()
+                .replace(/[\s"'\-]/g, '');
+        }
+
+        function syncProductGalleryToImage(imageUrl, variation) {
+            var normalizedImage = normalizeGalleryUrl(imageUrl);
+            if (!normalizedImage) return;
+
+            var targetIndex = -1;
+            var $thumbSlides = $('.product-gallery-thumb .carousel-box');
+
+            $thumbSlides.each(function(index) {
+                if (targetIndex !== -1) return;
+
+                var $img = $(this).find('img').first();
+                var thumbImage = normalizeGalleryUrl($img.data('src') || $img.attr('src') || '');
+                var thumbVariation = normalizeGalleryVariant($(this).data('variation') || '');
+
+                if (
+                    thumbImage === normalizedImage ||
+                    (variation && thumbVariation && thumbVariation === normalizeGalleryVariant(variation))
+                ) {
+                    targetIndex = index;
+                }
+            });
+
+            var $gallery = $('.product-gallery');
+            if (targetIndex === -1) {
+                $gallery.find('.carousel-box').each(function(index) {
+                    if (targetIndex !== -1) return;
+
+                    var $img = $(this).find('img').first();
+                    var slideImage = normalizeGalleryUrl($img.data('src') || $img.attr('src') || '');
+
+                    if (slideImage === normalizedImage) {
+                        targetIndex = index;
+                    }
+                });
+            }
+
+            if (targetIndex === -1) return;
+
+            if ($thumbSlides.length && $thumbSlides.eq(targetIndex).length) {
+                $thumbSlides.eq(targetIndex).trigger('click');
+                return;
+            }
+
+            if ($gallery.hasClass('slick-initialized')) {
+                $gallery.slick('slickGoTo', targetIndex, true);
+            }
         }
 
         function checkAddToCartValidity() {

@@ -7,6 +7,33 @@ use App\Models\Color;
 
 trait ValidatesProductVariantStock
 {
+    protected function hasChoiceAttributes(): bool
+    {
+        if (!$this->has('choice_no') || !is_array($this->input('choice_no'))) {
+            return false;
+        }
+
+        $colorsActive = $this->boolean('colors_active');
+
+        foreach ($this->input('choice_no') as $choiceNo) {
+            if (!$colorsActive || !is_color_attribute($choiceNo)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function hasSelectedColors(): bool
+    {
+        return $this->boolean('colors_active') && is_array($this->input('colors')) && count($this->input('colors')) > 0;
+    }
+
+    protected function hasColorOnlyVariants(): bool
+    {
+        return $this->hasSelectedColors() && !$this->hasChoiceAttributes();
+    }
+
     protected function addSellerVariantStockRules(array $rules): array
     {
         if (!auth()->check()) {
@@ -14,8 +41,9 @@ trait ValidatesProductVariantStock
         }
 
         // Only enforce variant-related rules if variations are actively selected
-        $hasChoiceNo = $this->has('choice_no') && is_array($this->input('choice_no')) && count($this->input('choice_no')) > 0;
-        $hasColors = $this->boolean('colors_active') && is_array($this->input('colors')) && count($this->input('colors')) > 0;
+        $hasChoiceNo = $this->hasChoiceAttributes();
+        $hasColors = $this->hasSelectedColors();
+        $hasColorOnlyVariants = $this->hasColorOnlyVariants();
 
         if ($hasChoiceNo || $hasColors) {
             if ($hasChoiceNo) {
@@ -27,7 +55,9 @@ trait ValidatesProductVariantStock
             }
 
             foreach ($this->expectedVariantStockFields() as $fields) {
-                $rules[$fields['price']] = ['required', 'numeric', 'gt:0', 'max:99999'];
+                $rules[$fields['price']] = $hasColorOnlyVariants
+                    ? ['nullable', 'numeric', 'min:0', 'max:99999']
+                    : ['required', 'numeric', 'gt:0', 'max:99999'];
                 $rules[$fields['qty']] = ['nullable', 'integer', 'min:1', 'max:9999'];
                 $rules[$fields['sku']] = ['nullable', 'max:255'];
             }
@@ -37,7 +67,7 @@ trait ValidatesProductVariantStock
 
         foreach ($this->all() as $key => $value) {
             if (str_starts_with($key, 'price_')) {
-                $rules[$key] = [$hasVariants ? 'required' : 'nullable', 'numeric', 'gt:0', 'max:99999'];
+                $rules[$key] = [($hasVariants && !$hasColorOnlyVariants) ? 'required' : 'nullable', 'numeric', $hasColorOnlyVariants ? 'min:0' : 'gt:0', 'max:99999'];
             }
 
             if (str_starts_with($key, 'qty_')) {
@@ -56,8 +86,11 @@ trait ValidatesProductVariantStock
             }
 
             $fields = $this->expectedVariantStockFields();
+            $hasChoiceNo = $this->hasChoiceAttributes();
+            $hasColors = $this->hasSelectedColors();
+            $hasColorOnlyVariants = $this->hasColorOnlyVariants();
 
-            if (count($fields) > 0) {
+            if (count($fields) > 0 && !$hasColorOnlyVariants) {
                 foreach ($fields as $field) {
                     if (!$this->filled($field['price'])) {
                         $validator->errors()->add(
@@ -156,6 +189,10 @@ trait ValidatesProductVariantStock
         }
 
         foreach ((array) $this->input('choice_no', []) as $choiceNo) {
+            if ($colorsActive && is_color_attribute($choiceNo)) {
+                continue;
+            }
+
             foreach ((array) $this->input('choice_options_' . $choiceNo, []) as $value) {
                 $variants[] = $this->variantNameFromValue($value, $colorsActive);
             }

@@ -794,7 +794,12 @@ class HomeController extends Controller
             $max_limit,
 
             'in_stock' =>
-            $in_stock
+            $in_stock,
+
+            'image' =>
+            $product_stock && !empty($product_stock->image)
+                ? uploaded_asset($product_stock->image)
+                : ''
         ];
     }
 

@@ -259,7 +259,7 @@ class ProductController extends Controller
         ]), $product);
 
         // Product Translations
-        $request->merge(['lang' => env('DEFAULT_LANGUAGE')]);
+        $request->merge(['lang' => $request->input('lang', env('DEFAULT_LANGUAGE', 'en'))]);
         ProductTranslation::create($request->only([
             'lang',
             'name',
@@ -863,11 +863,12 @@ class ProductController extends Controller
         $product->save();
 
         // Product Translations
+        $lang = $request->input('lang', env('DEFAULT_LANGUAGE', 'en'));
         ProductTranslation::updateOrCreate(
-            $request->only([
-                'lang',
-                'product_id'
-            ]),
+            [
+                'lang' => $lang,
+                'product_id' => $product->id,
+            ],
             $request->only([
                 'name',
                 'unit',
@@ -911,6 +912,10 @@ class ProductController extends Controller
 
         if ($request->has('choice_no')) {
             foreach ($request->choice_no as $key => $no) {
+                if ($colors_active && is_color_attribute($no)) {
+                    continue;
+                }
+
                 $name = 'choice_options_' . $no;
                 $data = array();
                 if (!empty($request[$name])) {
@@ -951,6 +956,10 @@ class ProductController extends Controller
 
         if ($request->has('choice_no')) {
             foreach ($request->choice_no as $key => $no) {
+                if ($colors_active && is_color_attribute($no)) {
+                    continue;
+                }
+
                 $name = 'choice_options_' . $no;
                 $data = array();
                 if (!empty($request[$name])) {

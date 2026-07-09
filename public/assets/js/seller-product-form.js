@@ -94,6 +94,32 @@
 
 
         // UPDATE ATTRIBUTES
+        function isColorAttributeOption(option) {
+            return String($(option).text() || '').trim().toLowerCase() === 'color';
+        }
+
+        function cleanupDuplicateColorAttributeRows() {
+            $('#choice_attributes option').each(function () {
+                if (isColorAttributeOption(this)) {
+                    $(this).prop('selected', false);
+                }
+            });
+
+            $('input[name="choice_no[]"]').each(function () {
+                let row = $(this).closest('.attribute-variation-row');
+                let label = row.find('.attribute-name-label').text().trim().toLowerCase();
+                if (label === 'color') {
+                    row.remove();
+                }
+            });
+
+            if ($.fn && $.fn.selectpicker) {
+                $('#choice_attributes').selectpicker('refresh');
+            } else if (window.AIZ && AIZ.plugins && AIZ.plugins.bootstrapSelect) {
+                AIZ.plugins.bootstrapSelect('refresh');
+            }
+        }
+
         function updateAttributes() {
             // Snapshot any user-typed prices BEFORE we rebuild the attribute rows.
             // This ensures prices survive the update_sku() re-render triggered below.
@@ -114,7 +140,13 @@
                     success: function (response) {
                         const currentSelected = ($('#choice_attributes').val() || []).map(String);
                         const oldSelected = (formData.choiceAttributesOld || []).map(String);
-                        const newCatAttrIds = response.map(attr => String(attr.id));
+                        const newCatAttrIds = response
+                            .filter(function (attribute) {
+                                return String(attribute.name || '').trim().toLowerCase() !== 'color';
+                            })
+                            .map(function (attr) {
+                                return String(attr.id);
+                            });
 
                         // 1. Loop through all existing options and set their selected status
                         $('#choice_attributes option').each(function () {
@@ -132,6 +164,10 @@
 
                         // 2. Append any category attributes that are NOT currently in the select options
                         $.each(response, function (index, attribute) {
+                            if (String(attribute.name || '').trim().toLowerCase() === 'color') {
+                                return;
+                            }
+
                             const id = String(attribute.id);
                             if (!$('#choice_attributes option[value="' + id + '"]').length) {
                                 let attributeName = sellerAttributeNameOverrides[attribute.id] || attribute.name;
@@ -159,6 +195,8 @@
                         $('#choice_attributes').prop('disabled', false);
 
                         captureFullVariantSnapshot();
+
+                        cleanupDuplicateColorAttributeRows();
 
                         // Trigger change on attributes select to automatically generate option selectors for the auto-selected category attributes
                         $('#choice_attributes').trigger('change');
@@ -204,11 +242,18 @@
         // Initialize attributes on load (only if not in Edit mode to preserve db-prefilled ones)
         if (!formData.productId) {
             updateAttributes();
+        } else {
+            cleanupDuplicateColorAttributeRows();
         }
 
         // Attributes change
         $('#choice_attributes').on('change', function () {
             $.each($("#choice_attributes option:selected"), function (j, attribute) {
+                if (isColorAttributeOption(attribute)) {
+                    $(attribute).prop('selected', false);
+                    return;
+                }
+
                 let flag = false;
                 $('input[name="choice_no[]"]').each(function (i, choice_no) {
                     if ($(attribute).val() == $(choice_no).val()) {
@@ -220,6 +265,7 @@
                     add_more_customer_choice_option($(attribute).val(), $(attribute).text(), [], false, userId);
                 }
             });
+            cleanupDuplicateColorAttributeRows();
             // Remove unselected
             $('input[name="choice_no[]"]').each(function () {
                 let val = $(this).val();
@@ -1555,19 +1601,33 @@
         }
     }
 
+    function hasSelectedColorVariants() {
+        let colorSelect = $('#colors');
+
+        if (!$('#colors_active').is(':checked') || !colorSelect.length) {
+            return false;
+        }
+
+        let selectedColors = colorSelect.val() || [];
+        return selectedColors.filter(function (value) {
+            return String(value || '').trim().length > 0;
+        }).length > 0;
+    }
+
     function validateProductVariations() {
         let messages = [];
         let attributeSelect = $('#choice_attributes');
         let selectedAttributes = (attributeSelect.val() || []).filter(function (value) {
             return String(value || '').length > 0;
         });
+        let hasColorVariants = hasSelectedColorVariants();
 
         $('#attributes_enable_toggle').prop('checked', true);
         $('#attributes-container').show();
         attributeSelect.prop('disabled', false);
         refreshProductSelects(attributeSelect);
 
-        if (!selectedAttributes.length) {
+        if (!selectedAttributes.length && !hasColorVariants) {
             messages.push('Please choose at least one product attribute.');
             addFieldError('choice_attributes', 'Please choose at least one product attribute.');
         }

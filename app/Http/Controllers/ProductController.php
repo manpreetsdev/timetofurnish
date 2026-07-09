@@ -458,7 +458,7 @@ public function exportPdf(Request $request)
         ]), $product);
 
         // Product Translations
-        $request->merge(['lang' => env('DEFAULT_LANGUAGE')]);
+        $request->merge(['lang' => $request->input('lang', env('DEFAULT_LANGUAGE', 'en'))]);
         ProductTranslation::create($request->only([
             'lang', 'name', 'unit', 'description', 'product_id'
         ]));
@@ -749,6 +749,10 @@ public function exportPdf(Request $request)
 
         if ($request->has('choice_no')) {
             foreach ($request->choice_no as $key => $no) {
+                if ($colors_active && is_color_attribute($no)) {
+                    continue;
+                }
+
                 $name = 'choice_options_' . $no;
                 if (isset($request[$name])) {
                     $data = array();
@@ -789,6 +793,10 @@ public function exportPdf(Request $request)
 
         if ($request->has('choice_no')) {
             foreach ($request->choice_no as $key => $no) {
+                if ($colors_active && is_color_attribute($no)) {
+                    continue;
+                }
+
                 $name = 'choice_options_' . $no;
                 if (isset($request[$name])) {
                     $data = array();

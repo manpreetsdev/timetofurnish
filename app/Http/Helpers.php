@@ -2776,6 +2776,16 @@ if (!function_exists('discounted_product_stock_price')) {
 if (!function_exists('get_product_attribute_option_details')) {
     function get_product_attribute_option_details($product, $attributeId, $value, $selectedOptions = [])
     {
+        $displayValue = $value;
+        $colorName = '';
+        if (is_string($value) && preg_match('/^#[A-Fa-f0-9]{3,8}$/', trim($value))) {
+            $color = \App\Models\Color::where('code', $value)->first();
+            if ($color) {
+                $colorName = $color->name;
+                $displayValue = $colorName;
+            }
+        }
+
         $choices = collect(get_product_stock_choices($product))->map(function ($choice) {
             return (array) $choice;
         });
@@ -2849,6 +2859,7 @@ if (!function_exists('get_product_attribute_option_details')) {
             'attribute_id' => $attributeId,
             'attribute_name' => get_single_attribute_name($attributeId),
             'value' => $value,
+            'display_value' => $displayValue,
             'price' => $displayPrice,
             'highest_price' => $highestPrice,
             'formatted_price' => $formattedPrice,
@@ -2856,7 +2867,7 @@ if (!function_exists('get_product_attribute_option_details')) {
             'image' => $imageId ?: $attributeValueImage,
             'image_url' => $imageUrl,
             'stocks' => $matchedStocks,
-            'label' => $formattedPrice !== '' ? $value . ' (+' . $formattedPrice . ')' : $value,
+            'label' => $formattedPrice !== '' ? $displayValue . ' (+' . $formattedPrice . ')' : $displayValue,
         ];
     }
 }

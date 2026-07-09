@@ -21,7 +21,12 @@ class ProductUtility
         }
 
         if (isset($collection['choice_no']) && $collection['choice_no']) {
+            $colorsActive = !empty($collection['colors_active']);
             foreach ($collection['choice_no'] as $key => $no) {
+                if ($colorsActive && is_color_attribute($no)) {
+                    continue;
+                }
+
                 $name = 'choice_options_' . $no;
                 $data = array();
                 foreach ((array) request()->input($name, []) as $key => $eachValue) {
@@ -102,23 +107,27 @@ class ProductUtility
                 if ($values->contains($cleanValue)) {
                     $sortOrders = request()->input('value_sort_order_' . $attributeId, []);
                     $order = isset($sortOrders[$cleanValue]) ? (int) $sortOrders[$cleanValue] : $values->search($cleanValue);
+                    $displayMode = trim((string) request()->input('attribute_image_mode_' . $attributeId, 'inline'));
 
                     $matched = [
                         'attribute_id' => $attributeId,
                         'attribute_name' => trim((string) ($choiceNames->get($choiceIndex) ?: get_single_attribute_name($attributeId))),
                         'attribute_sort_order' => $choiceIndex,
                         'value_sort_order' => $order,
+                        'display_mode' => in_array($displayMode, ['gallery', 'inline'], true) ? $displayMode : 'inline',
                     ];
                     break;
                 }
             }
 
             if (is_null($matched) && preg_match('/^#[A-Fa-f0-9]{3,8}$/', trim($cleanValue))) {
+                $displayMode = trim((string) request()->input('color_image_mode', 'gallery'));
                 $matched = [
                     'attribute_id' => null,
                     'attribute_name' => 'Color',
                     'attribute_sort_order' => -1,
                     'value_sort_order' => $combinationIndex,
+                    'display_mode' => in_array($displayMode, ['gallery', 'inline'], true) ? $displayMode : 'gallery',
                 ];
             }
 
@@ -128,6 +137,7 @@ class ProductUtility
                 'value' => $cleanValue,
                 'attribute_sort_order' => (int) ($matched['attribute_sort_order'] ?? $combinationIndex),
                 'value_sort_order' => (int) ($matched['value_sort_order'] ?? $combinationIndex),
+                'display_mode' => $matched['display_mode'] ?? 'inline',
             ];
         }
 

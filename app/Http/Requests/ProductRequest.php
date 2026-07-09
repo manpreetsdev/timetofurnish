@@ -85,6 +85,10 @@ class ProductRequest extends FormRequest
         $rules['low_stock_quantity']   = 'required|max:3';
         $rules['dimensions_enabled'] = 'nullable|boolean';
 
+        if (!$this->hasColorOnlyVariants()) {
+            $rules['choice_no'] = 'required|array|min:1';
+        }
+
         $rules = $this->addSellerVariantStockRules($rules);
 
         foreach ($this->all() as $key => $value) {

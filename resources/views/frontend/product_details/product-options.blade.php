@@ -62,6 +62,7 @@
                             <select class="form-control custom-dropdown variant-dropdown"
                                 name="attribute_id_{{ $choice->attribute_id }}"
                                 data-attribute="{{ $choice->attribute_id }}"
+                                data-image-mode="{{ $choice->display_mode ?? 'inline' }}"
                                 onchange="getVariantPrice(); updateVariantOptionPrice(this);">
 
                                 <option value="" @if (!isset($cartItem) || !$cartItem->variation) selected @endif>Choose Option
@@ -909,6 +910,7 @@
         // ---------------------------------
         function updateVariantOptionPrice(selectElement) {
             let attributeId = $(selectElement).data('attribute');
+            let imageMode = ($(selectElement).data('image-mode') || 'inline').toString();
             let selected = $(selectElement).find(':selected');
             let price = parseFloat(selected.data('price')) || 0;
             let image = selected.data('img') || '';
@@ -916,10 +918,20 @@
 
             box.html('');
 
-            renderProductOptionPreview('#attribute-preview-' + attributeId, {
-                image: image,
-                name: selected.val() || ''
-            });
+            window.lastVariantImageMode = imageMode;
+            window.lastVariantImageUrl = image || '';
+
+            if (image && imageMode === 'gallery') {
+                if (typeof syncProductGalleryToImage === 'function') {
+                    syncProductGalleryToImage(image, selected.val() || '');
+                }
+                $('#attribute-preview-' + attributeId).addClass('d-none').html('');
+            } else {
+                renderProductOptionPreview('#attribute-preview-' + attributeId, {
+                    image: image,
+                    name: selected.val() || ''
+                });
+            }
         }
 
         // ---------------------------------

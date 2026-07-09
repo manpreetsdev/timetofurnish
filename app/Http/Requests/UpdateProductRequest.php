@@ -79,6 +79,10 @@ class UpdateProductRequest extends FormRequest
         $rules['specification'] = 'nullable';
         $rules['dimensions_enabled'] = 'nullable|boolean';
 
+        if (!$this->hasColorOnlyVariants()) {
+            $rules['choice_no'] = 'required|array|min:1';
+        }
+
         $rules = $this->addSellerVariantStockRules($rules);
 
 
