@@ -51,6 +51,7 @@ use App\Http\Controllers\ProductAddonGlobalController;
 use App\Http\Controllers\ProductServicesController;
 use App\Http\Controllers\ShippingChargeController;
 use App\Http\Controllers\OfferController;
+use App\Http\Controllers\HomepageReviewController;
 /*
   |--------------------------------------------------------------------------
   | Admin Routes
@@ -76,6 +77,8 @@ Route::controller(UpdateController::class)->group(function () {
 
 Route::get('/admin', [AdminController::class, 'admin_dashboard'])->name('admin.dashboard')->middleware(['auth', 'admin', 'prevent-back-history']);
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-back-history']], function() {
+    Route::get('/run-migrations', [AdminController::class, 'runMigrationsPage'])->name('admin.run_migrations.page');
+    Route::post('/run-migrations', [AdminController::class, 'runMigrations'])->name('admin.run_migrations');
 
     // category
     Route::resource('categories', CategoryController::class);
@@ -307,6 +310,8 @@ Route::resource('sellers', SellerController::class);
     Route::group(['prefix' => 'website'], function() {
         Route::controller(WebsiteController::class)->group(function () {
             Route::get('/footer', 'footer')->name('website.footer');
+            Route::get('/footer/export', 'exportFooter')->name('website.footer.export');
+            Route::post('/footer/import', 'importFooter')->name('website.footer.import');
             Route::get('/header', 'header')->name('website.header');
             Route::get('/appearance', 'appearance')->name('website.appearance');
             Route::get('/select-homepage', 'select_homepage')->name('website.select-homepage');
@@ -321,7 +326,9 @@ Route::resource('sellers', SellerController::class);
                 Route::post('/team-members/update/{id}', 'update')->name('team-members.update');
                 Route::get('/team-members/destroy/{id}', 'destroy')->name('team-members.destroy');
                 Route::post('/team-members/update-status', 'updatePageStatus')->name('team-members.update-status');
-                Route::post('/team-members/update-settings', 'updatePageSettings')->name('team-members.update-settings');
+                Route::post('/team-members/update-welcome-section', 'updateWelcomeSection')->name('team-members.update-welcome-section');
+                Route::post('/team-members/update-banner-section', 'updateBannerSection')->name('team-members.update-banner-section');
+                Route::post('/team-members/seed-default-members', 'seedDefaultMembers')->name('team-members.seed-default-members');
             });
 
         // Custom Page
@@ -329,7 +336,15 @@ Route::resource('sellers', SellerController::class);
         Route::controller(PageController::class)->group(function () {
             Route::get('/custom-pages/edit/{id}', 'edit')->name('custom-pages.edit');
             Route::get('/custom-pages/destroy/{id}', 'destroy')->name('custom-pages.destroy');
+            Route::get('/custom-pages/export/{id}', 'export')->name('custom-pages.export');
+            Route::post('/custom-pages/import', 'import')->name('custom-pages.import');
         });
+
+        // Homepage Reviews
+        Route::resource('homepage-reviews', HomepageReviewController::class);
+        Route::post('/homepage-reviews/update_status', [HomepageReviewController::class, 'updateStatus'])->name('homepage-reviews.update_status');
+        Route::post('/homepage-reviews/update_settings', [HomepageReviewController::class, 'updateSettings'])->name('homepage-reviews.update_settings');
+        Route::get('/homepage-reviews/{id}/duplicate', [HomepageReviewController::class, 'duplicate'])->name('homepage-reviews.duplicate');
     });
 
     // Staff Roles
@@ -406,6 +421,7 @@ Route::resource('sellers', SellerController::class);
         Route::get('/user_search_report', 'user_search_report')->name('user_search_report.index');
         Route::get('/commission-log', 'commission_history')->name('commission-log.index');
         Route::get('/wallet-history', 'wallet_transaction_history')->name('wallet-history.index');
+        Route::get('/event-viewer', 'event_viewer')->name('event-viewer.index');
     });
 
     //Blog Section

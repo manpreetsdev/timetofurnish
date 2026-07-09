@@ -662,7 +662,7 @@
         border: 1px solid rgba(168, 156, 143, 0.18);
         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.015) !important;
         background: #fff;
-        overflow: hidden;
+        overflow: visible !important;
     }
 
     .seller-variation-header {
@@ -835,7 +835,7 @@
         background: #fff;
         border-radius: 8px;
         border: 1px solid rgba(168, 156, 143, 0.18);
-        overflow: hidden;
+        overflow: visible;
     }
 
     /* Individual Attribute variation Rows */
@@ -999,7 +999,6 @@
     }
 
     .seller-selected-value-row:hover {
-        transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(168, 156, 143, 0.12);
         border-color: rgba(168, 156, 143, 0.4);
     }

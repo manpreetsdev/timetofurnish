@@ -8,9 +8,13 @@ class TeamMember extends Model
 {
     protected $fillable = [
         'name',
+        'department',
+        'designation',
         'email',
         'bio',
         'photo',
+        'department_sort_order',
+        'sort_order',
         'is_active',
     ];
 }

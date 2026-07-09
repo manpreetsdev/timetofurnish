@@ -318,6 +318,27 @@
                     </form>
                 </div>
             </div>
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="fw-600 mb-0">{{ translate('Custom CSS') }}</h6>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group row">
+                            <label class="col-md-3 col-from-label">{{ translate('Custom CSS') }}</label>
+                            <div class="col-md-8">
+                                <input type="hidden" name="types[]" value="custom_css">
+                                <textarea name="custom_css" rows="10" class="form-control" placeholder="/* Write your custom CSS here. It will be loaded inside a <style> tag on the frontend. */">{{ get_setting('custom_css') }}</textarea>
+                                <small>{{ translate('Write CSS directly without wrapping it in <style> tags. Supports media queries.') }}</small>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-primary">{{ translate('Update') }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
     	</div>
     </div>
 

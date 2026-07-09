@@ -128,8 +128,12 @@
         <h6 class="mb-0">{{ translate('Top 12 Products') }}</h6>
     </div>
     <div class="card-body">
-        <div class="aiz-carousel gutters-10 half-outside-arrow" data-items="6" data-xl-items="5" data-lg-items="4" data-md-items="3" data-sm-items="2" data-arrows='true'>
-            @foreach (filter_products(\App\Models\Product::where('published', 1)->orderBy('num_of_sale', 'desc'))->limit(12)->get() as $key => $product)
+<div class="position-relative top-products-slider-wrap">
+
+    <button type="button" class="top-products-arrow top-products-prev">‹</button>
+    <button type="button" class="top-products-arrow top-products-next" style="margin-left: 215px;">›</button>
+
+    <div id="top-products-slider" class="aiz-carousel gutters-10 half-outside-arrow" data-items="6" data-xl-items="5" data-lg-items="4" data-md-items="3" data-sm-items="2" data-arrows="false">            @foreach (filter_products(\App\Models\Product::where('published', 1)->orderBy('num_of_sale', 'desc'))->limit(12)->get() as $key => $product)
                 <div class="carousel-box">
                     <div class="aiz-card-box border border-light rounded shadow-sm hov-shadow-md mb-2 has-transition bg-white">
                         <div class="position-relative">
@@ -162,6 +166,7 @@
             @endforeach
         </div>
     </div>
+	</div>
 </div>
 @endcan
 
@@ -385,5 +390,14 @@
             }
         }
     });
+	$(window).on('load', function () {
+    $('.top-products-prev').on('click', function () {
+        $('#top-products-slider').slick('slickPrev');
+    });
+
+    $('.top-products-next').on('click', function () {
+        $('#top-products-slider').slick('slickNext');
+    });
+});
 </script>
 @endsection  

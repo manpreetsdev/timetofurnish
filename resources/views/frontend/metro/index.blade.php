@@ -13,12 +13,39 @@
         }
 
         .home_slider_img {
-            /* max-height: 500px; */
+            height: 100%;
             background-position: center center;
         }
 
         .home_slider_img img {
             background-position: center center;
+            object-fit: cover;
+        }
+
+        
+
+        @media (max-width: 1199px) {
+            .home_slider_img {
+                height: 100%;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .home_slider_img {
+                height: 100%;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .home_slider_img {
+                height: 100%;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .home_slider_img {
+                height: 100%;
+            }
         }
 
         @media (max-width: 991px) {
@@ -39,76 +66,7 @@
         <div class="p-0">
             <!-- Sliders -->
             <div class="home-slider slider-full">
-                {{-- <div class="flex-grow-1  banner_search d-flex align-items-center mx-xl-5">
-                <div class="position-relative home-banner_content flex-grow-1 px-3 px-lg-0">
-                    <h4>Expect The Unexpected</h4>
-                    <form action="{{ route('search') }}" method="GET" class="stop-propagation">
-                        <div class="justify-content-center d-flex position-relative align-items-center">
-                            <div class="d-lg-none" data-toggle="class-toggle"
-                                data-target=".front-header-search">
-                                <button class="btn px-2" type="button"><i
-                                        class="la la-2x la-long-arrow-left"></i></button>
-                            </div>
-                            <div class="search-input-box">
-                                <input type="text"
-                                    class="border border-soft-light form-control fs-14 hov-animate-outline"
-                                    id="search" name="keyword"
-                                    @isset($query)
-                                    value="{{ $query }}"
-                                @endisset
-                                    placeholder="{{ translate('I am shopping for...') }}" autocomplete="off">
-
-                                <svg id="Group_723" data-name="Group 723" xmlns="http://www.w3.org/2000/svg"
-                                    width="20.001" height="20" viewBox="0 0 20.001 20">
-                                    <path id="Path_3090" data-name="Path 3090"
-                                        d="M9.847,17.839a7.993,7.993,0,1,1,7.993-7.993A8,8,0,0,1,9.847,17.839Zm0-14.387a6.394,6.394,0,1,0,6.394,6.394A6.4,6.4,0,0,0,9.847,3.453Z"
-                                        transform="translate(-1.854 -1.854)" fill="#b5b5bf" />
-                                    <path id="Path_3091" data-name="Path 3091"
-                                        d="M24.4,25.2a.8.8,0,0,1-.565-.234l-6.15-6.15a.8.8,0,0,1,1.13-1.13l6.15,6.15A.8.8,0,0,1,24.4,25.2Z"
-                                        transform="translate(-5.2 -5.2)" fill="#b5b5bf" />
-                                </svg>
-                            </div>
-                        </div>
-                    </form>
-                    <div class="typed-search-box stop-propagation document-click-d-none d-none bg-white rounded shadow-lg position-absolute left-0 top-100 w-100"
-                        style="min-height: 200px">
-                        <div class="search-preloader absolute-top-center">
-                            <div class="dot-loader">
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                            </div>
-                        </div>
-                        <div class="search-nothing d-none p-3 text-center fs-16">
-
-                        </div>
-                        <div id="search-content" class="text-left">
-
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
-                {{-- @if (count($featured_categories) > 0)
-            <div class="banner-category">
-                <ul style="position: relative;">
-                    @foreach ($featured_categories as $key => $category)
-                    @if ($key < 5)
-                    @php
-                    $category_name = $category->getTranslation('name');
-                    @endphp
-                    <li>
-                        <a href="{{ route('products.category', $category->slug) }}">
-                            <img src="{{ isset($category->coverImage->file_name) ? my_asset($category->coverImage->file_name) : static_asset('assets/img/placeholder.jpg') }}" alt="{{$category_name}}" class="img-fluid">
-                        </a>
-                        <a href="{{ route('products.category', $category->slug) }}" class="category_a">
-                            <span>{{$category_name}}</span>
-                        </a>
-                    </li>
-                    @endif
-                    @endforeach
-                </ul>
-            </div>
-            @endif --}}
+               
                 @if (get_setting('home_slider_images') != null)
                     <div class="aiz-carousel home_banner_img dots-inside-bottom mobile-img-auto-height" data-dots="true"
                         data-autoplay="false" data-infinite="true">
@@ -121,7 +79,7 @@
                                 <a href="{{ json_decode(get_setting('home_slider_links'), true)[$key] }}">
                                     <!-- Image -->
                                     <div class="d-block mw-100 img-fit overflow-hidden home_slider_img overflow-hidden">
-                                        <img class="img-fit h-100 m-auto has-transition ls-is-cached lazyloaded"
+                                        <img class="img-fit  m-auto has-transition ls-is-cached lazyloaded"
                                             src="{{ $slider ? my_asset($slider->file_name) : static_asset('assets/img/placeholder.jpg') }}"
                                             alt="{{ env('APP_NAME') }} promo"
                                             onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
@@ -138,70 +96,6 @@
     <!-- Dynamic Offers & Hot Deals Section -->
     @include('frontend.partials.homepage_offers')
 
-    <!-- <div class="slider-container">
-                                                <div class="slider-control left inactive"></div>
-                                                <div class="slider-control right"></div>
-                                                <ul class="slider-pagi"></ul>
-                                                <div class="slider">
-                                                    <div class="slide slide-0 active">
-                                                        <div class="slide__bg"></div>
-                                                        <div class="slide__content">
-                                                            <svg class="slide__overlay" viewBox="0 0 720 405" preserveAspectRatio="xMaxYMax slice">
-                                                                <path class="slide__overlay-path" d="M0,0 150,0 500,405 0,405" />
-                                                            </svg>
-                                                            <div class="slide__text">
-                                                                <h5 class="slide__text-heading">Pi Kart</h5>
-                                                                <p class="slide__text-desc">Radiant Confidence with Our. Exclusive Beauty Collection</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="slide slide-1 ">
-                                                        <div class="slide__bg"></div>
-                                                        <div class="slide__content">
-                                                            <svg class="slide__overlay" viewBox="0 0 720 405" preserveAspectRatio="xMaxYMax slice">
-                                                                <path class="slide__overlay-path" d="M0,0 150,0 500,405 0,405" />
-                                                            </svg>
-                                                            <div class="slide__text">
-                                                                <h5 class="slide__text-heading">Pi Kart</h5>
-                                                                <p class="slide__text-desc">Unveil Your Glow with. Our Exclusive Collection</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div> -->
-
-    <!-- Flash Deal -->
-    <!-- <section class="mb-2 mt-5">
-                                                <div class="container">
-                                                    Categories
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                        @if (count($featured_categories) > 0)
-    <div class="banner-category">
-                                                            <ul>
-                                                                @foreach ($featured_categories as $key => $category)
-    @if ($key < 8)
-    @php
-        $category_name = $category->getTranslation('name');
-    @endphp
-                                                                <li style="position: relative;">
-                                                                    <a href="{{ route('products.category', $category->slug) }}">
-                                                                        <img src="{{ isset($category->coverImage->file_name) ? my_asset($category->coverImage->file_name) : static_asset('assets/img/placeholder.jpg') }}" alt="{{ $category_name }}" class="img-fluid">
-                                                                    </a>
-                                                                    <a href="{{ route('products.category', $category->slug) }}" class="">
-                                                                        <span>{{ $category_name }}</span>
-                                                                    </a>
-                                                                </li>
-    @endif
-    @endforeach
-                                                            </ul>
-                                                        </div>
-    @endif
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </section> -->
-
 
     @php
         $flash_deal = get_featured_flash_deal();
@@ -213,7 +107,7 @@
                 : 'text-white';
     @endphp
     @if ($flash_deal != null)
-        <section class="mb-2 mb-md-3 mt-2 mt-md-3"
+        <section class="home_Section"
             style="background: {{ $flash_deal_bg_full_width && $flash_deal_bg != null ? $flash_deal_bg : '' }};"
             id="flash_deal">
             <div class="container">
@@ -245,7 +139,7 @@
                 </div>
 
                 <!-- Countdown for small device -->
-                <div class="bg-white mb-3 d-md-none">
+                <div class="bg-white mb-4 d-md-none">
                     <div class="aiz-count-down-circle" end-date="{{ date('Y/m/d H:i:s', $flash_deal->end_date) }}"></div>
                 </div>
 
@@ -367,21 +261,21 @@
     @php
         $todays_deal_section_bg = get_setting('todays_deal_section_bg_color');
     @endphp
-    <div id="todays_deal" class="mb-2rem mt-4 "
+    <div id="todays_deal" class=" "
         @if (get_setting('todays_deal_section_bg') == 1) style="background: {{ $todays_deal_section_bg }};" @endif>
-
+        @include('frontend.' . get_setting('homepage_select') . '.partials.todays_deal')
     </div>
 
     <!-- Banner section 1 -->
     @if (get_setting('home_banner1_images') != null)
-        <div class="section-padding" style="background: #fff;">
-            <div class="container mb-2 mb-md-3">
+        <div class="section-padding home_Section" style="background: #fff;">
+            <div class="container">
                 @php
                     $banner_1_imags = json_decode(get_setting('home_banner1_images'));
                     $data_md = count($banner_1_imags) >= 2 ? 2 : 1;
                 @endphp
                 <div class="w-100">
-                    <div class="aiz-carousel gutters-16 overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
+                    <div class="aiz-carousel home_banner_111  overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
                         data-items="{{ count($banner_1_imags) }}" data-xxl-items="{{ count($banner_1_imags) }}"
                         data-xl-items="{{ count($banner_1_imags) }}" data-lg-items="{{ $data_md }}"
                         data-md-items="{{ $data_md }}" data-sm-items="1" data-xs-items="1" data-arrows="true"
@@ -405,11 +299,13 @@
     @endif
 
     <!-- Featured Products -->
-    <div id="section_featured" style="display: none;"></div>
+    <div id="section_featured">
+        @include('frontend.' . get_setting('homepage_select') . '.partials.featured_products_section')
+    </div>
 
     <!-- Banner Section 2 -->
     @if (get_setting('home_banner2_images') != null)
-        <div class="mb-2 mb-md-3 mt-2 mt-md-3">
+        <div class="mb-2 mb-md-3 mt-2 mt-md-3 home_Section">
             <div class="container">
                 @php
                     $banner_2_imags = json_decode(get_setting('home_banner2_images'));
@@ -437,12 +333,12 @@
     @endif
 
     <!-- Best Selling  -->
-    <div id="section_best_selling" class="pt-3 pb-3">
-
+    <div id="section_best_selling">
+        @include('frontend.' . get_setting('homepage_select') . '.partials.best_selling_section')
     </div>
     <!-- New Products -->
-    <div id="section_newest" class="pt-3 pb-3">
-
+    <div id="section_newest">
+        @include('frontend.' . get_setting('homepage_select') . '.partials.newest_products_section')
     </div>
     <!-- Category wise Products -->
 
@@ -450,13 +346,13 @@
 
     <!-- Banner Section 3 -->
     @if (get_setting('home_banner3_images') != null)
-        <div class="mb-2 mb-md-3 mt-2 mt-md-3">
+        <div class="home_Section">
             <div class="container">
                 @php
                     $banner_3_imags = json_decode(get_setting('home_banner3_images'));
                     $data_md = count($banner_3_imags) >= 2 ? 2 : 1;
                 @endphp
-                <div class="aiz-carousel gutters-16 overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
+                <div class="aiz-carousel  home_banner_3 overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
                     data-items="{{ count($banner_3_imags) }}" data-xxl-items="{{ count($banner_3_imags) }}"
                     data-xl-items="{{ count($banner_3_imags) }}" data-lg-items="{{ $data_md }}"
                     data-md-items="{{ $data_md }}" data-sm-items="1" data-xs-items="1" data-arrows="true"
@@ -479,91 +375,10 @@
 
     <!-- Auction Product -->
     @if (addon_is_activated('auction'))
-        <div id="auction_products">
-
+        <div id="auction_products" class="home_Section">
+            {{-- Loaded only if the addon provides a matching view --}}
         </div>
     @endif
-
-    {{-- <!-- Cupon -->
-@if (get_setting('coupon_system') == 1)
-<div class=" mt-2 mt-md-3" style="background-color: {{ get_setting('cupon_background_color', '#292933') }}">
-    <div class="container">
-        <div class="position-relative py-5">
-            <div class="text-center text-xl-left z-5">
-                <div class="d-lg-flex">
-                    <div class="mb-3 mb-lg-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                            width="109.602" height="93.34" viewBox="0 0 109.602 93.34">
-                            <defs>
-                                <clipPath id="clip-pathcup">
-                                    <path id="Union_10" data-name="Union 10" d="M12263,13778v-15h64v-41h12v56Z"
-                                        transform="translate(-11966 -8442.865)" fill="none" stroke="#fff"
-                                        stroke-width="2" />
-                                </clipPath>
-                            </defs>
-                            <g id="Group_24326" data-name="Group 24326" transform="translate(-274.201 -5254.611)">
-                                <g id="Mask_Group_23" data-name="Mask Group 23"
-                                    transform="translate(-3652.459 1785.452) rotate(-45)"
-                                    clip-path="url(#clip-pathcup)">
-                                    <g id="Group_24322" data-name="Group 24322" transform="translate(207 18.136)">
-                                        <g id="Subtraction_167" data-name="Subtraction 167"
-                                            transform="translate(-12177 -8458)" fill="none">
-                                            <path
-                                                d="M12335,13770h-56a8.009,8.009,0,0,1-8-8v-8a8,8,0,0,0,0-16v-8a8.009,8.009,0,0,1,8-8h56a8.009,8.009,0,0,1,8,8v8a8,8,0,0,0,0,16v8A8.009,8.009,0,0,1,12335,13770Z"
-                                                stroke="none" />
-                                            <path
-                                                d="M 12335.0009765625 13768.0009765625 C 12338.3095703125 13768.0009765625 12341.0009765625 13765.30859375 12341.0009765625 13762 L 12341.0009765625 13755.798828125 C 12336.4423828125 13754.8701171875 12333.0009765625 13750.8291015625 12333.0009765625 13746 C 12333.0009765625 13741.171875 12336.4423828125 13737.130859375 12341.0009765625 13736.201171875 L 12341.0009765625 13729.9990234375 C 12341.0009765625 13726.6904296875 12338.3095703125 13723.9990234375 12335.0009765625 13723.9990234375 L 12278.9990234375 13723.9990234375 C 12275.6904296875 13723.9990234375 12272.9990234375 13726.6904296875 12272.9990234375 13729.9990234375 L 12272.9990234375 13736.201171875 C 12277.5576171875 13737.1298828125 12280.9990234375 13741.1708984375 12280.9990234375 13746 C 12280.9990234375 13750.828125 12277.5576171875 13754.869140625 12272.9990234375 13755.798828125 L 12272.9990234375 13762 C 12272.9990234375 13765.30859375 12275.6904296875 13768.0009765625 12278.9990234375 13768.0009765625 L 12335.0009765625 13768.0009765625 M 12335.0009765625 13770.0009765625 L 12278.9990234375 13770.0009765625 C 12274.587890625 13770.0009765625 12270.9990234375 13766.412109375 12270.9990234375 13762 L 12270.9990234375 13754 C 12275.4111328125 13753.9990234375 12278.9990234375 13750.4111328125 12278.9990234375 13746 C 12278.9990234375 13741.5888671875 12275.41015625 13738 12270.9990234375 13738 L 12270.9990234375 13729.9990234375 C 12270.9990234375 13725.587890625 12274.587890625 13721.9990234375 12278.9990234375 13721.9990234375 L 12335.0009765625 13721.9990234375 C 12339.412109375 13721.9990234375 12343.0009765625 13725.587890625 12343.0009765625 13729.9990234375 L 12343.0009765625 13738 C 12338.5888671875 13738.0009765625 12335.0009765625 13741.5888671875 12335.0009765625 13746 C 12335.0009765625 13750.4111328125 12338.58984375 13754 12343.0009765625 13754 L 12343.0009765625 13762 C 12343.0009765625 13766.412109375 12339.412109375 13770.0009765625 12335.0009765625 13770.0009765625 Z"
-                                                stroke="none" fill="#fff" />
-                                        </g>
-                                    </g>
-                                </g>
-                                <g id="Group_24321" data-name="Group 24321"
-                                    transform="translate(-3514.477 1653.317) rotate(-45)">
-                                    <g id="Subtraction_167-2" data-name="Subtraction 167"
-                                        transform="translate(-12177 -8458)" fill="none">
-                                        <path
-                                            d="M12335,13770h-56a8.009,8.009,0,0,1-8-8v-8a8,8,0,0,0,0-16v-8a8.009,8.009,0,0,1,8-8h56a8.009,8.009,0,0,1,8,8v8a8,8,0,0,0,0,16v8A8.009,8.009,0,0,1,12335,13770Z"
-                                            stroke="none" />
-                                        <path
-                                            d="M 12335.0009765625 13768.0009765625 C 12338.3095703125 13768.0009765625 12341.0009765625 13765.30859375 12341.0009765625 13762 L 12341.0009765625 13755.798828125 C 12336.4423828125 13754.8701171875 12333.0009765625 13750.8291015625 12333.0009765625 13746 C 12333.0009765625 13741.171875 12336.4423828125 13737.130859375 12341.0009765625 13736.201171875 L 12341.0009765625 13729.9990234375 C 12341.0009765625 13726.6904296875 12338.3095703125 13723.9990234375 12335.0009765625 13723.9990234375 L 12278.9990234375 13723.9990234375 C 12275.6904296875 13723.9990234375 12272.9990234375 13726.6904296875 12272.9990234375 13729.9990234375 L 12272.9990234375 13736.201171875 C 12277.5576171875 13737.1298828125 12280.9990234375 13741.1708984375 12280.9990234375 13746 C 12280.9990234375 13750.828125 12277.5576171875 13754.869140625 12272.9990234375 13755.798828125 L 12272.9990234375 13762 C 12272.9990234375 13765.30859375 12275.6904296875 13768.0009765625 12278.9990234375 13768.0009765625 L 12335.0009765625 13768.0009765625 M 12335.0009765625 13770.0009765625 L 12278.9990234375 13770.0009765625 C 12274.587890625 13770.0009765625 12270.9990234375 13766.412109375 12270.9990234375 13762 L 12270.9990234375 13754 C 12275.4111328125 13753.9990234375 12278.9990234375 13750.4111328125 12278.9990234375 13746 C 12278.9990234375 13741.5888671875 12275.41015625 13738 12270.9990234375 13738 L 12270.9990234375 13729.9990234375 C 12270.9990234375 13725.587890625 12274.587890625 13721.9990234375 12278.9990234375 13721.9990234375 L 12335.0009765625 13721.9990234375 C 12339.412109375 13721.9990234375 12343.0009765625 13725.587890625 12343.0009765625 13729.9990234375 L 12343.0009765625 13738 C 12338.5888671875 13738.0009765625 12335.0009765625 13741.5888671875 12335.0009765625 13746 C 12335.0009765625 13750.4111328125 12338.58984375 13754 12343.0009765625 13754 L 12343.0009765625 13762 C 12343.0009765625 13766.412109375 12339.412109375 13770.0009765625 12335.0009765625 13770.0009765625 Z"
-                                            stroke="none" fill="#fff" />
-                                    </g>
-                                    <g id="Group_24325" data-name="Group 24325">
-                                        <rect id="Rectangle_18578" data-name="Rectangle 18578" width="8" height="2"
-                                            transform="translate(120 5287)" fill="#fff" />
-                                        <rect id="Rectangle_18579" data-name="Rectangle 18579" width="8" height="2"
-                                            transform="translate(132 5287)" fill="#fff" />
-                                        <rect id="Rectangle_18581" data-name="Rectangle 18581" width="8" height="2"
-                                            transform="translate(144 5287)" fill="#fff" />
-                                        <rect id="Rectangle_18580" data-name="Rectangle 18580" width="8" height="2"
-                                            transform="translate(108 5287)" fill="#fff" />
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
-                    </div>
-                    <div class="ml-lg-3">
-                        <h5 class="fs-36 fw-400 text-white mb-3">{{ translate(get_setting('cupon_title')) }}</h5>
-                        <h5 class="fs-20 fw-400 text-gray">{{ translate(get_setting('cupon_subtitle')) }}</h5>
-                        <div class="mt-5 pt-5">
-                            <a href="{{ route('coupons.all') }}"
-                                class="btn text-white hov-bg-white hov-text-dark border border-width-2 fs-16 px-5"
-                                style="border-radius: 28px;background: rgba(255, 255, 255, 0.2);box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.16);">{{ translate('View All Coupons') }}</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="position-absolute right-0 bottom-0 h-100">
-                <img class="h-100" src="{{ uploaded_asset(get_setting('coupon_background_image')) }}"
-                    onerror="this.onerror=null;this.src='{{ static_asset('assets/img/coupon.svg') }}';"
-                    alt="{{ env('APP_NAME') }} promo">
-            </div>
-        </div>
-    </div>
-</div>
-@endif
---}}
-
 
     <!-- Classified Product -->
     @if (get_setting('classified_product') == 1)
@@ -571,7 +386,7 @@
             $classified_products = get_home_page_classified_products(6);
         @endphp
         @if (count($classified_products) > 0)
-            <section class="mb-2 mb-md-3 mt-3 mt-md-5">
+            <section class="home_Section">
                 <div class="container">
                     <!-- Top Section -->
                     <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">
@@ -651,6 +466,7 @@
         @endif
     @endif
 
+    @include('frontend.partials.homepage_reviews')
 
 @endsection
 

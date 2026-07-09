@@ -1,3 +1,8 @@
+@php
+    $newest_products = $newest_products ?? \Cache::remember('newest_products', 3600, function () {
+        return filter_products(\App\Models\Product::latest())->limit(12)->get();
+    });
+@endphp
 @if (count($newest_products) > 0)
     <section class="mb-2 mb-md-3 mt-2 mt-md-3">
         <div class="container">

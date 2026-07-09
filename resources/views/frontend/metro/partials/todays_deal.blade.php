@@ -1,8 +1,13 @@
-@if(count($todays_deal_products) > 0)
+@php
+    $todays_deal_products = $todays_deal_products ?? \Cache::remember('todays_deal_products_home', 3600, function () {
+        return filter_products(\App\Models\Product::with('thumbnail')->where('todays_deal', '1'))->get();
+    });
+@endphp
+@if (count($todays_deal_products) > 0)
     @php
         $todaysDealCount = count($todays_deal_products);
     @endphp
-    <section class="mb-4 mt-4 home-mobile-product-section home-todays-deal-section" id="section_todays_deals_home">
+    <section class="mb-4 mt-5 home-mobile-product-section home-todays-deal-section home_Section" id="section_todays_deals_home">
         <div class="container">
             <div class="todays-deal-card-wrap">
                 <!-- Section Header - Centered with Theme Color -->
@@ -46,7 +51,7 @@
 
                 <!-- Products -->
                 <div class="px-sm-3">
-                    <div class="aiz-carousel sm-gutters-16 arrow-none home-mobile-product-carousel" data-items="5" data-xxl-items="5" data-xl-items="5" data-lg-items="4" data-md-items="3" data-sm-items="2" data-xs-items="2" data-arrows="true" data-dots="false" data-infinite="false" data-autoplay="false">
+                    <div class="aiz-carousel sm-gutters-16 arrow-none home-mobile-product-carousel" data-items="5" data-xxl-items="5" data-xl-items="5" data-lg-items="4" data-md-items="3" data-sm-items="2" data-xs-items="2" data-arrows="true" data-dots="false" data-infinite="true" data-autoplay="true">
                         @foreach ($todays_deal_products as $key => $product)
                             <div class="carousel-box px-2 position-relative">
                                 @include('frontend.'.get_setting('homepage_select').'.partials.product_box_1', ['product' => $product])

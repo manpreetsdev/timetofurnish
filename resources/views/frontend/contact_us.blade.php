@@ -63,15 +63,21 @@
                         <p class="mb-5 fs-14">Have any questions about our furniture, custom orders, or shipping? Reach out to us and we'll get back to you as soon as possible.</p>
 
                         <div class="modern-info-items">
-                            <div class="d-flex align-items-start mb-4">
+								
+                            <div class="d-flex align-items-start mb-2">
                                 <div class="modern-info-icon mr-3 d-flex align-items-center justify-content-center">
                                     <i class="las la-map-marker" style="font-size: 22px;"></i>
                                 </div>
                                 <div>
                                     <h5 class="fs-14 fw-700 mb-1">Our Office</h5>
                                     <p class="mb-0 fs-13">20 Wenlock Road<br>London, England, N1 7GU</p>
+									<p class="c"> <strong> Registered VAT NO :</strong><b> 519774256</b></p>
+									
                                 </div>
                             </div>
+							
+						
+							
 
                             <div class="d-flex align-items-start mb-4">
                                 <div class="modern-info-icon mr-3 d-flex align-items-center justify-content-center">
@@ -296,7 +302,7 @@
     }
 
     .modern-contact-info p {
-        margin-bottom: 28px !important;
+        margin-bottom: 10px !important;
     }
 
     .modern-contact-form h3 {
@@ -307,6 +313,10 @@
         padding-top: 13px !important;
         padding-bottom: 13px !important;
     }
+	
 }
+	.c{
+	color:black;
+	}
 </style>
 @endsection

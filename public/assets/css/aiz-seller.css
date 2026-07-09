@@ -141,6 +141,12 @@ pre {
     object-fit: cover;
 }
 
+/* @media only screen and (min-width:1500px) {
+    .home_slider_img img {
+        height: 647px;
+    }
+} */
+
 .overlay {
     position: absolute;
     width: 100%;
@@ -8949,7 +8955,7 @@ input[type="number"] {
 .aiz-file-box .card-file .card-body {
     position: absolute;
     width: calc(100% - 16px);
-    bottom: 5px;
+    bottom: 0px;
     left: 8px;
 }
 
@@ -8961,8 +8967,9 @@ input[type="number"] {
 }
 
 [data-selected="true"] .aiz-uploader-select {
-    border-color: #000;
+    border-color: #685c4e !important;
     background: rgba(0, 123, 255, 0.05);
+    border: 1px solid #685c4e !important;
 }
 
 .modal-adaptive {
@@ -9974,7 +9981,7 @@ div.footable-loader>span.fooicon:after {
 .modal-content .modal-body {
     padding: 20px 25px;
     overflow-y: auto;
-    max-height: 70vh;
+    max-height: 100vh;
 }
 
 @media (min-width: 768px) {
@@ -10308,14 +10315,16 @@ div.footable-loader>span.fooicon:after {
 }
 
 .aiz-carousel .slick-dots button {
-    height: 11px;
-    width: 11px;
+    height: 9px !important;
+    width: 9px !important;
     padding: 0px;
     color: transparent;
     border: 0;
     background: #ddd;
     border-radius: 50%;
     margin: 0 3px;
+    text-align: center;
+    display: block !important;
 }
 
 .aiz-carousel .slick-dots .slick-active button {
@@ -10324,7 +10333,6 @@ div.footable-loader>span.fooicon:after {
 
 .aiz-carousel.dots-inside-bottom .slick-dots {
     position: absolute;
-    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
     -webkit-transform: translateX(-50%);
@@ -11095,11 +11103,33 @@ ul.social.colored [class*="linkedin"] {
     }
 }
 
+.home_banner_111 .slick-track {
+    gap: 10px !important;
+}
 
 /*slider mobile auto height*/
 @media (max-width: 767.98px) {
     .mobile-img-auto-height img {
         height: auto;
+    }
+
+
+
+    div#todays_deal {
+        margin-top: 30px;
+    }
+
+    .home_banner_111 ul.slick-dots {
+        position: absolute;
+        bottom: 30px !important;
+    }
+
+    .home_banner_111 li.slick-active {
+        border-color: #fff !important;
+    }
+
+    .home_banner_111 .slick-dots li.slick-active button {
+        background: #fff !important;
     }
 }
 

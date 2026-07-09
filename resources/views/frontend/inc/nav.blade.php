@@ -539,7 +539,7 @@
                         <div class="banner-category custom-banner-category"
                             style="overflow: hidden !important; position: relative !important;">
                             <ul class="aiz-carousel sm-gutters-16 arrow" data-items="9" data-xl-items="7"
-                                data-lg-items="6" data-md-items="5" data-sm-items="5" data-xs-items="4"
+                                data-lg-items="6" data-md-items="5" data-sm-items="5" data-xs-items="5"
                                 data-arrows='true' data-infinite='false'
                                 style="display: flex !important; flex-wrap: wrap !important; list-style: none !important; padding: 0 !important; margin: 0 !important;">
                                 @foreach ($featured_categories as $key => $category)
@@ -553,7 +553,7 @@
                                                 style="display: block !important;">
                                                 <img src="{{ isset($category->coverImage->file_name) ? my_asset($category->coverImage->file_name) : static_asset('assets/img/placeholder.jpg') }}"
                                                     alt="{{ $category_name }}" class="img-fluid"
-                                                    style="max-width: 60px !important; max-height: 60px !important; width: auto !important; height: auto !important; margin: 0 auto !important; display: block !important;">
+                                                    style="max-width: 45px; max-height: 45px; width: auto; height: auto; margin: 0 auto; display: block;">
                                             </a>
                                             <a href="{{ route('products.category', $category->slug) }}"
                                                 class="category_a">
@@ -668,7 +668,7 @@
             <li class="mr-0">
                 <a href="{{ url('career') }}" class="@if (request()->is('career')) active @endif">
                     <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-                    <span>Career</span>
+                    <span>Careers</span>
                 </a>
             </li>
             @if (get_setting('header_menu_labels') != null)
@@ -1037,7 +1037,7 @@
 
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-  
+
 
     .mobile-menu-list li {
         margin: 0 !important;

@@ -9,7 +9,9 @@ use App\Models\Wallet;
 use App\Models\User;
 use App\Models\Search;
 use App\Models\Shop;
+use App\Models\ActivityLog;
 use Auth;
+use Carbon\Carbon;
 
 class ReportController extends Controller
 {
@@ -140,5 +142,92 @@ class ReportController extends Controller
         $wallets = $wallet_history->paginate(10);
 
         return view('backend.reports.wallet_history_report', compact('wallets', 'users_with_wallet', 'user_id', 'date_range'));
+    }
+
+    public function event_viewer(Request $request)
+    {
+        $query = ActivityLog::with('user')->orderByDesc('created_at');
+
+        if ($request->filled('action')) {
+            $query->where('action', $request->action);
+        }
+
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->filled('subject_type')) {
+            $query->where('subject_type', $request->subject_type);
+        }
+
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function ($builder) use ($search) {
+                $builder->where('description', 'like', '%' . $search . '%')
+                    ->orWhere('subject_type', 'like', '%' . $search . '%')
+                    ->orWhere('action', 'like', '%' . $search . '%')
+                    ->orWhere('url', 'like', '%' . $search . '%');
+            });
+        }
+
+        if ($request->filled('date_range')) {
+            [$startDate, $endDate] = $this->parseDateRange($request->date_range);
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }
+        }
+
+        $logs = $query->paginate(20)->appends($request->query());
+        $users = User::whereIn('id', ActivityLog::query()->whereNotNull('user_id')->distinct()->pluck('user_id'))->orderBy('name')->get();
+        $subjectTypes = ActivityLog::query()->whereNotNull('subject_type')->distinct()->orderBy('subject_type')->pluck('subject_type');
+
+        return view('backend.reports.event_viewer', compact('logs', 'users', 'subjectTypes'));
+    }
+
+    protected function parseDateRange(?string $dateRange): array
+    {
+        if (empty($dateRange)) {
+            return [null, null];
+        }
+
+        $separator = str_contains($dateRange, ' to ') ? ' to ' : ' / ';
+        $parts = array_map('trim', explode($separator, $dateRange));
+
+        if (count($parts) !== 2) {
+            return [null, null];
+        }
+
+        try {
+            $startDate = $this->parseDateValue($parts[0], true);
+            $endDate = $this->parseDateValue($parts[1], false);
+        } catch (\Throwable $e) {
+            return [null, null];
+        }
+
+        return [$startDate, $endDate];
+    }
+
+    protected function parseDateValue(string $value, bool $startOfDay)
+    {
+        $formats = [
+            'd-m-Y H:i:s',
+            'd-m-Y H:i',
+            'd-m-Y',
+            'Y-m-d H:i:s',
+            'Y-m-d H:i',
+            'Y-m-d',
+        ];
+
+        foreach ($formats as $format) {
+            try {
+                $date = Carbon::createFromFormat($format, $value);
+                return $startOfDay ? $date->startOfDay() : $date->endOfDay();
+            } catch (\Throwable $e) {
+                continue;
+            }
+        }
+
+        $date = Carbon::parse($value);
+        return $startOfDay ? $date->startOfDay() : $date->endOfDay();
     }
 }

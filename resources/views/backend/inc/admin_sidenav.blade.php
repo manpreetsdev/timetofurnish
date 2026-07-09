@@ -1,14 +1,127 @@
 <div class="aiz-sidebar-wrap adminsidebar">
+    <style>
+        .adminsidebar .aiz-sidebar {
+            background: linear-gradient(180deg, #faf6f1 0%, #f3eadf 100%);
+            border-right: 1px solid #e7d8c7;
+            box-shadow: inset -1px 0 0 rgba(120, 82, 49, 0.08);
+        }
+
+        .adminsidebar .aiz-side-nav-wrap {
+            padding: 12px 9px 14px;
+        }
+
+        .adminsidebar #menu-search {
+            border: 1px solid #ddc8b2;
+            background: #fffdf9 !important;
+            color: #6a4a2f !important;
+            height: 40px;
+            border-radius: 12px;
+            padding-left: 12px;
+            padding-right: 34px;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+        }
+
+        .adminsidebar #menu-search:focus {
+            border-color: #bf9771;
+            box-shadow: 0 0 0 3px rgba(167, 104, 59, 0.14);
+        }
+
+        .adminsidebar #menu-search::placeholder {
+            color: #a17d5c;
+        }
+
+        .adminsidebar .aiz-side-nav-item {
+            margin-bottom: 4px;
+        }
+
+        .adminsidebar .aiz-side-nav-link {
+            border-radius: 11px;
+            min-height: 42px;
+            padding: 10px 12px;
+            color: #6b4d34;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .adminsidebar .aiz-side-nav-link:hover {
+            background: #f0e0ce;
+            border-color: #e6ceb3;
+            color: #965d35;
+            transform: translateX(1px);
+        }
+
+        .adminsidebar .aiz-side-nav-link.active,
+        .adminsidebar .aiz-side-nav-item.mm-active > .aiz-side-nav-link {
+            background: linear-gradient(180deg, #ecdac8 0%, #e5d0bd 100%);
+            border-color: #dcbfa1;
+            color: #8f562f;
+            font-weight: 600;
+            box-shadow: 0 6px 12px rgba(124, 79, 43, 0.1);
+        }
+
+        .adminsidebar .aiz-side-nav-icon {
+            opacity: 0.86;
+        }
+
+        .adminsidebar .aiz-side-nav-link:hover .aiz-side-nav-icon,
+        .adminsidebar .aiz-side-nav-link.active .aiz-side-nav-icon,
+        .adminsidebar .aiz-side-nav-item.mm-active > .aiz-side-nav-link .aiz-side-nav-icon {
+            opacity: 1;
+        }
+
+        .adminsidebar .aiz-side-nav-list.level-2 {
+            margin-top: 5px;
+            margin-left: 6px;
+            border-left: 1px dashed #d8bea3;
+            padding-left: 9px;
+        }
+
+        .adminsidebar .aiz-side-nav-list.level-2 .aiz-side-nav-link {
+            min-height: 36px;
+            padding: 8px 10px;
+            border-radius: 9px;
+            font-size: 13px;
+        }
+
+        .adminsidebar .aiz-side-nav-text {
+            letter-spacing: 0.1px;
+			    margin-left: 22px;
+        }
+
+        .adminsidebar .aiz-sidebar-overlay {
+            background: rgba(58, 36, 16, 0.22);
+        }
+		.sidebar-logo {
+    border-bottom: 1px solid #E8DFD4;
+    margin-bottom: 15px;
+}
+
+.sidebar-logo img {
+    max-width: 160px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+		.iteamset{
+			Height: 10rem ;
+    Display : block ;
+     Background : transparent;
+			width:100% ;
+		}
+		
+		.r{
+		margin-right:20px !important;
+		}
+    </style>
     <div class="aiz-sidebar left c-scrollbar ">
-       {{-- <div class="aiz-side-nav-logo-wrap">
-            <a href="{{ route('admin.dashboard') }}" class="d-block text-left p-0 mt-3 text-center">
-                @if(get_setting('system_logo_white') != null)
-                    <img class="mw-100 admin-logo " src="{{ uploaded_asset(get_setting('system_logo_white')) }}" class="brand-icon " alt="{{ get_setting('site_name') }}">
-                @else
-                    <img class="mw-100 admin-logo " src="{{ static_asset('assets/img/logo.png') }}" class="brand-icon " alt="{{ get_setting('site_name') }}">
-                @endif
-            </a>
-        </div>--}}
+		
+    {{-- Logo --}}
+<div class="sidebar-logo text-center py-3">
+    <a href="{{ route('admin.dashboard') }}">
+        <img src="{{ asset('public/assets/img/logoT.png') }}" alt="Time To Furnish Logo">
+    </a>
+</div>
+
         <div class="aiz-side-nav-wrap">
             <div class="px-3 mb-3 position-relative">
                 <input class="form-control bg-transparent rounded-2 form-control-sm text-white fs-14" type="text" name="" placeholder="{{ translate('Search in menu') }}" id="menu-search" onkeyup="menuSearch()">
@@ -90,7 +203,7 @@
                                 </svg>
                             </div>
                             <span class="aiz-side-nav-text">{{translate('Products')}}</span>
-                            <span class="aiz-side-nav-arrow"></span>
+                            <span class="aiz-side-nav-arrow r"></span>
                         </a>
                         <!--Submenu-->
                         <ul class="aiz-side-nav-list level-2">
@@ -104,7 +217,7 @@
                             @can('show_all_products')
                                 <li class="aiz-side-nav-item">
                                     <a href="{{route('products.all')}}" class="aiz-side-nav-link">
-                                        <span class="aiz-side-nav-text text">{{ translate('All Products') }}</span>
+                                        <span class="aiz-side-nav-text text r">{{ translate('All Products') }}</span>
                                     </a>
                                 </li>
                             @endcan
@@ -697,6 +810,11 @@
                                     </a>
                                 </li>
                             @endcan
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('event-viewer.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['event-viewer.index']) }}">
+                                    <span class="aiz-side-nav-text  text">{{ translate('Event Viewer') }}</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endcanany
@@ -798,7 +916,7 @@
                     </li>
                 @endcanany
 
-@can('shipping  cost' )
+@can('shipping_cost')
                 <li class="aiz-side-nav-item">
                         <a href="{{route('shipping.cost')}}" class="aiz-side-nav-link">
                             <div class="aiz-side-nav-icon">
@@ -1248,7 +1366,17 @@
                                        <span class="aiz-side-nav-text  text">{{translate('Pages')}}</span>
                                    </a>
                                </li>
+                               <li class="aiz-side-nav-item">
+                                   <a href="{{ route('homepage-reviews.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['homepage-reviews.index', 'homepage-reviews.create', 'homepage-reviews.edit'])}}">
+                                       <span class="aiz-side-nav-text  text">{{translate('Homepage Reviews')}}</span>
+                                   </a>
+                               </li>
                            @endcan
+                           <li class="aiz-side-nav-item">
+                               <a href="{{ route('team-members.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['team-members.index', 'team-members.create', 'team-members.edit'])}}">
+                                   <span class="aiz-side-nav-text  text">{{translate('Team Members')}}</span>
+                               </a>
+                           </li>
                            @can('website_appearance')
                                <li class="aiz-side-nav-item">
                                    <a href="{{ route('website.appearance') }}" class="aiz-side-nav-link">
@@ -1378,9 +1506,9 @@
                                </li>
                            @endcanany
                            --}}
-						   
-						   
-						   
+
+
+
                            @canany(['analytics_tools_configuration','google_recaptcha_configuration','google_map_setting','google_firebase_setting'])
                                {{--<li class="aiz-side-nav-item">
                                    <a href="javascript:void(0);" class="aiz-side-nav-link">
@@ -1418,7 +1546,7 @@
                                        @endcan--}}
                                    </ul>
                                </li>
-						   
+
 						      @canany(['staffs','roles'])
                     <li class="aiz-side-nav-item">
                         <a href="#" class="aiz-side-nav-link">
@@ -1456,6 +1584,26 @@
                         </ul>
                     </li>
 @endcanany
+						   {{--copy start --}} 
+						    @can ('uploaded_files')
+                <li class="aiz-side-nav-item  iteamset">
+                  
+					
+                </li>
+@endcan
+						    @can ('uploaded_files')
+                <li class="aiz-side-nav-item">
+                 
+                </li>
+@endcan
+						    @can ('uploaded_files')
+                <li class="aiz-side-nav-item">
+                   
+                </li>
+@endcan
+						   {{--copy end--}}
+
+						
                            @endcanany
                            @canany(['shipping_configuration','shipping_country_setting','manage_shipping_states','manage_shipping_cities','manage_zones','manage_carriers'])
                                {{--<li class="aiz-side-nav-item">
@@ -1506,11 +1654,11 @@
                                                </a>
                                            </li>
                                        @endcan
-									   
-									   
+
+
                                    </ul>
-                               </li>--}}
-                           @endif
+                                </li>--}}
+                            @endcanany
                        </ul>
                     </li>
                 @endcanany
@@ -1617,5 +1765,7 @@
             </ul><!-- .aiz-side-nav -->
         </div><!-- .aiz-side-nav-wrap -->
     </div><!-- .aiz-sidebar -->
-    <div class="aiz-sidebar-overlay"></div>
+    <div class="aiz-sidebar-overlay">
+	</div>
 </div><!-- .aiz-sidebar -->
+

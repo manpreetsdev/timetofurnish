@@ -227,11 +227,5 @@
         background: #faf7f2;
     }
 
-    @media (max-width: 991px) {
-
-        .px-15px,
-        .px-0 {
-            overflow-x: auto !important;
-        }
-    }
+   
 </style>

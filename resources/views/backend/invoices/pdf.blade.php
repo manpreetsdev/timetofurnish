@@ -773,11 +773,11 @@
                                                 </tr>
                                             @endif
                                             <tr class="summary-divider">
-                                                <td>Total excluding VAT</td>
+                                                <td>Total Excluding VAT</td>
                                                 <td class="right nowrap">{{ single_price($totalExcludingVat) }}</td>
                                             </tr>
                                             <tr>
-                                                <td>VAT (20% included)</td>
+                                                <td>VAT (20% Included)</td>
                                                 <td class="right nowrap">{{ single_price($vatTotal) }}</td>
                                             </tr>
                                             <tr class="total-row">

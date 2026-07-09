@@ -1,8 +1,13 @@
+@php
+    $newest_products = $newest_products ?? \Cache::remember('newest_products', 3600, function () {
+        return filter_products(\App\Models\Product::latest())->limit(12)->get();
+    });
+@endphp
 @if (count($newest_products) > 0)
     @php
         $newestProductsCount = count($newest_products);
     @endphp
-    <section class="mb-4 mt-4 home-mobile-product-section home-latest-products-section" id="section_latest_products_home">
+    <section class="home-mobile-product-section home-latest-products-section home_Section" id="section_latest_products_home">
         <div class="container">
             <div class="modern-section-bordered-wrap">
                 <!-- Section Header - Centered with Theme Color -->

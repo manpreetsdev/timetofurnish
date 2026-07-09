@@ -85,7 +85,9 @@ class HomeController extends Controller
 
     public function load_todays_deal_section()
     {
-        $todays_deal_products = filter_products(Product::where('todays_deal', '1'))->get();
+        $todays_deal_products = Cache::remember('todays_deal_products_home', 3600, function () {
+            return filter_products(Product::with('thumbnail')->where('todays_deal', '1'))->get();
+        });
         return view('frontend.' . get_setting('homepage_select') . '.partials.todays_deal', compact('todays_deal_products'));
     }
 

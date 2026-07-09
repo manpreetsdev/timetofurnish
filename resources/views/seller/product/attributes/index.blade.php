@@ -142,7 +142,6 @@
         .admin-catalog-chip:hover {
             background: var(--catalog-theme);
             color: #fff;
-            transform: translateY(-1px);
         }
 
         .admin-catalog-chip-muted {
@@ -198,7 +197,6 @@
         }
 
         .admin-catalog-page .btn-primary:hover {
-            transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(181, 122, 69, 0.35) !important;
         }
 
@@ -211,7 +209,6 @@
         .admin-catalog-page .btn-soft-primary:hover {
             background: var(--catalog-theme) !important;
             color: #fff !important;
-            transform: translateY(-1px);
         }
 
         .admin-catalog-page .btn-soft-danger {
@@ -223,7 +220,6 @@
         .admin-catalog-page .btn-soft-danger:hover {
             background: var(--catalog-danger) !important;
             color: #fff !important;
-            transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(224, 79, 50, 0.2) !important;
         }
 

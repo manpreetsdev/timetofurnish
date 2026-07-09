@@ -2481,11 +2481,13 @@ if (!function_exists('get_featured_products')) {
 if (!function_exists('get_best_selling_products')) {
     function get_best_selling_products($limit, $user_id = null)
     {
-        $product_query = Product::query();
-        if ($user_id) {
-            $product_query = $product_query->where('user_id', $user_id);
-        }
-        return filter_products($product_query->orderBy('num_of_sale', 'desc'))->limit($limit)->get();
+        return Cache::remember('best_selling_products_' . $limit . '_' . ($user_id ?? 'all'), 3600, function () use ($limit, $user_id) {
+            $product_query = Product::query();
+            if ($user_id) {
+                $product_query = $product_query->where('user_id', $user_id);
+            }
+            return filter_products($product_query->orderBy('num_of_sale', 'desc'))->limit($limit)->get();
+        });
     }
 }
 
@@ -2642,13 +2644,15 @@ if (!function_exists('get_brands_by_products')) {
 if (!function_exists('get_category')) {
     function get_category($category_ids)
     {
-        $category_query = Category::query();
-        $category_query->with('coverImage');
+        $category_ids = is_array($category_ids) ? $category_ids : (array) $category_ids;
+        sort($category_ids);
 
-        $category_query->whereIn('id', $category_ids);
+        return Cache::remember('home_categories_' . md5(json_encode($category_ids)), 86400, function () use ($category_ids) {
+            $category_query = Category::query()->with('coverImage');
+            $category_query->whereIn('id', $category_ids);
 
-        $categories = $category_query->get();
-        return $categories;
+            return $category_query->get();
+        });
     }
 }
 
@@ -2955,9 +2959,9 @@ if (!function_exists('get_user_wishlist')) {
 if (!function_exists('get_best_sellers')) {
     function get_best_sellers($limit = '')
     {
-        // return Cache::remember('best_selers', 86400, function () use ($limit) {
-        return Shop::where('verification_status', 1)->orderBy('num_of_sale', 'desc')->take($limit)->get();
-        // });
+        return Cache::remember('best_sellers_' . $limit, 86400, function () use ($limit) {
+            return Shop::where('verification_status', 1)->orderBy('num_of_sale', 'desc')->take($limit)->get();
+        });
     }
 }
 
@@ -3479,5 +3483,134 @@ if (!function_exists('sync_cart_prices')) {
                 $cart->save();
             }
         }
+    }
+}
+
+if (!function_exists('default_upload_types')) {
+    function default_upload_types(): array
+    {
+        return [
+            'jpg' => 'image',
+            'jpeg' => 'image',
+            'png' => 'image',
+            'svg' => 'image',
+            'webp' => 'image',
+            'gif' => 'image',
+            'mp4' => 'video',
+            'mpg' => 'video',
+            'mpeg' => 'video',
+            'webm' => 'video',
+            'ogg' => 'video',
+            'avi' => 'video',
+            'mov' => 'video',
+            'flv' => 'video',
+            'swf' => 'video',
+            'mkv' => 'video',
+            'wmv' => 'video',
+            'wma' => 'audio',
+            'aac' => 'audio',
+            'wav' => 'audio',
+            'mp3' => 'audio',
+            'zip' => 'archive',
+            'rar' => 'archive',
+            '7z' => 'archive',
+            'doc' => 'document',
+            'txt' => 'document',
+            'docx' => 'document',
+            'pdf' => 'document',
+            'csv' => 'document',
+            'xml' => 'document',
+            'ods' => 'document',
+            'xlr' => 'document',
+            'xls' => 'document',
+            'xlsx' => 'document',
+        ];
+    }
+}
+
+if (!function_exists('get_configured_upload_types')) {
+    function get_configured_upload_types(): array
+    {
+        $defaultTypes = default_upload_types();
+        $configured = trim((string) get_setting('aiz_upload_allowed_types', ''));
+
+        if ($configured === '') {
+            return $defaultTypes;
+        }
+
+        $allowedTypes = ['image', 'video', 'audio', 'archive', 'document'];
+        $tokens = preg_split('/[\r\n,]+/', $configured);
+        $parsed = [];
+
+        foreach ($tokens as $token) {
+            $token = trim($token);
+            if ($token === '') {
+                continue;
+            }
+
+            $parts = explode(':', $token, 2);
+            $extension = strtolower(trim($parts[0]));
+            if (!preg_match('/^[a-z0-9]+$/', $extension)) {
+                continue;
+            }
+
+            if (count($parts) === 2) {
+                $mappedType = strtolower(trim($parts[1]));
+            } else {
+                $mappedType = $defaultTypes[$extension] ?? null;
+            }
+
+            if (!$mappedType || !in_array($mappedType, $allowedTypes, true)) {
+                continue;
+            }
+
+            $parsed[$extension] = $mappedType;
+        }
+
+        return !empty($parsed) ? $parsed : $defaultTypes;
+    }
+}
+
+if (!function_exists('validate_uploaded_file')) {
+    function validate_uploaded_file($file, &$error_message = null): bool
+    {
+        if (!$file) {
+            $error_message = translate('Upload file is missing');
+            return false;
+        }
+
+        if (method_exists($file, 'isValid') && !$file->isValid()) {
+            $errorCode = method_exists($file, 'getError') ? $file->getError() : null;
+            $errorMap = [
+                UPLOAD_ERR_INI_SIZE => translate('The uploaded file exceeds the server upload limit.'),
+                UPLOAD_ERR_FORM_SIZE => translate('The uploaded file exceeds the form limit.'),
+                UPLOAD_ERR_PARTIAL => translate('The file was only partially uploaded.'),
+                UPLOAD_ERR_NO_FILE => translate('No file was uploaded.'),
+                UPLOAD_ERR_NO_TMP_DIR => translate('Server is missing a temporary upload directory.'),
+                UPLOAD_ERR_CANT_WRITE => translate('Server could not write the uploaded file.'),
+                UPLOAD_ERR_EXTENSION => translate('A PHP extension stopped the upload.'),
+            ];
+
+            $error_message = $errorMap[$errorCode] ?? translate('The uploaded file is not valid.');
+            return false;
+        }
+
+        // 1. Validate file size
+        $maxMb = (int) get_setting('max_upload_file_size', 5); // default 5 MB
+        $maxBytes = $maxMb * 1024 * 1024;
+        if ($file->getSize() > $maxBytes) {
+            $error_message = translate('File size exceeds the maximum limit of ') . $maxMb . 'MB';
+            return false;
+        }
+
+        // 2. Validate file extension/type
+        $extension = strtolower($file->getClientOriginalExtension());
+        $configuredTypes = get_configured_upload_types();
+        if (!isset($configuredTypes[$extension])) {
+            $error_message = translate('The file extension ') . $extension . translate(' is not allowed.');
+            return false;
+        }
+
+        return true;
     }
 }

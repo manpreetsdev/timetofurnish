@@ -26,6 +26,91 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
             next_page_url: null,
             prev_page_url: null,
         },
+        clearUploadErrors: function () {
+            $("#aiz-upload-errors").empty();
+        },
+        renderUploadError: function (fileName, message) {
+            var $container = $("#aiz-upload-errors");
+            if (!$container.length) {
+                AIZ.plugins.notify(
+                    "warning",
+                    (fileName ? fileName + ": " : "") + message
+                );
+                return;
+            }
+
+            var $alert = $(
+                '<div class="alert alert-warning alert-dismissible fade show mb-2 border" role="alert"></div>'
+            );
+            var $title = $('<strong class="d-block mb-1"></strong>');
+            $title.text(fileName ? fileName : (AIZ.local.file || "File"));
+            var $body = $('<span class="d-block"></span>');
+            $body.text(message);
+
+            $alert.append($title).append($body);
+            $container.append($alert);
+            AIZ.plugins.notify(
+                "warning",
+                (fileName ? fileName + ": " : "") + message
+            );
+        },
+        extractUploadErrorMessage: function (error, response) {
+            if (response) {
+                if (response.status) {
+                    if (response.status === 413) {
+                        return "The upload is too large for the server request limit. Upload fewer files at once or increase the server body size limit.";
+                    }
+
+                    if (response.status === 404) {
+                        return "Upload endpoint not found.";
+                    }
+
+                    if (response.status >= 500) {
+                        return "The server failed while processing the upload.";
+                    }
+                }
+
+                if (response.responseText) {
+                    return response.responseText.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+                }
+            }
+
+            if (response && response.body) {
+                if (typeof response.body === "string") {
+                    return response.body;
+                }
+                if (response.body.message) {
+                    return response.body.message;
+                }
+                if (response.body.error) {
+                    return response.body.error;
+                }
+                if (response.body.errors) {
+                    if (Array.isArray(response.body.errors)) {
+                        var firstError = response.body.errors[0];
+                        if (firstError) {
+                            return firstError.message || firstError;
+                        }
+                    }
+                    if (typeof response.body.errors === "object") {
+                        var firstKey = Object.keys(response.body.errors)[0];
+                        if (firstKey && response.body.errors[firstKey]) {
+                            return response.body.errors[firstKey][0] || response.body.errors[firstKey];
+                        }
+                    }
+                }
+            }
+
+            if (error && error.message) {
+                return error.message;
+            }
+
+            if (typeof error === "string") {
+                return error;
+            }
+
+            return "Upload failed";
+        },
         removeInputValue: function (id, array, elem) {
             var selected = array.filter(function (item) {
                 return item !== id;
@@ -180,7 +265,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
             } else {
                 var fileText = AIZ.local.file_selected;
             }
-            return array.length + " " + fileText;
+            return array.length + ' <span class="button-text">' + fileText + '</span>';
         },
         updateUploaderSelected: function () {
             $(".aiz-uploader-selected").html(
@@ -431,88 +516,75 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
             }
         },
         updateUploaderFiles: function () {
-            $(".aiz-uploader-all").html(
-                '<div class="align-items-center d-flex h-100 justify-content-center w-100"><div class="spinner-border" role="status"></div></div>'
-            );
-
             var data = AIZ.uploader.data.allFiles;
 
+            // show loader in grid
+            if ($('#aiz-uploader-grid').length) {
+                $('#aiz-uploader-grid').html('<div class="align-items-center d-flex h-100 justify-content-center w-100"><div class="spinner-border" role="status"></div></div>');
+            } else {
+                $(".aiz-uploader-all").html('<div class="align-items-center d-flex h-100 justify-content-center w-100"><div class="spinner-border" role="status"></div></div>');
+            }
+
             setTimeout(function () {
-                $(".aiz-uploader-all").html(null);
+                if ($('#aiz-uploader-grid').length) {
+                    $('#aiz-uploader-grid').html('');
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            var thumb = '';
+                            if (data[i].type === 'image') {
+                                thumb = '<img src="' + AIZ.data.fileBaseUrl + data[i].file_name + '" class="thumb-img" onerror="this.onerror=null; this.outerHTML=\'<div class=\\\'d-flex align-items-center justify-content-center h-100 w-100 text-muted\\\' style=\\\'font-size: 11px; font-weight: 500; text-align: center; padding: 10px;\\\'><span style=\\\'color: var(--uploader-muted);\\\'>Preview not available</span></div>\';">';
+                            } else {
+                                thumb = '<div class="thumb-img" style="display:flex;align-items:center;justify-content:center;height:120px;"><i class="la la-file-text" style="font-size:28px;color:#bbb"></i></div>';
+                            }
 
-                if (data.length > 0) {
-                    for (var i = 0; i < data.length; i++) {
-                        var thumb = "";
-                        var hidden = "";
-                        //console.log(AIZ.data.fileBaseUrl);
-                        if (data[i].type === "image") {
-                            thumb =
-                                '<img src="' +
-                                AIZ.data.fileBaseUrl +
-                                data[i].file_name +
-                                '" class="img-fit">';
-                        } else {
-                            thumb = '<i class="la la-file-text"></i>';
+                            var selectedClass = data[i].selected ? ' data-selected="true"' : ' data-selected="false"';
+
+                            var html = '<div class="uploader-thumb aiz-file-box-wrap" aria-hidden="' + data[i].aria_hidden + '"' + selectedClass + '>' +
+                                '<div class="aiz-file-box">' +
+                                '<div class="card card-file aiz-uploader-select" data-value="' + data[i].id + '" title="' + data[i].file_original_name + '.' + data[i].extension + '">' +
+                                '<div class="card-file-thumb">' + thumb + '</div>' +
+                                '<div class="card-body">' +
+                                '<div class="file-name">' + data[i].file_original_name + '</div>' +
+                                '<div class="file-meta">' + AIZ.extra.bytesToSize(data[i].file_size) + ' · ' + data[i].extension.toUpperCase() + '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>';
+
+                            $('#aiz-uploader-grid').append(html);
                         }
-                        var html =
-                            '<div class="aiz-file-box-wrap" aria-hidden="' +
-                            data[i].aria_hidden +
-                            '" data-selected="' +
-                            data[i].selected +
-                            '">' +
-                            '<div class="aiz-file-box">' +
-                            // '<div class="dropdown-file">' +
-                            // '<a class="dropdown-link" data-toggle="dropdown">' +
-                            // '<i class="la la-ellipsis-v"></i>' +
-                            // "</a>" +
-                            // '<div class="dropdown-menu dropdown-menu-right">' +
-                            // '<a href="' +
-                            // AIZ.data.fileBaseUrl +
-                            // data[i].file_name +
-                            // '" target="_blank" download="' +
-                            // data[i].file_original_name +
-                            // "." +
-                            // data[i].extension +
-                            // '" class="dropdown-item"><i class="la la-download mr-2"></i>Download</a>' +
-                            // '<a href="#" class="dropdown-item aiz-uploader-delete" data-id="' +
-                            // data[i].id +
-                            // '"><i class="la la-trash mr-2"></i>Delete</a>' +
-                            // "</div>" +
-                            // "</div>" +
-                            '<div class="card card-file aiz-uploader-select" title="' +
-                            data[i].file_original_name +
-                            "." +
-                            data[i].extension +
-                            '" data-value="' +
-                            data[i].id +
-                            '">' +
-                            '<div class="card-file-thumb">' +
-                            thumb +
-                            "</div>" +
-                            '<div class="card-body">' +
-                            '<h6 class="d-flex">' +
-                            '<span class="text-truncate title">' +
-                            data[i].file_original_name +
-                            "</span>" +
-                            '<span class="ext flex-shrink-0">.' +
-                            data[i].extension +
-                            "</span>" +
-                            "</h6>" +
-                            "<p>" +
-                            AIZ.extra.bytesToSize(data[i].file_size) +
-                            "</p>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>";
-
-                        $(".aiz-uploader-all").append(html);
+                    } else {
+                        $('#aiz-uploader-grid').html('<div class="uploader-empty"><h5>No files found</h5></div>');
                     }
                 } else {
-                    $(".aiz-uploader-all").html(
-                        '<div class="align-items-center d-flex h-100 justify-content-center w-100 nav-tabs"><div class="text-center"><h3>No files found</h3></div></div>'
-                    );
+                    // fallback to original container
+                    $(".aiz-uploader-all").html(null);
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            var thumb = '';
+                            if (data[i].type === 'image') {
+                                thumb = '<img src="' + AIZ.data.fileBaseUrl + data[i].file_name + '" class="img-fit" onerror="this.onerror=null; this.outerHTML=\'<div class=\\\'d-flex align-items-center justify-content-center h-100 w-100 text-muted\\\' style=\\\'font-size: 11px; font-weight: 500; text-align: center; padding: 10px;\\\'><span style=\\\'color: var(--uploader-muted);\\\'>Preview not available</span></div>\';">';
+                            } else {
+                                thumb = '<i class="la la-file-text"></i>';
+                            }
+                            var html = '<div class="aiz-file-box-wrap" aria-hidden="' + data[i].aria_hidden + '" data-selected="' + data[i].selected + '">' +
+                                '<div class="aiz-file-box">' +
+                                '<div class="card card-file aiz-uploader-select" title="' + data[i].file_original_name + '.' + data[i].extension + '" data-value="' + data[i].id + '">' +
+                                '<div class="card-file-thumb">' + thumb + '</div>' +
+                                '<div class="card-body">' +
+                                '<h6 class="d-flex"><span class="text-truncate title">' + data[i].file_original_name + '</span><span class="ext flex-shrink-0">.' + data[i].extension + '</span></h6>' +
+                                '<p>' + AIZ.extra.bytesToSize(data[i].file_size) + '</p>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>';
+                            $(".aiz-uploader-all").append(html);
+                        }
+                    } else {
+                        $(".aiz-uploader-all").html('<div class="align-items-center d-flex h-100 justify-content-center w-100 nav-tabs"><div class="text-center"><h3>No files found</h3></div></div>');
+                    }
                 }
+
                 AIZ.uploader.uploadSelect();
                 AIZ.uploader.deleteUploaderFile();
             }, 300);
@@ -720,6 +792,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                 function (data) {
                     $("body").append(data);
                     $("#aizUploaderModal").modal("show");
+                    AIZ.uploader.clearUploadErrors();
                     AIZ.plugins.aizUppy();
                     AIZ.uploader.getAllUploads(
                         AIZ.data.appUrl + "/aiz-uploader/get-uploaded-files",
@@ -741,7 +814,9 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                                 false
                             );
                             AIZ.uploader.getAllUploads(
-                                AIZ.uploader.data.next_page_url
+                                AIZ.uploader.data.next_page_url,
+                                $('[name="aiz-uploader-search"]').val(),
+                                $('[name="aiz-uploader-sort"]').val()
                             );
                         }
                     });
@@ -753,7 +828,9 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                                 false
                             );
                             AIZ.uploader.getAllUploads(
-                                AIZ.uploader.data.prev_page_url
+                                AIZ.uploader.data.prev_page_url,
+                                $('[name="aiz-uploader-search"]').val(),
+                                $('[name="aiz-uploader-sort"]').val()
                             );
                         }
                     });
@@ -773,6 +850,30 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                             $("#aizUploaderModal").modal("hide");
                         }
                     );
+
+                    // also support our new footer button
+                    $("#aiz-uploader-use-selected").on("click", function () {
+                        if (from === "input") {
+                            AIZ.uploader.inputSelectPreviewGenerate(elem);
+                        } else if (from === "direct") {
+                            callback(AIZ.uploader.data.selectedFiles);
+                        }
+                        $("#aizUploaderModal").modal("hide");
+                    });
+
+                    // multi select toggle button
+                    $("#aiz-multi-select-toggle").on("click", function () {
+                        AIZ.uploader.data.multiple = !AIZ.uploader.data.multiple;
+                        if (AIZ.uploader.data.multiple) {
+                            $(this).addClass('active');
+                            $(this).removeClass('btn-outline-secondary');
+                            $(this).addClass('btn-primary');
+                        } else {
+                            $(this).removeClass('active');
+                            $(this).removeClass('btn-primary');
+                            $(this).addClass('btn-outline-secondary');
+                        }
+                    });
                 }
             );
             // }, 50);
@@ -1158,6 +1259,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
         },
         aizUppy: function () {
             if ($("#aiz-upload-files").length > 0) {
+                AIZ.uploader.clearUploadErrors();
                 var uppy = Uppy.Core({
                     autoProceed: true,
                 });
@@ -1207,10 +1309,49 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                         'X-CSRF-TOKEN': AIZ.data.csrf,
                     },
                 });
-                uppy.on("upload-success", function () {
+                uppy.on("restriction-failed", function (file, error) {
+                    var fileName = file && file.name ? file.name : "";
+                    var message = AIZ.uploader.extractUploadErrorMessage(error);
+                    AIZ.uploader.renderUploadError(fileName, message);
+                });
+                uppy.on("upload-error", function (file, error, response) {
+                    var fileName = file && file.name ? file.name : "";
+                    var message = AIZ.uploader.extractUploadErrorMessage(error, response);
+                    AIZ.uploader.renderUploadError(fileName, message);
+                });
+                uppy.on("upload-success", function (file, response) {
+                    var uploads = [];
+                    if (response.body && response.body.id) {
+                        uploads = [response.body];
+                    } else if (response.body && Array.isArray(response.body.uploads)) {
+                        uploads = response.body.uploads;
+                    }
+
+                    if (uploads.length > 0) {
+                        if (!AIZ.uploader.data.multiple) {
+                            AIZ.uploader.data.selectedFiles = [];
+                            AIZ.uploader.data.selectedFilesObject = [];
+                        }
+
+                        uploads.forEach(function (upload) {
+                            if (upload && upload.id && !AIZ.uploader.data.selectedFiles.includes(upload.id)) {
+                                AIZ.uploader.data.selectedFiles.push(upload.id);
+                                AIZ.uploader.data.selectedFilesObject.push(upload);
+                            }
+                        });
+
+                        if (AIZ.uploader.data.selectedFiles.length > 0) {
+                            AIZ.uploader.updateUploaderSelected();
+                        }
+                    }
                     AIZ.uploader.getAllUploads(
                         AIZ.data.appUrl + "/aiz-uploader/get-uploaded-files"
                     );
+                });
+                uppy.on("complete", function (result) {
+                    if (result.successful && result.successful.length > 0) {
+                        $('.nav-tabs a[href="#aiz-select-file"]').tab('show');
+                    }
                 });
             }
         },

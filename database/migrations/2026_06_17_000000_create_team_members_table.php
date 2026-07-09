@@ -12,9 +12,13 @@ return new class extends Migration
             Schema::create('team_members', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
+                $table->string('department')->nullable();
+                $table->string('designation')->nullable();
                 $table->string('email')->nullable();
                 $table->text('bio')->nullable();
                 $table->string('photo')->nullable();
+                $table->integer('department_sort_order')->default(0);
+                $table->integer('sort_order')->default(0);
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
             });

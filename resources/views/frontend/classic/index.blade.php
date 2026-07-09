@@ -43,7 +43,7 @@
         $flash_deal = get_featured_flash_deal();
     @endphp
     @if ($flash_deal != null)
-        <section class="mb-2 mb-md-3 mt-2 mt-md-3" id="flash_deal">
+        <section class="mb-2 mb-md-3 mt-2 mt-md-3 home_Section" id="flash_deal">
             <div class="container">
                 <!-- Top Section -->
                 <div class="d-flex flex-wrap mb-2 mb-md-3 align-items-baseline justify-content-between">
@@ -158,7 +158,7 @@
 
     <!-- Featured Categories -->
     @if (count($featured_categories) > 0)
-        <section class="mb-2 mb-md-3 mt-2 mt-md-3">
+        <section class="mb-2 mb-md-3 mt-2 mt-md-3 home_Section">
             <div class="container">
                 <div class="bg-white">
                     <!-- Top Section -->
@@ -248,7 +248,7 @@
                     $data_md = count($banner_1_imags) >= 2 ? 2 : 1;
                 @endphp
                 <div class="w-100">
-                    <div class="aiz-carousel gutters-16 overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
+                    <div class="aiz-carousel gutters-16 overflow-hidden arrow-inactive-none arrow-dark arrow-x-15 home_banner_1"
                         data-items="{{ count($banner_1_imags) }}" data-xxl-items="{{ count($banner_1_imags) }}"
                         data-xl-items="{{ count($banner_1_imags) }}" data-lg-items="{{ $data_md }}"
                         data-md-items="{{ $data_md }}" data-sm-items="1" data-xs-items="1" data-arrows="true"
@@ -308,7 +308,7 @@
     </div>
 
     <!-- New Products -->
-    <div id="section_newest">
+    <div id="section_newest home_Section">
 
     </div>
 
@@ -320,7 +320,7 @@
                     $banner_3_imags = json_decode(get_setting('home_banner3_images'));
                     $data_md = count($banner_3_imags) >= 2 ? 2 : 1;
                 @endphp
-                <div class="aiz-carousel gutters-16 overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
+                <div class="aiz-carousel home_banner_3 overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
                     data-items="{{ count($banner_3_imags) }}" data-xxl-items="{{ count($banner_3_imags) }}"
                     data-xl-items="{{ count($banner_3_imags) }}" data-lg-items="{{ $data_md }}"
                     data-md-items="{{ $data_md }}" data-sm-items="1" data-xs-items="1" data-arrows="true"
@@ -436,7 +436,7 @@
             $classified_products = get_home_page_classified_products(6);
         @endphp
         @if (count($classified_products) > 0)
-            <section class="mb-2 mb-md-3 mt-2 mt-md-3">
+            <section class="mb-2 mb-md-3 mt-2 mt-md-3 home_Section">
                 <div class="container">
                     <!-- Top Section -->
                     <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">
@@ -522,7 +522,7 @@
             $best_selers = get_best_sellers(5);
         @endphp
         @if (count($best_selers) > 0)
-        <section class="mb-2 mb-md-3 mt-2 mt-md-3">
+        <section class="mb-2 mb-md-3 mt-2 mt-md-3 home_Section">
             <div class="container">
                 <!-- Top Section -->
                 <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">
@@ -622,7 +622,7 @@
 
     <!-- Top Brands -->
     @if (get_setting('top_brands') != null)
-        <section class="mb-2 mb-md-3 mt-2 mt-md-3">
+        <section class="mb-2 mb-md-3 mt-2 mt-md-3 home_Section">
             <div class="container">
                 <!-- Top Section -->
                 <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">
@@ -662,5 +662,6 @@
         </section>
     @endif
 
-@endsection
+    @include('frontend.partials.homepage_reviews')
 
+@endsection

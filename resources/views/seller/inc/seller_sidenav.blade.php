@@ -1,4 +1,9 @@
 <div class="aiz-sidebar-wrap ">
+    <style>
+        .close_btn_sidebar{
+            right:2px !important;
+        }
+    </style>
     <div class="aiz-sidebar left c-scrollbar side">
         <div class="aiz-side-nav-logo-wrap ">
             <div class="d-flex align-items-center justify-content-between p-3 logo position-relative">
@@ -17,7 +22,7 @@
                     @endif
                 </div>
 
-                <button class="btn btn-icon btn-sm text-white d-xl-none position-absolute" style="right: 12px; top: 15px; z-index: 10;" onclick="closeMobileSidebar()">
+                <button class="close_btn_sidebar btn btn-icon btn-sm text-white d-xl-none position-absolute" style="right: 12px; top: 15px; z-index: 10;" onclick="closeMobileSidebar()">
                     <i class="las la-times fs-20"></i>
                 </button>
             </div>
@@ -414,12 +419,11 @@
     }
 
     .aiz-side-nav-list .aiz-side-nav-link.active,
-    .aiz-side-nav-list .aiz-side-nav-link.active .aiz-side-nav-text,
     .aiz-side-nav-list .aiz-side-nav-link.level-2-active,
     .aiz-side-nav-list .aiz-side-nav-link.level-2-active .aiz-side-nav-text {
         color: #39322a !important;
         background: #ffffff !important;
-        font-weight: 600;
+        font-weight: 600;.aiz-side-nav-list .level-2
         box-shadow: 0 4px 12px rgba(57, 50, 42, 0.08) !important;
     }
 
@@ -430,17 +434,22 @@
 
     /* Submenu nesting indicator */
     .aiz-side-nav-list .level-2 {
-        padding-left: 10px;
+        padding-left: 20px;
         margin-top: 4px;
         margin-bottom: 4px;
-        border-left: 1px solid rgba(255, 255, 255, 0.25);
+        position: relative;
     }
-
+.aiz-side-nav-list .level-2:before {
+    content: "";
+    position: absolute;
+    border: 0.5px solid #ffff;
+    height: 100%;
+    left: 26px;
+}
     [dir="rtl"] .aiz-side-nav-list .level-2 {
         padding-left: 0;
         padding-right: 10px;
         border-left: none;
-        border-right: 1px solid rgba(255, 255, 255, 0.25);
     }
 
     .aiz-side-nav-list .level-2 .aiz-side-nav-item {

@@ -19,6 +19,19 @@
                 </div>
             </div>
             <div class="form-group row">
+                <label class="col-sm-2 col-from-label">{{ translate('Department') }}</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" placeholder="{{ translate('HR Department') }}" name="department" value="{{ old('department', $team_member->department) }}">
+                    <small class="text-muted">{{ translate('Example: HR Department, Operations Team, Accounts Department.') }}</small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-from-label">{{ translate('Designation') }}</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" placeholder="{{ translate('HR Director') }}" name="designation" value="{{ old('designation', $team_member->designation) }}">
+                </div>
+            </div>
+            <div class="form-group row">
                 <label class="col-sm-2 col-from-label">{{ translate('Email') }}</label>
                 <div class="col-sm-10">
                     <input type="email" class="form-control" placeholder="{{ translate('Email') }}" name="email" value="{{ old('email', $team_member->email) }}">
@@ -33,13 +46,41 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-from-label">{{ translate('Profile Photo') }}</label>
                 <div class="col-sm-10">
-                    @if($team_member->photo)
-                        <div class="mb-2">
-                            <img src="{{ asset($team_member->photo) }}" class="img-fluid rounded" style="max-height: 180px;" alt="{{ $team_member->name }}">
+                    @php
+                        $currentPhoto = old('photo', $team_member->photo);
+                        $currentPhotoUrl = $currentPhoto
+                            ? (is_numeric($currentPhoto) ? uploaded_asset($currentPhoto) : asset($currentPhoto))
+                            : null;
+                    @endphp
+                    <div class="input-group" data-toggle="aizuploader" data-type="image">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse') }}</div>
                         </div>
-                    @endif
-                    <input type="file" name="photo" class="form-control">
-                    <small class="text-muted">{{ translate('Optional. JPG, PNG, WEBP.') }}</small>
+                        <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                        <input type="hidden" name="photo" value="{{ $currentPhoto }}" class="selected-files">
+                    </div>
+                    <div class="file-preview box sm">
+                        @if($currentPhotoUrl)
+                            <div class="d-inline-block mr-2 mb-2">
+                                <img src="{{ $currentPhotoUrl }}" alt="{{ $team_member->name }}" style="height: 80px; width: 80px; object-fit: cover; border-radius: 12px;">
+                            </div>
+                        @endif
+                    </div>
+                    <small class="text-muted">{{ translate('Choose from uploaded files or upload a new image. JPG, PNG, WEBP.') }}</small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-from-label">{{ translate('Department Sort Order') }}</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" placeholder="0" name="department_sort_order" value="{{ old('department_sort_order', $team_member->department_sort_order ?? 0) }}" min="0">
+                    <small class="text-muted">{{ translate('Lower numbers appear first by department section.') }}</small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-from-label">{{ translate('Card Sort Order') }}</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" placeholder="0" name="sort_order" value="{{ old('sort_order', $team_member->sort_order ?? 0) }}" min="0">
+                    <small class="text-muted">{{ translate('Lower numbers appear first inside the department.') }}</small>
                 </div>
             </div>
             <div class="form-group row">

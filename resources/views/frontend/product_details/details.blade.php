@@ -407,7 +407,6 @@
             background: #f5ede7;
             border-color: #b57a45;
             color: #b57a45;
-            transform: translateY(-2px);
         }
 
         .addon-tab-btn.active {
@@ -502,7 +501,6 @@
             position: absolute;
             left: -143px;
             top: 50%;
-            transform: translateY(-50%);
             background: #f5ede7;
             color: #b57a45;
             border-radius: 10px;
@@ -526,7 +524,6 @@
             border-top: 8px solid transparent;
             border-bottom: 8px solid transparent;
             border-left: 8px solid #b57a45;
-            transform: translateY(-50%);
         }
 
         .wishlist-btn:hover .wishlist-tooltip-custom,
@@ -1117,7 +1114,7 @@
 @endif
 
 <!-- Share -->
-<div class="mt-4 row no-gutters">
+{{--<div class="mt-4 row no-gutters">
     <div class="col-sm-2">
         <div class="mt-2 text-secondary fs-14 fw-500" style="color:#333 !important">{{ translate('Share') }}
         </div>
@@ -1126,7 +1123,7 @@
         <div class="aiz-share"></div>
     </div>
 </div>
-
+--}}
 </div>
 <script>
     function change_qty() {
