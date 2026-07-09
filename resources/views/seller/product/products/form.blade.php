@@ -84,7 +84,7 @@
         border-radius: 8px !important;
         background: var(--seller-surface) !important;
         box-shadow: 0 1px 0 rgba(32, 34, 35, 0.04) !important;
-        overflow: hidden;
+        overflow: visible !important;
         animation: none !important;
         transform: none !important;
     }
