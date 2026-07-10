@@ -1,3 +1,4 @@
+
 <!-- footer Description -->
 </div>
 @if (get_setting('footer_title') != null || get_setting('footer_description') != null)
@@ -56,7 +57,7 @@
     $foot_bg_pattern_right = get_setting('foot_bg_pattern_right');
     $foot_social_radius = get_setting('foot_social_radius', '4px');
     $foot_news_highlight_img = get_setting('foot_news_highlight_img');
-    
+
     // Newsletter settings
     $foot_news_show = get_setting('foot_news_show', 'on');
     $foot_news_title = get_setting('foot_news_title', 'Subscribe to our newsletter for regular updates about Offers, Coupons & more', App::getLocale());
@@ -76,12 +77,12 @@
     $foot_news_mob_pad_bot = get_setting('foot_news_mob_pad_bot', '8px');
     $foot_news_mob_pad_left = get_setting('foot_news_mob_pad_left', '0px');
     $foot_news_mob_pad_right = get_setting('foot_news_mob_pad_right', '0px');
-    
+
     $news_border_top = 'none';
     $news_border_bottom = 'none';
     $news_border_left = 'none';
     $news_border_right = 'none';
-    
+
     if ($foot_news_border_pos == 'top-bottom') {
         $news_border_top = "{$foot_news_border_width} solid {$foot_news_border_color}";
         $news_border_bottom = "{$foot_news_border_width} solid {$foot_news_border_color}";
@@ -95,7 +96,7 @@
         $news_border_left = "{$foot_news_border_width} solid {$foot_news_border_color}";
         $news_border_right = "{$foot_news_border_width} solid {$foot_news_border_color}";
     }
-    
+
     // Copyright & Disclaimer settings
     $foot_copy_bg = get_setting('foot_copy_bg', '#5f4d3e');
     $foot_copy_text = get_setting('foot_copy_text', '#ffffff');
@@ -109,7 +110,7 @@
     $foot_bar_mob_pad_bot = get_setting('foot_bar_mob_pad_bot', '12px');
     $foot_bar_mob_pad_left = get_setting('foot_bar_mob_pad_left', '0px');
     $foot_bar_mob_pad_right = get_setting('foot_bar_mob_pad_right', '0px');
-    
+
     // Mobile Font Sizes
     $foot_mob_head_font_size = get_setting('foot_mob_head_font_size', '14px');
     $foot_mob_body_font_size = get_setting('foot_mob_body_font_size', '13px');
@@ -237,10 +238,10 @@
                          style="@if(!$is_bootstrap) width: {{ $custom_width }} !important; flex: 0 0 {{ $custom_width }} !important; max-width: {{ $custom_width }} !important; @endif">
                         <div class="ttf-footer-card">
                             @foreach($c['widgets'] as $wIndex => $w)
-                                @php 
-                                    $wType = $w['type'] ?? 'menu_links'; 
+                                @php
+                                    $wType = $w['type'] ?? 'menu_links';
                                     $widget_id = "widget-col-{$col}-{$wIndex}";
-                                    
+
                                     // Custom Styling Variables for each specific widget
                                     $style_text_align = $w['style_text_align'] ?? '';
                                     $style_font_size = $w['style_font_size'] ?? '';
@@ -251,7 +252,7 @@
                                     $style_margin_bottom = $w['style_margin_bottom'] ?? '';
                                     $style_head_weight = $w['style_head_weight'] ?? '';
                                     $style_text_weight = $w['style_text_weight'] ?? '';
-                                    
+
                                     // Social Icons specific overrides
                                     $style_social_radius = $w['style_social_radius'] ?? '';
                                     $style_social_bg = $w['style_social_bg'] ?? '';
@@ -260,12 +261,12 @@
                                     $style_social_hover_color = $w['style_social_hover_color'] ?? '';
                                     $style_social_width = $w['style_social_width'] ?? '36px';
                                 @endphp
-                                
+
                                 <style>
                                     #{{ $widget_id }}, #{{ $widget_id }}-mob {
                                         @if(!empty($style_text_align)) text-align: {{ $style_text_align }} !important; @endif
                                     }
-                                    #{{ $widget_id }} h4, #{{ $widget_id }}-mob h4, 
+                                    #{{ $widget_id }} h4, #{{ $widget_id }}-mob h4,
                                     #{{ $widget_id }} .sub-widget-title, #{{ $widget_id }}-mob .sub-widget-title,
                                     #{{ $widget_id }} .secure-payment-title, #{{ $widget_id }}-mob .secure-payment-title,
                                     #{{ $widget_id }}-mob .aiz-accordion {
@@ -273,8 +274,8 @@
                                         @if(!empty($style_margin_bottom)) margin-bottom: {{ $style_margin_bottom }} !important; @endif
                                         @if(!empty($style_head_weight)) font-weight: {{ $style_head_weight }} !important; @endif
                                     }
-                                    #{{ $widget_id }} a, #{{ $widget_id }}-mob a, 
-                                    #{{ $widget_id }} p, #{{ $widget_id }}-mob p, 
+                                    #{{ $widget_id }} a, #{{ $widget_id }}-mob a,
+                                    #{{ $widget_id }} p, #{{ $widget_id }}-mob p,
                                     #{{ $widget_id }} span, #{{ $widget_id }}-mob span,
                                     #{{ $widget_id }} li, #{{ $widget_id }}-mob li {
                                         @if(!empty($style_font_size)) font-size: {{ $style_font_size }} !important; @endif
@@ -381,7 +382,7 @@
                                                 @endif
                                             </ul>
                                         @endif
-                                        
+
                                         <div class="sub-widget-title">{{ $w['subheading_2'] ?? translate('Join Our Partner Network') }}</div>
                                         <ul class="list-unstyled mb-3">
                                             <li>
@@ -482,7 +483,7 @@
                                                          @endforeach
                                                      </div>
                                                  @endif
-                                                 
+
                                              </div>
                                          @endif
                                     @elseif ($wType == 'social_icons')
@@ -555,12 +556,54 @@
     <div class="d-md-none bg-transparent ttf-mobile-footer">
         @foreach($columns as $col => $c)
             @if ($c['status'] == 'on')
-                @foreach($c['widgets'] as $wIndex => $w)
-                    @php 
+                @php
+                    $mobileItems = [];
+                    $mobileSeq = 0;
+
+                    foreach ($c['widgets'] as $wIndex => $w) {
+                        $defaultOrder = ($wIndex + 1) * 10;
+                        $mobileItems[] = [
+                            'kind' => 'widget',
+                            'order' => (int) ($w['mobile_order'] ?? $defaultOrder),
+                            'seq' => $mobileSeq++,
+                            'wIndex' => $wIndex,
+                            'w' => $w,
+                        ];
+                    }
+
+                    foreach (($c['extra_blocks'] ?? []) as $ebIdx => $eb) {
+                        $ebShow = $eb['show_on'] ?? 'both';
+                        if ($ebShow === 'desktop') {
+                            continue;
+                        }
+
+                        $defaultOrder = (count($c['widgets']) + $ebIdx + 1) * 10;
+                        $mobileItems[] = [
+                            'kind' => 'extra',
+                            'order' => (int) ($eb['mobile_order'] ?? $defaultOrder),
+                            'seq' => $mobileSeq++,
+                            'ebIdx' => $ebIdx,
+                            'eb' => $eb,
+                        ];
+                    }
+
+                    usort($mobileItems, function ($a, $b) {
+                        $cmp = $a['order'] <=> $b['order'];
+                        return $cmp !== 0 ? $cmp : ($a['seq'] <=> $b['seq']);
+                    });
+                @endphp
+
+                @foreach($mobileItems as $mobileItem)
+                    @if(($mobileItem['kind'] ?? 'widget') === 'widget')
+                        @php
+                            $w = $mobileItem['w'];
+                            $wIndex = $mobileItem['wIndex'];
+                        @endphp
+                    @php
                         $wType = $w['type'] ?? 'menu_links';
                         $widget_id = "widget-col-{$col}-{$wIndex}-mob";
                     @endphp
-                    
+
                     @if (in_array($wType, ['menu_links', 'important_links', 'my_account', 'seller_zone', 'text_html']))
                         <div id="{{ $widget_id }}" class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-section">
                             <div class="container">
@@ -782,44 +825,41 @@
                             </div>
                         </div>
                     @endif
-                @endforeach
-
-                {{-- ── Extra Link Blocks (mobile accordion) ── --}}
-                @if (!empty($c['extra_blocks']))
-                    @foreach($c['extra_blocks'] as $ebIdx => $eb)
-                        @php $eb_show = $eb['show_on'] ?? 'both'; @endphp
-                        @if ($eb_show !== 'desktop')
-                            @php $eb_widget_id = "extra-block-col-{$col}-{$ebIdx}-mob"; @endphp
-                            <div id="{{ $eb_widget_id }}" class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-section">
-                                <div class="container">
-                                    <div class="aiz-accordion-heading">
-                                        <button class="aiz-accordion fs-14 text-white bg-transparent">
-                                            {{ $eb['title'] ?? translate('More Links') }}
-                                        </button>
-                                    </div>
-                                    <div class="aiz-accordion-panel bg-transparent">
-                                        <div class="py-3">
-                                            <ul class="list-unstyled">
-                                                @if (!empty($eb['lbls']))
-                                                    @foreach($eb['lbls'] as $eLIdx => $eLbl)
-                                                        @if (!empty(trim($eLbl)))
-                                                            @php $eLnk = $eb['lnks'][$eLIdx] ?? '#'; @endphp
-                                                            <li class="mb-2 pb-2">
-                                                                <a href="{{ url($eLnk) }}" class="fs-14 text-light animate-underline-white">
-                                                                    {{ $eLbl }}
-                                                                </a>
-                                                            </li>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </ul>
-                                        </div>
+                    @else
+                        @php
+                            $eb = $mobileItem['eb'];
+                            $ebIdx = $mobileItem['ebIdx'];
+                            $eb_widget_id = "extra-block-col-{$col}-{$ebIdx}-mob";
+                        @endphp
+                        <div id="{{ $eb_widget_id }}" class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-section">
+                            <div class="container">
+                                <div class="aiz-accordion-heading">
+                                    <button class="aiz-accordion fs-14 text-white bg-transparent">
+                                        {{ $eb['title'] ?? translate('More Links') }}
+                                    </button>
+                                </div>
+                                <div class="aiz-accordion-panel bg-transparent">
+                                    <div class="py-3">
+                                        <ul class="list-unstyled">
+                                            @if (!empty($eb['lbls']))
+                                                @foreach($eb['lbls'] as $eLIdx => $eLbl)
+                                                    @if (!empty(trim($eLbl)))
+                                                        @php $eLnk = $eb['lnks'][$eLIdx] ?? '#'; @endphp
+                                                        <li class="mb-2 pb-2">
+                                                            <a href="{{ url($eLnk) }}" class="fs-14 text-light animate-underline-white">
+                                                                {{ $eLbl }}
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
-                        @endif
-                    @endforeach
-                @endif
+                        </div>
+                    @endif
+                @endforeach
             @endif
         @endforeach
     </div>
@@ -1051,7 +1091,7 @@
         const readMoreBtn = document.querySelector('.footer-read-more-btn');
         const shortText = document.querySelector('.footer-text-short');
         const fullText = document.querySelector('.footer-text-full');
-        
+
         if (readMoreBtn && shortText && fullText) {
             readMoreBtn.addEventListener('click', function(e) {
                 e.preventDefault();

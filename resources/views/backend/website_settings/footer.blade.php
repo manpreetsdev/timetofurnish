@@ -33,7 +33,7 @@
         border: 2px dashed #b5b5bf;
         position: relative;
     }
-    
+
     /* Config Panel styling */
     .ttf-config-pane {
         width: 440px;
@@ -47,7 +47,7 @@
         position: sticky;
         top: 20px;
     }
-    
+
     /* Interactive Preview Hotspots */
     .ttf-hotspot {
         position: relative;
@@ -85,7 +85,7 @@
         opacity: 1;
         transform: translateY(0);
     }
-    
+
     /* Settings panel tabs */
     .config-tabs {
         border-bottom: 1px solid #e4e5eb;
@@ -114,7 +114,7 @@
         border-bottom-color: #3390f3;
         background: #ffffff;
     }
-    
+
     .tab-content-pane {
         display: none;
         padding: 20px;
@@ -124,7 +124,7 @@
     .tab-content-pane.active {
         display: block;
     }
-    
+
     /* Widget card builder styling */
     .widget-card {
         border: 1px solid #e4e5eb;
@@ -210,21 +210,21 @@
 
 <form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data" onsubmit="refreshColumnIndices()">
     @csrf
-    
+
     <input type="hidden" name="tab" value="footer-builder">
     <input type="hidden" name="lang_edit" value="{{ $lang }}">
 
     <div class="ttf-editor-layout">
-        
+
         <!-- Live Preview Area -->
         <div class="ttf-preview-pane">
             <div class="ttf-preview-title">
                 <i class="las la-eye"></i>
                 <span>{{ translate('Live Preview (Click any section to edit)') }}</span>
             </div>
-            
+
             <div class="ttf-preview-wrapper">
-                
+
                 @php
                     // Pre-fill colors and values
                     $foot_bg_color = get_setting('foot_bg_color', '#fdfbf9');
@@ -245,7 +245,7 @@
                     $foot_bg_pattern_left = get_setting('foot_bg_pattern_left');
                     $foot_bg_pattern_right = get_setting('foot_bg_pattern_right');
                     $foot_social_radius = get_setting('foot_social_radius', '4px');
-                    
+
                     // Newsletter
                     $foot_news_show = get_setting('foot_news_show', 'on');
                     $foot_news_title = get_setting('foot_news_title', 'Subscribe to our newsletter for regular updates about Offers, Coupons & more', $lang);
@@ -266,7 +266,7 @@
                     $foot_news_mob_pad_bot = get_setting('foot_news_mob_pad_bot', '8px');
                     $foot_news_mob_pad_left = get_setting('foot_news_mob_pad_left', '0px');
                     $foot_news_mob_pad_right = get_setting('foot_news_mob_pad_right', '0px');
-                    
+
                     // Bottom Copyright Bar
                     $foot_copy_bg = get_setting('foot_copy_bg', '#5f4d3e');
                     $foot_copy_text = get_setting('foot_copy_text', '#ffffff');
@@ -280,19 +280,19 @@
                     $foot_bar_mob_pad_bot = get_setting('foot_bar_mob_pad_bot', '12px');
                     $foot_bar_mob_pad_left = get_setting('foot_bar_mob_pad_left', '0px');
                     $foot_bar_mob_pad_right = get_setting('foot_bar_mob_pad_right', '0px');
-                    
+
                     // Mobile Font Sizes
                     $foot_mob_head_font_size = get_setting('foot_mob_head_font_size', '14px');
                     $foot_mob_body_font_size = get_setting('foot_mob_body_font_size', '13px');
 
                     $columns = \App\Support\FooterDefaults::columns($lang);
                 @endphp
-                
+
                 <!-- Simulated Frontend Footer Container with CSS Variables mapping -->
                 <div class="footer-widget ttf-footer-links-section ttf-hotspot" id="hotspot-general" onclick="activateSection('tab-general', this)" style="--foot-bg-color: {{ $foot_bg_color }}; --foot-head-color: {{ $foot_head_color }}; --foot-text-color: {{ $foot_text_color }}; --foot-hover-color: {{ $foot_hover_color }}; --foot-pad-top: {{ $foot_pad_top }}; --foot-pad-bot: {{ $foot_pad_bot }}; --foot-border-color: {{ $foot_border_color }}; --foot-copy-bg: {{ $foot_copy_bg }}; --foot-copy-text: {{ $foot_copy_text }}; --foot-news-bg: {{ $foot_news_bg }}; --foot-news-border: {{ $foot_news_border }}; --foot-news-btn_bg: {{ $foot_news_btn_bg }}; --foot-social-radius: {{ $foot_social_radius }};
                 --foot-news-btn-tx: {{ $foot_news_btn_tx }}; --foot-head-font-size: {{ get_setting('foot_head_font_size', '16px') }}; --foot-body-font-size: {{ get_setting('foot_body_font_size', '13px') }}; --foot-body-line-height: {{ get_setting('foot_body_line_height', '1.8') }}; --foot-col-spacing: {{ get_setting('foot_col_spacing', '20px') }}; --foot-head-margin-bottom: {{ get_setting('foot_head_margin_bottom', '18px') }}; @if(!empty($foot_bg_pattern_left)) --foot-bg-pattern-left: url('{{ uploaded_asset($foot_bg_pattern_left) }}'); @else --foot-bg-pattern-left: none; @endif @if(!empty($foot_bg_pattern_right)) --foot-bg-pattern-right: url('{{ uploaded_asset($foot_bg_pattern_right) }}'); @else --foot-bg-pattern-right: none; @endif @if(!empty($foot_news_highlight_img)) --foot-news-highlight-img: url('{{ uploaded_asset($foot_news_highlight_img) }}'); @endif">
                     <span class="ttf-edit-badge"><i class="las la-cog"></i> {{ translate('General Styles') }}</span>
-                    
+
                     <!-- Sim Newsletter Section -->
                     <div id="preview-newsletter-section" class="footer-widget iuytrey footer-newsletter-section ttf-hotspot @if($foot_news_show == 'off') d-none @endif" onclick="activateSection('tab-newsletter', this); event.stopPropagation();">
                         <span class="ttf-edit-badge"><i class="las la-envelope"></i> {{ translate('Newsletter Settings') }}</span>
@@ -308,7 +308,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Sim Columns Grid -->
                     <div class="container mt-4">
                         <div class="row gutters-20">
@@ -319,7 +319,7 @@
                                     $is_bootstrap = str_starts_with($col_width, 'col-') || str_starts_with($col_width, 'ttf-');
                                     $widgets = $columns[$col]['widgets'];
                                 @endphp
-                                
+
                                 <div id="preview-col-{{ $col }}" class="ttf-hotspot @if($col_status == 'off') d-none @endif {{ $is_bootstrap ? $col_width : '' }}" style="@if(!$is_bootstrap) width: {{ $col_width }} !important; flex: 0 0 {{ $col_width }} !important; max-width: {{ $col_width }} !important; @endif" onclick="activateSection('tab-col-{{ $col }}', this); event.stopPropagation();">
                                     <span class="ttf-edit-badge"><i class="las la-edit"></i> {{ translate('Column') }} {{ $col }}</span>
                                     <div class="ttf-footer-card">
@@ -411,9 +411,9 @@
                             @endfor
                         </div>
                     </div>
-                    
+
                 </div>
-                
+
                 <!-- Bottom Copyright Disclaimer -->
                 <div class="ttf-footer-bottom-bar ttf-hotspot" onclick="activateSection('tab-bottom-bar', this); event.stopPropagation();">
                     <span class="ttf-edit-badge"><i class="las la-copyright"></i> {{ translate('Bottom Bar') }}</span>
@@ -428,14 +428,14 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
-        
+
         <!-- Config panel on the right -->
         <div class="ttf-config-pane">
             <div class="ttf-config-card">
-                
+
                 <div class="config-tabs d-flex">
                     <button type="button" class="config-tab-btn active" onclick="showTab('tab-general', this)">
                         {{ translate('Styles') }}
@@ -450,11 +450,11 @@
                         {{ translate('Bottom Bar') }}
                     </button>
                 </div>
-                
+
                 <!-- Tab Pane: General Styles -->
                 <div id="tab-general" class="tab-content-pane active">
                     <h6 class="fw-700 text-dark mb-3 border-bottom pb-2">{{ translate('General Styling & Dimensions') }}</h6>
-                    
+
                     <div class="form-group">
                         <label class="form-label font-weight-medium">{{ translate('Background Color') }}</label>
                         <input type="hidden" name="types[]" value="foot_bg_color">
@@ -465,7 +465,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="form-label font-weight-medium">{{ translate('Background Image') }}</label>
                         <div class="input-group" data-toggle="aizuploader" data-type="image">
@@ -638,7 +638,7 @@
                         <input type="hidden" name="types[]" value="foot_head_margin_bottom">
                         <input type="text" class="form-control" name="foot_head_margin_bottom" value="{{ get_setting('foot_head_margin_bottom', '18px') }}" placeholder="18px" oninput="updateLiveStyle('foot_head_margin_bottom', this.value)">
                     </div>
-                    
+
                     <!-- Colors Config -->
                     <div class="form-group">
                         <label class="form-label">{{ translate('Border / Divider Color') }}</label>
@@ -686,11 +686,11 @@
                         <input type="text" class="form-control" name="foot_social_radius" value="{{ $foot_social_radius }}" placeholder="4px" oninput="updateLiveStyle('foot_social_radius', this.value)">
                     </div>
                 </div>
-                
+
                 <!-- Tab Pane: Newsletter Settings -->
                 <div id="tab-newsletter" class="tab-content-pane">
                     <h6 class="fw-700 text-dark mb-3 border-bottom pb-2">{{ translate('Newsletter Widget Settings') }}</h6>
-                    
+
                     <div class="form-group row align-items-center">
                         <label class="col-8 form-label font-weight-medium mb-0">{{ translate('Show Newsletter Section?') }}</label>
                         <div class="col-4 text-right">
@@ -864,7 +864,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Tab Pane: Footer Columns (1 to 8) -->
                 <div id="tab-columns" class="tab-content-pane">
                     <h6 class="fw-700 text-dark mb-3 border-bottom pb-2">{{ translate('Configure Grid Columns') }}</h6>
@@ -878,7 +878,7 @@
                         </div>
                         <small class="form-text text-muted">{{ translate('Use a preset for equal columns, then adjust each column width manually below.') }}</small>
                     </div>
-                    
+
                     <div class="accordion" id="columns-accordion">
                         @for($col = 1; $col <= 8; $col++)
                             @php
@@ -886,7 +886,7 @@
                                 $col_width = $columns[$col]['width'];
                                 $widgets = $columns[$col]['widgets'];
                             @endphp
-                            
+
                             <div class="card shadow-none border mb-3 @if($col_status == 'off') d-none @endif" id="card-col-settings-{{ $col }}">
                                 <div class="card-header py-2 bg-light d-flex justify-content-between align-items-center">
                                     <div class="c-pointer flex-grow-1" data-toggle="collapse" data-target="#collapse-col-{{ $col }}">
@@ -899,10 +899,10 @@
                                         <button type="button" class="btn btn-xs btn-link py-0 text-danger btn-delete-col" onclick="deleteColumn({{ $col }}, this); event.stopPropagation();" title="{{ translate('Delete Column') }}"><i class="las la-trash"></i></button>
                                     </div>
                                 </div>
-                                
+
                                 <div id="collapse-col-{{ $col }}" class="collapse @if($col == 4) show @endif" data-parent="#columns-accordion">
                                     <div class="card-body p-3">
-                                        
+
                                         <!-- Column Status -->
                                         <div class="form-group row align-items-center mb-3">
                                             <label class="col-8 form-label font-weight-medium mb-0">{{ translate('Show Column?') }}</label>
@@ -945,13 +945,13 @@
                                         <div class="widgets-list mt-3" id="widgets-list-{{ $col }}" data-col="{{ $col }}">
                                             <input type="hidden" name="types[][{{ $lang }}]" value="foot_col_{{ $col }}_widgets">
                                             <input type="hidden" name="types[][{{ $lang }}]" value="foot_col_{{ $col }}_extra_blocks">
-                                            
+
                                             @foreach($widgets as $wIndex => $w)
                                                 @php
                                                     $wType = $w['type'] ?? 'menu_links';
                                                     $wTitle = $w['title'] ?? '';
                                                 @endphp
-                                                
+
                                                 @if ($wType == 'menu_links')
                                                     <div class="widget-card card mb-3 border" data-type="menu_links" draggable="true">
                                                         <div class="card-header py-2 d-flex justify-content-between align-items-center bg-soft-primary">
@@ -1180,7 +1180,7 @@
                                                         </div>
                                                         <div class="card-body p-3">
                                                             <input type="hidden" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][type]" value="images_widget">
-                                                            
+
                                                             <div class="form-group">
                                                                 <label class="form-label">{{ translate('Widget Title') }}</label>
                                                                 <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][title]" value="{{ $wTitle }}" placeholder="Delivery Partners" oninput="updateColumnPreview({{ $col }})">
@@ -1344,13 +1344,13 @@
                                                         </div>
                                                         <div class="card-body p-2">
                                                             <div class="row">
-                                                                <div class="col-8">
+                                                                <div class="col-6">
                                                                     <div class="form-group mb-2">
                                                                         <label class="form-label fs-10 mb-1">{{ translate('Block Heading') }}</label>
                                                                         <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_extra_blocks[{{ $bIdx }}][title]" value="{{ $block['title'] ?? '' }}" placeholder="{{ translate('e.g. Before a Seller') }}">
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-4">
+                                                                <div class="col-3">
                                                                     <div class="form-group mb-2">
                                                                         <label class="form-label fs-10 mb-1">{{ translate('Show On') }}</label>
                                                                         <select class="form-control form-control-sm" name="foot_col_{{ $col }}_extra_blocks[{{ $bIdx }}][show_on]">
@@ -1358,6 +1358,14 @@
                                                                             <option value="desktop" @if(($block['show_on'] ?? '') == 'desktop') selected @endif>{{ translate('Desktop only') }}</option>
                                                                             <option value="mobile" @if(($block['show_on'] ?? '') == 'mobile') selected @endif>{{ translate('Mobile only') }}</option>
                                                                         </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    <div class="form-group mb-2">
+                                                                        <label class="form-label fs-10 mb-1">{{ translate('Mobile Order') }}</label>
+                                                                        <input type="number" class="form-control form-control-sm"
+                                                                            name="foot_col_{{ $col }}_extra_blocks[{{ $bIdx }}][mobile_order]"
+                                                                            value="{{ $block['mobile_order'] ?? (($bIdx + 1) * 10) }}" min="0" step="1">
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1388,16 +1396,16 @@
                             </div>
                         @endfor
                     </div>
-                    
+
                     <div class="mt-3 text-right">
                         <button type="button" class="btn btn-sm btn-soft-primary" onclick="addNewColumn()"><i class="las la-plus"></i> {{ translate('Add New Column') }}</button>
                     </div>
                 </div>
-                
+
                 <!-- Tab Pane: Bottom Bar Settings -->
                 <div id="tab-bottom-bar" class="tab-content-pane">
                     <h6 class="fw-700 text-dark mb-3 border-bottom pb-2">{{ translate('Copyright & Disclaimer Panel') }}</h6>
-                    
+
                     <div class="form-group">
                         <label class="form-label">{{ translate('Bottom Bar Background Color') }}</label>
                         <input type="hidden" name="types[]" value="foot_copy_bg">
@@ -1495,15 +1503,15 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Action Button footer -->
                 <div class="p-3 bg-light border-top text-right" style="border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
                     <button type="submit" class="btn btn-primary btn-block shadow-sm font-weight-bold py-2">{{ translate('Save Footer Settings') }}</button>
                 </div>
-                
+
             </div>
         </div>
-        
+
     </div>
 </form>
 
@@ -1544,30 +1552,30 @@
             b.classList.remove('active');
         });
         btn.classList.add('active');
-        
+
         document.querySelectorAll('.tab-content-pane').forEach(function(p) {
             p.classList.remove('active');
         });
         document.getElementById(tabId).classList.add('active');
     }
-    
+
     // When clicking a simulated hotspot, switch to the right tab/group
     function activateSection(tabId, el) {
         document.querySelectorAll('.ttf-hotspot').forEach(function(h) {
             h.classList.remove('active');
         });
         el.classList.add('active');
-        
+
         let tabType = tabId.split('-')[1]; // e.g. general, newsletter, col, bottom
         let btn = null;
         if(tabType === 'col') {
             btn = document.querySelector('.config-tab-btn[onclick*="tab-columns"]');
             showTab('tab-columns', btn);
-            
+
             let colNum = tabId.split('-')[2];
             $('.collapse').collapse('hide');
             $('#collapse-col-' + colNum).collapse('show');
-            
+
             let targetCard = document.getElementById('card-col-settings-' + colNum);
             if(targetCard) {
                 targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1579,12 +1587,12 @@
             }
         }
     }
-    
+
     // Live update functions using CSS Variables mapping
     function updateLiveStyle(key, val) {
         let root = document.getElementById('hotspot-general');
         if (!root) return;
-        
+
         if (key === 'foot_bg_color') {
             root.style.setProperty('--foot-bg-color', val);
         } else if (key === 'foot_border_color') {
@@ -1625,12 +1633,12 @@
             root.style.setProperty('--foot-social-radius', val);
         }
     }
-    
+
     // Live update column width preview
     function updateColumnWidth(colNum, val) {
         let el = document.getElementById('preview-col-' + colNum);
         if (!el) return;
-        
+
         let isBootstrap = val.startsWith('col-') || val.startsWith('ttf-');
         if (isBootstrap) {
             el.style.width = '';
@@ -1643,14 +1651,14 @@
             el.style.setProperty('max-width', val, 'important');
         }
     }
-    
+
     function updateLiveText(targetId, val) {
         let el = document.getElementById(targetId);
         if (el) {
             el.innerText = val;
         }
     }
-    
+
     function updateNewsletterTitle(val) {
         let el = document.getElementById('preview-news-title');
         if (el) {
@@ -1658,7 +1666,7 @@
             el.innerHTML = updatedText;
         }
     }
-    
+
     // Toggle show hide live previews
     function toggleNewsletter(checkbox) {
         let valEl = document.getElementById('foot_news_show_val');
@@ -1671,7 +1679,7 @@
             if(previewEl) previewEl.classList.add('d-none');
         }
     }
-    
+
     function toggleColumn(colNum, checkbox) {
         let valEl = document.getElementById('foot_col_' + colNum + '_status_val');
         let previewEl = document.getElementById('preview-col-' + colNum);
@@ -1688,7 +1696,7 @@
     function getWidgetTemplate(col, index, type, data = {}) {
         let title = data.title || '';
         let html = '';
-        
+
         // Style variables
         let style_text_align = data.style_text_align || '';
         let style_font_size = data.style_font_size || '';
@@ -1699,14 +1707,14 @@
         let style_head_color = data.style_head_color || '';
         let style_text_color = data.style_text_color || '';
         let style_hover_color = data.style_hover_color || '';
-        
+
         let style_social_radius = data.style_social_radius || '';
         let style_social_bg = data.style_social_bg || '';
         let style_social_color = data.style_social_color || '';
         let style_social_hover_bg = data.style_social_hover_bg || '';
         let style_social_hover_color = data.style_social_hover_color || '';
         let style_social_width = data.style_social_width || '36px';
-        
+
         let stylesCollapseHtml = `
             <div class="border-top pt-2 mt-2">
                 <a href="javascript:void(0);" class="btn btn-xs btn-soft-secondary btn-block mb-2" onclick="$(this).next('.widget-custom-styles-panel').slideToggle();">
@@ -1778,7 +1786,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group mb-2">
                         <label class="form-label fs-10">Heading Color Override</label>
                         <div class="input-group input-group-xs">
@@ -1808,7 +1816,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     ${(type === 'social_icons' || type === 'seller_zone') ? `
                         <h6 class="fs-10 font-weight-bold text-dark mt-3 border-bottom pb-1">Social Follow Styling</h6>
                         <div class="row">
@@ -1868,7 +1876,7 @@
                     ` : ''}
                 </div>
             </div>`;
-        
+
         if (type === 'menu_links') {
             let lbls = data.lbls || ['Link Label'];
             let lnks = data.lnks || ['#'];
@@ -1885,7 +1893,7 @@
                         </div>
                     </div>`;
             }
-            
+
             html = `
                 <div class="widget-card card mb-3 border" data-type="menu_links" draggable="true">
                     <div class="card-header py-2 d-flex justify-content-between align-items-center bg-soft-primary">
@@ -1912,7 +1920,7 @@
                         ${stylesCollapseHtml}
                     </div>
                 </div>`;
-        } 
+        }
         else if (type === 'text_html') {
             let innerText = data.html || '';
             html = `
@@ -2023,7 +2031,7 @@
             let seller_login_text = data.seller_login_text || 'Login to Seller Panel';
             let become_seller_text = data.become_seller_text || 'Register your shop';
             let download_seller_app_text = data.download_seller_app_text || 'Download Seller App';
-            
+
             html = `
                 <div class="widget-card card mb-3 border" data-type="seller_zone" draggable="true">
                     <div class="card-header py-2 d-flex justify-content-between align-items-center bg-soft-warning">
@@ -2109,7 +2117,7 @@
             let show_deliv = data.show_deliv || 'on';
             let show_pay = data.show_pay || 'on';
             let show_trust = data.show_trust || 'on';
-            
+
             html = `
                 <div class="widget-card card mb-3 border" data-type="images_widget" draggable="true">
                     <div class="card-header py-2 d-flex justify-content-between align-items-center bg-soft-info">
@@ -2123,7 +2131,7 @@
                     </div>
                     <div class="card-body p-3">
                         <input type="hidden" name="foot_col_${col}_widgets[${index}][type]" value="images_widget">
-                        
+
                         <div class="form-group">
                             <label class="form-label">Widget Title</label>
                             <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][title]" value="${title || 'Delivery Partners'}" placeholder="Delivery Partners" oninput="updateColumnPreview(${col})">
@@ -2158,7 +2166,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Delivery Image -->
                         <div class="form-group">
                             <label class="form-label">Delivery Image</label>
@@ -2257,7 +2265,7 @@
                     </div>
                 </div>`;
         }
-        
+
         return html;
     }
 
@@ -2266,22 +2274,22 @@
         let select = document.getElementById('add-widget-select-' + col);
         let type = select.value;
         if (!type) return;
-        
+
         let container = document.getElementById('widgets-list-' + col);
         if (!container) return;
-        
+
         let index = container.querySelectorAll('.widget-card').length;
         let template = getWidgetTemplate(col, index, type, {});
-        
+
         let tempDiv = document.createElement('div');
         tempDiv.innerHTML = template;
         let newCard = tempDiv.firstElementChild;
         container.appendChild(newCard);
-        
+
         addDragHandlers(newCard);
         bindWidgetInputListeners(newCard);
         refreshWidgetIndices(col);
-        
+
         AIZ.uploader.previewGenerate();
     }
 
@@ -2290,13 +2298,13 @@
         let card = btn.closest('.widget-card');
         let clone = card.cloneNode(true);
         card.parentNode.insertBefore(clone, card.nextSibling);
-        
+
         addDragHandlers(clone);
         bindWidgetInputListeners(clone);
-        
+
         let col = card.closest('.widgets-list').getAttribute('data-col');
         refreshWidgetIndices(col);
-        
+
         AIZ.uploader.previewGenerate();
     }
 
@@ -2357,7 +2365,7 @@
     function refreshWidgetIndices(col) {
         let container = document.getElementById('widgets-list-' + col);
         if (!container) return;
-        
+
         let cards = container.querySelectorAll('.widget-card');
         cards.forEach(function(card, index) {
             card.querySelectorAll('input, select, textarea').forEach(function(input) {
@@ -2367,7 +2375,38 @@
                     input.setAttribute('name', newName);
                 }
             });
-            
+
+            let typeInput = card.querySelector('input[name$="[type]"]');
+            if (typeInput) {
+                let baseName = typeInput.getAttribute('name').replace(/\[type\]$/, '');
+                let orderInput = card.querySelector('input[name$="[mobile_order]"]');
+                if (!orderInput) {
+                    let body = card.querySelector('.card-body');
+                    if (body) {
+                        let wrapper = document.createElement('div');
+                        wrapper.className = 'form-group mb-2 footer-mobile-order-wrap';
+                        wrapper.innerHTML = '<label class="form-label fs-10">Mobile Order</label>' +
+                            '<input type="number" class="form-control form-control-sm" min="0" step="1" oninput="updateColumnPreview(' + col + ')">';
+
+                        let anchor = body.firstElementChild;
+                        if (anchor) {
+                            body.insertBefore(wrapper, anchor);
+                        } else {
+                            body.appendChild(wrapper);
+                        }
+
+                        orderInput = wrapper.querySelector('input');
+                    }
+                }
+
+                if (orderInput) {
+                    orderInput.setAttribute('name', baseName + '[mobile_order]');
+                    if (!orderInput.value || isNaN(parseInt(orderInput.value, 10))) {
+                        orderInput.value = String((index + 1) * 10);
+                    }
+                }
+            }
+
             card.querySelectorAll('.menu-link-row').forEach(function(row) {
                 row.querySelectorAll('input').forEach(function(lnkInput) {
                     let lnkName = lnkInput.getAttribute('name');
@@ -2378,7 +2417,7 @@
                 });
             });
         });
-        
+
         updateColumnPreview(col);
     }
 
@@ -2386,21 +2425,21 @@
     function updateColumnPreview(col) {
         let previewCol = document.getElementById('preview-col-' + col);
         if (!previewCol) return;
-        
+
         let cardContainer = previewCol.querySelector('.ttf-footer-card');
         if (!cardContainer) return;
-        
+
         let widgetsList = document.getElementById('widgets-list-' + col);
         if (!widgetsList) return;
-        
+
         let cards = widgetsList.querySelectorAll('.widget-card');
         let html = '';
-        
+
         cards.forEach(function(card) {
             let type = card.getAttribute('data-type');
             let titleInput = card.querySelector('input[name*="[title]"]');
             let title = titleInput ? titleInput.value : '';
-            
+
             if (type === 'menu_links') {
                 html += `<h4>${title || 'Menu'}</h4><ul>`;
                 let rows = card.querySelectorAll('.menu-link-row');
@@ -2475,7 +2514,7 @@
                     </ul>`;
             }
         });
-        
+
         cardContainer.innerHTML = html;
     }
 
@@ -2499,7 +2538,7 @@
     // Drop handler
     function handleDrop(e) {
         if (e.stopPropagation) e.stopPropagation();
-        
+
         if (dragSrcEl !== this) {
             let rect = this.getBoundingClientRect();
             let next = (e.clientY - rect.top) > (rect.height / 2);
@@ -2544,53 +2583,63 @@
             addDragHandlers(card);
             bindWidgetInputListeners(card);
         });
+
+        document.querySelectorAll('.widgets-list').forEach(function(list) {
+            let col = list.getAttribute('data-col');
+            if (col) refreshWidgetIndices(col);
+        });
+
+        document.querySelectorAll('.extra-blocks-list').forEach(function(list) {
+            let col = list.getAttribute('data-col');
+            if (col) refreshExtraBlockIndices(col);
+        });
     });
 
     function refreshColumnIndices() {
         let container = document.getElementById('columns-accordion');
         if (!container) return;
-        
+
         let cards = columnCards();
         cards.forEach(function(card, index) {
             let colNum = index + 1;
-            
+
             // Update Card ID
             card.setAttribute('id', 'card-col-settings-' + colNum);
-            
+
             // Update title text
             let titleText = card.querySelector('.card-col-title-text');
             if (titleText) {
                 titleText.innerText = 'Column ' + colNum + ' Widgets';
             }
-            
+
             // Update collapse target
             let headerDiv = card.querySelector('.c-pointer');
             if (headerDiv) {
                 headerDiv.setAttribute('data-target', '#collapse-col-' + colNum);
             }
-            
+
             let collapseDiv = card.querySelector('.collapse');
             if (collapseDiv) {
                 collapseDiv.setAttribute('id', 'collapse-col-' + colNum);
             }
-            
+
             // Update status switcher checkbox onChange parameter
             let checkbox = card.querySelector('input[type="checkbox"][onchange*="toggleColumn"]');
             if (checkbox) {
                 checkbox.setAttribute('onchange', 'toggleColumn(' + colNum + ', this)');
             }
-            
+
             let statusVal = card.querySelector('input[id*="_status_val"]');
             if (statusVal) {
                 statusVal.setAttribute('id', 'foot_col_' + colNum + '_status_val');
             }
-            
+
             // Update width input oninput parameter
             let widthInput = card.querySelector('input[name*="_width"]');
             if (widthInput) {
                 widthInput.setAttribute('oninput', 'updateColumnWidth(' + colNum + ', this.value)');
             }
-            
+
             // Update widgets list container ID and data-col attribute
             let widgetsList = card.querySelector('.widgets-list');
             if (widgetsList) {
@@ -2598,25 +2647,25 @@
                 widgetsList.setAttribute('data-col', colNum);
                 ensureWidgetsTypeInput(widgetsList, colNum);
             }
-            
+
             // Update add-widget-select select ID
             let addSelect = card.querySelector('select[id*="add-widget-select-"]');
             if (addSelect) {
                 addSelect.setAttribute('id', 'add-widget-select-' + colNum);
             }
-            
+
             // Update add button onclick
             let addButton = card.querySelector('button[onclick*="addWidget"]');
             if (addButton) {
                 addButton.setAttribute('onclick', 'addWidget(' + colNum + ')');
             }
-            
+
             // Update copy button onclick
             let copyButton = card.querySelector('.btn-copy-col');
             if (copyButton) {
                 copyButton.setAttribute('onclick', 'copyColumn(' + colNum + ', this); event.stopPropagation();');
             }
-            
+
             // Update inputs and names inside the card
             card.querySelectorAll('input, select, textarea').forEach(function(input) {
                 let name = input.getAttribute('name');
@@ -2628,13 +2677,13 @@
                 if (name && name.startsWith('types') && input.value.match(/^foot_col_\d+_widgets$/)) {
                     input.value = 'foot_col_' + colNum + '_widgets';
                 }
-                
+
                 let idAttr = input.getAttribute('id');
                 if (idAttr) {
                     let newId = idAttr.replace(/col-style-\d+/, 'col-style-' + colNum);
                     input.setAttribute('id', newId);
                 }
-                
+
                 let oninputAttr = input.getAttribute('oninput');
                 if (oninputAttr && oninputAttr.includes('col-style-')) {
                     let newOninput = oninputAttr.replace(/col-style-\d+-\d+/g, function(match) {
@@ -2644,7 +2693,7 @@
                     input.setAttribute('oninput', newOninput);
                 }
             });
-            
+
             // Also update sub-rows for menus
             card.querySelectorAll('.menu-link-row').forEach(function(row) {
                 let remBtn = row.querySelector('.btn-remove-row');
@@ -2652,7 +2701,7 @@
                     remBtn.setAttribute('onclick', 'removeMenuRow(this, ' + colNum + ')');
                 }
             });
-            
+
             let addNewLinkBtn = card.querySelector('button[onclick*="addMenuRowToWidget"]');
             if (addNewLinkBtn) {
                 let onclickVal = addNewLinkBtn.getAttribute('onclick');
@@ -2665,7 +2714,7 @@
             // Refresh extra blocks col references
             refreshExtraBlocksForColumn(colNum);
         });
-        
+
         // Trigger preview updates
         for (let c = 1; c <= cards.length; c++) {
             updateColumnPreview(c);
@@ -2710,19 +2759,19 @@
 
         let widthInput = hiddenCard.querySelector('input[name*="_width"]');
         if (widthInput) widthInput.value = '20%';
-        
+
         // Mark status as on
         let checkbox = hiddenCard.querySelector('input[type="checkbox"]');
         if (checkbox) checkbox.checked = true;
         let statusVal = hiddenCard.querySelector('input[id*="_status_val"]');
         if (statusVal) statusVal.value = 'on';
-        
+
         // Remove d-none
         hiddenCard.classList.remove('d-none');
-        
+
         // Refresh indices
         refreshColumnIndices();
-        
+
         // Expand the newly added column card
         let collapseDiv = hiddenCard.querySelector('.collapse');
         if (collapseDiv) {
@@ -2754,7 +2803,7 @@
     function deleteColumn(colNum, btn) {
         let container = document.getElementById('columns-accordion');
         let card = btn.closest('.card');
-        
+
         // Count how many active columns are left (not having d-none class)
         let activeCards = columnCards().filter(function(columnCard) {
             return !columnCard.classList.contains('d-none');
@@ -2763,17 +2812,17 @@
             alert('At least one column must be present in the footer.');
             return;
         }
-        
+
         if (!confirm('Are you sure you want to delete this column and all its widgets?')) {
             return;
         }
-        
+
         // Mark as status off
         let checkbox = card.querySelector('input[type="checkbox"]');
         if (checkbox) checkbox.checked = false;
         let statusVal = card.querySelector('input[id*="_status_val"]');
         if (statusVal) statusVal.value = 'off';
-        
+
         // Clear widgets
         let widgetsList = card.querySelector('.widgets-list');
         resetWidgetsList(widgetsList, colNum);
@@ -2781,11 +2830,11 @@
         // Clear extra blocks
         let extraBlocksList = card.querySelector('.extra-blocks-list');
         if (extraBlocksList) extraBlocksList.innerHTML = '';
-        
+
         // Hide and move to the end of the accordion container
         card.classList.add('d-none');
         container.appendChild(card);
-        
+
         // Refresh indices
         refreshColumnIndices();
     }
@@ -2799,9 +2848,9 @@
             alert('Maximum of 8 columns allowed.');
             return;
         }
-        
+
         let card = btn.closest('.card');
-        
+
         // Copy widgets contents
         let srcWidgetsList = card.querySelector('.widgets-list');
         let destWidgetsList = inactiveCard.querySelector('.widgets-list');
@@ -2815,33 +2864,33 @@
         if (srcExtraList && destExtraList) {
             destExtraList.innerHTML = srcExtraList.innerHTML;
         }
-        
+
         // Copy column width
         let srcWidth = card.querySelector('input[name*="_width"]');
         let destWidth = inactiveCard.querySelector('input[name*="_width"]');
         if (srcWidth && destWidth) {
             destWidth.value = srcWidth.value;
         }
-        
+
         // Set status on
         let checkbox = inactiveCard.querySelector('input[type="checkbox"]');
         if (checkbox) checkbox.checked = true;
         let statusVal = inactiveCard.querySelector('input[id*="_status_val"]');
         if (statusVal) statusVal.value = 'on';
-        
+
         // Move inactiveCard next to card, and remove d-none
         card.parentNode.insertBefore(inactiveCard, card.nextSibling);
         inactiveCard.classList.remove('d-none');
-        
+
         // Refresh indices
         refreshColumnIndices();
-        
+
         // Re-register drag/drop/input handlers inside the activated card
         inactiveCard.querySelectorAll('.widget-card').forEach(function(wCard) {
             addDragHandlers(wCard);
             bindWidgetInputListeners(wCard);
         });
-        
+
         AIZ.uploader.previewGenerate();
     }
 
@@ -2869,7 +2918,7 @@
                 </div>
                 <div class="card-body p-2">
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-6">
                             <div class="form-group mb-2">
                                 <label class="form-label fs-10 mb-1">Block Heading</label>
                                 <input type="text" class="form-control form-control-sm"
@@ -2877,7 +2926,7 @@
                                     placeholder="e.g. Before a Seller">
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <div class="form-group mb-2">
                                 <label class="form-label fs-10 mb-1">Show On</label>
                                 <select class="form-control form-control-sm" name="foot_col_${col}_extra_blocks[${index}][show_on]">
@@ -2885,6 +2934,14 @@
                                     <option value="desktop">Desktop only</option>
                                     <option value="mobile">Mobile only</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group mb-2">
+                                <label class="form-label fs-10 mb-1">Mobile Order</label>
+                                <input type="number" class="form-control form-control-sm"
+                                    name="foot_col_${col}_extra_blocks[${index}][mobile_order]"
+                                    value="${(index + 1) * 10}" min="0" step="1">
                             </div>
                         </div>
                     </div>
@@ -2999,6 +3056,11 @@
                     input.setAttribute('name', newName);
                 }
             });
+
+            let orderInput = card.querySelector('input[name$="[mobile_order]"]');
+            if (orderInput && (!orderInput.value || isNaN(parseInt(orderInput.value, 10)))) {
+                orderInput.value = String((bIdx + 1) * 10);
+            }
 
             // Update removeExtraBlock onclick col param
             let removeBtn = card.querySelector('button[onclick*="removeExtraBlock"]');
