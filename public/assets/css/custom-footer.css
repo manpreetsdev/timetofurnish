@@ -461,7 +461,7 @@
 }
 
 .ttf-mobile-accordion .aiz-accordion-panel ul li a {
-    display: inline-block;
+    display: flex;
     padding: 2px 0;
     line-height: 20.8px !important;
     font-size: var(--foot-body-font-size, 14px) !important;
