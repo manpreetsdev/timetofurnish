@@ -364,24 +364,20 @@
                                         <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
                                             {{ $w['title'] ?? 'Seller Zone' }}
                                         </h4>
-                                        @if (get_setting('vendor_system_activation') == 1)
-                                            <ul class="list-unstyled mb-3">
-                                                @guest
-                                                    <li>
-                                                        <a class="fs-14 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
-                                                            {{ !empty($w['seller_login_text']) ? translate($w['seller_login_text']) : translate('Login to Seller Panel') }}
-                                                        </a>
-                                                    </li>
-                                                @endguest
-                                                @if (get_setting('seller_app_link'))
-                                                    <li>
-                                                        <a class="fs-14 text-light animate-underline-white" target="_blank" href="{{ get_setting('seller_app_link') }}">
-                                                            {{ !empty($w['download_seller_app_text']) ? translate($w['download_seller_app_text']) : translate('Download Seller App') }}
-                                                        </a>
-                                                    </li>
-                                                @endif
-                                            </ul>
-                                        @endif
+                                        <ul class="list-unstyled mb-3">
+                                            <li>
+                                                <a class="fs-14 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
+                                                    {{ !empty($w['seller_login_text']) ? translate($w['seller_login_text']) : translate('Login to Seller Panel') }}
+                                                </a>
+                                            </li>
+                                            @if (get_setting('seller_app_link'))
+                                                <li>
+                                                    <a class="fs-14 text-light animate-underline-white" target="_blank" href="{{ get_setting('seller_app_link') }}">
+                                                        {{ !empty($w['download_seller_app_text']) ? translate($w['download_seller_app_text']) : translate('Download Seller App') }}
+                                                    </a>
+                                                </li>
+                                            @endif
+                                        </ul>
 
                                         <div class="sub-widget-title">{{ $w['subheading_2'] ?? translate('Join Our Partner Network') }}</div>
                                         <ul class="list-unstyled mb-3">
@@ -418,6 +414,15 @@
                                                 @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
                                                 @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
                                                 @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
+                                                @foreach(($w['extra_social'] ?? []) as $sItem)
+                                                    @if(!empty($sItem['url'] ?? ''))
+                                                        <li>
+                                                            <a href="{{ $sItem['url'] }}" target="_blank">
+                                                                <i class="{{ $sItem['icon'] ?? 'lab la-link' }}"></i>
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                @endforeach
                                             </ul>
                                         @endif
                                     @elseif ($wType == 'images_widget')
@@ -513,6 +518,15 @@
                                             @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
                                             @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
                                             @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
+                                            @foreach(($w['extra_social'] ?? []) as $sItem)
+                                                @if(!empty($sItem['url'] ?? ''))
+                                                    <li>
+                                                        <a href="{{ $sItem['url'] }}" target="_blank">
+                                                            <i class="{{ $sItem['icon'] ?? 'lab la-link' }}"></i>
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                            @endforeach
                                         </ul>
                                     @endif
                                 </div>
@@ -561,6 +575,42 @@
                     $mobileSeq = 0;
 
                     foreach ($c['widgets'] as $wIndex => $w) {
+                        $wType = $w['type'] ?? 'menu_links';
+
+                        if ($wType === 'images_widget') {
+                            if (($w['show_deliv'] ?? 'on') === 'on') {
+                                $mobileItems[] = [
+                                    'kind' => 'images_deliv',
+                                    'order' => (int) ($w['deliv_mobile_order'] ?? (($wIndex + 1) * 10)),
+                                    'seq' => $mobileSeq++,
+                                    'wIndex' => $wIndex,
+                                    'w' => $w,
+                                ];
+                            }
+
+                            if (($w['show_pay'] ?? 'on') === 'on') {
+                                $mobileItems[] = [
+                                    'kind' => 'images_pay',
+                                    'order' => (int) ($w['pay_mobile_order'] ?? (($wIndex + 1) * 10 + 1)),
+                                    'seq' => $mobileSeq++,
+                                    'wIndex' => $wIndex,
+                                    'w' => $w,
+                                ];
+                            }
+
+                            if (($w['show_trust'] ?? 'on') === 'on') {
+                                $mobileItems[] = [
+                                    'kind' => 'images_trust',
+                                    'order' => (int) ($w['trust_mobile_order'] ?? (($wIndex + 1) * 10 + 2)),
+                                    'seq' => $mobileSeq++,
+                                    'wIndex' => $wIndex,
+                                    'w' => $w,
+                                ];
+                            }
+
+                            continue;
+                        }
+
                         $defaultOrder = ($wIndex + 1) * 10;
                         $mobileItems[] = [
                             'kind' => 'widget',
@@ -666,20 +716,50 @@
                                                 {!! $w['html'] ?? '' !!}
                                             </div>
                                         @elseif ($wType == 'seller_zone')
-                                            @if (get_setting('vendor_system_activation') == 1)
-                                                <ul class="list-unstyled mb-3">
-                                                    @guest
-                                                        <li class="mb-2 pb-2">
-                                                            <a class="fs-14 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
-                                                                {{ !empty($w['seller_login_text']) ? translate($w['seller_login_text']) : translate('Login to Seller Panel') }}
+                                            <ul class="list-unstyled mb-3">
+                                                <li class="mb-2 pb-2">
+                                                    <a class="fs-14 text-light animate-underline-white" href="{{ !empty($w['seller_url']) ? $w['seller_url'] : route('seller.login') }}">
+                                                        {{ !empty($w['seller_login_text']) ? translate($w['seller_login_text']) : translate('Login to Seller Panel') }}
+                                                    </a>
+                                                </li>
+                                                <li class="mb-2">
+                                                    <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-14 text-light animate-underline-white">
+                                                        {{ !empty($w['become_seller_text']) ? translate($w['become_seller_text']) : translate('Register your shop') }}
+                                                    </a>
+                                                </li>
+                                            </ul>
+
+                                            @php
+                                                $fb = !empty($w['facebook_link']) ? $w['facebook_link'] : get_setting('facebook_link');
+                                                $tw = !empty($w['twitter_link']) ? $w['twitter_link'] : get_setting('twitter_link');
+                                                $ig = !empty($w['instagram_link']) ? $w['instagram_link'] : get_setting('instagram_link');
+                                                $yt = !empty($w['youtube_link']) ? $w['youtube_link'] : get_setting('youtube_link');
+                                                $pt = !empty($w['pinterest_link']) ? $w['pinterest_link'] : get_setting('pinterest_link');
+                                                $tk = !empty($w['tiktok_link']) ? $w['tiktok_link'] : get_setting('foot_social_tk');
+                                                $has_social_links = $fb || $tw || $ig || $yt || $pt || $tk || !empty($w['extra_social']);
+                                            @endphp
+                                            @if(!empty($w['subheading_3']) && $has_social_links)
+                                                <h5 class="secure-payment-title textheading">{{ $w['subheading_3'] }}</h5>
+                                                <ul class="footer-social-list mt-2">
+                                                    @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
+                                                    @if ($tw)
+                                                        <li>
+                                                            <a href="{{ $tw }}" target="_blank">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                                                    <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+                                                                </svg>
                                                             </a>
                                                         </li>
-                                                    @endguest
-                                                    <li class="mb-2">
-                                                        <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-14 text-light animate-underline-white">
-                                                            {{ !empty($w['become_seller_text']) ? translate($w['become_seller_text']) : translate('Register your shop') }}
-                                                        </a>
-                                                    </li>
+                                                    @endif
+                                                    @if ($ig) <li><a href="{{ $ig }}" target="_blank"><i class="lab la-instagram"></i></a></li> @endif
+                                                    @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
+                                                    @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
+                                                    @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
+                                                    @foreach(($w['extra_social'] ?? []) as $sItem)
+                                                        @if(!empty($sItem['url'] ?? ''))
+                                                            <li><a href="{{ $sItem['url'] }}" target="_blank"><i class="{{ $sItem['icon'] ?? 'lab la-link' }}"></i></a></li>
+                                                        @endif
+                                                    @endforeach
                                                 </ul>
                                             @endif
                                         @endif
@@ -687,40 +767,6 @@
                                 </div>
                             </div>
                         </div>
-                        @if ($wType == 'seller_zone')
-                            @php
-                                $fb = !empty($w['facebook_link']) ? $w['facebook_link'] : get_setting('facebook_link');
-                                $tw = !empty($w['twitter_link']) ? $w['twitter_link'] : get_setting('twitter_link');
-                                $ig = !empty($w['instagram_link']) ? $w['instagram_link'] : get_setting('instagram_link');
-                                $yt = !empty($w['youtube_link']) ? $w['youtube_link'] : get_setting('youtube_link');
-                                $pt = !empty($w['pinterest_link']) ? $w['pinterest_link'] : get_setting('pinterest_link');
-                                $tk = !empty($w['tiktok_link']) ? $w['tiktok_link'] : get_setting('foot_social_tk');
-                                $has_social_links = $fb || $tw || $ig || $yt || $pt || $tk;
-                            @endphp
-                            @if(!empty($w['subheading_3']) && $has_social_links)
-                                <div class="ttf-mobile-widget ttf-mobile-section">
-                                    <div class="container">
-                                        <h5 class="secure-payment-title textheading">{{ $w['subheading_3'] }}</h5>
-                                        <ul class="footer-social-list mt-2">
-                                            @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
-                                            @if ($tw)
-                                                <li>
-                                                    <a href="{{ $tw }}" target="_blank">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                                                            <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
-                                                        </svg>
-                                                    </a>
-                                                </li>
-                                            @endif
-                                            @if ($ig) <li><a href="{{ $ig }}" target="_blank"><i class="lab la-instagram"></i></a></li> @endif
-                                            @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
-                                            @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
-                                            @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
-                                        </ul>
-                                    </div>
-                                </div>
-                            @endif
-                        @endif
                     @elseif ($wType == 'images_widget')
                         @php
                             $show_deliv = ($w['show_deliv'] ?? 'on') == 'on';
@@ -793,53 +839,197 @@
                             </div>
                         @endif
                     @elseif ($wType == 'social_icons')
-                        <div id="{{ $widget_id }}" class="secure-payment-box ttf-mobile-section mt-3">
-                            <div class="container">
-                                <h5 class="secure-payment-title textheading">
-                                    {{ $w['title'] ?? translate('Follow Us') }}
-                                </h5>
-                                @php
-                                    $fb = !empty($w['facebook_link']) ? $w['facebook_link'] : get_setting('facebook_link');
-                                    $tw = !empty($w['twitter_link']) ? $w['twitter_link'] : get_setting('twitter_link');
-                                    $ig = !empty($w['instagram_link']) ? $w['instagram_link'] : get_setting('instagram_link');
-                                    $yt = !empty($w['youtube_link']) ? $w['youtube_link'] : get_setting('youtube_link');
-                                    $pt = !empty($w['pinterest_link']) ? $w['pinterest_link'] : get_setting('pinterest_link');
-                                    $tk = !empty($w['tiktok_link']) ? $w['tiktok_link'] : get_setting('foot_social_tk');
-                                @endphp
-                                <ul class="footer-social-list mt-2">
-                                    @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
-                                    @if ($tw)
-                                        <li>
-                                            <a href="{{ $tw }}" target="_blank">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                                                    <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
-                                                </svg>
-                                            </a>
-                                        </li>
-                                    @endif
-                                    @if ($ig) <li><a href="{{ $ig }}" target="_blank"><i class="lab la-instagram"></i></a></li> @endif
-                                    @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
-                                    @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
-                                    @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
-                                </ul>
+                        @php
+                            $mobileSocialToggle = ($w['mobile_view'] ?? 'section') === 'toggle';
+                            $fb = !empty($w['facebook_link']) ? $w['facebook_link'] : get_setting('facebook_link');
+                            $tw = !empty($w['twitter_link']) ? $w['twitter_link'] : get_setting('twitter_link');
+                            $ig = !empty($w['instagram_link']) ? $w['instagram_link'] : get_setting('instagram_link');
+                            $yt = !empty($w['youtube_link']) ? $w['youtube_link'] : get_setting('youtube_link');
+                            $pt = !empty($w['pinterest_link']) ? $w['pinterest_link'] : get_setting('pinterest_link');
+                            $tk = !empty($w['tiktok_link']) ? $w['tiktok_link'] : get_setting('foot_social_tk');
+                        @endphp
+                        @if($mobileSocialToggle)
+                            <div id="{{ $widget_id }}" class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-section">
+                                <div class="container">
+                                    <div class="aiz-accordion-heading">
+                                        <button class="aiz-accordion fs-14 text-white bg-transparent">{{ $w['title'] ?? translate('Follow Us') }}</button>
+                                    </div>
+                                    <div class="aiz-accordion-panel bg-transparent">
+                                        <div class="py-3">
+                                            <ul class="footer-social-list mt-2">
+                                                @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
+                                                @if ($tw)
+                                                    <li><a href="{{ $tw }}" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg></a></li>
+                                                @endif
+                                                @if ($ig) <li><a href="{{ $ig }}" target="_blank"><i class="lab la-instagram"></i></a></li> @endif
+                                                @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
+                                                @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
+                                                @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
+                                                @foreach(($w['extra_social'] ?? []) as $sItem)
+                                                    @if(!empty($sItem['url'] ?? ''))
+                                                        <li><a href="{{ $sItem['url'] }}" target="_blank"><i class="{{ $sItem['icon'] ?? 'lab la-link' }}"></i></a></li>
+                                                    @endif
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <div id="{{ $widget_id }}" class="secure-payment-box ttf-mobile-section mt-3">
+                                <div class="container">
+                                    <h5 class="secure-payment-title textheading">{{ $w['title'] ?? translate('Follow Us') }}</h5>
+                                    <ul class="footer-social-list mt-2">
+                                        @if ($fb) <li><a href="{{ $fb }}" target="_blank"><i class="lab la-facebook-f"></i></a></li> @endif
+                                        @if ($tw)
+                                            <li><a href="{{ $tw }}" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg></a></li>
+                                        @endif
+                                        @if ($ig) <li><a href="{{ $ig }}" target="_blank"><i class="lab la-instagram"></i></a></li> @endif
+                                        @if ($yt) <li><a href="{{ $yt }}" target="_blank"><i class="lab la-youtube"></i></a></li> @endif
+                                        @if ($pt) <li><a href="{{ $pt }}" target="_blank"><i class="lab la-pinterest"></i></a></li> @endif
+                                        @if ($tk) <li><a href="{{ $tk }}" target="_blank"><i class="lab la-tiktok"></i></a></li> @endif
+                                        @foreach(($w['extra_social'] ?? []) as $sItem)
+                                            @if(!empty($sItem['url'] ?? ''))
+                                                <li><a href="{{ $sItem['url'] }}" target="_blank"><i class="{{ $sItem['icon'] ?? 'lab la-link' }}"></i></a></li>
+                                            @endif
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        @endif
                     @endif
                     @else
-                        @php
-                            $eb = $mobileItem['eb'];
-                            $ebIdx = $mobileItem['ebIdx'];
-                            $eb_widget_id = "extra-block-col-{$col}-{$ebIdx}-mob";
-                        @endphp
-                        <div id="{{ $eb_widget_id }}" class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-section">
-                            <div class="container">
-                                <div class="aiz-accordion-heading">
-                                    <button class="aiz-accordion fs-14 text-white bg-transparent">
-                                        {{ $eb['title'] ?? translate('More Links') }}
-                                    </button>
+                        @if(in_array(($mobileItem['kind'] ?? ''), ['images_deliv', 'images_pay', 'images_trust']))
+                            @php
+                                $w = $mobileItem['w'];
+                                $wIndex = $mobileItem['wIndex'];
+                                $kind = $mobileItem['kind'];
+                                $widget_id = "widget-col-{$col}-{$wIndex}-mob";
+                                $mobileToggle = ($w['mobile_view'] ?? 'section') === 'toggle';
+                                $deliv_imgs = get_footer_images_helper(!empty($w['deliv_img']) ? $w['deliv_img'] : get_setting('foot_img_deliv'), static_asset('assets/img/delivery_partners_logo.png'));
+                                $pay_imgs = get_footer_images_helper(!empty($w['pay_img']) ? $w['pay_img'] : get_setting('foot_img_pay'), static_asset('assets/img/securelypayments.png'));
+                                $trust_imgs = get_footer_images_helper(!empty($w['trust_img']) ? $w['trust_img'] : get_setting('foot_img_trust'), static_asset('assets/img/trustpilot.png'));
+                                $trust_lnk = !empty($w['trustpilot_lnk']) ? $w['trustpilot_lnk'] : get_setting('foot_lnk_trust', '#');
+                                $sectionTitle = $kind === 'images_deliv'
+                                    ? ($w['title'] ?? translate('Delivery Partners'))
+                                    : ($kind === 'images_pay' ? translate('Pay Securely With') : translate('What Trustpilot Say’s'));
+                                $sectionId = $kind === 'images_deliv' ? $widget_id : ($kind === 'images_pay' ? $widget_id.'-pay' : $widget_id.'-trust');
+                            @endphp
+
+                            @if($mobileToggle)
+                                <div id="{{ $sectionId }}" class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-section">
+                                    <div class="container">
+                                        <div class="aiz-accordion-heading">
+                                            <button class="aiz-accordion fs-14 text-white bg-transparent">{{ $sectionTitle }}</button>
+                                        </div>
+                                        <div class="aiz-accordion-panel bg-transparent">
+                                            <div class="py-3">
+                                                @if($kind === 'images_deliv')
+                                                    <div class="logo-images-row">
+                                                        @foreach($deliv_imgs as $img)
+                                                            <div class="logo-image-item"><img src="{{ $img }}" alt="Delivery Partner"></div>
+                                                        @endforeach
+                                                    </div>
+                                                @elseif($kind === 'images_pay')
+                                                    <div class="logo-images-row">
+                                                        @foreach($pay_imgs as $img)
+                                                            <div class="logo-image-item"><img src="{{ $img }}" alt="Pay Securely With"></div>
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    @if(!empty($trust_lnk))
+                                                        <a href="{{ $trust_lnk }}" target="_blank" class="logo-images-row">
+                                                            @foreach($trust_imgs as $img)
+                                                                <div class="logo-image-item"><img src="{{ $img }}" alt="Trustpilot Reviews"></div>
+                                                            @endforeach
+                                                        </a>
+                                                    @else
+                                                        <div class="logo-images-row">
+                                                            @foreach($trust_imgs as $img)
+                                                                <div class="logo-image-item"><img src="{{ $img }}" alt="Trustpilot Reviews"></div>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="aiz-accordion-panel bg-transparent">
-                                    <div class="py-3">
+                            @else
+                                <div id="{{ $sectionId }}" class="secure-payment-box ttf-mobile-section mt-3">
+                                    <div class="container">
+                                        <h5 class="secure-payment-title textheading">{{ $sectionTitle }}</h5>
+                                        @if($kind === 'images_deliv')
+                                            <div class="logo-images-row">
+                                                @foreach($deliv_imgs as $img)
+                                                    <div class="logo-image-item"><img src="{{ $img }}" alt="Delivery Partner"></div>
+                                                @endforeach
+                                            </div>
+                                        @elseif($kind === 'images_pay')
+                                            <div class="logo-images-row">
+                                                @foreach($pay_imgs as $img)
+                                                    <div class="logo-image-item"><img src="{{ $img }}" alt="Pay Securely With"></div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            @if(!empty($trust_lnk))
+                                                <a href="{{ $trust_lnk }}" target="_blank" class="logo-images-row">
+                                                    @foreach($trust_imgs as $img)
+                                                        <div class="logo-image-item"><img src="{{ $img }}" alt="Trustpilot Reviews"></div>
+                                                    @endforeach
+                                                </a>
+                                            @else
+                                                <div class="logo-images-row">
+                                                    @foreach($trust_imgs as $img)
+                                                        <div class="logo-image-item"><img src="{{ $img }}" alt="Trustpilot Reviews"></div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                        @else
+                            @php
+                                $eb = $mobileItem['eb'];
+                                $ebIdx = $mobileItem['ebIdx'];
+                                $eb_widget_id = "extra-block-col-{$col}-{$ebIdx}-mob";
+                                $mobileExtraToggle = ($eb['mobile_view'] ?? 'toggle') === 'toggle';
+                            @endphp
+                            @if($mobileExtraToggle)
+                                <div id="{{ $eb_widget_id }}" class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-section">
+                                    <div class="container">
+                                        <div class="aiz-accordion-heading">
+                                            <button class="aiz-accordion fs-14 text-white bg-transparent">
+                                                {{ $eb['title'] ?? translate('More Links') }}
+                                            </button>
+                                        </div>
+                                        <div class="aiz-accordion-panel bg-transparent">
+                                            <div class="py-3">
+                                                <ul class="list-unstyled">
+                                                    @if (!empty($eb['lbls']))
+                                                        @foreach($eb['lbls'] as $eLIdx => $eLbl)
+                                                            @if (!empty(trim($eLbl)))
+                                                                @php $eLnk = $eb['lnks'][$eLIdx] ?? '#'; @endphp
+                                                                <li class="mb-2 pb-2">
+                                                                    <a href="{{ url($eLnk) }}" class="fs-14 text-light animate-underline-white">
+                                                                        {{ $eLbl }}
+                                                                    </a>
+                                                                </li>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                                <div id="{{ $eb_widget_id }}" class="secure-payment-box ttf-mobile-section mt-3">
+                                    <div class="container">
+                                        @if(!empty($eb['title']))
+                                            <h5 class="secure-payment-title textheading">{{ $eb['title'] }}</h5>
+                                        @endif
                                         <ul class="list-unstyled">
                                             @if (!empty($eb['lbls']))
                                                 @foreach($eb['lbls'] as $eLIdx => $eLbl)
@@ -856,8 +1046,8 @@
                                         </ul>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                            @endif
+                        @endif
                     @endif
                 @endforeach
             @endif

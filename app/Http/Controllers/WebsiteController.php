@@ -31,9 +31,9 @@ class WebsiteController extends Controller
     public function exportFooter()
     {
         $types = ['frontend_copyright_text', 'footer_disclaimer_text', 'footer_title', 'footer_description', 'footer_builder_schema_version'];
-        $settings = BusinessSetting::where(function($query) use ($types) {
+        $settings = BusinessSetting::where(function ($query) use ($types) {
             $query->whereIn('type', $types)
-                  ->orWhere('type', 'like', 'foot_%');
+                ->orWhere('type', 'like', 'foot_%');
         })->get(['type', 'value', 'lang'])->toArray();
 
         $filename = "footer_settings_" . date('Y-m-d_H-i-s') . ".json";
@@ -44,41 +44,89 @@ class WebsiteController extends Controller
 
     public function importFooter(Request $request)
     {
-        if ($request->hasFile('footer_file')) {
-            $file = $request->file('footer_file');
-            $data = json_decode(file_get_contents($file->getRealPath()), true);
-            if (is_array($data)) {
-                foreach ($data as $item) {
-                    if (isset($item['type']) && isset($item['value'])) {
-                        $type = $item['type'];
-                        $value = $item['value'];
-                        $lang = $item['lang'] ?? null;
-                        
-                        $setting = BusinessSetting::where('type', $type);
-                        if ($lang) {
-                            $setting = $setting->where('lang', $lang);
-                        } else {
-                            $setting = $setting->whereNull('lang');
-                        }
-                        $setting = $setting->first();
+        $request->validate([
+            'footer_file' => 'required|file|max:10240',
+        ]);
 
-                        if (!$setting) {
-                            $setting = new BusinessSetting();
-                            $setting->type = $type;
-                            $setting->lang = $lang;
-                        }
-                        $setting->value = $value;
-                        $setting->save();
-                    }
-                }
-                \Artisan::call('cache:clear');
-                flash(translate('Footer settings imported successfully'))->success();
-            } else {
-                flash(translate('Invalid file format'))->error();
-            }
-        } else {
+        if (!$request->hasFile('footer_file')) {
             flash(translate('Please upload a file'))->error();
+            return back();
         }
+
+        $file = $request->file('footer_file');
+        $raw = file_get_contents($file->getRealPath());
+
+        // Strip UTF-8 BOM if present.
+        $raw = preg_replace('/^\xEF\xBB\xBF/', '', (string) $raw);
+        $decoded = json_decode($raw, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            flash(translate('Invalid JSON file'))->error();
+            return back();
+        }
+
+        if (isset($decoded['settings']) && is_array($decoded['settings'])) {
+            $data = $decoded['settings'];
+        } elseif (is_array($decoded)) {
+            $data = array_values($decoded) === $decoded ? $decoded : [$decoded];
+        } else {
+            flash(translate('Invalid file format'))->error();
+            return back();
+        }
+
+        $imported = 0;
+
+        foreach ($data as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+
+            $type = isset($item['type']) ? trim((string) $item['type']) : '';
+            if ($type === '' || !array_key_exists('value', $item)) {
+                continue;
+            }
+
+            $value = $item['value'];
+            if (is_array($value) || is_object($value)) {
+                $value = json_encode($value);
+            }
+
+            $lang = $item['lang'] ?? null;
+            if (is_string($lang)) {
+                $lang = trim($lang);
+                if ($lang === '') {
+                    $lang = null;
+                }
+            }
+
+            $query = BusinessSetting::where('type', $type);
+            if ($lang === null) {
+                $query->where(function ($q) {
+                    $q->whereNull('lang')->orWhere('lang', '');
+                });
+            } else {
+                $query->where('lang', $lang);
+            }
+
+            $setting = $query->first();
+            if (!$setting) {
+                $setting = new BusinessSetting();
+                $setting->type = $type;
+                $setting->lang = $lang;
+            }
+
+            $setting->value = $value;
+            $setting->save();
+            $imported++;
+        }
+
+        if ($imported > 0) {
+            \Artisan::call('cache:clear');
+            flash(translate('Footer settings imported successfully'))->success();
+        } else {
+            flash(translate('No valid footer settings found in file'))->warning();
+        }
+
         return back();
     }
     public function pages(Request $request)
