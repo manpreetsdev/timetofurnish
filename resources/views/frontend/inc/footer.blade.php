@@ -14,6 +14,7 @@
 @endif
 
 
+
 @php
     if (!function_exists('get_footer_images_helper')) {
         function get_footer_images_helper($img_val, $default_asset = null) {
@@ -515,6 +516,36 @@
                                     @endif
                                 </div>
                             @endforeach
+
+                            {{-- ── Extra Link Blocks (desktop: min-width 768px) ── --}}
+                            @if (!empty($c['extra_blocks']))
+                                @foreach($c['extra_blocks'] as $eb)
+                                    @php $eb_show = $eb['show_on'] ?? 'both'; @endphp
+                                    @if ($eb_show !== 'mobile')
+                                        <div class="mb-4">
+                                            @if (!empty($eb['title']))
+                                                <h4 class="fs-14 text-light text-uppercase fw-700 mb-3 textheading">
+                                                    {{ $eb['title'] }}
+                                                </h4>
+                                            @endif
+                                            @if (!empty($eb['lbls']))
+                                                <ul class="list-unstyled">
+                                                    @foreach($eb['lbls'] as $ebIdx => $ebLbl)
+                                                        @if (!empty(trim($ebLbl)))
+                                                            @php $ebUrl = $eb['lnks'][$ebIdx] ?? '#'; @endphp
+                                                            <li>
+                                                                <a href="{{ url($ebUrl) }}" class="fs-14 text-light animate-underline-white">
+                                                                    {{ $ebLbl }}
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                        </div>
+                                    @endif
+                                @endforeach
+                            @endif
                         </div>
                     </div>
                 @endif
@@ -752,6 +783,43 @@
                         </div>
                     @endif
                 @endforeach
+
+                {{-- ── Extra Link Blocks (mobile accordion) ── --}}
+                @if (!empty($c['extra_blocks']))
+                    @foreach($c['extra_blocks'] as $ebIdx => $eb)
+                        @php $eb_show = $eb['show_on'] ?? 'both'; @endphp
+                        @if ($eb_show !== 'desktop')
+                            @php $eb_widget_id = "extra-block-col-{$col}-{$ebIdx}-mob"; @endphp
+                            <div id="{{ $eb_widget_id }}" class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-section">
+                                <div class="container">
+                                    <div class="aiz-accordion-heading">
+                                        <button class="aiz-accordion fs-14 text-white bg-transparent">
+                                            {{ $eb['title'] ?? translate('More Links') }}
+                                        </button>
+                                    </div>
+                                    <div class="aiz-accordion-panel bg-transparent">
+                                        <div class="py-3">
+                                            <ul class="list-unstyled">
+                                                @if (!empty($eb['lbls']))
+                                                    @foreach($eb['lbls'] as $eLIdx => $eLbl)
+                                                        @if (!empty(trim($eLbl)))
+                                                            @php $eLnk = $eb['lnks'][$eLIdx] ?? '#'; @endphp
+                                                            <li class="mb-2 pb-2">
+                                                                <a href="{{ url($eLnk) }}" class="fs-14 text-light animate-underline-white">
+                                                                    {{ $eLbl }}
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                @endif
             @endif
         @endforeach
     </div>

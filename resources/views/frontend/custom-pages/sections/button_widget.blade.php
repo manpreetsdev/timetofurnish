@@ -2,7 +2,7 @@
     $text = $section['button_text'] ?? 'Click Here';
     $link = $section['button_link'] ?? '#';
     $align = $section['button_align'] ?? 'left';
-    $bgColor = $section['button_bg_color'] ?? '#c8883a';
+    $bgColor = $section['button_bg_color'] ?? 'var(--ttf-accent)';
     $textColor = $section['button_text_color'] ?? '#ffffff';
     $fontSize = !empty($section['button_font_size']) ? (is_numeric($section['button_font_size']) ? $section['button_font_size'] . 'px' : $section['button_font_size']) : '16px';
     $borderRadius = !empty($section['button_border_radius']) ? (is_numeric($section['button_border_radius']) ? $section['button_border_radius'] . 'px' : $section['button_border_radius']) : '6px';
@@ -15,6 +15,10 @@
     $borderColor = !empty($section['border_color']) ? $section['border_color'] : 'var(--ttf-card-border)';
     $borderStyle = $section['border_style'] ?? 'solid';
     $borderWidth = !empty($section['border_width']) ? (int) $section['border_width'] : ($showBorder ? 1 : 0);
+    $paddingLeft = isset($section['padding_left']) && $section['padding_left'] !== '' ? (int) $section['padding_left'] : ((isset($section['padding_left_right']) && $section['padding_left_right'] !== '') ? (int) $section['padding_left_right'] : 0);
+    $paddingRight = isset($section['padding_right']) && $section['padding_right'] !== '' ? (int) $section['padding_right'] : ((isset($section['padding_left_right']) && $section['padding_left_right'] !== '') ? (int) $section['padding_left_right'] : 0);
+    $marginTop = isset($section['margin_top']) && $section['margin_top'] !== '' ? (int) $section['margin_top'] : 0;
+    $marginBottom = isset($section['margin_bottom']) && $section['margin_bottom'] !== '' ? (int) $section['margin_bottom'] : null;
     
     $alignmentClass = $align === 'center' ? 'is-centered' : ($align === 'right' ? 'is-right' : 'is-left');
     $visibilityClasses = collect([
@@ -33,8 +37,10 @@
     --section-radius: {{ ($showBackground || $showBorder) ? (int) ($section['border_radius'] ?? 24) : 0 }}px;
     --section-padding-top: {{ (isset($section['padding_top']) && $section['padding_top'] !== '') ? (int) $section['padding_top'] : 50 }}px;
     --section-padding-bottom: {{ (isset($section['padding_bottom']) && $section['padding_bottom'] !== '') ? (int) $section['padding_bottom'] : 50 }}px;
-    --section-padding-left: {{ (isset($section['padding_left_right']) && $section['padding_left_right'] !== '') ? (int) $section['padding_left_right'] : 0 }}px;
-    --section-padding-right: {{ (isset($section['padding_left_right']) && $section['padding_left_right'] !== '') ? (int) $section['padding_left_right'] : 0 }}px;
+    --section-padding-left: {{ $paddingLeft }}px;
+    --section-padding-right: {{ $paddingRight }}px;
+    --section-margin-top: {{ $marginTop }}px;
+    --section-margin-bottom: {{ $marginBottom !== null ? $marginBottom . 'px' : 'var(--ttf-section-gap)' }};
     --btn-align: {{ $align === 'center' ? 'center' : ($align === 'right' ? 'flex-end' : 'flex-start') }};
     --btn-bg: {{ $bgColor }};
     --btn-color: {{ $textColor }};

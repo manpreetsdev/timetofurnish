@@ -21,7 +21,12 @@
     $borderWidth = !empty($section['border_width']) ? (int) $section['border_width'] : ($showBorder ? 1 : 0);
     $paddingTop = (isset($section['padding_top']) && $section['padding_top'] !== '') ? (int) $section['padding_top'] : 50;
     $paddingBottom = (isset($section['padding_bottom']) && $section['padding_bottom'] !== '') ? (int) $section['padding_bottom'] : 50;
-    $paddingLeftRight = (isset($section['padding_left_right']) && $section['padding_left_right'] !== '') ? (int) $section['padding_left_right'] : 0;
+    $paddingLeft = isset($section['padding_left']) && $section['padding_left'] !== '' ? (int) $section['padding_left'] : ((isset($section['padding_left_right']) && $section['padding_left_right'] !== '') ? (int) $section['padding_left_right'] : 0);
+    $paddingRight = isset($section['padding_right']) && $section['padding_right'] !== '' ? (int) $section['padding_right'] : ((isset($section['padding_left_right']) && $section['padding_left_right'] !== '') ? (int) $section['padding_left_right'] : 0);
+    $marginTop = isset($section['margin_top']) && $section['margin_top'] !== '' ? (int) $section['margin_top'] : 0;
+    $marginBottom = isset($section['margin_bottom']) && $section['margin_bottom'] !== '' ? (int) $section['margin_bottom'] : null;
+    $titleLineHeight = \App\Support\CustomPageTemplate::normalizeLineHeightValue($section['title_line_height'] ?? null, $section['title_font_size'] ?? 28, '1.18');
+    $bodyLineHeight = \App\Support\CustomPageTemplate::normalizeLineHeightValue($section['body_line_height'] ?? null, $section['body_font_size'] ?? 18, '1.72');
 
     if ($highlight !== '' && str_contains($title, $highlight)) {
         $titleHtml = str_replace(e($highlight), '<span>' . e($highlight) . '</span>', e($title));
@@ -42,14 +47,20 @@
     --section-radius: {{ ($showBackground || $showBorder) ? (int) ($section['border_radius'] ?? 24) : 0 }}px;
     --section-padding-top: {{ $paddingTop }}px;
     --section-padding-bottom: {{ $paddingBottom }}px;
-    --section-padding-left: {{ $paddingLeftRight }}px;
-    --section-padding-right: {{ $paddingLeftRight }}px;
+    --section-padding-left: {{ $paddingLeft }}px;
+    --section-padding-right: {{ $paddingRight }}px;
+    --section-margin-top: {{ $marginTop }}px;
+    --section-margin-bottom: {{ $marginBottom !== null ? $marginBottom . 'px' : 'var(--ttf-section-gap)' }};
     --section-text-align: {{ $textAlign }};
     --section-max-width: {{ max(40, min(100, (int) ($section['max_width'] ?? 100))) }}%;
     --section-title-size: {{ !empty($section['title_font_size']) ? (is_numeric($section['title_font_size']) ? $section['title_font_size'] . 'px' : $section['title_font_size']) : '' }};
-    --section-title-height: {{ !empty($section['title_line_height']) ? (is_numeric($section['title_line_height']) ? $section['title_line_height'] . 'px' : $section['title_line_height']) : '' }};
+    --section-heading-weight: {{ $section['title_font_weight'] ?? 'var(--ttf-heading-weight)' }};
+    --section-title-height: {{ $titleLineHeight }};
+    --section-title-spacing: {{ isset($section['title_letter_spacing']) && $section['title_letter_spacing'] !== '' ? $section['title_letter_spacing'] . 'px' : '0px' }};
     --section-body-size: {{ !empty($section['body_font_size']) ? (is_numeric($section['body_font_size']) ? $section['body_font_size'] . 'px' : $section['body_font_size']) : '' }};
-    --section-body-height: {{ !empty($section['body_line_height']) ? (is_numeric($section['body_line_height']) ? $section['body_line_height'] . 'px' : $section['body_line_height']) : '' }};
+    --section-body-weight: {{ $section['body_font_weight'] ?? 'var(--ttf-body-weight)' }};
+    --section-body-height: {{ $bodyLineHeight }};
+    --section-body-spacing: {{ isset($section['body_letter_spacing']) && $section['body_letter_spacing'] !== '' ? $section['body_letter_spacing'] . 'px' : '0px' }};
     --section-highlight-color: {{ !empty($section['highlight_color']) ? $section['highlight_color'] : 'var(--section-accent)' }};
 ">
     <div class="ttf-story-section__narrow-content">

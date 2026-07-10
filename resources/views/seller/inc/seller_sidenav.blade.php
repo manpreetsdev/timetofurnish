@@ -14,7 +14,7 @@
 
                 <div class="flex-grow-1 text-center">
                     @if ($shop && $shop->logo != null)
-                        <img class="logoimg" src="{{ asset('public/assets/img/logoT.png') }}"
+                        <img class="logoimg" src="{{ asset('assets/img/logoT.png') }}"
                             alt="{{ get_setting('site_name') }}">
                     @else
                         <img class="logoimg" src="{{ uploaded_asset(get_setting('header_logo')) }}"

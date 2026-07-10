@@ -326,7 +326,7 @@
                         <div>
                             <div class="ttf-brand-logo-box">
                                <a href="{{ route('admin.dashboard') }}">
-        <img src="{{ asset('public/assets/img/logoT.png') }}" alt="Time To Furnish Logo">
+        <img src="{{ asset('assets/img/logoT.png') }}" alt="Time To Furnish Logo">
     </a>
                             </div>
 

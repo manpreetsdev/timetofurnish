@@ -118,7 +118,7 @@
     {{-- Logo --}}
 <div class="sidebar-logo text-center py-3">
     <a href="{{ route('admin.dashboard') }}">
-        <img src="{{ asset('public/assets/img/logoT.png') }}" alt="Time To Furnish Logo">
+        <img src="{{ asset('assets/img/logoT.png') }}" alt="Time To Furnish Logo">
     </a>
 </div>
 
@@ -1768,4 +1768,3 @@
     <div class="aiz-sidebar-overlay">
 	</div>
 </div><!-- .aiz-sidebar -->
-
