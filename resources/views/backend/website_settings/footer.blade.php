@@ -156,6 +156,29 @@
         align-items: center;
         justify-content: center;
     }
+
+    .widget-mobile-settings {
+        background: #f7f9fc;
+        border: 1px solid #dfe6ee;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+    .widget-mobile-settings .mobile-settings-title {
+        font-size: 11px;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+    .extra-social-row {
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 8px;
+        margin-bottom: 8px;
+        background: #fff;
+    }
 </style>
 
 <div class="aiz-titlebar text-left mt-2 mb-3">
@@ -193,13 +216,15 @@
             </div>
             <div class="col-md-6 mt-3 mt-md-0">
                 <p class="text-muted fs-12 mb-2">{{ translate('Restore/import footer configurations from a previously exported JSON file.') }}</p>
-                <form action="{{ route('website.footer.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center">
+                <form action="{{ route('website.footer.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center" id="footer-import-form">
                     @csrf
-                    <div class="custom-file custom-file-sm mr-2 flex-grow-1" style="height: auto;">
-                        <input type="file" name="footer_file" class="custom-file-input" id="footerFile" accept=".json" required onchange="$(this).next('.custom-file-label').html(this.files[0].name)">
-                        <label class="custom-file-label" for="footerFile" style="padding: 0.25rem 0.5rem; height: auto; font-size: 11px;">{{ translate('Choose file') }}</label>
+                    <div class="mr-2 flex-grow-1" style="min-height:28px;display:flex;align-items:center;">
+                        <input type="file" name="footer_file" id="footerFile" accept=".json" required class="d-none"
+                               onchange="if (this.files && this.files.length) { document.getElementById('footer-import-file-name').textContent = this.files[0].name; }">
+                        <small class="text-muted" id="footer-import-file-name">{{ translate('No file selected') }}</small>
                     </div>
-                    <button type="submit" class="btn btn-xs btn-success flex-shrink-0">
+                    <button type="button" class="btn btn-xs btn-success flex-shrink-0"
+                            onclick="(function(){ var input = document.getElementById('footerFile'); var form = document.getElementById('footer-import-form'); if (input && input.files && input.files.length > 0) { form.submit(); } else if (input) { input.click(); } })();">
                         <i class="las la-upload"></i> {{ translate('Import Settings') }}
                     </button>
                 </form>
@@ -1107,6 +1132,17 @@
                                                                 <label class="form-label">{{ translate('Widget Title') }}</label>
                                                                 <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][title]" value="{{ $wTitle }}" placeholder="Seller Zone" oninput="updateColumnPreview({{ $col }})">
                                                             </div>
+                                                            <div class="widget-mobile-settings">
+                                                                <div class="mobile-settings-title">{{ translate('Mobile Settings') }}</div>
+                                                                <small class="text-muted d-block mb-2">{{ translate('Control how Seller Zone appears on mobile.') }}</small>
+                                                                <div class="form-group mb-0">
+                                                                    <label class="form-label fs-10">{{ translate('Display As') }}</label>
+                                                                    <select class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][mobile_view]">
+                                                                        <option value="toggle" @if(($w['mobile_view'] ?? 'toggle') == 'toggle') selected @endif>{{ translate('Accordion Toggle') }}</option>
+                                                                        <option value="section" @if(($w['mobile_view'] ?? '') == 'section') selected @endif>{{ translate('Open Section') }}</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
                                                             <div class="form-group">
                                                                 <label class="form-label">{{ translate('Seller Login URL') }}</label>
                                                                 <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][seller_url]" value="{{ $w['seller_url'] ?? '' }}" oninput="updateColumnPreview({{ $col }})">
@@ -1163,6 +1199,23 @@
                                                                 <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][tiktok_link]" value="{{ $w['tiktok_link'] ?? '' }}" placeholder="http://..." oninput="updateColumnPreview({{ $col }})">
                                                             </div>
 
+                                                            <h6 class="fs-10 font-weight-bold text-dark mb-2">{{ translate('Extra Social Icons (Repeater)') }}</h6>
+                                                            <div class="extra-social-list mb-2" data-extra-social-list>
+                                                                @foreach(($w['extra_social'] ?? []) as $sIdx => $sItem)
+                                                                    <div class="extra-social-row">
+                                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                            <span class="fs-10 text-muted">{{ translate('Icon') }} #{{ $sIdx + 1 }}</span>
+                                                                            <button type="button" class="btn btn-xs btn-danger" onclick="removeExtraSocialRow(this)"><i class="las la-times"></i></button>
+                                                                        </div>
+                                                                        <input type="text" class="form-control form-control-sm mb-1" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][extra_social][{{ $sIdx }}][icon]" value="{{ $sItem['icon'] ?? '' }}" placeholder="lab la-link">
+                                                                        <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][extra_social][{{ $sIdx }}][url]" value="{{ $sItem['url'] ?? '' }}" placeholder="https://...">
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                            <button type="button" class="btn btn-xs btn-soft-secondary btn-block" onclick="addExtraSocialRow(this)">
+                                                                <i class="las la-plus"></i> {{ translate('Add Social Icon') }}
+                                                            </button>
+
                                                             <!-- Inject Collapsible Style Block -->
                                                             @include('backend.website_settings.footer_widget_styles', ['col' => $col, 'wIndex' => $wIndex, 'w' => $w, 'wType' => 'seller_zone'])
                                                         </div>
@@ -1184,6 +1237,32 @@
                                                             <div class="form-group">
                                                                 <label class="form-label">{{ translate('Widget Title') }}</label>
                                                                 <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][title]" value="{{ $wTitle }}" placeholder="Delivery Partners" oninput="updateColumnPreview({{ $col }})">
+                                                            </div>
+
+                                                            <div class="widget-mobile-settings">
+                                                                <div class="mobile-settings-title">{{ translate('Mobile Settings') }}</div>
+                                                                <small class="text-muted d-block mb-2">{{ translate('Choose toggle mode and order for each mobile subsection.') }}</small>
+                                                                <div class="form-group">
+                                                                    <label class="form-label fs-10">{{ translate('Display As') }}</label>
+                                                                    <select class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][mobile_view]">
+                                                                        <option value="section" @if(($w['mobile_view'] ?? 'section') == 'section') selected @endif>{{ translate('Open Section') }}</option>
+                                                                        <option value="toggle" @if(($w['mobile_view'] ?? '') == 'toggle') selected @endif>{{ translate('Accordion Toggle') }}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="row mb-0">
+                                                                    <div class="col-4">
+                                                                        <label class="form-label fs-10">{{ translate('Delivery Order') }}</label>
+                                                                        <input type="number" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][deliv_mobile_order]" value="{{ $w['deliv_mobile_order'] ?? '10' }}" min="0" step="1">
+                                                                    </div>
+                                                                    <div class="col-4">
+                                                                        <label class="form-label fs-10">{{ translate('Payment Order') }}</label>
+                                                                        <input type="number" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][pay_mobile_order]" value="{{ $w['pay_mobile_order'] ?? '20' }}" min="0" step="1">
+                                                                    </div>
+                                                                    <div class="col-4">
+                                                                        <label class="form-label fs-10">{{ translate('Trustpilot Order') }}</label>
+                                                                        <input type="number" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][trust_mobile_order]" value="{{ $w['trust_mobile_order'] ?? '30' }}" min="0" step="1">
+                                                                    </div>
+                                                                </div>
                                                             </div>
 
                                                             <div class="row">
@@ -1282,6 +1361,17 @@
                                                                 <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][title]" value="{{ $wTitle }}" placeholder="Follow Us" oninput="updateColumnPreview({{ $col }})">
                                                             </div>
 
+                                                            <div class="widget-mobile-settings">
+                                                                <div class="mobile-settings-title">{{ translate('Mobile Settings') }}</div>
+                                                                <div class="form-group mb-0">
+                                                                    <label class="form-label fs-10">{{ translate('Display As') }}</label>
+                                                                    <select class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][mobile_view]">
+                                                                        <option value="section" @if(($w['mobile_view'] ?? 'section') == 'section') selected @endif>{{ translate('Open Section') }}</option>
+                                                                        <option value="toggle" @if(($w['mobile_view'] ?? '') == 'toggle') selected @endif>{{ translate('Accordion Toggle') }}</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
                                                             <!-- Social URL fields -->
                                                             <h6 class="fs-10 font-weight-bold text-dark mb-2">{{ translate('Social Link Connections') }}</h6>
                                                             <div class="form-group">
@@ -1308,6 +1398,23 @@
                                                                 <label class="form-label fs-10">{{ translate('TikTok Link') }}</label>
                                                                 <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][tiktok_link]" value="{{ $w['tiktok_link'] ?? '' }}" placeholder="http://..." oninput="updateColumnPreview({{ $col }})">
                                                             </div>
+
+                                                            <h6 class="fs-10 font-weight-bold text-dark mb-2">{{ translate('Extra Social Icons (Repeater)') }}</h6>
+                                                            <div class="extra-social-list mb-2" data-extra-social-list>
+                                                                @foreach(($w['extra_social'] ?? []) as $sIdx => $sItem)
+                                                                    <div class="extra-social-row">
+                                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                            <span class="fs-10 text-muted">{{ translate('Icon') }} #{{ $sIdx + 1 }}</span>
+                                                                            <button type="button" class="btn btn-xs btn-danger" onclick="removeExtraSocialRow(this)"><i class="las la-times"></i></button>
+                                                                        </div>
+                                                                        <input type="text" class="form-control form-control-sm mb-1" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][extra_social][{{ $sIdx }}][icon]" value="{{ $sItem['icon'] ?? '' }}" placeholder="lab la-link">
+                                                                        <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][extra_social][{{ $sIdx }}][url]" value="{{ $sItem['url'] ?? '' }}" placeholder="https://...">
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                            <button type="button" class="btn btn-xs btn-soft-secondary btn-block" onclick="addExtraSocialRow(this)">
+                                                                <i class="las la-plus"></i> {{ translate('Add Social Icon') }}
+                                                            </button>
 
                                                             <!-- Inject Collapsible Style Block -->
                                                             @include('backend.website_settings.footer_widget_styles', ['col' => $col, 'wIndex' => $wIndex, 'w' => $w, 'wType' => 'social_icons'])
@@ -1368,6 +1475,13 @@
                                                                             value="{{ $block['mobile_order'] ?? (($bIdx + 1) * 10) }}" min="0" step="1">
                                                                     </div>
                                                                 </div>
+                                                            </div>
+                                                            <div class="form-group mb-2">
+                                                                <label class="form-label fs-10 mb-1">{{ translate('Mobile Display') }}</label>
+                                                                <select class="form-control form-control-sm" name="foot_col_{{ $col }}_extra_blocks[{{ $bIdx }}][mobile_view]">
+                                                                    <option value="toggle" @if(($block['mobile_view'] ?? 'toggle') == 'toggle') selected @endif>{{ translate('Accordion Toggle') }}</option>
+                                                                    <option value="section" @if(($block['mobile_view'] ?? '') == 'section') selected @endif>{{ translate('Open Section') }}</option>
+                                                                </select>
                                                             </div>
                                                             <div class="extra-block-links-container mb-1">
                                                                 @foreach($block['lbls'] ?? [] as $lIdx => $lbl)
@@ -2031,6 +2145,18 @@
             let seller_login_text = data.seller_login_text || 'Login to Seller Panel';
             let become_seller_text = data.become_seller_text || 'Register your shop';
             let download_seller_app_text = data.download_seller_app_text || 'Download Seller App';
+            let seller_mobile_view = data.mobile_view || 'toggle';
+            let seller_extra_social = Array.isArray(data.extra_social) ? data.extra_social : [];
+            let sellerExtraSocialHtml = seller_extra_social.map(function(item, socialIdx) {
+                return '<div class="extra-social-row">' +
+                    '<div class="d-flex justify-content-between align-items-center mb-2">' +
+                        '<span class="fs-10 text-muted">Icon #' + (socialIdx + 1) + '</span>' +
+                        '<button type="button" class="btn btn-xs btn-danger" onclick="removeExtraSocialRow(this)"><i class="las la-times"></i></button>' +
+                    '</div>' +
+                    '<input type="text" class="form-control form-control-sm mb-1" name="foot_col_' + col + '_widgets[' + index + '][extra_social][' + socialIdx + '][icon]" value="' + (item.icon || '') + '" placeholder="lab la-link">' +
+                    '<input type="text" class="form-control form-control-sm" name="foot_col_' + col + '_widgets[' + index + '][extra_social][' + socialIdx + '][url]" value="' + (item.url || '') + '" placeholder="https://...">' +
+                '</div>';
+            }).join('');
 
             html = `
                 <div class="widget-card card mb-3 border" data-type="seller_zone" draggable="true">
@@ -2048,6 +2174,16 @@
                         <div class="form-group">
                             <label class="form-label">Widget Title</label>
                             <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][title]" value="${title || 'Seller Zone'}" placeholder="Seller Zone" oninput="updateColumnPreview(${col})">
+                        </div>
+                        <div class="widget-mobile-settings">
+                            <div class="mobile-settings-title">Mobile Settings</div>
+                            <div class="form-group mb-0">
+                                <label class="form-label fs-10">Display As</label>
+                                <select class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][mobile_view]">
+                                    <option value="toggle" ${seller_mobile_view === 'toggle' ? 'selected' : ''}>Accordion Toggle</option>
+                                    <option value="section" ${seller_mobile_view === 'section' ? 'selected' : ''}>Open Section</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Seller Login URL</label>
@@ -2105,6 +2241,12 @@
                             <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][tiktok_link]" value="${data.tiktok_link || ''}" placeholder="http://..." oninput="updateColumnPreview(${col})">
                         </div>
 
+                        <h6 class="fs-10 font-weight-bold text-dark mb-2 mt-3">Extra Social Icons (Repeater)</h6>
+                        <div class="extra-social-list mb-2" data-extra-social-list>${sellerExtraSocialHtml}</div>
+                        <button type="button" class="btn btn-xs btn-soft-secondary btn-block" onclick="addExtraSocialRow(this)">
+                            <i class="las la-plus"></i> Add Social Icon
+                        </button>
+
                         ${stylesCollapseHtml}
                     </div>
                 </div>`;
@@ -2117,6 +2259,10 @@
             let show_deliv = data.show_deliv || 'on';
             let show_pay = data.show_pay || 'on';
             let show_trust = data.show_trust || 'on';
+            let image_mobile_view = data.mobile_view || 'section';
+            let deliv_mobile_order = data.deliv_mobile_order || '10';
+            let pay_mobile_order = data.pay_mobile_order || '20';
+            let trust_mobile_order = data.trust_mobile_order || '30';
 
             html = `
                 <div class="widget-card card mb-3 border" data-type="images_widget" draggable="true">
@@ -2135,6 +2281,31 @@
                         <div class="form-group">
                             <label class="form-label">Widget Title</label>
                             <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][title]" value="${title || 'Delivery Partners'}" placeholder="Delivery Partners" oninput="updateColumnPreview(${col})">
+                        </div>
+
+                        <div class="widget-mobile-settings">
+                            <div class="mobile-settings-title">Mobile Settings</div>
+                            <div class="form-group">
+                                <label class="form-label fs-10">Display As</label>
+                                <select class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][mobile_view]">
+                                    <option value="section" ${image_mobile_view === 'section' ? 'selected' : ''}>Open Section</option>
+                                    <option value="toggle" ${image_mobile_view === 'toggle' ? 'selected' : ''}>Accordion Toggle</option>
+                                </select>
+                            </div>
+                            <div class="row mb-0">
+                                <div class="col-4">
+                                    <label class="form-label fs-10">Delivery Order</label>
+                                    <input type="number" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][deliv_mobile_order]" value="${deliv_mobile_order}" min="0" step="1">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label fs-10">Payment Order</label>
+                                    <input type="number" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][pay_mobile_order]" value="${pay_mobile_order}" min="0" step="1">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label fs-10">Trustpilot Order</label>
+                                    <input type="number" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][trust_mobile_order]" value="${trust_mobile_order}" min="0" step="1">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row">
@@ -2216,6 +2387,19 @@
                 </div>`;
         }
         else if (type === 'social_icons') {
+            let social_mobile_view = data.mobile_view || 'section';
+            let extra_social = Array.isArray(data.extra_social) ? data.extra_social : [];
+            let extraSocialHtml = extra_social.map(function(item, socialIdx) {
+                return '<div class="extra-social-row">' +
+                    '<div class="d-flex justify-content-between align-items-center mb-2">' +
+                        '<span class="fs-10 text-muted">Icon #' + (socialIdx + 1) + '</span>' +
+                        '<button type="button" class="btn btn-xs btn-danger" onclick="removeExtraSocialRow(this)"><i class="las la-times"></i></button>' +
+                    '</div>' +
+                    '<input type="text" class="form-control form-control-sm mb-1" name="foot_col_' + col + '_widgets[' + index + '][extra_social][' + socialIdx + '][icon]" value="' + (item.icon || '') + '" placeholder="lab la-link">' +
+                    '<input type="text" class="form-control form-control-sm" name="foot_col_' + col + '_widgets[' + index + '][extra_social][' + socialIdx + '][url]" value="' + (item.url || '') + '" placeholder="https://...">' +
+                '</div>';
+            }).join('');
+
             html = `
                 <div class="widget-card card mb-3 border" data-type="social_icons" draggable="true">
                     <div class="card-header py-2 d-flex justify-content-between align-items-center bg-soft-purple">
@@ -2232,6 +2416,17 @@
                         <div class="form-group mb-3 border-bottom pb-3">
                             <label class="form-label">Widget Title</label>
                             <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][title]" value="${title || 'Follow Us'}" placeholder="Follow Us" oninput="updateColumnPreview(${col})">
+                        </div>
+
+                        <div class="widget-mobile-settings">
+                            <div class="mobile-settings-title">Mobile Settings</div>
+                            <div class="form-group mb-0">
+                                <label class="form-label fs-10">Display As</label>
+                                <select class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][mobile_view]">
+                                    <option value="section" ${social_mobile_view === 'section' ? 'selected' : ''}>Open Section</option>
+                                    <option value="toggle" ${social_mobile_view === 'toggle' ? 'selected' : ''}>Accordion Toggle</option>
+                                </select>
+                            </div>
                         </div>
 
                         <!-- Social URL fields -->
@@ -2260,6 +2455,12 @@
                             <label class="form-label fs-10">TikTok Link</label>
                             <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][tiktok_link]" value="${data.tiktok_link || ''}" placeholder="http://..." oninput="updateColumnPreview(${col})">
                         </div>
+
+                        <h6 class="fs-10 font-weight-bold text-dark mb-2 mt-3">Extra Social Icons (Repeater)</h6>
+                        <div class="extra-social-list mb-2" data-extra-social-list>${extraSocialHtml}</div>
+                        <button type="button" class="btn btn-xs btn-soft-secondary btn-block" onclick="addExtraSocialRow(this)">
+                            <i class="las la-plus"></i> Add Social Icon
+                        </button>
 
                         ${stylesCollapseHtml}
                     </div>
@@ -2361,6 +2562,62 @@
         updateColumnPreview(col);
     }
 
+    function refreshExtraSocialIndices(card) {
+        if (!card) return;
+        let typeInput = card.querySelector('input[name$="[type]"]');
+        let list = card.querySelector('[data-extra-social-list]');
+        if (!typeInput || !list) return;
+
+        let baseName = typeInput.getAttribute('name').replace(/\[type\]$/, '');
+        let rows = list.querySelectorAll('.extra-social-row');
+        rows.forEach(function(row, socialIndex) {
+            let iconInput = row.querySelector('input[name*="[icon]"]');
+            let urlInput = row.querySelector('input[name*="[url]"]');
+            if (iconInput) {
+                iconInput.setAttribute('name', baseName + '[extra_social][' + socialIndex + '][icon]');
+            }
+            if (urlInput) {
+                urlInput.setAttribute('name', baseName + '[extra_social][' + socialIndex + '][url]');
+            }
+
+            let label = row.querySelector('.fs-10.text-muted');
+            if (label) {
+                label.textContent = 'Icon #' + (socialIndex + 1);
+            }
+        });
+    }
+
+    function addExtraSocialRow(btn) {
+        let card = btn.closest('.widget-card');
+        if (!card) return;
+        let list = card.querySelector('[data-extra-social-list]');
+        let typeInput = card.querySelector('input[name$="[type]"]');
+        if (!list || !typeInput) return;
+
+        let nextIndex = list.querySelectorAll('.extra-social-row').length;
+        let baseName = typeInput.getAttribute('name').replace(/\[type\]$/, '');
+
+        let row = document.createElement('div');
+        row.className = 'extra-social-row';
+        row.innerHTML = '' +
+            '<div class="d-flex justify-content-between align-items-center mb-2">' +
+                '<span class="fs-10 text-muted">Icon #' + (nextIndex + 1) + '</span>' +
+                '<button type="button" class="btn btn-xs btn-danger" onclick="removeExtraSocialRow(this)"><i class="las la-times"></i></button>' +
+            '</div>' +
+            '<input type="text" class="form-control form-control-sm mb-1" name="' + baseName + '[extra_social][' + nextIndex + '][icon]" placeholder="lab la-link">' +
+            '<input type="text" class="form-control form-control-sm" name="' + baseName + '[extra_social][' + nextIndex + '][url]" placeholder="https://...">';
+
+        list.appendChild(row);
+        refreshExtraSocialIndices(card);
+    }
+
+    function removeExtraSocialRow(btn) {
+        let card = btn.closest('.widget-card');
+        let row = btn.closest('.extra-social-row');
+        if (row) row.remove();
+        refreshExtraSocialIndices(card);
+    }
+
     // Refresh repeater input names with correct order index
     function refreshWidgetIndices(col) {
         let container = document.getElementById('widgets-list-' + col);
@@ -2416,6 +2673,8 @@
                     }
                 });
             });
+
+            refreshExtraSocialIndices(card);
         });
 
         updateColumnPreview(col);
@@ -2944,6 +3203,13 @@
                                     value="${(index + 1) * 10}" min="0" step="1">
                             </div>
                         </div>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-label fs-10 mb-1">Mobile Display</label>
+                        <select class="form-control form-control-sm" name="foot_col_${col}_extra_blocks[${index}][mobile_view]">
+                            <option value="toggle" selected>Accordion Toggle</option>
+                            <option value="section">Open Section</option>
+                        </select>
                     </div>
                     <div class="extra-block-links-container mb-1">
                         <div class="extra-link-row d-flex align-items-start gap-1 mb-1">

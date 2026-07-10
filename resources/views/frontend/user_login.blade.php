@@ -8,10 +8,12 @@
             <div class="col-xl-9 col-lg-10 col-md-12">
                 <div class="login-main-card border-0">
                     <div class="row gx-0 align-items-stretch">
-                        
+
                         {{-- Left side image (visible only on desktop) --}}
                         <div class="col-lg-6 d-none d-lg-block">
-                            <div class="login-image-side h-100" style="background-image: url('{{ asset('assets/img/bed.jpeg') }}');">
+
+                           <div class="login-image-side h-100" style="background-image: url('https://timetofurnish.com/public/assets/img/bed.jpeg');">
+
                                 <div class="login-image-overlay"></div>
                                 <div class="h-100 p-5 d-flex flex-column justify-content-between logintext position-relative" style="z-index: 2;">
                                    {{--<div>
@@ -29,12 +31,12 @@
                         {{-- Right side form ( Buyer / Seller login ) --}}
                         <div class="col-lg-6 col-md-12">
                             <div class="login-form-side h-100">
-                                
+
                                 {{-- Header & Role Switcher --}}
                                 <div class="text-center mb-4">
                                     <h1 class="fs-22 fw-700 mb-1" id="login-title" style="color: #39322a; font-family: 'DM Serif Display', serif;">{{ translate('Buyer Login') }}</h1>
                                     <p class="fs-13 text-muted" id="login-subtitle">{{ translate('Login to your Account') }}</p>
-                                    
+
                                     {{-- Unified Role Switcher --}}
                                     <div class="role-switcher-container mt-3">
                                         <button type="button" class="btn-role active" data-role="buyer">
@@ -59,7 +61,7 @@
                                         </div>
 
                                         <input type="hidden" name="country_code" value="">
-                                        
+
                                         {{-- Email Input (toggled) --}}
                                         <div class="form-group-custom email-form-group d-none">
                                             <label for="email">{{ translate('Email') }}</label>
@@ -70,7 +72,7 @@
                                                 </span>
                                             @endif
                                         </div>
-                                        
+
                                         {{-- Toggle between Email & Phone --}}
                                         <div class="form-group text-right mb-3" id="otp-toggle-wrap">
                                             <button class="btn btn-link p-0 text-primary fs-12 fw-500" type="button" onclick="toggleEmailPhone(this)" id="toggle-identifier-btn" style="background: transparent; border: none; color: #685b4e !important; text-decoration: underline;">
@@ -284,8 +286,8 @@
 }
 /* Autofill browser styling fix */
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
     -webkit-text-fill-color: #39322a !important;
@@ -374,16 +376,16 @@ input:-webkit-autofill:active {
         $(document).ready(function() {
             $('.btn-role').on('click', function() {
                 var role = $(this).data('role');
-                
+
                 // Update active status in buttons
                 $('.btn-role').removeClass('active');
                 $(this).addClass('active');
-                
+
                 // Redesign UI titles/buttons for Buyer vs Seller
                 if (role === 'buyer') {
                     $('#login-title').text("{{ translate('Buyer Login') }}");
                     $('#login-subtitle').text("{{ translate('Login to your Account') }}");
-                    
+
                     $('#otp-toggle-wrap').removeClass('d-none');
                     $('#social-login-wrap').removeClass('d-none');
                     $('#register-link-wrap').html(`
@@ -393,7 +395,7 @@ input:-webkit-autofill:active {
                         </a>
                     `);
                     $('#submit-btn').text("{{ translate('Login As Buyer') }}");
-                    
+
                     @if (addon_is_activated('otp_system'))
                         if (isPhoneShown) {
                             $('.phone-form-group').removeClass('d-none');
@@ -408,7 +410,7 @@ input:-webkit-autofill:active {
                 } else if (role === 'seller') {
                     $('#login-title').text("{{ translate('Seller Login') }}");
                     $('#login-subtitle').text("{{ translate('Login to Seller Account') }}");
-                    
+
                     $('#otp-toggle-wrap').addClass('d-none');
                     $('#social-login-wrap').addClass('d-none');
                     $('#register-link-wrap').html(`
@@ -418,7 +420,7 @@ input:-webkit-autofill:active {
                         </a>
                     `);
                     $('#submit-btn').text("{{ translate('Login As Seller') }}");
-                    
+
                     $('.phone-form-group').addClass('d-none');
                     $('.email-form-group').removeClass('d-none');
                 }
@@ -441,7 +443,7 @@ input:-webkit-autofill:active {
             $('#email').val('customer@example.com');
             $('#password').val('123456');
         }
-        
+
         function autoFillDeliveryBoy(){
             $('.btn-role[data-role="buyer"]').trigger('click');
             @if (addon_is_activated('otp_system'))
@@ -452,9 +454,9 @@ input:-webkit-autofill:active {
             $('#email').val('deliveryboy@example.com');
             $('#password').val('123456');
         }
-        
+
         function togglePassword(id) {
-            const passwordInput = document.getElementById(id); 
+            const passwordInput = document.getElementById(id);
             const toggleIcon = document.getElementById('password-toggle-icon');
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
