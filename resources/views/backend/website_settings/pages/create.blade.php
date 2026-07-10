@@ -2,23 +2,23 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ static_asset('assets/css/custom-pages/admin-page-builder.css') }}?v={{ time() }}">
-
-<div class="aiz-titlebar text-left mt-2 mb-3">
-    <div class="row align-items-center">
-        <div class="col">
-            <h1 class="h3">{{ translate('Add New Page') }}</h1>
-        </div>
-    </div>
-</div>
-
-<div class="ttf-admin-page-shell">
-    @include('backend.website_settings.pages.partials.form', [
-        'pageBuilderData' => $pageBuilderData,
-        'fontFamilyOptions' => $fontFamilyOptions,
-    ])
-</div>
+@php
+    $isEdit         = false;
+    $currentLang    = env('DEFAULT_LANGUAGE');
+    $titleValue     = '';
+    $slugValue      = '';
+    $metaImageValue = '';
+@endphp
+@include('backend.website_settings.pages.partials.page_builder', [
+    'isEdit'            => false,
+    'titleValue'        => $titleValue,
+    'slugValue'         => $slugValue,
+    'metaImageValue'    => $metaImageValue,
+    'pageBuilderData'   => $pageBuilderData,
+    'fontFamilyOptions' => $fontFamilyOptions,
+])
 @endsection
 
 @section('script')
-    @include('backend.website_settings.pages.partials.page_builder_script')
+@include('backend.website_settings.pages.partials.page_builder_script')
 @endsection

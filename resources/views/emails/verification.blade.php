@@ -22,7 +22,7 @@ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
                 <tr>
                     <td style="background:#d6ccc6; padding:18px; text-align:center;">
                      
-                          <img src="{{ asset('public/assets/img/logoT.png') }}" 
+                          <img src="{{ asset('assets/img/logoT.png') }}"
                              alt="Logo"
                              style="max-height:55px; display:block; margin:0 auto;">
                     </td>

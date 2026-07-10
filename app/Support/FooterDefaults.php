@@ -26,6 +26,7 @@ class FooterDefaults
                 'status' => get_setting('foot_col_'.$col.'_status', $default['status']),
                 'width' => get_setting('foot_col_'.$col.'_width', $default['width']),
                 'widgets' => self::widgets($col, $lang),
+                'extra_blocks' => self::extraBlocks($col, $lang),
             ];
         }
 
@@ -55,6 +56,7 @@ class FooterDefaults
                     'lbls' => ['Home', 'About Us', 'Categories', 'Blogs', 'Contact Us', 'Careers', 'Meet Our Team', 'Join Our Delivery Partner'],
                     'lnks' => ['', 'about-us', 'categories', 'blog', 'contact-us', 'career', 'meet-the-team', 'become_delivery_partner'],
                 ]],
+                'extra_blocks' => [],
             ],
             2 => [
                 'status' => 'on',
@@ -65,6 +67,7 @@ class FooterDefaults
                     'lbls' => ['Return Policy', 'Support Policy', 'Seller Terms & Conditions', 'Privacy Policy', 'Delivery', 'Disclaimer', 'Cookie Policy', 'Customer Terms & Conditions'],
                     'lnks' => ['return-policy', 'support-policy', 'seller-terms-conditions', 'privacy-policy', 'delivery', 'disclaimer', 'cookie-policy', 'customer-terms-conditions'],
                 ]],
+                'extra_blocks' => [],
             ],
             3 => [
                 'status' => 'on',
@@ -73,6 +76,7 @@ class FooterDefaults
                     'type' => 'my_account',
                     'title' => 'My Account',
                 ]],
+                'extra_blocks' => [],
             ],
             4 => [
                 'status' => 'on',
@@ -85,6 +89,7 @@ class FooterDefaults
                     'subheading_2' => 'Join Our Partner Network',
                     'subheading_3' => 'Follow Us',
                 ]],
+                'extra_blocks' => [],
             ],
             5 => [
                 'status' => 'on',
@@ -102,6 +107,7 @@ class FooterDefaults
                         'trustpilot_lnk' => get_setting('foot_lnk_trust', '#'),
                     ],
                 ],
+                'extra_blocks' => [],
             ],
         ];
 
@@ -109,6 +115,7 @@ class FooterDefaults
             'status' => 'off',
             'width' => '20%',
             'widgets' => [],
+            'extra_blocks' => [],
         ];
     }
 
@@ -126,6 +133,18 @@ class FooterDefaults
         }
 
         return self::defaultColumn($col, $lang)['widgets'];
+    }
+
+    public static function extraBlocks($col, $lang = null)
+    {
+        $setting = self::setting('foot_col_'.$col.'_extra_blocks', $lang);
+
+        if ($setting['exists']) {
+            $blocks = json_decode($setting['value'], true);
+            return is_array($blocks) ? array_values($blocks) : [];
+        }
+
+        return [];
     }
 
     protected static function setting($type, $lang = null)

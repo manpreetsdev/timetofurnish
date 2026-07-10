@@ -89,6 +89,8 @@ class CustomPageTemplate
 
     public static function structuredSectionTemplates(): array
     {
+        $themeAccent = self::defaultAccentColor();
+
         $shared = [
             'title' => '',
             'show_title' => '1',
@@ -99,11 +101,15 @@ class CustomPageTemplate
             'title_font_family' => '',
             'title_color' => '',
             'title_font_size' => '28',
-            'title_line_height' => '33',
+            'title_font_weight' => '700',
+            'title_line_height' => '1.18',
+            'title_letter_spacing' => '0',
             'body_font_family' => '',
             'body_color' => '',
             'body_font_size' => '18',
-            'body_line_height' => '31',
+            'body_font_weight' => '400',
+            'body_line_height' => '1.72',
+            'body_letter_spacing' => '0',
             'subtitle_color' => '',
             'accent_color' => '',
             'highlight_color' => '',
@@ -117,7 +123,11 @@ class CustomPageTemplate
             'section_padding' => '50',
             'padding_top' => '50',
             'padding_bottom' => '50',
+            'padding_left' => '0',
+            'padding_right' => '0',
             'padding_left_right' => '0',
+            'margin_top' => '0',
+            'margin_bottom' => '0',
             'column_index' => '0',
             'show_on_desktop' => '1',
             'show_on_ipad_pro' => '1',
@@ -135,14 +145,14 @@ class CustomPageTemplate
                 'image_alt' => '',
                 'title_font_family' => 'Playfair Display, serif',
                 'title_font_size' => '36',
-                'title_line_height' => '50',
+                'title_line_height' => '1.39',
                 'body_font_family' => 'Poppins, sans-serif',
                 'body_font_size' => '18',
-                'body_line_height' => '32',
+                'body_line_height' => '1.78',
                 'body_font_weight' => '700',
-                'highlight_color' => '#C27325',
-                'check_icon_color' => '#C27325',
-                'accent_color' => '#C27325',
+                'highlight_color' => $themeAccent,
+                'check_icon_color' => $themeAccent,
+                'accent_color' => $themeAccent,
                 'image_height' => '553',
                 'border_radius' => '10',
                 'items' => [
@@ -160,13 +170,13 @@ class CustomPageTemplate
                 'image_alt' => '',
                 'title_font_family' => 'Playfair Display, serif',
                 'title_font_size' => '36',
-                'title_line_height' => '50',
+                'title_line_height' => '1.39',
                 'body_font_family' => 'Poppins, sans-serif',
                 'body_font_size' => '18',
-                'body_line_height' => '33',
+                'body_line_height' => '1.83',
                 'body_font_weight' => '400',
-                'highlight_color' => '#C27325',
-                'accent_color' => '#C27325',
+                'highlight_color' => $themeAccent,
+                'accent_color' => $themeAccent,
                 'image_height' => '553',
                 'border_radius' => '10',
             ]),
@@ -263,7 +273,7 @@ class CustomPageTemplate
                 'button_text' => 'Click Here',
                 'button_link' => '',
                 'button_align' => 'left',
-                'button_bg_color' => '#C27325',
+                'button_bg_color' => $themeAccent,
                 'button_text_color' => '#ffffff',
                 'button_font_size' => '16',
                 'button_border_radius' => '6',
@@ -287,6 +297,8 @@ class CustomPageTemplate
             'section_padding' => '50',
             'padding_top' => '50',
             'padding_bottom' => '50',
+            'padding_left' => '0',
+            'padding_right' => '0',
             'section_gap' => '18',
             'show_on_desktop' => '1',
             'show_on_ipad_pro' => '1',
@@ -500,12 +512,14 @@ class CustomPageTemplate
 
     protected static function defaultStyles(): array
     {
+        $themeAccent = self::defaultAccentColor();
+
         return [
             'page_background' => '#FAF8F5',
             'content_background' => '#ffffff',
             'card_background' => '#fffdf9',
-            'card_border_color' => '#21252933',
-            'accent_color' => '#C27325',
+            'card_border_color' => 'rgba(33, 37, 41, 0.2)',
+            'accent_color' => $themeAccent,
             'heading_color' => '#2c2218',
             'subheading_color' => '#5b4839',
             'paragraph_color' => '#393939',
@@ -518,10 +532,78 @@ class CustomPageTemplate
             'container_width' => '1440',
             'section_spacing' => '54',
             'toc_background' => '#fffdf9',
-            'toc_border_color' => '#21252933',
+            'toc_border_color' => 'rgba(33, 37, 41, 0.2)',
             'toc_heading_color' => '#3a2a1f',
             'toc_text_color' => '#6f5f52',
         ];
+    }
+
+    public static function colorPickerValue(?string $value, string $fallback = '#ffffff'): string
+    {
+        $normalizedFallback = self::normalizeHexColor($fallback) ?? '#ffffff';
+        $value = trim((string) $value);
+
+        if ($value === '') {
+            return $normalizedFallback;
+        }
+
+        $hexColor = self::normalizeHexColor($value);
+        if ($hexColor !== null) {
+            return $hexColor;
+        }
+
+        if (preg_match('/rgba?\(([^)]+)\)/i', $value, $matches)) {
+            $parts = array_map('trim', explode(',', $matches[1]));
+            if (count($parts) >= 3) {
+                $rgb = array_slice($parts, 0, 3);
+                $channels = [];
+                foreach ($rgb as $channel) {
+                    if (!is_numeric($channel)) {
+                        return $normalizedFallback;
+                    }
+                    $channels[] = max(0, min(255, (int) round((float) $channel)));
+                }
+
+                return sprintf('#%02x%02x%02x', $channels[0], $channels[1], $channels[2]);
+            }
+        }
+
+        return $normalizedFallback;
+    }
+
+    public static function normalizeLineHeightValue($value, $fontSize, string $fallback = '1.4'): string
+    {
+        $rawValue = trim((string) $value);
+        $fontSizeValue = (float) $fontSize;
+        $fallbackValue = max(0.8, min(4, (float) $fallback));
+
+        if ($rawValue === '') {
+            return self::formatDecimalValue($fallbackValue);
+        }
+
+        if (!preg_match('/-?\d+(\.\d+)?/', $rawValue, $matches)) {
+            return self::formatDecimalValue($fallbackValue);
+        }
+
+        $numericValue = (float) $matches[0];
+        if ($numericValue <= 0) {
+            return self::formatDecimalValue($fallbackValue);
+        }
+
+        if ($numericValue > 6 && $fontSizeValue > 0) {
+            $numericValue = $numericValue / $fontSizeValue;
+        }
+
+        $numericValue = max(0.8, min(4, $numericValue));
+
+        return self::formatDecimalValue($numericValue);
+    }
+
+    protected static function defaultAccentColor(): string
+    {
+        return function_exists('get_setting')
+            ? get_setting('base_color', '#d43533')
+            : '#d43533';
     }
 
     protected static function normalizeSection(array $section): array
@@ -545,15 +627,19 @@ class CustomPageTemplate
         $normalized['title_font_size'] = trim((string) ($normalized['title_font_size'] ?? '')) !== ''
             ? (string) $normalized['title_font_size']
             : (string) ($defaults['title_font_size'] ?? '28');
-        $normalized['title_line_height'] = trim((string) ($normalized['title_line_height'] ?? '')) !== ''
-            ? (string) $normalized['title_line_height']
-            : (string) ($defaults['title_line_height'] ?? '33');
         $normalized['body_font_size'] = trim((string) ($normalized['body_font_size'] ?? '')) !== ''
             ? (string) $normalized['body_font_size']
             : (string) ($defaults['body_font_size'] ?? '18');
-        $normalized['body_line_height'] = trim((string) ($normalized['body_line_height'] ?? '')) !== ''
-            ? (string) $normalized['body_line_height']
-            : (string) ($defaults['body_line_height'] ?? '31');
+        $normalized['title_line_height'] = self::normalizeLineHeightValue(
+            $normalized['title_line_height'] ?? ($defaults['title_line_height'] ?? '1.18'),
+            $normalized['title_font_size'],
+            (string) ($defaults['title_line_height'] ?? '1.18')
+        );
+        $normalized['body_line_height'] = self::normalizeLineHeightValue(
+            $normalized['body_line_height'] ?? ($defaults['body_line_height'] ?? '1.72'),
+            $normalized['body_font_size'],
+            (string) ($defaults['body_line_height'] ?? '1.72')
+        );
         $backgroundColor = trim((string) ($normalized['background_color'] ?? ''));
         $borderColor = trim((string) ($normalized['border_color'] ?? ''));
         $paddingValue = (int) ($normalized['section_padding'] ?? 0);
@@ -726,6 +812,34 @@ class CustomPageTemplate
         }
 
         return $normalized;
+    }
+
+    protected static function normalizeHexColor(string $value): ?string
+    {
+        $value = trim(strtolower($value));
+
+        if (preg_match('/^#([0-9a-f]{3})$/', $value, $matches)) {
+            return '#' . $matches[1][0] . $matches[1][0]
+                . $matches[1][1] . $matches[1][1]
+                . $matches[1][2] . $matches[1][2];
+        }
+
+        if (preg_match('/^#([0-9a-f]{6})$/', $value)) {
+            return $value;
+        }
+
+        if (preg_match('/^#([0-9a-f]{8})$/', $value)) {
+            return '#' . substr($value, 1, 6);
+        }
+
+        return null;
+    }
+
+    protected static function formatDecimalValue(float $value): string
+    {
+        $formatted = number_format($value, 2, '.', '');
+
+        return rtrim(rtrim($formatted, '0'), '.');
     }
 
     protected static function buildGroupsFromLegacyPayload(array $payload): array

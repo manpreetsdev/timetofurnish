@@ -1,5 +1,6 @@
 @php
     $styles = $pageBuilderData['styles'] ?? [];
+    $themeAccent = get_setting('base_color', '#d43533');
     $templateType = $pageBuilderData['template'] ?? \App\Support\CustomPageTemplate::TEMPLATE_CLASSIC;
     $classicBlocks = $pageBuilderData['classic_blocks'] ?? [];
     $policySections = $pageBuilderData['policy_sections'] ?? [];
@@ -14,8 +15,8 @@
         --ttf-page-bg: {{ $styles['page_background'] ?? '#FAF8F5' }};
         --ttf-content-bg: {{ $styles['content_background'] ?? '#ffffff' }};
         --ttf-card-bg: {{ $styles['card_background'] ?? '#fffdf9' }};
-        --ttf-card-border: {{ $styles['card_border_color'] ?? '#21252933' }};
-        --ttf-accent: {{ $styles['accent_color'] ?? '#C27325' }};
+        --ttf-card-border: {{ $styles['card_border_color'] ?? 'rgba(33, 37, 41, 0.2)' }};
+        --ttf-accent: {{ $styles['accent_color'] ?? $themeAccent }};
         --ttf-heading: {{ $styles['heading_color'] ?? '#2c2218' }};
         --ttf-subheading: {{ $styles['subheading_color'] ?? '#5b4839' }};
         --ttf-text: {{ $styles['paragraph_color'] ?? '#393939' }};
@@ -28,7 +29,7 @@
         --ttf-container-width: {{ (int) ($styles['container_width'] ?? 1440) }}px;
         --ttf-section-gap: {{ (int) ($styles['section_spacing'] ?? 54) }}px;
         --ttf-toc-bg: {{ $styles['toc_background'] ?? '#fffdf9' }};
-        --ttf-toc-border: {{ $styles['toc_border_color'] ?? '#21252933' }};
+        --ttf-toc-border: {{ $styles['toc_border_color'] ?? 'rgba(33, 37, 41, 0.2)' }};
         --ttf-toc-heading: {{ $styles['toc_heading_color'] ?? '#3a2a1f' }};
         --ttf-toc-text: {{ $styles['toc_text_color'] ?? '#6f5f52' }};
     "

@@ -427,6 +427,25 @@ class BusinessSettingsController extends Controller
                 if (!$hasWidgetType) {
                     $types[] = $lang ? [$lang => $widgetType] : $widgetType;
                 }
+
+                // Also ensure extra_blocks type is included
+                $extraType = 'foot_col_'.$col.'_extra_blocks';
+                $hasExtraType = false;
+
+                foreach ($types as $type) {
+                    if (is_array($type) && in_array($extraType, $type)) {
+                        $hasExtraType = true;
+                        break;
+                    }
+                    if ($type === $extraType) {
+                        $hasExtraType = true;
+                        break;
+                    }
+                }
+
+                if (!$hasExtraType) {
+                    $types[] = $lang ? [$lang => $extraType] : $extraType;
+                }
             }
 
             $request->merge(['types' => $types]);
@@ -451,7 +470,7 @@ class BusinessSettingsController extends Controller
 
                 $settingValue = $request->input($type);
 
-                if (str_ends_with($type, '_widgets')) {
+                if (str_ends_with($type, '_widgets') || str_ends_with($type, '_extra_blocks')) {
                     $settingValue = is_array($settingValue) ? $settingValue : [];
                 }
 

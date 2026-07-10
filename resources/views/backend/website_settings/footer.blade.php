@@ -944,6 +944,7 @@
                                         <!-- Repeater List Container for Drag and Drop Widgets -->
                                         <div class="widgets-list mt-3" id="widgets-list-{{ $col }}" data-col="{{ $col }}">
                                             <input type="hidden" name="types[][{{ $lang }}]" value="foot_col_{{ $col }}_widgets">
+                                            <input type="hidden" name="types[][{{ $lang }}]" value="foot_col_{{ $col }}_extra_blocks">
                                             
                                             @foreach($widgets as $wIndex => $w)
                                                 @php
@@ -1315,6 +1316,72 @@
                                                 @endif
                                             @endforeach
                                         </div>
+
+                                        <!-- ═══ EXTRA LINK BLOCKS — per column repeater ═══ -->
+                                        @php $extra_blocks = $columns[$col]['extra_blocks'] ?? []; @endphp
+                                        <div class="border-top mt-3 pt-3">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="font-weight-bold text-dark fs-12">
+                                                    <i class="las la-layer-group text-secondary"></i>
+                                                    {{ translate('Extra Link Blocks') }}
+                                                </span>
+                                                <button type="button" class="btn btn-xs btn-soft-secondary" onclick="addExtraBlock({{ $col }})">
+                                                    <i class="las la-plus"></i> {{ translate('Add Block') }}
+                                                </button>
+                                            </div>
+                                            <small class="form-text text-muted d-block mb-2">{{ translate('Add extra custom link sections below all widgets in this column. Each block has a heading and unlimited links. Choose if it shows on desktop, mobile, or both.') }}</small>
+
+                                            <div class="extra-blocks-list" id="extra-blocks-list-{{ $col }}" data-col="{{ $col }}">
+                                                @foreach($extra_blocks as $bIdx => $block)
+                                                    <div class="extra-block-card card mb-2 border border-secondary">
+                                                        <div class="card-header py-2 d-flex justify-content-between align-items-center" style="background:#f5f3f0;">
+                                                            <span class="text-secondary font-weight-bold fs-11"><i class="las la-grip-vertical mr-1"></i>{{ translate('Link Block') }} #{{ $bIdx + 1 }}</span>
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-xs btn-link text-dark" onclick="moveExtraBlockUp(this)"><i class="las la-arrow-up"></i></button>
+                                                                <button type="button" class="btn btn-xs btn-link text-dark" onclick="moveExtraBlockDown(this)"><i class="las la-arrow-down"></i></button>
+                                                                <button type="button" class="btn btn-xs btn-link text-danger" onclick="removeExtraBlock(this, {{ $col }})"><i class="las la-trash"></i></button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-body p-2">
+                                                            <div class="row">
+                                                                <div class="col-8">
+                                                                    <div class="form-group mb-2">
+                                                                        <label class="form-label fs-10 mb-1">{{ translate('Block Heading') }}</label>
+                                                                        <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_extra_blocks[{{ $bIdx }}][title]" value="{{ $block['title'] ?? '' }}" placeholder="{{ translate('e.g. Before a Seller') }}">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-4">
+                                                                    <div class="form-group mb-2">
+                                                                        <label class="form-label fs-10 mb-1">{{ translate('Show On') }}</label>
+                                                                        <select class="form-control form-control-sm" name="foot_col_{{ $col }}_extra_blocks[{{ $bIdx }}][show_on]">
+                                                                            <option value="both" @if(($block['show_on'] ?? 'both') == 'both') selected @endif>{{ translate('Both') }}</option>
+                                                                            <option value="desktop" @if(($block['show_on'] ?? '') == 'desktop') selected @endif>{{ translate('Desktop only') }}</option>
+                                                                            <option value="mobile" @if(($block['show_on'] ?? '') == 'mobile') selected @endif>{{ translate('Mobile only') }}</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="extra-block-links-container mb-1">
+                                                                @foreach($block['lbls'] ?? [] as $lIdx => $lbl)
+                                                                    @php $lnk = $block['lnks'][$lIdx] ?? ''; @endphp
+                                                                    <div class="extra-link-row d-flex align-items-start gap-1 mb-1">
+                                                                        <button type="button" class="btn btn-xs btn-danger flex-shrink-0 mt-1" onclick="removeExtraLinkRow(this, {{ $col }})"><i class="las la-times"></i></button>
+                                                                        <div class="flex-grow-1">
+                                                                            <input type="text" class="form-control form-control-sm mb-1" name="foot_col_{{ $col }}_extra_blocks[{{ $bIdx }}][lbls][]" value="{{ $lbl }}" placeholder="{{ translate('Link Label') }}">
+                                                                            <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_extra_blocks[{{ $bIdx }}][lnks][]" value="{{ $lnk }}" placeholder="{{ translate('Link URL') }}">
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                            <button type="button" class="btn btn-xs btn-soft-secondary btn-block" onclick="addExtraLinkRow(this, {{ $col }})">
+                                                                <i class="las la-plus"></i> {{ translate('Add Link') }}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                        <!-- ═══ END EXTRA LINK BLOCKS ═══ -->
 
                                     </div>
                                 </div>
@@ -2594,6 +2661,9 @@
                     addNewLinkBtn.setAttribute('onclick', newOnclick);
                 }
             }
+
+            // Refresh extra blocks col references
+            refreshExtraBlocksForColumn(colNum);
         });
         
         // Trigger preview updates
@@ -2707,6 +2777,10 @@
         // Clear widgets
         let widgetsList = card.querySelector('.widgets-list');
         resetWidgetsList(widgetsList, colNum);
+
+        // Clear extra blocks
+        let extraBlocksList = card.querySelector('.extra-blocks-list');
+        if (extraBlocksList) extraBlocksList.innerHTML = '';
         
         // Hide and move to the end of the accordion container
         card.classList.add('d-none');
@@ -2733,6 +2807,13 @@
         let destWidgetsList = inactiveCard.querySelector('.widgets-list');
         if (srcWidgetsList && destWidgetsList) {
             destWidgetsList.innerHTML = srcWidgetsList.innerHTML;
+        }
+
+        // Copy extra blocks contents
+        let srcExtraList = card.querySelector('.extra-blocks-list');
+        let destExtraList = inactiveCard.querySelector('.extra-blocks-list');
+        if (srcExtraList && destExtraList) {
+            destExtraList.innerHTML = srcExtraList.innerHTML;
         }
         
         // Copy column width
@@ -2766,6 +2847,216 @@
 
     function translate(text) {
         return text;
+    }
+
+    /* ═══════════════════════════════════════════════
+       EXTRA LINK BLOCKS — per-column repeater JS
+    ═══════════════════════════════════════════════ */
+
+    /**
+     * Build the HTML for one extra block card (used when adding a new block dynamically).
+     */
+    function getExtraBlockTemplate(col, index) {
+        return `
+            <div class="extra-block-card card mb-2 border border-secondary">
+                <div class="card-header py-2 d-flex justify-content-between align-items-center" style="background:#f5f3f0;">
+                    <span class="text-secondary font-weight-bold fs-11"><i class="las la-grip-vertical mr-1"></i>Link Block #${index + 1}</span>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-xs btn-link text-dark" onclick="moveExtraBlockUp(this)"><i class="las la-arrow-up"></i></button>
+                        <button type="button" class="btn btn-xs btn-link text-dark" onclick="moveExtraBlockDown(this)"><i class="las la-arrow-down"></i></button>
+                        <button type="button" class="btn btn-xs btn-link text-danger" onclick="removeExtraBlock(this, ${col})"><i class="las la-trash"></i></button>
+                    </div>
+                </div>
+                <div class="card-body p-2">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="form-group mb-2">
+                                <label class="form-label fs-10 mb-1">Block Heading</label>
+                                <input type="text" class="form-control form-control-sm"
+                                    name="foot_col_${col}_extra_blocks[${index}][title]"
+                                    placeholder="e.g. Before a Seller">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group mb-2">
+                                <label class="form-label fs-10 mb-1">Show On</label>
+                                <select class="form-control form-control-sm" name="foot_col_${col}_extra_blocks[${index}][show_on]">
+                                    <option value="both" selected>Both</option>
+                                    <option value="desktop">Desktop only</option>
+                                    <option value="mobile">Mobile only</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="extra-block-links-container mb-1">
+                        <div class="extra-link-row d-flex align-items-start gap-1 mb-1">
+                            <button type="button" class="btn btn-xs btn-danger flex-shrink-0 mt-1" onclick="removeExtraLinkRow(this, ${col})"><i class="las la-times"></i></button>
+                            <div class="flex-grow-1">
+                                <input type="text" class="form-control form-control-sm mb-1"
+                                    name="foot_col_${col}_extra_blocks[${index}][lbls][]"
+                                    placeholder="Link Label">
+                                <input type="text" class="form-control form-control-sm"
+                                    name="foot_col_${col}_extra_blocks[${index}][lnks][]"
+                                    placeholder="Link URL">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-xs btn-soft-secondary btn-block" onclick="addExtraLinkRow(this, ${col})">
+                        <i class="las la-plus"></i> Add Link
+                    </button>
+                </div>
+            </div>`;
+    }
+
+    /** Add a new extra block card to a column */
+    function addExtraBlock(col) {
+        let container = document.getElementById('extra-blocks-list-' + col);
+        if (!container) return;
+        let index = container.querySelectorAll('.extra-block-card').length;
+        let tempDiv = document.createElement('div');
+        tempDiv.innerHTML = getExtraBlockTemplate(col, index);
+        container.appendChild(tempDiv.firstElementChild);
+        refreshExtraBlockIndices(col);
+    }
+
+    /** Remove an extra block card */
+    function removeExtraBlock(btn, col) {
+        btn.closest('.extra-block-card').remove();
+        refreshExtraBlockIndices(col);
+    }
+
+    /** Move an extra block card up */
+    function moveExtraBlockUp(btn) {
+        let card = btn.closest('.extra-block-card');
+        let prev = card.previousElementSibling;
+        if (prev && prev.classList.contains('extra-block-card')) {
+            card.parentNode.insertBefore(card, prev);
+            let col = card.closest('.extra-blocks-list').getAttribute('data-col');
+            refreshExtraBlockIndices(col);
+        }
+    }
+
+    /** Move an extra block card down */
+    function moveExtraBlockDown(btn) {
+        let card = btn.closest('.extra-block-card');
+        let next = card.nextElementSibling;
+        if (next && next.classList.contains('extra-block-card')) {
+            card.parentNode.insertBefore(next, card);
+            let col = card.closest('.extra-blocks-list').getAttribute('data-col');
+            refreshExtraBlockIndices(col);
+        }
+    }
+
+    /** Add a link row inside an extra block */
+    function addExtraLinkRow(btn, col) {
+        let container = btn.previousElementSibling; // .extra-block-links-container
+        let card = btn.closest('.extra-block-card');
+        // Figure out block index from the card's title input name
+        let titleInput = card.querySelector('input[name*="_extra_blocks"]');
+        let blockIdx = 0;
+        if (titleInput) {
+            let m = titleInput.getAttribute('name').match(/extra_blocks\[(\d+)\]/);
+            if (m) blockIdx = parseInt(m[1]);
+        }
+        let tempDiv = document.createElement('div');
+        tempDiv.className = 'extra-link-row d-flex align-items-start gap-1 mb-1';
+        tempDiv.innerHTML = `
+            <button type="button" class="btn btn-xs btn-danger flex-shrink-0 mt-1" onclick="removeExtraLinkRow(this, ${col})"><i class="las la-times"></i></button>
+            <div class="flex-grow-1">
+                <input type="text" class="form-control form-control-sm mb-1"
+                    name="foot_col_${col}_extra_blocks[${blockIdx}][lbls][]"
+                    placeholder="Link Label">
+                <input type="text" class="form-control form-control-sm"
+                    name="foot_col_${col}_extra_blocks[${blockIdx}][lnks][]"
+                    placeholder="Link URL">
+            </div>`;
+        container.appendChild(tempDiv);
+    }
+
+    /** Remove a link row inside an extra block */
+    function removeExtraLinkRow(btn, col) {
+        btn.closest('.extra-link-row').remove();
+    }
+
+    /** Re-index all extra block input names after add/remove/reorder */
+    function refreshExtraBlockIndices(col) {
+        let container = document.getElementById('extra-blocks-list-' + col);
+        if (!container) return;
+        let cards = container.querySelectorAll('.extra-block-card');
+        cards.forEach(function(card, bIdx) {
+            // Update header label
+            let label = card.querySelector('.card-header span');
+            if (label) label.innerHTML = '<i class="las la-grip-vertical mr-1"></i>Link Block #' + (bIdx + 1);
+
+            // Update all input/select names
+            card.querySelectorAll('input, select').forEach(function(input) {
+                let name = input.getAttribute('name');
+                if (name) {
+                    let newName = name.replace(
+                        /foot_col_\d+_extra_blocks\[\d+\]/,
+                        'foot_col_' + col + '_extra_blocks[' + bIdx + ']'
+                    );
+                    input.setAttribute('name', newName);
+                }
+            });
+
+            // Update removeExtraBlock onclick col param
+            let removeBtn = card.querySelector('button[onclick*="removeExtraBlock"]');
+            if (removeBtn) removeBtn.setAttribute('onclick', 'removeExtraBlock(this, ' + col + ')');
+
+            // Update addExtraLinkRow onclick col param
+            let addLinkBtn = card.querySelector('button[onclick*="addExtraLinkRow"]');
+            if (addLinkBtn) addLinkBtn.setAttribute('onclick', 'addExtraLinkRow(this, ' + col + ')');
+
+            // Update removeExtraLinkRow onclick col param
+            card.querySelectorAll('button[onclick*="removeExtraLinkRow"]').forEach(function(btn) {
+                btn.setAttribute('onclick', 'removeExtraLinkRow(this, ' + col + ')');
+            });
+        });
+    }
+
+    /** Called by refreshColumnIndices to re-attach extra-blocks-list col number */
+    function refreshExtraBlocksForColumn(colNum) {
+        let container = document.getElementById('extra-blocks-list-' + colNum);
+        if (!container) return;
+        container.setAttribute('data-col', colNum);
+
+        // Update all names in the container
+        container.querySelectorAll('input, select').forEach(function(input) {
+            let name = input.getAttribute('name');
+            if (name) {
+                let newName = name.replace(/foot_col_\d+_extra_blocks/, 'foot_col_' + colNum + '_extra_blocks');
+                input.setAttribute('name', newName);
+            }
+        });
+
+        // Update button onclick params
+        container.querySelectorAll('button[onclick*="ExtraBlock"], button[onclick*="ExtraLinkRow"]').forEach(function(btn) {
+            let onclick = btn.getAttribute('onclick');
+            if (onclick) {
+                let newOnclick = onclick.replace(/,\s*\d+\)/, ', ' + colNum + ')');
+                btn.setAttribute('onclick', newOnclick);
+            }
+        });
+
+        // Update add-block button (it's outside the list, in the parent section)
+        let addBlockBtn = container.closest('.border-top').querySelector('button[onclick*="addExtraBlock"]');
+        if (addBlockBtn) addBlockBtn.setAttribute('onclick', 'addExtraBlock(' + colNum + ')');
+
+        // Also inject the extra_blocks types hidden input
+        let widgetsList = document.getElementById('widgets-list-' + colNum);
+        if (widgetsList) {
+            let existing = widgetsList.querySelector('input[value*="_extra_blocks"]');
+            if (!existing) {
+                let inp = document.createElement('input');
+                inp.type = 'hidden';
+                inp.name = 'types[][' + (footerBuilderLang || '') + ']';
+                inp.value = 'foot_col_' + colNum + '_extra_blocks';
+                widgetsList.insertAdjacentElement('afterbegin', inp);
+            } else {
+                existing.value = 'foot_col_' + colNum + '_extra_blocks';
+            }
+        }
     }
 </script>
 @endsection
