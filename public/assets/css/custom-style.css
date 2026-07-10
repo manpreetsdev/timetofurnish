@@ -4518,3 +4518,14 @@ li.slick-active {
         object-fit: cover !important;
     }
 }
+.logintext
+{
+    color:#685b4e;
+}
+.login-image-overlay {
+    position: absolute;
+    inset: 0;
+    
+    z-index: 1;
+    pointer-events: none;
+}
