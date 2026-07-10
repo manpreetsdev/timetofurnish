@@ -133,7 +133,7 @@
 
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>{{ translate('Landline Number') }}</label>
+                                                    <label>{{ translate('Phone Number') }}</label>
                                                     <div class="seller-input-wrap">
                                                         <i class="las la-phone"></i>
                                                         <input type="text"
@@ -142,7 +142,7 @@
                                                                value="{{ old('landline_no') }}"
                                                                inputmode="numeric"
                                                                maxlength="14"
-                                                               placeholder="{{ translate('Landline Number') }}"
+                                                               placeholder="{{ translate('Phone Number') }}"
                                                                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                                                                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                                     </div>
@@ -207,7 +207,7 @@
                                     <div class="seller-form-box">
                                         <div class="seller-box-title">
                                             <i class="las la-store"></i>
-                                            <h3>{{ translate('Shop Information') }}</h3>
+                                            <h3>{{ translate('Business Information') }}</h3>
                                         </div>
 
                                         <div class="row">
@@ -234,7 +234,7 @@
 
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>{{ translate('Mobile Number') }} <span>*</span></label>
+                                                    <label>{{ translate('Phone Number') }} <span></span></label>
                                                     <div class="seller-input-wrap">
                                                         <i class="las la-mobile"></i>
                                                         <input type="text"
@@ -243,10 +243,10 @@
                                                                value="{{ old('phone') }}"
                                                                inputmode="numeric"
                                                                maxlength="14"
-                                                               placeholder="{{ translate('Mobile Number') }}"
+                                                               placeholder="{{ translate('Phone Number') }}"
                                                                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                                                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                                               required>
+                                                               >
                                                     </div>
 
                                                     @if ($errors->has('phone'))
@@ -265,7 +265,7 @@
                                                         <input type="text"
                                                                class="form-control{{ $errors->has('address') ? ' is-invalid' : '' }}"
                                                                value="{{ old('address') }}"
-                                                               placeholder="{{ translate('Enter complete shop address') }}"
+                                                               placeholder="{{ translate(' Address') }}"
                                                                name="address"
                                                                required>
                                                     </div>
@@ -658,7 +658,7 @@
         background: #fff !important;
         color: #3D3429 !important;
         box-shadow: none !important;
-        padding-left: 14px !important;
+        
     }
 
     .seller-eye-btn {

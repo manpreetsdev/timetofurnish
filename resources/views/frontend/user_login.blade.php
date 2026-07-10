@@ -11,17 +11,19 @@
 
                         {{-- Left side image (visible only on desktop) --}}
                         <div class="col-lg-6 d-none d-lg-block">
+
                            <div class="login-image-side h-100" style="background-image: url('https://timetofurnish.com/public/assets/img/bed.jpeg');">
+
                                 <div class="login-image-overlay"></div>
-                                <div class="h-100 p-5 d-flex flex-column justify-content-between text-white position-relative" style="z-index: 2;">
-                                    <div>
+                                <div class="h-100 p-5 d-flex flex-column justify-content-between logintext position-relative" style="z-index: 2;">
+                                   {{--<div>
                                         <h3 class="fw-700 fs-24 tracking-wider mb-2" style="font-family: 'DM Serif Display', serif;">Time To Furnish</h3>
                                         <p class="opacity-80 fs-13">{{ translate('Discover premium quality furniture crafted for your modern lifestyle.') }}</p>
-                                    </div>
-                                    <div class="mt-auto">
+                                    </div>--}}
+                                   {{--<div class="mt-auto">
                                         <h4 class="fw-600 fs-18 mb-1" style="font-family: 'DM Serif Display', serif;">"{{ translate('Bringing comfort and style to your home.') }}"</h4>
                                         <p class="opacity-70 fs-12 mb-0">{{ translate('Join our community of happy homeowners.') }}</p>
-                                    </div>
+                                    </div>--}} 
                                 </div>
                             </div>
                         </div>
@@ -206,11 +208,7 @@
     position: relative;
     min-height: 520px;
 }
-.login-image-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(180deg, rgba(104, 91, 78, 0.15) 0%, rgba(57, 50, 42, 0.8) 100%);
-}
+
 .login-form-side {
     padding: 3.5rem 3rem;
     display: flex;
