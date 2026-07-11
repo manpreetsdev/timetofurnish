@@ -9,7 +9,7 @@ class FooterDefaults
 {
     public const MAX_COLUMNS = 8;
     public const DEFAULT_ACTIVE_COLUMNS = 5;
-    public const SCHEMA_VERSION = 'screenshot_2026_07_delivery';
+    public const SCHEMA_VERSION = 'screenshot_2026_07_footer_seller_mobile_split';
 
     public static function columns($lang = null)
     {
@@ -86,8 +86,18 @@ class FooterDefaults
                     'title' => 'Seller Zone',
                     'seller_url' => '',
                     'become_seller_url' => '',
-                    'subheading_2' => 'Join Our Partner Network',
+                    'subheading_2' => 'Become A Seller',
                     'subheading_3' => 'Follow Us',
+                    'show_seller_panel' => 'on',
+                    'show_download_app' => 'on',
+                    'show_become_seller' => 'on',
+                    'show_follow_us' => 'on',
+                    'mobile_login_display' => 'toggle',
+                    'mobile_login_order' => '10',
+                    'mobile_register_display' => 'section',
+                    'mobile_register_order' => '20',
+                    'mobile_social_display' => 'section',
+                    'mobile_social_order' => '30',
                 ]],
                 'extra_blocks' => [],
             ],
@@ -98,9 +108,18 @@ class FooterDefaults
                     [
                         'type' => 'images_widget',
                         'title' => 'Delivery Partners',
+                        'pay_title' => 'Pay Securely With',
+                        'trust_title' => 'What Trustpilot Say’s',
                         'show_deliv' => 'on',
                         'show_pay' => 'on',
                         'show_trust' => 'on',
+                        'mobile_view' => 'section',
+                        'deliv_mobile_display' => 'section',
+                        'pay_mobile_display' => 'section',
+                        'trust_mobile_display' => 'section',
+                        'deliv_mobile_order' => '10',
+                        'pay_mobile_order' => '20',
+                        'trust_mobile_order' => '30',
                         'deliv_img' => get_setting('foot_img_deliv'),
                         'pay_img' => get_setting('foot_img_pay'),
                         'trust_img' => get_setting('foot_img_trust'),

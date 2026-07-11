@@ -294,7 +294,7 @@ class HomeController extends Controller
             session(['link' => url()->current()]);
         }
 
-        $detailedProduct  = Product::with('reviews', 'brand', 'stocks', 'user', 'user.shop')->where('auction_product', 0)->where('slug', $slug)->first();
+        $detailedProduct  = Product::with('reviews', 'brand', 'stocks', 'user', 'user.shop', 'categories', 'main_category')->where('auction_product', 0)->where('slug', $slug)->first();
 
         $cartItem = null;
         if (session()->has('edit_cart_item_id')) {
