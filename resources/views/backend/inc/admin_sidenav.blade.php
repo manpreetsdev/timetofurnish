@@ -118,7 +118,7 @@
     {{-- Logo --}}
 <div class="sidebar-logo text-center py-3">
     <a href="{{ route('admin.dashboard') }}">
-        <img src="{{ asset('assets/img/logoT.png') }}" alt="Time To Furnish Logo">
+        <img src="https://timetofurnish.com/public/assets/img/logoT.png" alt="Time To Furnish Logo">
     </a>
 </div>
 
