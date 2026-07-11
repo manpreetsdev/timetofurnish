@@ -533,11 +533,13 @@
         }
     </style>
     <!-- Product Name -->
-    <div class="flex-row d-flex align-items-center justify-content-between">
-        <h2 class="mb-2 fs-18 lg-fs-26 md-fs-26 fw-700 text-dark" style="letter-spacing:0.5px !important">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/product-category-info.css') }}">
+    <div class="flex-row d-flex align-items-center justify-content-between product-title-row">
+        <h2 class="mb-2 fs-18 lg-fs-26 md-fs-26 fw-700 text-dark product-title-text" style="letter-spacing:0.5px !important">
             {{ ucfirst($detailedProduct->getTranslation('name')) }}
         </h2>
     </div>
+        @include('frontend.product_details.category_info_badge')
 
     <div class="mb-3 row align-items-center">
         <!-- Review -->
@@ -556,10 +558,10 @@
             </div>
         @endif
     </div>
-    <div class="text-center row align-items-center d-flex justify-content-between">
+    <div class="text-center row align-items-center d-flex justify-content-between mb-3">
         @if (get_setting('product_query_activation') == 1)
             <!-- Ask about this product -->
-            <div class="mb-3 col-xl-5 col-lg-4 col-md-3 col-sm-4">
+            <div class="mb-0 col-xl-5 col-lg-4 col-md-3 col-sm-4">
                 <a href="javascript:void();" onclick="goToView('product_query')"
                     class="text-primary fs-14 fw-600 d-flex">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">

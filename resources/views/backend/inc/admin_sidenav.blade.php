@@ -1319,7 +1319,7 @@
                 <!-- Website Setup -->
                 @canany(['header_setup','footer_setup','view_all_website_pages','website_appearance'])
                     <li class="aiz-side-nav-item">
-                       <a href="#" class="aiz-side-nav-link {{ areActiveRoutes(['website.footer', 'website.header'])}}" >
+                       <a href="#" class="aiz-side-nav-link {{ areActiveRoutes(['website.footer', 'website.header', 'website.product-category-info'])}}" >
                            <div class="aiz-side-nav-icon">
                                <svg id="Group_28315" data-name="Group 28315" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                                    <circle id="Ellipse_893" data-name="Ellipse 893" cx="0.625" cy="0.625" r="0.625" transform="translate(7.375 6.125)" fill="#575b6a"/>
@@ -1357,6 +1357,11 @@
                                <li class="aiz-side-nav-item">
                                    <a href="{{ route('website.footer', ['lang'=>  App::getLocale()] ) }}" class="aiz-side-nav-link {{ areActiveRoutes(['website.footer'])}}">
                                        <span class="aiz-side-nav-text  text">{{translate('Footer')}}</span>
+                                   </a>
+                               </li>
+                               <li class="aiz-side-nav-item">
+                                   <a href="{{ route('website.product-category-info') }}" class="aiz-side-nav-link {{ areActiveRoutes(['website.product-category-info'])}}">
+                                       <span class="aiz-side-nav-text  text">{{translate('Product Category Info')}}</span>
                                    </a>
                                </li>
                            @endcan

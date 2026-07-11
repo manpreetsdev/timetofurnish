@@ -28,6 +28,8 @@
     @endif
     <link rel="stylesheet" href="{{ static_asset('assets/css/aiz-seller.css') }}">
     <link rel="stylesheet" href="{{ static_asset('assets/css/custom-style.css?v=') }}{{ rand(1, 999999) }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/custom-footer.css') }}">
+
     <style>
         body {
             font-size: 12px;

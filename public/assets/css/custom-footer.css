@@ -5,7 +5,7 @@
     overflow: hidden;
     background-color: var(--foot-bg-color, #fdfbf9) !important;
     background-image: var(--foot-bg-img, none) !important;
-    background-size: cover;
+    background-size: contain;
     background-position: center;
     padding-top: var(--foot-pad-top, 45px) !important;
     padding-bottom: var(--foot-pad-bot, 45px) !important;
@@ -353,7 +353,7 @@
 .logo-image-item img {
     height: 100% !important;
     width: 100% !important;
-    max-width: 100% !important;
+    min-width: 140px !important;
     object-fit: contain !important;
     margin-bottom: 0 !important;
 }
@@ -370,6 +370,11 @@
     transform: rotate(-135deg) !important;
     -webkit-transform: rotate(-135deg) !important;
     border-color: var(--foot-head-color, #232323) !important;
+}
+
+.logo-image-item img {
+    min-width: 140px;
+    min-height: 140px;
 }
 
 @media only screen and (min-width:768px) and (max-width:1024px) {
@@ -455,9 +460,14 @@
 }
 
 .ttf-mobile-accordion .aiz-accordion-panel ul li {
-    margin-bottom: 10px !important;
+    margin-bottom: 0px !important;
     padding-bottom: 0 !important;
     border-bottom: none !important;
+}
+
+.mb-2,
+.my-2 {
+    margin-bottom: 0;
 }
 
 .ttf-mobile-accordion .aiz-accordion-panel ul li a {

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Page;
+use App\Models\Category;
 use App\Models\BusinessSetting;
+use App\Support\ProductCategoryInfo;
 use Illuminate\Http\Request;
 
 class WebsiteController extends Controller
@@ -12,7 +14,7 @@ class WebsiteController extends Controller
     {
         // Staff Permission Check
         $this->middleware(['permission:header_setup'])->only('header');
-        $this->middleware(['permission:footer_setup'])->only('footer', 'exportFooter', 'importFooter');
+        $this->middleware(['permission:footer_setup'])->only('footer', 'exportFooter', 'importFooter', 'productCategoryInfo', 'updateProductCategoryInfo');
         $this->middleware(['permission:view_all_website_pages'])->only('pages');
         $this->middleware(['permission:website_appearance'])->only('appearance');
         $this->middleware(['permission:select_homepage'])->only('select_homepage');
@@ -21,6 +23,43 @@ class WebsiteController extends Controller
     public function header(Request $request)
     {
         return view('backend.website_settings.header');
+    }
+
+    public function productCategoryInfo(Request $request)
+    {
+        $categories = Category::where('parent_id', 0)
+            ->with('childrenCategories')
+            ->orderBy('order_level', 'desc')
+            ->get();
+        $badges = ProductCategoryInfo::badges();
+
+        return view('backend.website_settings.product_category_info', compact('categories', 'badges'));
+    }
+
+    public function updateProductCategoryInfo(Request $request)
+    {
+        $inputBadges = $request->input('badges', []);
+        $badges = ProductCategoryInfo::sanitizeBadges(is_array($inputBadges) ? $inputBadges : []);
+
+        if (empty($badges) && !empty($inputBadges)) {
+            flash(translate('Please add text or image content and select at least one category for each rule.'))->warning();
+            return back()->withInput();
+        }
+
+        $setting = BusinessSetting::where('type', ProductCategoryInfo::SETTING_KEY)->first();
+        if (!$setting) {
+            $setting = new BusinessSetting();
+            $setting->type = ProductCategoryInfo::SETTING_KEY;
+        }
+
+        $setting->value = json_encode(array_values($badges));
+        $setting->save();
+
+        \Artisan::call('cache:clear');
+
+        flash(translate('Product category info settings updated successfully'))->success();
+
+        return redirect()->route('website.product-category-info');
     }
     public function footer(Request $request)
     {

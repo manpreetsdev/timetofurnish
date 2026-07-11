@@ -2003,6 +2003,34 @@ if (!function_exists('get_setting')) {
     }
 }
 
+if (!function_exists('get_product_category_info_badge')) {
+    function get_product_category_info_badge($product)
+    {
+        if (!$product) {
+            return null;
+        }
+
+        return \App\Support\ProductCategoryInfo::forProduct($product);
+    }
+}
+
+if (!function_exists('pci_badge_text_html')) {
+    function pci_badge_text_html($html)
+    {
+        $html = trim((string) $html);
+
+        if ($html === '') {
+            return '';
+        }
+
+        if ($html === strip_tags($html)) {
+            return nl2br(e($html));
+        }
+
+        return strip_tags($html, '<p><br><strong><b><em><i><u><span><div>');
+    }
+}
+
 function hex2rgba($color, $opacity = false)
 {
     return (new ColorCodeConverter())->convertHexToRgba($color, $opacity);
