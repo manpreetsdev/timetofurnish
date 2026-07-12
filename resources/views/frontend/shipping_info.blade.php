@@ -63,7 +63,7 @@
                                 $max_addresses = 2;
                             @endphp
 
-                            <div class="bg-white p-2 mb-3 rounded-3 shadow-sm border">
+                            <div class="bg-white p-2 mb-3 rounded-3 shadow-sm ">
                                 <!-- Fallback card for when there are no addresses at all -->
                                 @if ($addresses_count == 0)
                                     <div class="address-card border border-dashed rounded-3 p-4 text-center mb-3 cursor-pointer"

@@ -14,7 +14,7 @@
 
         .product-gallery,
         .product-gallery .carousel-box {
-            height: 655px;
+            height: auto;
         }
 
         .product-gallery .slick-list,
@@ -25,7 +25,7 @@
         }
 
         .product-gallery .carousel-box {
-            height: 309px !important;
+            height: auto !important;
             overflow: scroll !important;
         }
 
@@ -138,7 +138,7 @@
         .carousel-box img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             /* 👈 fill karega nicely */
         }
     }
@@ -213,7 +213,7 @@
         </div>
     </div>
     <!-- Thumbnail Images -->
-    <div class="col-12 mt-3 d-none d-lg-block">
+    <div class="col-12 mt-3  d-lg-block">
         <div class="aiz-carousel half-outside-arrow product-gallery-thumb" data-items='7'
             data-nav-for='.product-gallery' data-focus-select='true' data-arrows='true' data-vertical='false'
             data-auto-height='false'>

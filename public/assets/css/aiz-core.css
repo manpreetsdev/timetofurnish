@@ -14727,7 +14727,6 @@ body.side-menu-open #main-content {
 
 /* Dashboard graph cards */
 .card {
-    border: none !important;
     border-radius: 18px !important;
     overflow: hidden !important;
     box-shadow: 0 8px 25px rgba(44, 36, 22, 0.08) !important;

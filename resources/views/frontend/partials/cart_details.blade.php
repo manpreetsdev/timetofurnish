@@ -13,7 +13,7 @@
     @if ($carts && count($carts) > 0)
     <div class="row justify-content-center">
         <div class="col-xxl-12 col-xl-10">
-            <div class="border shadow-sm p-3 p-lg-4 bg-white maincontainer">
+            <div class="shadow-sm p-3 p-lg-4 bg-white maincontainer">
                 <div class="mb-4">
                     <!-- Headers for desktop -->
                     <div
