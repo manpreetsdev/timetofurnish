@@ -230,7 +230,7 @@
         </table>
 
         {{-- COUPON --}}
-        <div class="coupon-box applycupon mt-3" style="background: #fff; border-radius:8px; padding: 20px;">
+        <div class="coupon-box applycupon mt-3 mb-3" style="background: #fff; border-radius:8px; padding: 20px;">
             <form class="" id="apply-coupon-form" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="owner_id" value="{{ $carts[0]['owner_id'] }}">
