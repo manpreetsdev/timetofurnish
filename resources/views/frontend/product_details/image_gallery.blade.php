@@ -2,11 +2,7 @@
         div#imageGalleryCol {
         touch-action: auto !important;
     }
-    @media only screen and (min-width: 992px) {
-        .carousal_image_custom_height {
-                height: 600px !important;
-            }
-    }
+    
     @media only screen and (max-width: 991px) {
         .arrow-lg-none .slick-arrow {
             display: block !important;

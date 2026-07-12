@@ -14780,6 +14780,9 @@ canvas {
    Time To Furnish Admin Panel
 ===================================================== */
 @media (max-width: 767px) {
+    .cart-summary-card {
+        margin-top: 30px !important;
+    }
 
     /* =========================
        MAIN CONTENT SPACING

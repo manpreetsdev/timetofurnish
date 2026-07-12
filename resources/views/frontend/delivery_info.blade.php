@@ -67,7 +67,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-12 col-xl-10">
-                    <div class="p-3 p-lg-4 bg-white delivery-maincontainer">
+                    <div class="p-0 p-lg-0 bg-white delivery-maincontainer">
 
                         <form class="form-default" id="delivery-form" action="{{ route('checkout.store_delivery_info') }}"
                             method="POST">
@@ -807,7 +807,10 @@
 
         @media (max-width: 991.98px) {
             .delivery-maincontainer {
-                padding: 1rem !important;
+                padding: 0 !important;
+            }
+            .cart-summary-card{
+                margin-top: 30px !important;
             }
         }
     </style>

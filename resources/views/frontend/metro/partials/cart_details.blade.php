@@ -12,8 +12,8 @@
     </style>
     @if ($carts && count($carts) > 0)
         <div class="row justify-content-center">
-            <div class="col-xxl-12 col-xl-10">
-                <div class="shadow-sm p-3 p-lg-4 bg-white maincontainer">
+            <div class="container">
+                <div class="shadow-sm p-0 p-lg-4 bg-white maincontainer">
                     <div class="mb-4">
                         <!-- Headers for desktop (hidden as we use beautiful visual cards for desktop too) -->
                         <div class="row d-none border-bottom bg-cart-header text-white fs-14 py-3 px-2 rounded-2">
@@ -638,7 +638,7 @@
         }
 
         .maincontainer {
-            padding: 1rem !important;
+            padding: 0 !important;
         }
     }
 

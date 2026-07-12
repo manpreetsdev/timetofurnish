@@ -38,7 +38,7 @@
                 {{-- Main Product Row --}}
                 <tr>
                     <td class="product-name" colspan="2" style="font-weight: 500;">
-                        <div class="d-flex align-items-center justify-content-between" style="gap: 8px;">
+                        <div class="d-flex align-items-center" style="gap: 8px;">
                             <span>{{ $product_name_with_choice }}</span>
                             <a href="{{ route('cart.editItem', $cartItem->id) }}"
                                 class="btn btn-link p-0 d-flex align-items-center justify-content-center flex-shrink-0"
@@ -277,8 +277,8 @@
 
     .cart-summary-card {
         margin-top: 0px;
-        padding-top: 20px;
-        padding-bottom: 20px;
+        padding-top: 0px;
+        padding-bottom: 0px;
         background: #f0eded;
     }
 
