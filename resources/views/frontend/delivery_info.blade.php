@@ -67,7 +67,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-12 col-xl-10">
-                    <div class="border shadow-sm p-3 p-lg-4 bg-white delivery-maincontainer">
+                    <div class="p-3 p-lg-4 bg-white delivery-maincontainer">
 
                         <form class="form-default" id="delivery-form" action="{{ route('checkout.store_delivery_info') }}"
                             method="POST">
@@ -127,7 +127,7 @@
                             {{-- SELLER PRODUCTS --}}
                             @if (!empty($seller_products))
                                 @foreach ($seller_products as $seller_id => $seller_product)
-                                    <div class="card border-0 rounded-0 shadow-none mb-4">
+                                    <div class="card border-0 rounded-0 mb-4">
 
                                         <div class="card-header py-3 px-0 border-bottom-0" style="background: transparent;">
                                             <h5 class="fs-16 fw-700 text-dark mb-0">
@@ -239,7 +239,7 @@
                                                         {{-- Product Image, Name & Pricing Breakdown --}}
                                                         <div class="col-lg-7 d-flex align-items-start gap-3 min-w-0">
                                                             <img src="{{ get_image($product->thumbnail) }}"
-                                                                class="img-fit rounded-3 flex-shrink-0 shadow-sm"
+                                                                class="img-fit rounded-3 flex-shrink-0"
                                                                 style="width:100px;height:100px;object-fit:cover;"
                                                                 alt="{{ $product->getTranslation('name') }}"
                                                                 onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
@@ -394,7 +394,7 @@
                                                         <div class="d-flex justify-content-between align-items-start mb-3" style="gap:5px;">
                                                             <div class="d-flex align-items-start gap-3 min-w-0">
                                                                 <img src="{{ get_image($product->thumbnail) }}"
-                                                                    class="img-fit rounded-3 flex-shrink-0 shadow-sm"
+                                                                    class="img-fit rounded-3 flex-shrink-0"
                                                                     style="width:80px;height:80px;object-fit:cover;"
                                                                     alt="{{ $product->getTranslation('name') }}"
                                                                     onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
@@ -422,7 +422,7 @@
                                                             <div class="ms-2 flex-shrink-0">
                                                                 <a href="{{ route('cart.editItem', $cart->id) }}"
                                                                     class="btn btn-link p-0 d-flex align-items-center justify-content-center"
-                                                                    style="outline:none;border:none;border: 1px solid #EADDCF;background:#fdf6ed;width:32px;height:32px;border-radius:8px;transition:all 0.2s ease-in-out;box-shadow: 0 2px 5px rgba(181, 122, 69, 0.05);"
+                                                                    style="outline:none;border:none;border: 1px solid #EADDCF;background:#fdf6ed;width:32px;height:32px;border-radius:8px;transition:all 0.2s ease-in-out;"
                                                                     onmouseover="this.style.background='#b57a45'; this.querySelector('svg path').style.stroke='#ffffff'; this.style.transform='scale(1.05)';"
                                                                     onmouseout="this.style.background='#fdf6ed'; this.querySelector('svg path').style.stroke='#b57a45'; this.style.transform='scale(1)';"
                                                                     title="{{ translate('Edit options') }}">
@@ -717,11 +717,11 @@
         }
 
         .delivery-desktop-card {
-            transition: box-shadow .15s;
+            /* transition: box-shadow .15s; */
         }
 
         .delivery-desktop-card:hover {
-            box-shadow: 0 2px 8px rgba(124, 113, 94, .05);
+            /* box-shadow: 0 2px 8px rgba(124, 113, 94, .05); */
             background: #faf8f3 !important;
         }
 
@@ -750,7 +750,7 @@
         }
 
         .addon-toggle-btn:focus {
-            box-shadow: none !important;
+            /* box-shadow: none !important; */
         }
 
         .addon-name-text {
@@ -779,7 +779,7 @@
             box-sizing: border-box;
             background: #f9f6f3;
             border-radius: 8px;
-            box-shadow: 0 1px 4px rgba(181, 122, 69, .08);
+            /* box-shadow: 0 1px 4px rgba(181, 122, 69, .08); */
         }
 
         .la-rotate-180 {

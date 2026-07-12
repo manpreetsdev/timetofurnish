@@ -6,7 +6,7 @@
     background-color: var(--foot-bg-color, #fdfbf9) !important;
     background-image: var(--foot-bg-img, none) !important;
     background-size: contain;
-    background-position: center;
+    background-position: bottom;
     padding-top: var(--foot-pad-top, 45px) !important;
     padding-bottom: var(--foot-pad-bot, 45px) !important;
     padding-left: var(--foot-pad-left, 0px) !important;
@@ -372,10 +372,7 @@
     border-color: var(--foot-head-color, #232323) !important;
 }
 
-.logo-image-item img {
-    min-width: 140px;
-    min-height: 140px;
-}
+
 
 @media only screen and (min-width:768px) and (max-width:1024px) {
 

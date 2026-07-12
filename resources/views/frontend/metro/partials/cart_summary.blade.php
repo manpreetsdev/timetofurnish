@@ -276,7 +276,7 @@
     }
 
     .cart-summary-card {
-        margin-top: 20px;
+        margin-top: 0px;
         padding-top: 20px;
         padding-bottom: 20px;
         background: #f0eded;
