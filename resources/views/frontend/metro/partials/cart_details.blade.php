@@ -511,7 +511,7 @@
                         <span style="font-weight: 700;" class="fs-20 text-dark">{{ single_price($total) }}</span>
                     </div>
 
-                    <div class="row g-2">
+                    <div class="row g-2 p-3 p-lg-0">
                         <!-- Return to shop -->
                         <div class="col-6 col-md-6 mb-2 mb-md-0">
                             <a href="{{ route('home') }}"
