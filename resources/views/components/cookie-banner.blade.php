@@ -7,7 +7,7 @@
   /* --- COOKIE BANNER STATIC STYLE --- */
   #cookie-banner {
     position: fixed;
-    bottom:0;
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
     width: 100%;
     background: #000;
     color: #fff;
@@ -21,20 +21,21 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    padding: 0 !important;
   }
   #cookie-banner h3 { margin: 0; font-size: 1rem; font-weight: 600; }
-  #cookie-banner p { margin: 0; font-size: .9rem; line-height: 1.4; color: #e5e7eb; }
+  #cookie-banner p { margin: 0; font-size: 11px; line-height: 1.4; color: #e5e7eb; }
   #cookie-banner a { color: #60a5fa; text-decoration: underline; }
   #cookie-banner form { display: flex; flex-direction: column; gap: .5rem; }
-  #cookie-banner label { font-size: .9rem; display: flex; align-items: center; gap: .4rem; }
+  #cookie-banner label { font-size: 11px; display: flex; align-items: center; gap: .4rem; }
   #cookie-banner input[type="checkbox"] {
     accent-color: #2563eb;
     width: 16px; height: 16px;
   }
-  #cookie-banner .actions { margin-top: .8rem; display: flex; flex-wrap: wrap; gap: .5rem; }
+  #cookie-banner .actions { margin-top: 0px; display: flex; flex-wrap: wrap; gap: .5rem; }
   #cookie-banner .btn {
-    border: none; border-radius: 4px;
-    padding: .55rem 1rem; font-size: .9rem;
+    border: 1px solid #ebebeb; border-radius: 4px;
+    padding: 6px 12px; font-size: 11px;
     cursor: pointer; transition: background .2s ease;
   }
   #cookie-banner .btn.save { background: #2563eb; color: #fff; }
