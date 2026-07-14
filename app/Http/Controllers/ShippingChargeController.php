@@ -72,6 +72,16 @@ class ShippingChargeController extends Controller
         return redirect()->route('shipping-charges.index')->with('success', translate('Shipping charge deleted successfully'));
     }
 
+    public function updateStatus(Request $request)
+    {
+        $shippingCharge = ShippingCharge::findOrFail($request->id);
+        $shippingCharge->status = $request->status;
+        if ($shippingCharge->save()) {
+            return 1;
+        }
+        return 0;
+    }
+
     private function categories()
     {
         return Category::where('parent_id', 0)

@@ -105,13 +105,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
 
 	Route::get('global-addons', [ProductAddonGlobalController::class, 'index'])->name('global.addons.index');
     Route::post('global-addons', [ProductAddonGlobalController::class, 'store'])->name('global.addons.store');
-	Route::get('services', [ProductServicesController::class, 'index'])->name('services.index');
+	    Route::get('services', [ProductServicesController::class, 'index'])->name('services.index');
     Route::post('services', [ProductServicesController::class, 'store'])->name('services.store');
+    Route::post('services/update_status', [ProductServicesController::class, 'updateStatus'])->name('services.update_status');
     Route::get('services/{id}/edit', [ProductServicesController::class, 'edit'])->name('services.edit');
     Route::post('services/{id}/update', [ProductServicesController::class, 'update'])->name('services.update');
     Route::delete('services/{id}', [ProductServicesController::class, 'destroy'])->name('services.destroy');
     Route::get('shipping-charges', [ShippingChargeController::class, 'index'])->name('shipping-charges.index');
     Route::post('shipping-charges', [ShippingChargeController::class, 'store'])->name('shipping-charges.store');
+    Route::post('shipping-charges/update_status', [ShippingChargeController::class, 'updateStatus'])->name('shipping-charges.update_status');
     Route::get('shipping-charges/{id}/edit', [ShippingChargeController::class, 'edit'])->name('shipping-charges.edit');
     Route::post('shipping-charges/{id}/update', [ShippingChargeController::class, 'update'])->name('shipping-charges.update');
     Route::delete('shipping-charges/{id}', [ShippingChargeController::class, 'destroy'])->name('shipping-charges.destroy');

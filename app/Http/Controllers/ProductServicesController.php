@@ -88,4 +88,14 @@ class ProductServicesController extends Controller
 
     return redirect()->route('services.index')->with('success', translate('Service deleted successfully'));
     }
+
+    public function updateStatus(Request $request)
+    {
+        $service = CheckoutService::findOrFail($request->id);
+        $service->status = $request->status;
+        if ($service->save()) {
+            return 1;
+        }
+        return 0;
+    }
 }

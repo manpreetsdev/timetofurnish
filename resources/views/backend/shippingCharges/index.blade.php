@@ -154,9 +154,10 @@
         function update_shipping_charge_status(el, id) {
             var payload = new URLSearchParams();
             payload.append('_token', '{{ csrf_token() }}');
+            payload.append('id', id);
             payload.append('status', el.checked ? 1 : 0);
 
-            fetch('{{ url('admin/shipping-charges') }}/' + id + '/update', {
+            fetch('{{ route('shipping-charges.update_status') }}', {
                 method: 'POST',
                 headers: {
                     'Accept': 'text/plain',
