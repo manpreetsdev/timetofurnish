@@ -557,7 +557,7 @@
                 </select>
               </div>
               <div class="form-group"><label>{{ translate('H Line Height') }}</label>
-                <input type="number" class="form-control" name="{{ $n }}[title_line_height]" value="{{ $widget['title_line_height']??'1.2' }}" min="0.8" max="4" step="0.05">
+                <input type="text" class="form-control" name="{{ $n }}[title_line_height]" value="{{ \App\Support\CustomPageTemplate::normalizeLineHeightValue($widget['title_line_height'] ?? null, $widget['title_font_size'] ?? 28, '1.18') }}" placeholder="e.g. 34px">
               </div>
               <div class="form-group"><label>{{ translate('H Letter Spacing') }}</label>
                 <input type="number" class="form-control" name="{{ $n }}[title_letter_spacing]" value="{{ $widget['title_letter_spacing']??'0' }}" min="-5" max="20" step="0.5">
@@ -584,7 +584,7 @@
                 </select>
               </div>
               <div class="form-group"><label>{{ translate('B Line Height') }}</label>
-                <input type="number" class="form-control" name="{{ $n }}[body_line_height]" value="{{ $widget['body_line_height']??'1.6' }}" min="0.8" max="4" step="0.05">
+                <input type="text" class="form-control" name="{{ $n }}[body_line_height]" value="{{ \App\Support\CustomPageTemplate::normalizeLineHeightValue($widget['body_line_height'] ?? null, $widget['body_font_size'] ?? 18, '1.72') }}" placeholder="e.g. 31px">
               </div>
               <div class="form-group"><label>{{ translate('B Letter Spacing') }}</label>
                 <input type="number" class="form-control" name="{{ $n }}[body_letter_spacing]" value="{{ $widget['body_letter_spacing']??'0' }}" min="-5" max="20" step="0.5">
