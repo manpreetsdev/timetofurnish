@@ -102,13 +102,13 @@ class CustomPageTemplate
             'title_color' => '',
             'title_font_size' => '28',
             'title_font_weight' => '700',
-            'title_line_height' => '1.18',
+            'title_line_height' => '33px',
             'title_letter_spacing' => '0',
             'body_font_family' => '',
             'body_color' => '',
             'body_font_size' => '18',
             'body_font_weight' => '400',
-            'body_line_height' => '1.72',
+            'body_line_height' => '31px',
             'body_letter_spacing' => '0',
             'subtitle_color' => '',
             'accent_color' => '',
@@ -145,10 +145,10 @@ class CustomPageTemplate
                 'image_alt' => '',
                 'title_font_family' => 'Playfair Display, serif',
                 'title_font_size' => '36',
-                'title_line_height' => '1.39',
+                'title_line_height' => '50px',
                 'body_font_family' => 'Poppins, sans-serif',
                 'body_font_size' => '18',
-                'body_line_height' => '1.78',
+                'body_line_height' => '32px',
                 'body_font_weight' => '700',
                 'highlight_color' => $themeAccent,
                 'check_icon_color' => $themeAccent,
@@ -170,10 +170,10 @@ class CustomPageTemplate
                 'image_alt' => '',
                 'title_font_family' => 'Playfair Display, serif',
                 'title_font_size' => '36',
-                'title_line_height' => '1.39',
+                'title_line_height' => '50px',
                 'body_font_family' => 'Poppins, sans-serif',
                 'body_font_size' => '18',
-                'body_line_height' => '1.83',
+                'body_line_height' => '33px',
                 'body_font_weight' => '400',
                 'highlight_color' => $themeAccent,
                 'accent_color' => $themeAccent,
@@ -575,28 +575,30 @@ class CustomPageTemplate
     {
         $rawValue = trim((string) $value);
         $fontSizeValue = (float) $fontSize;
-        $fallbackValue = max(0.8, min(4, (float) $fallback));
+        if ($fontSizeValue <= 0) {
+            $fontSizeValue = 16;
+        }
 
         if ($rawValue === '') {
-            return self::formatDecimalValue($fallbackValue);
+            $rawValue = $fallback;
         }
 
-        if (!preg_match('/-?\d+(\.\d+)?/', $rawValue, $matches)) {
-            return self::formatDecimalValue($fallbackValue);
+        if (preg_match('/-?\d+(\.\d+)?/', $rawValue, $matches)) {
+            $numericValue = (float) $matches[0];
+            if ($numericValue <= 0) {
+                $numericValue = 1.4;
+            }
+
+            // If it is a decimal ratio <= 6 and doesn't explicitly have px, convert to px
+            if ($numericValue <= 6 && !str_contains(strtolower($rawValue), 'px')) {
+                $pxValue = $numericValue * $fontSizeValue;
+                return (int) round($pxValue) . 'px';
+            }
+
+            return (int) round($numericValue) . 'px';
         }
 
-        $numericValue = (float) $matches[0];
-        if ($numericValue <= 0) {
-            return self::formatDecimalValue($fallbackValue);
-        }
-
-        if ($numericValue > 6 && $fontSizeValue > 0) {
-            $numericValue = $numericValue / $fontSizeValue;
-        }
-
-        $numericValue = max(0.8, min(4, $numericValue));
-
-        return self::formatDecimalValue($numericValue);
+        return '24px';
     }
 
     protected static function defaultAccentColor(): string
