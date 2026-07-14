@@ -4518,14 +4518,179 @@ li.slick-active {
         object-fit: cover !important;
     }
 }
-.logintext
-{
-    color:#685b4e;
+
+.logintext {
+    color: #685b4e;
 }
+
 .login-image-overlay {
     position: absolute;
     inset: 0;
-    
+
     z-index: 1;
     pointer-events: none;
+}
+
+.ttf-policy-content h2 {
+    font-size: 26px !important;
+}
+
+@media (max-width: 767.98px) {
+
+    /* Mobile content width:
+       20px left + 20px right, like Figma */
+    .ttf-custom-page .ttf-custom-page__container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Remove double section spacing */
+    .ttf-custom-page .ttf-page-group {
+        padding: 50px 0 32px !important;
+        margin: 0 !important;
+        gap: 0 !important;
+    }
+
+    .ttf-custom-page .ttf-story-section--toc {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Hide table of contents on mobile */
+    .ttf-story-section--toc .ttf-policy-toc {
+        display: none !important;
+    }
+
+    /* Convert desktop grid into single column */
+    .ttf-story-section--toc .ttf-policy-layout,
+    .ttf-story-section--toc .ttf-policy-layout--widget {
+        display: block !important;
+        width: 100% !important;
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+        margin: 0 !important;
+    }
+
+    .ttf-story-section--toc .ttf-policy-content {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Intro paragraph */
+    .ttf-story-section--toc .ttf-toc-intro {
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 0 32px !important;
+    }
+
+    /* All policy sections */
+    .ttf-policy-content .ttf-policy-section {
+        display: block !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .ttf-policy-content .ttf-policy-section:not(:last-child) {
+        margin-bottom: 32px !important;
+    }
+
+    /* Main section heading according to Figma */
+    .ttf-policy-content .ttf-policy-section>h2 {
+        font-family: "Playfair Display", serif !important;
+        font-size: 32px !important;
+        font-weight: 700 !important;
+        line-height: 1.2 !important;
+        letter-spacing: 0 !important;
+        color: #2c2218 !important;
+
+        padding: 0 !important;
+        margin: 0 0 20px !important;
+
+        word-break: normal !important;
+        overflow-wrap: normal !important;
+    }
+
+    /* Paragraph and all inner content */
+    .ttf-story-section--toc .ttf-rich-text,
+    .ttf-story-section--toc .ttf-rich-text p,
+    .ttf-story-section--toc .ttf-rich-text span,
+    .ttf-story-section--toc .ttf-policy-content p,
+    .ttf-story-section--toc .ttf-policy-content li {
+        font-family: "Poppins", sans-serif !important;
+        font-size: 16px !important;
+        font-weight: 400 !important;
+        line-height: 28px !important;
+        letter-spacing: 0 !important;
+        color: #393939 !important;
+    }
+
+    /* Remove large paragraph spaces */
+    .ttf-story-section--toc .ttf-rich-text p {
+        padding: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 12px !important;
+    }
+
+    .ttf-story-section--toc .ttf-rich-text p:last-child {
+        margin-bottom: 0 !important;
+    }
+
+    /* Google Docs pasted content fix */
+    .ttf-story-section--toc .ttf-rich-text span {
+        white-space: normal !important;
+        white-space-collapse: collapse !important;
+    }
+
+    /* Data Controller subheading */
+    .ttf-story-section--toc .ttf-rich-text h3 {
+        font-family: "Poppins", sans-serif !important;
+        font-size: 20px !important;
+        font-weight: 600 !important;
+        line-height: 28px !important;
+        color: #202020 !important;
+
+        padding: 0 !important;
+        margin: 0 0 12px !important;
+    }
+
+    /* Lists */
+    .ttf-story-section--toc .ttf-rich-text ul,
+    .ttf-story-section--toc .ttf-rich-text ol {
+        padding-left: 22px !important;
+        margin: 12px 0 !important;
+    }
+
+    .ttf-story-section--toc .ttf-rich-text li {
+        margin: 0 0 8px !important;
+    }
+
+    /* Remove empty elements creating spaces */
+    .ttf-story-section--toc .ttf-rich-text p:empty,
+    .ttf-story-section--toc .ttf-rich-text div:empty {
+        display: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+
+/*small mobile screens */
+@media (max-width: 360px) {
+    .ttf-custom-page .ttf-custom-page__container {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    .ttf-policy-content .ttf-policy-section>h2 {
+        font-size: 26px !important;
+        line-height: 1.25 !important;
+    }
 }

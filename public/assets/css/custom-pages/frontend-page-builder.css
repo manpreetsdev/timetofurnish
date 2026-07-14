@@ -624,6 +624,11 @@
         padding: 20px 0 10px;
     }
 
+    .ttf-story-section--split .ttf-story-section__media img {
+        height: 230px !important;
+    }
+
+
     .ttf-custom-page__container,
     .ttf-page-banner__content {
         width: min(calc(100% - 32px), var(--ttf-container-width));

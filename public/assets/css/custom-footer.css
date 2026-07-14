@@ -5,8 +5,9 @@
     overflow: hidden;
     background-color: var(--foot-bg-color, #fdfbf9) !important;
     background-image: var(--foot-bg-img, none) !important;
-    background-size: contain;
-    background-position: bottom;
+    background-size: contain !important;
+    background-position: bottom !important;
+    background-repeat: no-repeat !important;
     padding-top: var(--foot-pad-top, 45px) !important;
     padding-bottom: var(--foot-pad-bot, 45px) !important;
     padding-left: var(--foot-pad-left, 0px) !important;
