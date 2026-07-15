@@ -319,6 +319,8 @@ Route::resource('sellers', SellerController::class);
             Route::get('/header', 'header')->name('website.header');
             Route::get('/appearance', 'appearance')->name('website.appearance');
             Route::get('/select-homepage', 'select_homepage')->name('website.select-homepage');
+            Route::get('/homepage-builder', 'homepage_builder')->name('website.homepage-builder');
+            Route::post('/homepage-builder/update', 'homepage_builder_update')->name('website.homepage-builder.update');
             Route::get('/pages', 'pages')->name('website.pages');
         });
 

@@ -390,7 +390,7 @@
             }
 
             .offer-inner-carousel .modern-product-card {
-                border-radius: 12px !important;
+                border-radius: 10px !important;
                 padding: 7px !important;
                 height: 100% !important;
                 min-height: 180px !important;
@@ -978,7 +978,7 @@
             }
 
             .home-offers-wrap .offer-inner-carousel .modern-product-card {
-                border-radius: 14px !important;
+                border-radius: 10px !important;
                 min-height: 188px !important;
             }
         }

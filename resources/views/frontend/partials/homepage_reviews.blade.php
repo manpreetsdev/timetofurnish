@@ -223,7 +223,7 @@
                         font-size: 24px !important;
                         margin-bottom: 0.35rem !important;
                         line-height: 1.15;
-                        font-family: 'DM Serif Display', serif !important;
+                        font-family: 'Playfair Display', serif !important;
                         font-weight: 500 !important;
                     }
                     .homepage-reviews-header p {

@@ -445,10 +445,7 @@
             box-shadow: none !important;
         }
 
-        .product-detail-action-btn.btn-disabled-custom {
-            opacity: 1 !important;
-            filter: none !important;
-        }
+        /* Disabled button states will get visual opacity and filter feedback */
 
         .disabled-wishlist {
             opacity: 0.55 !important;

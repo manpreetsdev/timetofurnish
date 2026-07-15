@@ -6993,7 +6993,8 @@ hr {
 
     .container,
     .container-xxl {
-        max-width: 1400px;
+        max-width: 1440px;
+        padding: 0;
     }
 
     .col-xxl {
@@ -10245,7 +10246,7 @@ input[type="number"] {
 
     /*xxl*/
     .modal-adaptive {
-        max-width: 1400px;
+        max-width: 1440px;
     }
 }
 

@@ -103,7 +103,7 @@
                                 <!-- Responsive Cart row -->
                                 <li class="list-group-item p-0 cart-item-row position-relative border-0 border-bottom">
                                     <div class="row align-items-center d-none d-lg-flex p-4 desktop-cart-card position-relative"
-                                        style="border: 1px solid #f0e6da; border-radius: 12px; margin-bottom: 20px; background: #fff;">
+                                        style="border: 1px solid #f0e6da; border-radius: 12px; padding-top: 30px !important; margin-bottom: 20px; background: #fff;">
                                         <!-- Product Image, Name & Pricing Breakdown (col-lg-6) -->
                                         <div class="col-lg-6 d-flex align-items-start gap-3 min-w-0">
                                             <img src="{{ uploaded_asset($product->thumbnail_img) }}"
@@ -262,7 +262,7 @@
 
                                         <!-- Edit & Delete Buttons positioned absolutely in the top-right corner of the card -->
                                         <div class="modern-action-buttons-wrapper position-absolute"
-                                            style="top: 20px; right: 20px; z-index: 10; display: flex !important; gap: 8px;">
+                                            style="top: 6px; right: 20px; z-index: 10; display: flex !important; gap: 8px;">
                                             <!-- Edit button -->
                                             <a href="{{ route('cart.editItem', $cartItem['id']) }}"
                                                 class="btn btn-link p-0 d-flex align-items-center justify-content-center"
@@ -555,7 +555,7 @@
 
 <script type="text/javascript">
     function handleCartQuantity(btn, cartId, type) {
-        let group = btn.closest('.quantity-group');
+        let group = btn.closest('.modern-qty-selector') || btn.closest('.quantity-group');
         if (!group) return;
         let inp = group.querySelector('input[type=number]');
         if (!inp) return;

@@ -1428,23 +1428,29 @@
                 return false;
             }
             if (checkAddToCartValidity()) {
-                $('#addToCart-modal-body').html(null);
-                $('#addToCart').modal();
-                $('.c-preloader').show();
+                if ($('.c-preloader').length) {
+                    $('.c-preloader').show();
+                }
                 $.ajax({
                     type: "POST",
                     url: '{{ route('cart.addToCart') }}',
                     data: $('#option-choice-form').serializeArray(),
                     success: function(data) {
                         if (data.status == 1) {
-                            $('#addToCart-modal-body').html(data.modal_view);
                             updateNavCart(data.nav_cart_view, data.cart_count);
                             window.location.replace("{{ route('cart') }}");
                         } else {
-                            $('#addToCart-modal-body').html(null);
-                            $('.c-preloader').hide();
+                            if ($('.c-preloader').length) {
+                                $('.c-preloader').hide();
+                            }
                             $('#modal-size').removeClass('modal-lg');
                             $('#addToCart-modal-body').html(data.modal_view);
+                            $('#addToCart').modal();
+                        }
+                    },
+                    error: function() {
+                        if ($('.c-preloader').length) {
+                            $('.c-preloader').hide();
                         }
                     }
                 });
