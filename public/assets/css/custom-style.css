@@ -2570,6 +2570,11 @@ span.badge.badge-primary.badge-circle.position-absolute {
     height: 100% !important;
 }
 
+.banner_section_con {
+    max-width: 1440px;
+    margin: auto;
+}
+
 /* Neutralize legacy grid outlines, shadows, and borders that wrap modern cards */
 .row>.col:has(> .modern-product-card),
 .row>[class*="col-"]:has(> .modern-product-card),
