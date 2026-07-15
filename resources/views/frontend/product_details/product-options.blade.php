@@ -1214,6 +1214,9 @@
 
             // Initial Price Refresh
             getVariantPrice();
+            if (typeof updateQtyButtonStates === 'function') {
+                updateQtyButtonStates();
+            }
             if (typeof checkEnableDisableButtons === 'function') {
                 checkEnableDisableButtons();
             }
@@ -1272,8 +1275,49 @@
                     .removeClass('is-invalid-addon');
             });
 
+            // Helper to update minus/plus button disabled states on product details page
+            function updateQtyButtonStates() {
+                var $input = $('#quantity');
+                if (!$input.length) return;
+                var val = parseInt($input.val()) || 1;
+                var min = parseInt($input.attr('min')) || 1;
+                var max = parseInt($input.attr('max')) || 10;
+                
+                var $minusBtn = $('.btn-quantity[data-type="minus"]');
+                var $plusBtn = $('.btn-quantity[data-type="plus"]');
+                
+                $minusBtn.prop('disabled', val <= min);
+                $plusBtn.prop('disabled', val >= max);
+            }
+
+            // Quantity buttons click handler on product details page
+            $(document).on('click', '.btn-quantity', function(e) {
+                e.preventDefault();
+                var type = $(this).attr('data-type');
+                var $input = $('#quantity');
+                if (!$input.length) return;
+                var currentVal = parseInt($input.val());
+                var min = parseInt($input.attr('min')) || 1;
+                var max = parseInt($input.attr('max')) || 10;
+                
+                if (!isNaN(currentVal)) {
+                    if (type === 'minus') {
+                        if (currentVal > min) {
+                            $input.val(currentVal - 1).trigger('change');
+                        }
+                    } else if (type === 'plus') {
+                        if (currentVal < max) {
+                            $input.val(currentVal + 1).trigger('change');
+                        }
+                    }
+                } else {
+                    $input.val(min).trigger('change');
+                }
+            });
+
             // Qty change
             $(document).on('keyup change', '#quantity', function() {
+                updateQtyButtonStates();
                 getVariantPrice();
             });
 

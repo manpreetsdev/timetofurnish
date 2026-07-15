@@ -656,7 +656,7 @@
                         @include('frontend.product_details.related_products')
 
                         <!-- Product Query -->
-                        @if (!empty(\Illuminate\Support\Facades\Auth::id()))
+                        @if (get_setting('product_query_activation') == 1)
                             @include('frontend.product_details.product_queries')
                         @endif
                         <!-- Top Selling Products -->

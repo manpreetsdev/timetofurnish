@@ -181,4 +181,98 @@ class WebsiteController extends Controller
     {
         return view('backend.website_settings.select_homepage');
     }
+
+    public function homepage_builder(Request $request)
+    {
+        $categories = Category::all();
+        return view('backend.website_settings.pages.homepage_builder', compact('categories'));
+    }
+
+    public function homepage_builder_update(Request $request)
+    {
+        $sections = [];
+        if ($request->has('sections') && is_array($request->sections)) {
+            foreach ($request->sections as $sec) {
+                if (empty($sec['type'])) {
+                    continue;
+                }
+                
+                $secType = $sec['type'];
+                $slider_images = $sec['slider_images'] ?? [];
+                $slider_links = $sec['slider_links'] ?? [];
+                $banner_images = $sec['banner_images'] ?? [];
+                $banner_links = $sec['banner_links'] ?? [];
+                
+                // Sync to global business settings
+                if ($secType == 'home_slider') {
+                    $setting_img = BusinessSetting::where('type', 'home_slider_images')->first() ?: new BusinessSetting(['type' => 'home_slider_images']);
+                    $setting_img->value = json_encode($slider_images);
+                    $setting_img->save();
+                    
+                    $setting_lnk = BusinessSetting::where('type', 'home_slider_links')->first() ?: new BusinessSetting(['type' => 'home_slider_links']);
+                    $setting_lnk->value = json_encode($slider_links);
+                    $setting_lnk->save();
+                } elseif ($secType == 'banner_level_1') {
+                    $setting_img = BusinessSetting::where('type', 'home_banner1_images')->first() ?: new BusinessSetting(['type' => 'home_banner1_images']);
+                    $setting_img->value = json_encode($banner_images);
+                    $setting_img->save();
+                    
+                    $setting_lnk = BusinessSetting::where('type', 'home_banner1_links')->first() ?: new BusinessSetting(['type' => 'home_banner1_links']);
+                    $setting_lnk->value = json_encode($banner_links);
+                    $setting_lnk->save();
+                } elseif ($secType == 'banner_level_2') {
+                    $setting_img = BusinessSetting::where('type', 'home_banner2_images')->first() ?: new BusinessSetting(['type' => 'home_banner2_images']);
+                    $setting_img->value = json_encode($banner_images);
+                    $setting_img->save();
+                    
+                    $setting_lnk = BusinessSetting::where('type', 'home_banner2_links')->first() ?: new BusinessSetting(['type' => 'home_banner2_links']);
+                    $setting_lnk->value = json_encode($banner_links);
+                    $setting_lnk->save();
+                } elseif ($secType == 'banner_level_3') {
+                    $setting_img = BusinessSetting::where('type', 'home_banner3_images')->first() ?: new BusinessSetting(['type' => 'home_banner3_images']);
+                    $setting_img->value = json_encode($banner_images);
+                    $setting_img->save();
+                    
+                    $setting_lnk = BusinessSetting::where('type', 'home_banner3_links')->first() ?: new BusinessSetting(['type' => 'home_banner3_links']);
+                    $setting_lnk->value = json_encode($banner_links);
+                    $setting_lnk->save();
+                }
+
+                $sections[] = [
+                    'id' => uniqid(),
+                    'type' => $secType,
+                    'heading' => $sec['heading'] ?? '',
+                    'subheading' => $sec['subheading'] ?? '',
+                    'category_id' => $sec['category_id'] ?? null,
+                    'banner_image' => $sec['banner_image'] ?? '',
+                    'banner_link' => $sec['banner_link'] ?? '',
+                    'banner_height' => $sec['banner_height'] ?? '350px',
+                    'slider_images' => $slider_images,
+                    'slider_links' => $slider_links,
+                    'banner_images' => $banner_images,
+                    'banner_links' => $banner_links,
+                    'status' => isset($sec['status']) ? 1 : 0,
+                    // Styling configs
+                    'heading_size' => $sec['heading_size'] ?? '36',
+                    'show_border' => isset($sec['show_border']) ? 1 : 0,
+                    'border_color' => $sec['border_color'] ?? '#e5e7eb',
+                    'padding_top' => $sec['padding_top'] ?? '30',
+                    'padding_bottom' => $sec['padding_bottom'] ?? '30',
+                    'bg_color' => $sec['bg_color'] ?? '#ffffff',
+                ];
+            }
+        }
+
+        $setting = BusinessSetting::where('type', 'homepage_sections_configuration')->first();
+        if (!$setting) {
+            $setting = new BusinessSetting();
+            $setting->type = 'homepage_sections_configuration';
+        }
+        $setting->value = json_encode($sections);
+        $setting->save();
+
+        \Artisan::call('cache:clear');
+        flash(translate('Homepage sections configuration has been updated successfully'))->success();
+        return back();
+    }
 }

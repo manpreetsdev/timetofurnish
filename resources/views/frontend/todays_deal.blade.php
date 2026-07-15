@@ -6,7 +6,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 text-center text-lg-left">
-                    <h1 class="fw-700 fs-20 fs-md-24 text-dark">{{ translate("Today's Deals") }}</h1>
+                    <h1 class="fw-700 fs-20 fs-md-24 text-dark">{{ translate("Today's Deals ") }}</h1>
                 </div>
                 <div class="col-lg-6">
                     <ul class="breadcrumb bg-transparent p-0 justify-content-center justify-content-lg-end">
@@ -41,7 +41,7 @@
             @endif
             <!-- Products Section -->
             <div class="px-3">
-                <div class="row row-cols-xxl-5 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-2 gutters-16">
+                <div class="row row-cols-xxl-4 row-cols-xl-4 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-2 gutters-5">
                     @foreach ($todays_deal_products as $key => $product)
                         <div class="col mb-4 d-flex align-items-stretch">
                             @include('frontend.'.get_setting('homepage_select').'.partials.product_box_1',['product' => $product])

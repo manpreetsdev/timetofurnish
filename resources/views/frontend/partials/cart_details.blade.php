@@ -549,7 +549,7 @@
 
 <script type="text/javascript">
     function handleCartQuantity(btn, cartId, type) {
-        let group = btn.closest('.quantity-group');
+        let group = btn.closest('.modern-qty-selector') || btn.closest('.quantity-group');
         if (!group) return;
         let inp = group.querySelector('input[type=number]');
         if (!inp) return;

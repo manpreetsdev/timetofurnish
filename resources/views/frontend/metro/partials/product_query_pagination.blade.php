@@ -1,53 +1,55 @@
-<div class="py-3">
-    <h3 class="fs-16 fw-700 mb-0">
-        <span>{{ translate('Other Questions') }}</span>
-    </h3>
-</div>
+@if ($product_queries->count() > 0)
+    <div class="py-3 border-bottom mb-3">
+        <h4 class="fs-14 fw-700 mb-0 text-primary">
+            {{ translate('Other Questions') }}
+        </h4>
+    </div>
+@endif
 
 <!-- Product queries -->
 @forelse ($product_queries as $product_query)
-    <div class="produc-queries mb-4">
-        <div class="query d-flex  my-2">
-            <span class="mt-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="36" viewBox="0 0 24 36">
-                    <g id="Group_23928" data-name="Group 23928" transform="translate(-654 -2397)">
-                      <path id="Path_28707" data-name="Path 28707" d="M0,0H24V24H0Z" transform="translate(654 2397)" fill="#d43533"/>
-                      <text id="Q" transform="translate(666 2414)" fill="#fff" font-size="14" font-family="Roboto-Bold, Roboto" font-weight="700"><tspan x="-4.833" y="0">Q</tspan></text>
-                      <path id="Path_28708" data-name="Path 28708" d="M0,0H12L0,12Z" transform="translate(666 2421)" fill="#d43533"/>
-                      <path id="Path_28711" data-name="Path 28711" d="M0,0H12L0,12Z" transform="translate(666 2421)" fill="#1b1b28" opacity="0.2"/>
-                    </g>
-                </svg>
-            </span>
-            <div class="ml-3 mt-0 p-0">
-                <div class="fs-14">{{ strip_tags($product_query->question) }}</div>
-                <span class="text-secondary">{{ $product_query->user->name }} </span>
+    <div class="query-card border rounded-2 p-3 mb-3 bg-white shadow-sm">
+        <!-- Question Row -->
+        <div class="d-flex align-items-start mb-3">
+            <span class="badge badge-inline text-white rounded-circle p-0 d-flex align-items-center justify-content-center mr-3" style="width: 26px; height: 26px; font-size: 12px; font-weight: 700; flex-shrink: 0; background-color: #d43533;">Q</span>
+            <div class="flex-grow-1">
+                <div class="fs-14 fw-600 text-dark lh-1-5">{{ strip_tags($product_query->question) }}</div>
+                <div class="fs-11 text-secondary mt-1">
+                    <span class="font-weight-bold">{{ $product_query->user->name }}</span>
+                    @if($product_query->created_at)
+                        <span class="mx-2">•</span>
+                        <span>{{ date('d M Y', strtotime($product_query->created_at)) }}</span>
+                    @endif
+                </div>
             </div>
         </div>
-        <div class="answer d-flex my-2">
-            <span class="mt-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="36" viewBox="0 0 24 36">
-                    <g id="Group_23929" data-name="Group 23929" transform="translate(-654 -2453)">
-                      <path id="Path_28709" data-name="Path 28709" d="M0,0H24V24H0Z" transform="translate(654 2453)" fill="#f3af3d"/>
-                      <text id="A" transform="translate(666 2470)" fill="#fff" font-size="14" font-family="Roboto-Bold, Roboto" font-weight="700"><tspan x="-4.71" y="0">A</tspan></text>
-                      <path id="Path_28710" data-name="Path 28710" d="M0,0H12L0,12Z" transform="translate(666 2477)" fill="#f3af3d"/>
-                      <path id="Path_28712" data-name="Path 28712" d="M0,0H12L0,12Z" transform="translate(666 2477)" fill="#1b1b28" opacity="0.1"/>
-                    </g>
-                </svg>
-            </span>
-            <div class="ml-3 mt-0 p-0">
-                <div class="fs-14">
-                    {{ strip_tags($product_query->reply ? $product_query->reply : translate('Seller did not respond yet')) }}
-                </div>
-                <span class=" text-secondary"> {{ $product_query->product->user->name }}
-                </span>
+        
+        <!-- Answer Row -->
+        <div class="d-flex align-items-start pl-md-4 pt-3 border-top" style="border-top: 1px dashed #ebebeb !important;">
+            <span class="badge badge-inline text-white rounded-circle p-0 d-flex align-items-center justify-content-center mr-3" style="width: 26px; height: 26px; font-size: 12px; font-weight: 700; flex-shrink: 0; background-color: #f3af3d;">A</span>
+            <div class="flex-grow-1">
+                @if($product_query->reply)
+                    <div class="fs-14 text-dark lh-1-5">{{ strip_tags($product_query->reply) }}</div>
+                    <div class="fs-11 text-secondary mt-1">
+                        <span class="font-weight-bold text-warning">{{ $product_query->product->user->name }}</span>
+                        <span class="badge badge-inline badge-soft-warning ml-1 fs-9">{{ translate('Seller') }}</span>
+                    </div>
+                @else
+                    <div class="fs-14 text-secondary font-italic lh-1-5">{{ translate('Seller did not respond yet') }}</div>
+                @endif
             </div>
         </div>
     </div>
 @empty
-    <p>{{ translate('No none asked to seller yet') }}</p>
+    <div class="text-center py-4 border rounded-2" style="background-color: #fafafb;">
+        <span class="fs-24 text-secondary opacity-60"><i class="las la-comments"></i></span>
+        <p class="fs-13 text-secondary mb-0 mt-2">{{ translate('No queries have been submitted for this product yet.') }}</p>
+    </div>
 @endforelse
 
 <!-- Pagination -->
-<div class="aiz-pagination product-queries-pagination py-2 d-flex justify-content-end">
-    {{ $product_queries->links() }}
-</div>
+@if ($product_queries->lastPage() > 1)
+    <div class="aiz-pagination product-queries-pagination py-2 d-flex justify-content-end">
+        {{ $product_queries->links() }}
+    </div>
+@endif
