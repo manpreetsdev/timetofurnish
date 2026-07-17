@@ -70,8 +70,8 @@
     <link rel="stylesheet" href="{{ static_asset('assets/css/bootstrap-rtl.min.css') }}">
     @endif
     <link rel="stylesheet" href="{{ static_asset('assets/css/aiz-core.css?v=') }}{{ rand(1000, 9999) }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/custom-style.css') }}?v={{ filemtime(public_path('assets/css/custom-style.css')) }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/custom-pages/frontend-page-builder.css') }}?v={{ filemtime(public_path('assets/css/custom-pages/frontend-page-builder.css')) }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/custom-style.css') }}?v={{ filemtime(public_path('assets/css/custom-style.css')) }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/custom-pages/frontend-page-builder.css') }}?v={{ filemtime(public_path('assets/css/custom-pages/frontend-page-builder.css')) }}">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <!-- Ensure jQuery is loaded before select2 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
