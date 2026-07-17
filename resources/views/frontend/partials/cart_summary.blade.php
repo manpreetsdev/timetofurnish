@@ -94,9 +94,10 @@
                     $subtotal = 0;
                     $tax = 0;
                     $shipping = 0;
+                    $servicesTotal = 0;
                     $productDiscountTotal = 0;
                     $product_shipping_cost = 0;
-                    $shipping_region = $shipping_info['city'];
+                    $shipping_region = $shipping_info['city'] ?? '';
                 @endphp
                 @foreach ($carts as $key => $cartItem)
                     @php
@@ -111,6 +112,17 @@
                         
                         $shipping += $product_shipping_cost;
                         
+                        // Sum services total for this product
+                        if (!empty($cartItem->services)) {
+                            $cartServices = json_decode($cartItem->services, true);
+                            if (is_array($cartServices)) {
+                                $cartServices = collect($cartServices)->unique('id')->toArray();
+                                foreach ($cartServices as $s) {
+                                    $servicesTotal += (float) ($s['price'] ?? 0);
+                                }
+                            }
+                        }
+                        
                         $product_name_with_choice = $product->getTranslation('name');
                         if ($cartItem['variant'] != null) {
                             $product_name_with_choice = $product->getTranslation('name') . ' - ' . $cartItem['variant'];
@@ -122,10 +134,34 @@
                             <strong class="product-quantity">
                                 × {{ $cartItem['quantity'] }}
                             </strong>
+                            
+                            {{-- Product shipping charges --}}
+                            @if ($product_shipping_cost > 0)
+                                <div class="fs-12 text-muted mt-1">
+                                    {{ translate('Shipping') }}: {{ single_price($product_shipping_cost) }}
+                                </div>
+                            @endif
+                            
+                            {{-- Product services --}}
+                            @if (!empty($cartItem->services))
+                                @php
+                                    $cartServices = json_decode($cartItem->services, true);
+                                    if (is_array($cartServices)) {
+                                        $cartServices = collect($cartServices)->unique('id')->toArray();
+                                    }
+                                @endphp
+                                @if (is_array($cartServices) && count($cartServices) > 0)
+                                    <div class="fs-12 text-muted mt-1">
+                                        {{ translate('Services') }}: 
+                                        @foreach($cartServices as $s)
+                                            {{ $s['name'] ?? 'Service' }} ({{ single_price($s['price'] ?? 0) }}){{ !$loop->last ? ', ' : '' }}
+                                        @endforeach
+                                    </div>
+                                @endif
+                            @endif
                         </td>
                         <td class="product-total text-right pr-0 fs-14 text-primary fw-600 border-top-0 border-bottom">
-                            <span
-                                class="pl-4 pr-0">
+                            <span class="pl-4 pr-0">
                                 @if ($lineProductDiscount > 0)
                                     <span class="d-block text-muted fs-12" style="text-decoration:line-through;">
                                         {{ single_price($unitBasePrice * $cartItem['quantity']) }}
@@ -183,6 +219,15 @@
                         <span class="fw-600">{{ single_price($shipping) }}</span>
                     </td>
                 </tr>
+                <!-- Additional Services -->
+                @if ($servicesTotal > 0)
+                    <tr class="cart-services">
+                        <th class="pl-0 fs-14 pt-0 pb-2 text-dark fw-600 border-top-0">{{ translate('Additional Services') }}</th>
+                        <td class="text-right pr-0 fs-14 pt-0 pb-2 fw-600 text-primary border-top-0">
+                            <span class="fw-600">{{ single_price($servicesTotal) }}</span>
+                        </td>
+                    </tr>
+                @endif
                 <!-- Redeem point -->
                 @if (Session::has('club_point'))
                     <tr class="cart-shipping">
@@ -203,7 +248,7 @@
                 @endif
 
                 @php
-                    $total = $subtotal + $tax + $shipping;
+                    $total = $subtotal + $tax + $shipping + $servicesTotal;
                     if (Session::has('club_point')) {
                         $total -= Session::get('club_point');
                     }

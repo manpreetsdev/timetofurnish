@@ -455,30 +455,13 @@ public function become_delivery_partner()
             abort(404);
         }
 
-        $departmentOrder = [
-            'hr department' => 1,
-            'operations team' => 2,
-            'accounts department' => 3,
-            'it support' => 4,
-            'sales team' => 5,
-            'customer service team' => 6,
-        ];
-
+        // Dynamic ordering based on admin-configured fields
         $team_members = TeamMember::where('is_active', 1)
-            ->get()
-            ->sortBy(function ($member) use ($departmentOrder) {
-                $department = trim((string) ($member->department ?? ''));
-                $departmentKey = Str::lower($department);
-
-                return sprintf(
-                    '%02d-%04d-%04d-%s',
-                    $departmentOrder[$departmentKey] ?? 99,
-                    (int) ($member->department_sort_order ?? 0),
-                    (int) ($member->sort_order ?? 0),
-                    strtolower((string) $member->name)
-                );
-            })
-            ->values();
+            ->orderBy('department_sort_order')
+            ->orderBy('sort_order')
+            ->orderByRaw('LOWER(department)')
+            ->orderByRaw('LOWER(name)')
+            ->get();
 
         return view('frontend.meet_the_team', compact('team_members'));
     }

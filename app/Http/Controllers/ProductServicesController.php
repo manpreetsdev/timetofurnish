@@ -37,6 +37,8 @@ class ProductServicesController extends Controller
 
         $service->categories()->sync($request->categories ?? []);
 
+        syncAllProductsCheckoutServices();
+
         return redirect()
             ->route('services.index')
             ->with('success', 'Service created successfully');
@@ -75,6 +77,8 @@ class ProductServicesController extends Controller
 
         $service->categories()->sync($request->categories ?? []);
 
+        syncAllProductsCheckoutServices();
+
         return redirect()
             ->route('services.index')
             ->with('success', 'Service updated successfully');
@@ -86,6 +90,8 @@ class ProductServicesController extends Controller
         $service->categories()->detach();
         $service->delete();
 
+        syncAllProductsCheckoutServices();
+
     return redirect()->route('services.index')->with('success', translate('Service deleted successfully'));
     }
 
@@ -94,6 +100,7 @@ class ProductServicesController extends Controller
         $service = CheckoutService::findOrFail($request->id);
         $service->status = $request->status;
         if ($service->save()) {
+            syncAllProductsCheckoutServices();
             return 1;
         }
         return 0;

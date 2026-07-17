@@ -407,7 +407,7 @@
 .ttf-policy-layout {
     display: grid;
     grid-template-columns: 290px minmax(0, 1fr);
-    gap: 38px;
+    gap: 58px;
     align-items: start;
 }
 
@@ -440,7 +440,7 @@
 .ttf-policy-toc h2 {
     color: var(--ttf-toc-heading);
     font-size: 26px !important;
-    margin: 0 0 16px;
+    margin: 0 0 30px;
 }
 
 .ttf-policy-toc ul {
@@ -864,7 +864,7 @@
 
 /* Left Sidebar Table of Contents Title (26px) */
 .ttf-policy-toc h2 {
-    color: var(--toc-title-color, var(--ttf-toc-heading, #3a2a1f)) !important;
+    color: #4F4238 !important;
     font-family: var(--toc-title-font, Playfair Display, serif) !important;
     font-size: var(--toc-title-size, 26px) !important;
     font-weight: var(--toc-title-weight, 700) !important;
@@ -912,6 +912,16 @@
     line-height: var(--toc-content-heading-height, 40px) !important;
     color: var(--toc-content-heading-color, #2c2218) !important;
     margin: 0 0 16px !important;
+}
+
+.ttf-policy-content .ttf-rich-text li a,
+.ttf-policy-content .ttf-rich-text li span,
+.ttf-policy-content .ttf-rich-text li span a,
+.ttf-policy-content .ttf-rich-text li span p,
+.ttf-policy-content .ttf-rich-text li p span {
+    font-size: var(--toc-content-body-size-desktop, 18px) !important;
+    line-height: var(--toc-content-body-height-desktop, 31px) !important;
+    color: var(--toc-content-body-color, #393939) !important;
 }
 
 /* TOC Content Body Typography */
@@ -1027,6 +1037,17 @@
         font-size: var(--section-title-size, 24px) !important;
         line-height: var(--section-title-height, 34px) !important;
         letter-spacing: var(--section-title-spacing, 0) !important;
+    }
+
+    .ttf-rich-text.ttf-toc-intro p,
+    .ttf-rich-text.ttf-toc-intro span,
+    .ttf-rich-text.ttf-toc-intro a,
+    .ttf-rich-text.ttf-toc-intro span p,
+    .ttf-rich-text.ttf-toc-intro p span,
+    .ttf-rich-text.ttf-toc-intro li,
+    .ttf-rich-text.ttf-toc-intro li a {
+        font-size: var(--section-body-size, 16px) !important;
+        line-height: var(--section-body-height, 24px) !important;
     }
 
     .ttf-story-section .ttf-rich-text,

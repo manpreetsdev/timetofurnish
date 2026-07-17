@@ -299,12 +299,42 @@
 <body>
     @php
         $deliveryAddress = json_decode($order->shipping_address);
-        $shippingTotal = (float) $order->orderDetails->sum('shipping_cost');
+
+        // Fetch all orders in the combined checkout if combined_order_id is present
+        $combinedOrders = $order->combined_order_id
+            ? \App\Models\Order::with([
+                'orderDetails.product.stocks',
+                'shop.user.addresses.country',
+                'shop.user.addresses.state',
+                'shop.user.addresses.city'
+            ])->where('combined_order_id', $order->combined_order_id)->get()
+            : collect([$order->loadMissing(['orderDetails.product.stocks', 'shop.user.addresses.country', 'shop.user.addresses.state', 'shop.user.addresses.city'])]);
+
+        $allOrderDetails = $combinedOrders->flatMap(function($o) {
+            return $o->orderDetails;
+        });
+
+        $shippingTotal = (float) $allOrderDetails->sum('shipping_cost');
         $itemsSubtotal = 0;
         $addonsSubtotal = 0;
         $productDiscountTotal = 0;
+
         $services = [];
         $servicesTotal = 0;
+        foreach ($combinedOrders as $o) {
+            if (!empty($o->additional_info)) {
+                $additionalInfo = json_decode($o->additional_info, true);
+                if (is_array($additionalInfo)) {
+                    $orderServices = $additionalInfo['services'] ?? [];
+                    $services = array_merge($services, $orderServices);
+                    $servicesTotal += (float) ($additionalInfo['service_total'] ?? collect($orderServices)->sum('price'));
+                }
+            }
+        }
+
+        $combinedGrandTotal = (float) $combinedOrders->sum('grand_total');
+        $combinedCouponDiscount = (float) $combinedOrders->sum('coupon_discount');
+
         $companyEmail = 'sales@timetofurnish.com';
         $companyPhone = '+44 7751510365';
         $companyWebsite = 'www.timetofurnish.com';
@@ -312,9 +342,9 @@
         $companyVatRate = '20%';
         $companyVatRateValue = (float) rtrim($companyVatRate, '%');
         $vatTotal = $companyVatRateValue > 0
-            ? round(((float) $order->grand_total * $companyVatRateValue) / (100 + $companyVatRateValue), 2)
+            ? round(((float) $combinedGrandTotal * $companyVatRateValue) / (100 + $companyVatRateValue), 2)
             : 0;
-        $totalExcludingVat = max(0, (float) $order->grand_total - $vatTotal);
+        $totalExcludingVat = max(0, (float) $combinedGrandTotal - $vatTotal);
         $invoiceCopy = $invoiceCopy ?? \App\Services\OrderInvoiceService::copyTypes()[$invoiceCopyType ?? 'customer'];
         $invoiceNumber = $invoiceNumber ?? app(\App\Services\OrderInvoiceService::class)->invoiceNumber($order);
         $invoiceName = $invoiceName ?? $invoiceCopy['name'];
@@ -396,14 +426,7 @@
             $sellerProfileAddress = $order->shop->user->addresses->sortByDesc('set_default')->first();
         }
 
-        if (!empty($order->additional_info)) {
-            $additionalInfo = json_decode($order->additional_info, true);
-            if (is_array($additionalInfo)) {
-                $services = $additionalInfo['services'] ?? [];
-                $servicesTotal = (float) ($additionalInfo['service_total'] ?? collect($services)->sum('price'));
-            }
-        }
-
+        // $services and $servicesTotal already aggregated from all combined orders above
         $deliveryAndInstallationTotal = $shippingTotal + $servicesTotal;
 
         if ($sellerProfileAddress && !empty($sellerProfileAddress->address)) {
@@ -528,7 +551,7 @@
                                                                 Total payable</td>
                                                             <td class="right nowrap"
                                                                 style="font-size:16px;font-weight:700;padding-top:10px;border-top:1px solid #d7c8b8;">
-                                                                {{ single_price($order->grand_total) }}</td>
+                                                                {{ single_price($combinedGrandTotal) }}</td>
                                                         </tr>
                                                     </table>
                                                 </td>
@@ -621,7 +644,7 @@
                                 </thead>
 
                                 <tbody>
-                                    @foreach ($order->orderDetails as $orderDetail)
+                                    @foreach ($allOrderDetails as $orderDetail)
                                         @if ($orderDetail->product)
                                             @php
                                                 $lineBase = (float) $orderDetail->price;
@@ -647,6 +670,24 @@
                                                         <div class="muted" style="font-size:11px;margin-top:2px;">
                                                             Variant:
                                                             {{ $orderDetail->variation }}</div>
+                                                    @endif
+                                                    @if ($orderDetail->shipping_cost > 0)
+                                                        <div class="muted" style="font-size:11px;margin-top:2px;">
+                                                            Shipping charges:
+                                                            {{ single_price($orderDetail->shipping_cost) }}</div>
+                                                    @endif
+                                                    @php
+                                                        $itemServices = collect($services)->filter(function ($s) use ($orderDetail) {
+                                                            return ($s['product_id'] ?? null) == $orderDetail->product_id;
+                                                        });
+                                                    @endphp
+                                                    @if ($itemServices->count() > 0)
+                                                        <div class="muted" style="font-size:11px;margin-top:2px;">
+                                                            Services: 
+                                                            @foreach ($itemServices as $s)
+                                                                {{ $s['name'] ?? 'Service' }} ({{ single_price($s['price'] ?? 0) }}){{ !$loop->last ? ', ' : '' }}
+                                                            @endforeach
+                                                        </div>
                                                     @endif
                                                     @if ($lineProductDiscount > 0)
                                                         <div class="muted" style="font-size:11px;margin-top:2px;">
@@ -729,12 +770,12 @@
                                             </tr>
                                         @endforeach
                                     @endif
-                                    @if ((float) $order->coupon_discount > 0)
+                                    @if ((float) $combinedCouponDiscount > 0)
                                         <tr style="background:#faf8f5;">
                                             <td class="item-td">Promotion / coupon</td>
                                             <td class="hide-mobile"></td>
                                             <td class="hide-mobile"></td>
-                                            <td class="item-td right nowrap"><span class="show-mobile small muted" style="display:none;font-weight:700;">Subtotal: </span>-{{ single_price($order->coupon_discount) }}</td>
+                                            <td class="item-td right nowrap"><span class="show-mobile small muted" style="display:none;font-weight:700;">Subtotal: </span>-{{ single_price($combinedCouponDiscount) }}</td>
                                         </tr>
                                     @endif
                                 </tbody>
@@ -743,7 +784,7 @@
                             <table class="totals" width="100%" cellpadding="0" cellspacing="0"
                                 role="presentation">
                                 @php
-                                    $discountAppliedTotal = $productDiscountTotal + (float) $order->coupon_discount;
+                                    $discountAppliedTotal = $productDiscountTotal + (float) $combinedCouponDiscount;
                                     $itemsBeforeDiscount = $itemsSubtotal + $productDiscountTotal;
                                 @endphp
                                 <tr>

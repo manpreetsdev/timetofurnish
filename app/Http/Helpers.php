@@ -146,6 +146,75 @@ if (!function_exists('getProductShippingCharges')) {
     }
 }
 
+if (!function_exists('syncProductCheckoutServices')) {
+    function syncProductCheckoutServices($product)
+    {
+        if (!$product) {
+            return;
+        }
+        $categoryIds = $product->categories()->pluck('categories.id')->toArray();
+        if (!empty($product->category_id)) {
+            $categoryIds[] = $product->category_id;
+        }
+        
+        $serviceCategoryIds = getCheckoutServiceCategoryMatchIds($categoryIds);
+        
+        $serviceIds = \App\Models\CheckoutService::whereHas('categories', function ($q) use ($serviceCategoryIds) {
+            $q->whereIn('categories.id', $serviceCategoryIds);
+        })
+        ->where('status', 1)
+        ->pluck('id')
+        ->toArray();
+        
+        $product->checkoutServices()->sync($serviceIds);
+    }
+}
+
+if (!function_exists('syncProductShippingCharges')) {
+    function syncProductShippingCharges($product)
+    {
+        if (!$product) {
+            return;
+        }
+        $categoryIds = $product->categories()->pluck('categories.id')->toArray();
+        if (!empty($product->category_id)) {
+            $categoryIds[] = $product->category_id;
+        }
+        
+        $serviceCategoryIds = getCheckoutServiceCategoryMatchIds($categoryIds);
+        
+        $shippingChargeIds = \App\Models\ShippingCharge::whereHas('categories', function ($q) use ($serviceCategoryIds) {
+            $q->whereIn('categories.id', $serviceCategoryIds);
+        })
+        ->where('status', 1)
+        ->pluck('id')
+        ->toArray();
+        
+        $product->shippingCharges()->sync($shippingChargeIds);
+    }
+}
+
+if (!function_exists('syncAllProductsCheckoutServices')) {
+    function syncAllProductsCheckoutServices()
+    {
+        $products = \App\Models\Product::all();
+        foreach ($products as $product) {
+            syncProductCheckoutServices($product);
+        }
+    }
+}
+
+if (!function_exists('syncAllProductsShippingCharges')) {
+    function syncAllProductsShippingCharges()
+    {
+        $products = \App\Models\Product::all();
+        foreach ($products as $product) {
+            syncProductShippingCharges($product);
+        }
+    }
+}
+
+
 if (!function_exists('getProductShippingChargeTotal')) {
     function getProductShippingChargeTotal($product, $quantity = 1)
     {
@@ -2429,7 +2498,7 @@ if (!function_exists('get_cart_services')) {
             return collect();
         }
 
-        return collect(json_decode($cart->services, true));
+        return collect(json_decode($cart->services, true))->unique('id');
     }
 }
 
@@ -2441,7 +2510,7 @@ if (!function_exists('get_cart_services_total')) {
             return 0;
         }
 
-        return collect(json_decode($cart->services, true))->sum('price');
+        return collect(json_decode($cart->services, true))->unique('id')->sum('price');
     }
 }
 

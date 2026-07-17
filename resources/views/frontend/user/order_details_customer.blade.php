@@ -138,19 +138,45 @@
     }
 @endphp
 
-@if (!empty($addons))
-    <br>
-    <ul style="margin:0; padding-left:15px;">
-        @foreach ($addons as $addon)
-            <li>
-                {{ $addon['name'] ?? '' }}
-                @if(isset($addon['price']))
-                    ({{ single_price($addon['price']) }})
-                @endif
-            </li>
-        @endforeach
-    </ul>
-@endif
+                                        @if (!empty($addons))
+                                            <br>
+                                            <ul style="margin:0; padding-left:15px;">
+                                                @foreach ($addons as $addon)
+                                                    <li>
+                                                        {{ $addon['name'] ?? '' }}
+                                                        @if(isset($addon['price']))
+                                                            ({{ single_price($addon['price']) }})
+                                                        @endif
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                        
+                                        @if ($orderDetail->shipping_cost > 0)
+                                            <div class="fs-12 text-muted mt-1">
+                                                {{ translate('Shipping') }}: {{ single_price($orderDetail->shipping_cost) }}
+                                            </div>
+                                        @endif
+                                        
+                                        @php
+                                            $itemServices = [];
+                                            if (!empty($order->additional_info)) {
+                                                $additionalInfo = json_decode($order->additional_info, true);
+                                                if (is_array($additionalInfo) && !empty($additionalInfo['services'])) {
+                                                    $itemServices = collect($additionalInfo['services'])->filter(function ($s) use ($orderDetail) {
+                                                        return ($s['product_id'] ?? null) == $orderDetail->product_id;
+                                                    });
+                                                }
+                                            }
+                                        @endphp
+                                        @if (count($itemServices) > 0)
+                                            <div class="fs-12 text-muted mt-1">
+                                                {{ translate('Services') }}: 
+                                                @foreach ($itemServices as $s)
+                                                    {{ $s['name'] ?? 'Service' }} ({{ single_price($s['price'] ?? 0) }}){{ !$loop->last ? ', ' : '' }}
+                                                @endforeach
+                                            </div>
+                                        @endif
                                     </td>
                                     <td>
                                         {{ $orderDetail->variation }}
@@ -235,12 +261,29 @@
                                     <span class="strong-600">{{ single_price($order->orderDetails->sum('price')) }}</span>
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="w-50 fw-600">{{ translate('Shipping') }}</td>
-                                <td class="text-right">
-                                    <span class="text-italic">{{ single_price($order->orderDetails->sum('shipping_cost')) }}</span>
-                                </td>
-                            </tr>
+                             <tr>
+                                 <td class="w-50 fw-600">{{ translate('Shipping') }}</td>
+                                 <td class="text-right">
+                                     <span class="text-italic">{{ single_price($order->orderDetails->sum('shipping_cost')) }}</span>
+                                 </td>
+                             </tr>
+                             @php
+                                 $servicesTotal = 0;
+                                 if (!empty($order->additional_info)) {
+                                     $additionalInfo = json_decode($order->additional_info, true);
+                                     if (is_array($additionalInfo)) {
+                                         $servicesTotal = (float) ($additionalInfo['service_total'] ?? collect($additionalInfo['services'] ?? [])->sum('price'));
+                                     }
+                                 }
+                             @endphp
+                             @if ($servicesTotal > 0)
+                                 <tr>
+                                     <td class="w-50 fw-600">{{ translate('Additional Services') }}</td>
+                                     <td class="text-right">
+                                         <span class="text-italic">{{ single_price($servicesTotal) }}</span>
+                                     </td>
+                                 </tr>
+                             @endif
                             
                             <!--@if($order->igst)-->
                             <!--<tr>-->

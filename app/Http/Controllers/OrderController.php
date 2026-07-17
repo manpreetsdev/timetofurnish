@@ -339,13 +339,17 @@ class OrderController extends Controller
             $service_details = [];
             $service_total = 0;
 
-            if (!empty($seller_product[0]->services)) {
-                $decodedServices = json_decode($seller_product[0]->services, true);
-                if (is_array($decodedServices)) {
-                    $service_details = $decodedServices;
-                    $service_total = collect($service_details)->sum(function ($service) {
-                        return (float) ($service['price'] ?? 0);
-                    });
+            foreach ($seller_product as $cartItem) {
+                if (!empty($cartItem->services)) {
+                    $decodedServices = json_decode($cartItem->services, true);
+                    if (is_array($decodedServices)) {
+                        foreach ($decodedServices as $service) {
+                            $service['product_id'] = $cartItem->product_id;
+                            $service['product_name'] = optional($cartItem->product)->getTranslation('name');
+                            $service_details[] = $service;
+                            $service_total += (float) ($service['price'] ?? 0);
+                        }
+                    }
                 }
             }
 
