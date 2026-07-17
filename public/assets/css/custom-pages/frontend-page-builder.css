@@ -634,7 +634,7 @@ section.ttf-page-group {
     }
 
     .ttf-story-section--split .ttf-story-section__media img {
-        height: 230px !important;
+        height: 329px !important;
     }
 
 
@@ -927,6 +927,14 @@ section.ttf-page-group {
 .ttf-policy-content .ttf-rich-text li span,
 .ttf-policy-content .ttf-rich-text li span a,
 .ttf-policy-content .ttf-rich-text li span p,
+.ttf-policy-content .ttf-rich-text li span p span,
+.ttf-policy-content .ttf-rich-text li span ol,
+.ttf-policy-content .ttf-rich-text li span ol li,
+.ttf-policy-content .ttf-rich-text li span ol li a,
+.ttf-policy-content .ttf-rich-text li span ol li a span,
+.ttf-policy-content .ttf-rich-text li span ol li a p,
+.ttf-policy-content .ttf-rich-text li span ol li p,
+.ttf-policy-content .ttf-rich-text li span ol li span,
 .ttf-policy-content .ttf-rich-text li p span {
     font-size: var(--toc-content-body-size-desktop, 18px) !important;
     line-height: var(--toc-content-body-height-desktop, 31px) !important;
@@ -981,7 +989,7 @@ section.ttf-page-group {
 /* Split Widget: Two Column Layout Content & Image Defaults */
 .ttf-story-section--split .ttf-story-section__media img {
     max-width: 652px !important;
-    height: var(--section-image-height, 553px) !important;
+    height: var(--section-image-height, 553px);
     border-radius: var(--section-image-radius, 10px) !important;
     object-fit: cover !important;
     width: 100% !important;
@@ -1055,8 +1063,8 @@ section.ttf-page-group {
     .ttf-rich-text.ttf-toc-intro p span,
     .ttf-rich-text.ttf-toc-intro li,
     .ttf-rich-text.ttf-toc-intro li a {
-        font-size: var(--section-body-size, 18px);
-        line-height: var(--section-body-height, 31px);
+        font-size: var(--section-body-size, 18px) !important;
+        line-height: var(--section-body-height, 31px) !important;
     }
 
     .ttf-story-section .ttf-rich-text,
