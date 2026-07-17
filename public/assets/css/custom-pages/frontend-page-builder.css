@@ -191,7 +191,33 @@ section.ttf-page-group {
     padding: 0;
     margin: 26px 0 0;
     display: grid;
-    gap: 14px;
+    gap: 2px;
+}
+
+
+
+.ttf-check-list li::before {
+    content: "\f00c";
+    /* Check icon */
+    font-family: "Line Awesome Free";
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    top: 2px;
+
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+
+    background: #c27325;
+    color: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 13px;
+    line-height: 1;
 }
 
 .ttf-check-list li {
