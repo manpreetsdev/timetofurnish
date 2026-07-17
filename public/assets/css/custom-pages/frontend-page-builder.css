@@ -231,16 +231,6 @@ section.ttf-page-group {
     color: var(--section-text, var(--ttf-text));
 }
 
-.ttf-check-list li::before {
-    content: "\f058";
-    font-family: "Line Awesome Free";
-    font-weight: 900;
-    position: absolute;
-    left: 0;
-    top: 2px;
-    font-size: 18px;
-    color: var(--section-check, var(--section-accent, var(--ttf-accent)));
-}
 
 .ttf-story-section h2 span,
 .ttf-story-section h1 span,
