@@ -31,7 +31,7 @@
     }
 @endphp
 
-<section class="ttf-story-section ttf-story-section--split {{ ($section['layout'] ?? 'image_left') === 'image_right' ? 'is-reversed' : '' }} {{ ($section['tablet_stack_order'] ?? 'content_first') === 'image_first' ? 'is-tablet-image-first' : 'is-tablet-content-first' }} {{ ($section['mobile_stack_order'] ?? 'content_first') === 'image_first' ? 'is-mobile-image-first' : 'is-mobile-content-first' }} {{ $visibilityClasses }}" style="
+<section class="ttf-story-section ttf-story-section--split  {{ ($section['layout'] ?? 'image_left') === 'image_right' ? 'is-reversed' : '' }} {{ ($section['tablet_stack_order'] ?? 'content_first') === 'image_first' ? 'is-tablet-image-first' : 'is-tablet-content-first' }} {{ ($section['mobile_stack_order'] ?? 'content_first') === 'image_first' ? 'is-mobile-image-first' : 'is-mobile-content-first' }} {{ $visibilityClasses }}" style="
     --section-bg: {{ $showBackground ? $backgroundColor : 'transparent' }};
     --section-heading: {{ $section['title_color'] ?? 'var(--ttf-heading)' }};
     --section-subheading: {{ $section['subtitle_color'] ?? 'var(--ttf-subheading)' }};

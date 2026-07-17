@@ -4819,7 +4819,7 @@ li.slick-active {
     }
 }
 
-.ttf-story-section--split .ttf-story-section__media {
+.ttf-story-section--split.is-reversed .ttf-story-section__media {
     display: flex;
     justify-content: right !important;
 }
