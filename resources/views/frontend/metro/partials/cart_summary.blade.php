@@ -4,6 +4,63 @@
         <h5 class="mb-0 fw-600 cartdetails">Summary</h5>
         <span class="item-count cartdetails">{{ count($carts) }} Items</span>
     </div>
+<style>
+    .summary-total-table tr{
+        border-bottom:1px solid #eee !important;
+    }
+    .addons_row{
+        border:none !important;
+    }
+
+    /* Sub-detail rows: shipping / services / addons */
+    .sub-detail-row td {
+        border: none !important;
+        padding-top: 3px !important;
+        padding-bottom: 3px !important;
+        font-size: 12.5px;
+        font-weight: 400;
+        color: #555;
+    }
+    .sub-detail-label {
+        padding-left: 20px !important;
+    }
+    .sub-detail-price {
+        white-space: nowrap;
+        font-weight: 500;
+        color: #333;
+    }
+     /* Addon / Shipping / Service inline rows */
+    .addon-inline-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12.5px;
+        font-weight: 400;
+        color: #666;
+        padding: 2px 0;
+        gap: 8px;
+    }
+    .addon-inline-label {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #555;
+    }
+    .addon-inline-price {
+        white-space: nowrap;
+        font-weight: 500;
+        color: #333;
+    }
+    .addon-inline-img {
+        width: 20px;
+        height: 20px;
+        object-fit: cover;
+        border-radius: 3px;
+        border: 1px solid #e5e5e5;
+        flex-shrink: 0;
+    }
+    </style>
 
     <div class="card-body p-0 pb-3">
         {{-- PRODUCTS --}}
@@ -16,6 +73,7 @@
                 $subtotal = 0;
                 $product_discount_total = 0;
                 $shipping_total = 0;
+                $services_total = 0;
                 @endphp
                 @foreach($carts as $cartItem)
                 @php
@@ -33,6 +91,17 @@
                 $subtotal += $product_total;
                 $total += $product_total;
                 $shipping_total += (float) $cartItem->shipping_cost;
+
+                // Sum services total for this product
+                if (!empty($cartItem->services)) {
+                    $cartServices = json_decode($cartItem->services, true);
+                    if (is_array($cartServices)) {
+                        $cartServices = collect($cartServices)->unique('id')->toArray();
+                        foreach ($cartServices as $s) {
+                            $services_total += (float) ($s['price'] ?? 0);
+                        }
+                    }
+                }
                 @endphp
 
                 {{-- Main Product Row --}}
@@ -57,116 +126,104 @@
                         </div>
                     </td>
                     <td class="text-right product-price cartdetails" style="font-weight: 500;">
-                       
-                    <strong>
-                    @if($price > 0)
-                        @if($line_product_discount > 0)
-                            <span class="d-block text-muted" style="font-size:12px;text-decoration:line-through;">
-                                £{{ number_format($base_price * $cartItem->quantity, 2) }}
-                            </span>
-                        @endif
-                        £{{ number_format($price * $cartItem->quantity, 2) }}
-                        @if($line_product_discount > 0)
-                            <span class="d-block text-danger" style="font-size:12px;">
-                                Discount -£{{ number_format($line_product_discount, 2) }}
-                            </span>
-                        @endif
+                        <strong>
+                        @if($price > 0)
+                            @if($line_product_discount > 0)
+                                <span class="d-block text-muted" style="font-size:12px;text-decoration:line-through;">
+                                    £{{ number_format($base_price * $cartItem->quantity, 2) }}
+                                </span>
+                            @endif
+                            £{{ number_format($price * $cartItem->quantity, 2) }}
+                            @if($line_product_discount > 0)
+                                <span class="d-block text-danger" style="font-size:12px;">
+                                    Discount -£{{ number_format($line_product_discount, 2) }}
+                                </span>
+                            @endif
                         @else
-                        -
+                            -
                         @endif
-            </strong>
+                        </strong>
                     </td>
                 </tr>
 
-                {{-- Addons: each as its own row --}}
+                {{-- Shipping sub-row --}}
+                @if ((float) $cartItem->shipping_cost > 0)
+                <tr class="sub-detail-row">
+                    <td colspan="2" class="sub-detail-label">{{ translate('Shipping') }}:</td>
+                    <td class="text-right sub-detail-price">{{ single_price($cartItem->shipping_cost) }}</td>
+                </tr>
+                @endif
+
+                {{-- Services sub-rows --}}
+                @if (!empty($cartItem->services))
+                    @php
+                        $cartServices = json_decode($cartItem->services, true);
+                        if (is_array($cartServices)) {
+                            $cartServices = collect($cartServices)->unique('id')->toArray();
+                        }
+                    @endphp
+                    @if (is_array($cartServices) && count($cartServices) > 0)
+                        @foreach($cartServices as $s)
+                        <tr class="sub-detail-row">
+                            <td colspan="2" class="sub-detail-label">{{ $s['name'] ?? 'Service' }}:</td>
+                            <td class="text-right sub-detail-price">{{ single_price($s['price'] ?? 0) }}</td>
+                        </tr>
+                        @endforeach
+                    @endif
+                @endif
+
+                {{-- Addon sub-rows --}}
                 @php $cartItem_addons = []; @endphp
                 @if(!empty($cartItem->addons))
                 @php
-                $cartItem_addons = json_decode($cartItem->addons, true);
-
-                // Fetch attributes from cart if they exist
-                $cartItem_attributes = [];
-                if (!empty($cartItem->attributes)) {
-                $cartItem_attributes = json_decode($cartItem->attributes, true);
-                }
-
-                // Collect the names of all attributes so we can filter them out of the addons array
-                $attributeNames = [];
-                if (is_array($cartItem_attributes)) {
-                foreach ($cartItem_attributes as $attr) {
-                if (!empty($attr['attribute_name'])) {
-                $attributeNames[] = strtolower(trim($attr['attribute_name']));
-                }
-                }
-                }
-
-                $variation_string = $cartItem->variation ?? '';
-                $variation_parts = array_map(function($v) {
-                    return strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $v));
-                }, explode('-', $variation_string));
-
-                // Remove any redundant variants that were injected into addons
-                $cartItem_addons = array_filter($cartItem_addons, function($addon) use ($attributeNames, $variation_parts) {
-                if (in_array(strtolower(trim($addon['addon_name'] ?? '')), $attributeNames)) {
-                    return false;
-                }
-                $addon_value_clean = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $addon['name'] ?? ''));
-                if (!empty($addon_value_clean) && in_array($addon_value_clean, $variation_parts)) {
-                    return false;
-                }
-                return true;
-                });
+                    $cartItem_addons = json_decode($cartItem->addons, true);
+                    $cartItem_attributes = [];
+                    if (!empty($cartItem->attributes)) {
+                        $cartItem_attributes = json_decode($cartItem->attributes, true);
+                    }
+                    $attributeNames = [];
+                    if (is_array($cartItem_attributes)) {
+                        foreach ($cartItem_attributes as $attr) {
+                            if (!empty($attr['attribute_name'])) {
+                                $attributeNames[] = strtolower(trim($attr['attribute_name']));
+                            }
+                        }
+                    }
+                    $variation_string = $cartItem->variation ?? '';
+                    $variation_parts = array_map(function($v) {
+                        return strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $v));
+                    }, explode('-', $variation_string));
+                    $cartItem_addons = array_filter($cartItem_addons, function($addon) use ($attributeNames, $variation_parts) {
+                        if (in_array(strtolower(trim($addon['addon_name'] ?? '')), $attributeNames)) return false;
+                        $addon_value_clean = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $addon['name'] ?? ''));
+                        if (!empty($addon_value_clean) && in_array($addon_value_clean, $variation_parts)) return false;
+                        return true;
+                    });
                 @endphp
                 @foreach($cartItem_addons as $addon)
                 @php
-                $addon_price_total = ($addon['price'] ?? 0) * $cartItem->quantity;
-                $addonImage = $addon['image'] ?? ($addon['img'] ?? ($addon['image_url'] ?? ''));
-                $addonImageSrc = $addonImage
-                    ? (\Illuminate\Support\Str::startsWith($addonImage, ['http://', 'https://', 'data:'])
-                        ? $addonImage
-                        : asset(ltrim($addonImage, '/')))
-                    : '';
-                $subtotal += $addon_price_total;
-                $total += $addon_price_total;
+                    $addon_price_total = ($addon['price'] ?? 0) * $cartItem->quantity;
+                    $addonImage = $addon['image'] ?? ($addon['img'] ?? ($addon['image_url'] ?? ''));
+                    $addonImageSrc = $addonImage
+                        ? (\Illuminate\Support\Str::startsWith($addonImage, ['http://', 'https://', 'data:'])
+                            ? $addonImage
+                            : asset(ltrim($addonImage, '/')))
+                        : '';
+                    $subtotal += $addon_price_total;
+                    $total += $addon_price_total;
                 @endphp
-                <tr>
-                    <td class="pl-4" colspan="2">
-                        <span style="font-weight:400;" class="addons-price">
-                            @if($addonImageSrc)
-                            <img src="{{ $addonImageSrc }}"
-                                alt="{{ $addon['name'] ?? 'Addon' }}"
-                                style="width:24px;height:24px;object-fit:cover;border-radius:4px;border:1px solid #e5e5e5;margin-right:6px;vertical-align:middle;">
-                            @endif
-                            @if(isset($addon['addon_name']))
-                            <span class="text-black" style="font-weight:700;">{{ $addon['addon_name'] }}:&nbsp;</span>
-                            @endif
-                            {{ $addon['name'] ?? '' }}
-                            <span class="qty cartdetails">&times; {{ $cartItem->quantity }}</span>
-                        </span>
+                <tr class="sub-detail-row">
+                    <td colspan="2" class="sub-detail-label">
+                        @if($addonImageSrc)
+                        <img src="{{ $addonImageSrc }}"
+                            alt="{{ $addon['name'] ?? 'Addon' }}"
+                            style="width:20px;height:20px;object-fit:cover;border-radius:3px;border:1px solid #e5e5e5;margin-right:5px;vertical-align:middle;">
+                        @endif
+                        @if(isset($addon['addon_name']))<strong>{{ $addon['addon_name'] }}:</strong>&nbsp;@endif
+                        {{ $addon['name'] ?? '' }}
+                        <span style="color:#999;">&times; {{ $cartItem->quantity }}</span>
                     </td>
-                    <td class="text-right">
-                        <span style="font-weight: 400;">£{{ number_format($addon_price_total, 2) }}</span>
-                    </td>
-                </tr>
-                @endforeach
-                @endif
-
-                {{-- Services --}}
-                @if(!empty($cartItem->services))
-                @foreach(get_cart_services($cartItem) as $service)
-                @php $total += $service['price']; $subtotal += $service['price']; @endphp
-                <tr>
-                    <td class="pl-4" colspan="2">
-                        <span style="font-weight:400;" class="services-price">
-                          <strong>  {{ $service['name'] }}</strong>
-                            <span class="badge badge-inline badge-soft-primary ml-2">{{ ucfirst($service['type']) }}</span>
-                            <span class="ml-2">(£{{ number_format($service['price'], 2) }})</span>
-                        </span>
-                    </td>
-
-                    <td class="text-right">
-                        <span style="font-weight:400;" class="services-price-text">£{{ number_format($service['price'], 2) }}</span>
-                    </td>
+                    <td class="text-right sub-detail-price">£{{ number_format($addon_price_total, 2) }}</td>
                 </tr>
                 @endforeach
                 @endif
@@ -174,7 +231,7 @@
             </tbody>
         </table>
 
-        <div class="divider mb-3" style="margin-top:8px;"></div>
+        <div class="divider" style="margin-top:8px;"></div>
 
         {{-- TOTALS --}}
         <table class="table summary-total-table mb-0 cartdetails" style="background: #f8f7f5;">
@@ -217,8 +274,17 @@
                 </tr>
                 @php $total += $shipping_total; @endphp
                 @endif
+                @if ($services_total > 0)
+                <tr>
+                    <td style="border: none;">Additional Services</td>
+                    <td class="text-right" style="border: none;">
+                        <span>{{ single_price($services_total) }}</span>
+                    </td>
+                </tr>
+                @endif
                 @php
                 if(!empty($tax)) $total += $tax;
+                $total += $services_total;
                 @endphp
                 <tr class="grand-total" style="border-top:2px solid #ddd;">
                     <td style="font-size: 18px; font-weight: 700; padding-top:10px;">Total</td>
@@ -510,29 +576,3 @@
         border-radius: 8px;
     }
 </style>
-
-{{-- JS --}}
-<script>
-    /*document.addEventListener('DOMContentLoaded', function () {
-
-    const delivery = document.getElementById('delivery_option');
-
-    delivery.addEventListener('change', function () {
-
-        let selected = this.options[this.selectedIndex];
-        let shipping = selected.getAttribute('data-rate')
-            ? parseFloat(selected.getAttribute('data-rate'))
-            : 0;
-
-        let subtotal = parseFloat(document.getElementById('sub_total').value);
-
-        document.getElementById('shipping_rate').innerText = shipping.toFixed(2);
-        document.getElementById('total_shipping').innerText = shipping.toFixed(2);
-        document.getElementById('grand_total').innerText = (subtotal + shipping).toFixed(2);
-
-        document.getElementById('shipping_cost').value = shipping;
-        document.getElementById('shipping_rate_id').value = this.value;
-    });
-
-});*/
-</script>

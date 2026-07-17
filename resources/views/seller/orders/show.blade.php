@@ -617,6 +617,31 @@
         @endforeach
     </ul>
 @endif
+
+@if ($orderDetail->shipping_cost > 0)
+    <br>
+    <small class="text-muted">{{ translate('Shipping') }}: {{ single_price($orderDetail->shipping_cost) }}</small>
+@endif
+
+@php
+    $itemServices = [];
+    if (!empty($order->additional_info)) {
+        $additionalInfo = json_decode($order->additional_info, true);
+        if (is_array($additionalInfo) && !empty($additionalInfo['services'])) {
+            $itemServices = collect($additionalInfo['services'])->filter(function ($s) use ($orderDetail) {
+                return ($s['product_id'] ?? null) == $orderDetail->product_id;
+            });
+        }
+    }
+@endphp
+@if (count($itemServices) > 0)
+    <br>
+    <small class="text-muted">{{ translate('Services') }}: 
+        @foreach ($itemServices as $s)
+            {{ $s['name'] ?? 'Service' }} ({{ single_price($s['price'] ?? 0) }}){{ !$loop->last ? ', ' : '' }}
+        @endforeach
+    </small>
+@endif
 										
 										
                                         @elseif ($orderDetail->product != null && $orderDetail->product->auction_product == 1)
@@ -707,6 +732,25 @@
                                 {{ single_price($order->orderDetails->sum('shipping_cost')) }}
                             </td>
                         </tr>
+                        @php
+                            $servicesTotal = 0;
+                            if (!empty($order->additional_info)) {
+                                $additionalInfo = json_decode($order->additional_info, true);
+                                if (is_array($additionalInfo)) {
+                                    $servicesTotal = (float) ($additionalInfo['service_total'] ?? collect($additionalInfo['services'] ?? [])->sum('price'));
+                                }
+                            }
+                        @endphp
+                        @if ($servicesTotal > 0)
+                            <tr>
+                                <td>
+                                    <strong class="text-muted">{{ translate('Additional Services') }} :</strong>
+                                </td>
+                                <td>
+                                    {{ single_price($servicesTotal) }}
+                                </td>
+                            </tr>
+                        @endif
                         <tr>
                             <td>
                                 <strong class="text-muted">{{ translate('Coupon') }} :</strong>

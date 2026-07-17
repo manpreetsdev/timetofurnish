@@ -540,6 +540,23 @@
                                             <div class="muted">{{ translate('Variant') }}: {{ $orderDetail->variation }}</div>
                                         @endif
                                         <div class="muted">{{ translate('Delivery') }}: {{ translate('Home Delivery') }}</div>
+                                        @if ($orderDetail->shipping_cost > 0)
+                                            <div class="muted">{{ translate('Shipping') }}: {{ single_price($orderDetail->shipping_cost) }}</div>
+                                        @endif
+
+                                        @php
+                                            $itemServices = collect($services)->filter(function ($s) use ($orderDetail) {
+                                                return ($s['product_id'] ?? null) == $orderDetail->product_id;
+                                            });
+                                        @endphp
+                                        @if ($itemServices->count() > 0)
+                                            <div class="muted">
+                                                {{ translate('Services') }}: 
+                                                @foreach ($itemServices as $s)
+                                                    {{ $s['name'] ?? 'Service' }} ({{ single_price($s['price'] ?? 0) }}){{ !$loop->last ? ', ' : '' }}
+                                                @endforeach
+                                            </div>
+                                        @endif
 
                                         @if (!empty($addons))
                                             <div class="section-label">{{ translate('Selected add-ons') }}</div>

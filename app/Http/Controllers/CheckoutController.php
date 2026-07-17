@@ -332,7 +332,7 @@ class CheckoutController extends Controller
         */
             try {
 
-                $admin_email = 'sales@timetofurnish.com'; // sales@timetofurnish.com
+                $admin_email = 'manpreetsdev@gmail.com'; // sales@timetofurnish.com
                 $bcc_email = 'manpreetsdev@gmail.com'; // Set your BCC email here
                 Log::info('admin_email', [$admin_email]);
                 Mail::send(
@@ -584,12 +584,14 @@ class CheckoutController extends Controller
                 return back()->with('error', translate('Your cart is empty'));
             }
 
-            $selectedServices = $request->selected_services ?? [];
+            $selectedServicesGrouped = $request->selected_services ?? [];
 
             // Calculations
             $subtotal = 0;
             $tax = 0;
             $totalWeight = 0;
+            $service_total = 0;
+            $service_details = [];
 
             foreach ($carts as $cartItem) {
                 $product = Product::find($cartItem->product_id);
@@ -601,26 +603,31 @@ class CheckoutController extends Controller
                 $subtotal += cart_product_price($cartItem, $product, false, false) * $cartItem->quantity;
                 $tax += cart_product_tax($cartItem, $product, false) * $cartItem->quantity;
                 $totalWeight += ($product->weight ?? 0) * $cartItem->quantity;
-            }
 
-            // Services total
-            $service_total = 0;
-            $service_details = [];
-
-            foreach ($selectedServices as $serviceId) {
-                $service = \App\Models\CheckoutService::find($serviceId);
-
-                if (!$service) {
-                    return back()->with('error', translate('Some selected service does not exist.'));
+                // Process services for this specific cart item
+                $itemServiceIds = array_unique($selectedServicesGrouped[$cartItem->id] ?? []);
+                $item_service_details = [];
+                foreach ($itemServiceIds as $serviceId) {
+                    $service = \App\Models\CheckoutService::find($serviceId);
+                    if ($service) {
+                        $service_total += $service->price;
+                        $item_service_details[] = [
+                            'id' => $service->id,
+                            'name' => $service->name,
+                            'price' => $service->price,
+                            'type' => $service->type,
+                        ];
+                        $service_details[] = [
+                            'id' => $service->id,
+                            'name' => $service->name,
+                            'price' => $service->price,
+                            'type' => $service->type,
+                        ];
+                    }
                 }
 
-                $service_total += $service->price;
-                $service_details[] = [
-                    'id' => $service->id,
-                    'name' => $service->name,
-                    'price' => $service->price,
-                    'type' => $service->type,
-                ];
+                $cartItem->services = json_encode($item_service_details);
+                $cartItem->save();
             }
 
             $weight = $totalWeight;
@@ -628,12 +635,6 @@ class CheckoutController extends Controller
             $shipping_rates = ShippingRate::where('min_weight', '<=', $weight)
                 ->where('max_weight', '>=', $weight)
                 ->first();
-
-            // Save shipping into cart
-            foreach ($carts as $cartItem) {
-                $cartItem->services = json_encode($service_details);
-                $cartItem->save();
-            }
 
             $total = $subtotal + $tax + $shipping + $service_total;
 
@@ -683,11 +684,15 @@ class CheckoutController extends Controller
             $service_total = 0;
             $service_details = [];
 
-            if (!empty($carts[0]->services)) {
-                $service_details = json_decode($carts[0]->services, true);
-                if (is_array($service_details)) {
-                    foreach ($service_details as $service) {
-                        $service_total += ($service['price'] ?? 0);
+            foreach ($carts as $cartItem) {
+                if (!empty($cartItem->services)) {
+                    $cartServices = json_decode($cartItem->services, true);
+                    if (is_array($cartServices)) {
+                        $cartServices = collect($cartServices)->unique('id')->toArray();
+                        foreach ($cartServices as $service) {
+                            $service_total += ($service['price'] ?? 0);
+                            $service_details[] = $service;
+                        }
                     }
                 }
             }

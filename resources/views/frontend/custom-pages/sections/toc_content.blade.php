@@ -59,6 +59,25 @@
     }
 @endphp
 
+<style>
+  /* Sticky header for the section title */
+  .ttf-story-section--toc .sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--section-bg, #fff);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  /* Sticky TOC sidebar, positioned below the sticky header */
+  .ttf-story-section--toc .ttf-policy-toc.is-sticky {
+    position: sticky;
+    top: var(--header-sticky-height, 170px); /* adjust if header height changes */
+    align-self: flex-start; /* ensure it stays at top of its column */
+    z-index: 9;
+  }
+</style>
+
 <section class="ttf-story-section ttf-story-section--toc {{ $visibilityClasses }}" style="
     --section-bg: {{ $showBackground ? $backgroundColor : 'transparent' }};
     --section-heading: {{ $section['title_color'] ?? 'var(--ttf-heading)' }};
@@ -134,7 +153,7 @@
         <p class="ttf-story-section__eyebrow">{{ $section['subtitle'] }}</p>
     @endif
     @if ($showTitle && $title !== '')
-        <h2>{!! $titleHtml !!}</h2>
+        <h2 class="sticky-header">{!! $titleHtml !!}</h2>
     @endif
     @if (!empty($section['content']))
         <div class="ttf-rich-text ttf-toc-intro">
@@ -170,6 +189,7 @@
                     </div>
                 </section>
             @endforeach
+            <div id="remote-privacy-content" class="ttf-rich-text"></div>
         </div>
     </div>
 </section>
@@ -180,7 +200,7 @@
             const tocSections = document.querySelectorAll('.ttf-story-section--toc');
             tocSections.forEach(function (section) {
                 const tabs = section.querySelectorAll('.ttf-policy-toc a');
-                const contents = section.querySelectorAll('.ttf-policy-content .ttf-policy-section');
+                const contents = section.querySelectorAll('.ttf-policy-content .ttf-policy-section, #remote-privacy-content h2');
                 if (tabs.length === 0 || contents.length === 0) {
                     return;
                 }
@@ -198,58 +218,37 @@
                         }
                     });
 
-                    contents.forEach(function (content) {
-                        if (isMobile) {
-                            content.style.display = 'block';
-                            content.style.animation = 'none';
-                        } else {
-                            const isActiveContent = content.getAttribute('id') === targetId;
-                            if (isActiveContent) {
-                                content.style.display = 'block';
-                                content.style.animation = 'ttfFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards';
-                            } else {
-                                content.style.display = 'none';
-                            }
-                        }
-                    });
+                    // No need to hide/show sections; all content is displayed by default.
+                    // Keep this loop for potential future enhancements but currently does nothing.
+                    // contents.forEach(function (content) {
+                    //     // No display toggling needed.
+                    // });
                 }
 
                 tabs.forEach(function (tab) {
                     tab.addEventListener('click', function (e) {
-                        const tocSidebar = section.querySelector('.ttf-policy-toc');
-                        const isMobile = tocSidebar ? window.getComputedStyle(tocSidebar).display === 'none' : true;
-
-                        if (!isMobile) {
-                            e.preventDefault();
-                            const targetId = this.getAttribute('href').replace('#', '');
-                            setActive(targetId);
-                        }
+                        const targetId = this.getAttribute('href').replace('#', '');
+                        setActive(targetId);
                     });
                 });
 
                 if ('IntersectionObserver' in window) {
                     const observer = new IntersectionObserver(function (entries) {
-                        const tocSidebar = section.querySelector('.ttf-policy-toc');
-                        const isMobile = tocSidebar ? window.getComputedStyle(tocSidebar).display === 'none' : true;
-                        
-                        if (isMobile) {
-                            const visibleEntry = entries
-                                .filter(function (entry) {
-                                    return entry.isIntersecting;
-                                })
-                                .sort(function (a, b) {
-                                    return b.intersectionRatio - a.intersectionRatio;
-                                })[0];
-
-                            if (visibleEntry) {
-                                setActive(visibleEntry.target.id);
-                            }
+                        // Determine visible entry based on highest intersection ratio
+                        const visibleEntry = entries
+                            .filter(function (entry) {
+                                return entry.isIntersecting;
+                            })
+                            .sort(function (a, b) {
+                                return b.intersectionRatio - a.intersectionRatio;
+                            })[0];
+                        if (visibleEntry) {
+                            setActive(visibleEntry.target.id);
                         }
                     }, {
                         rootMargin: '-20% 0px -55% 0px',
                         threshold: [0.2, 0.4, 0.65]
                     });
-
                     contents.forEach(function (content) {
                         observer.observe(content);
                     });
@@ -270,10 +269,48 @@
             });
         }
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initTocSections);
-        } else {
+        function fetchPrivacyContent() {
+            fetch('https://www.workday.com/en-us/privacy.html')
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const main = doc.querySelector('main') || doc.body;
+                    const contentDiv = document.getElementById('remote-privacy-content');
+                    if (contentDiv) {
+                        contentDiv.innerHTML = main.innerHTML;
+                        // Build TOC from h2 headings
+                        const tocList = document.querySelector('.ttf-policy-toc ul');
+                        if (tocList) {
+                            tocList.innerHTML = '';
+                            const headings = contentDiv.querySelectorAll('h2');
+                            headings.forEach((h, idx) => {
+                                const id = 'privacy-section-' + idx;
+                                h.id = id;
+                                const li = document.createElement('li');
+                                const a = document.createElement('a');
+                                a.href = '#' + id;
+                                a.textContent = h.textContent.trim();
+                                li.appendChild(a);
+                                tocList.appendChild(li);
+                            });
+                        }
+                        // Re-initialize observers for new sections
+                        initTocSections();
+                    }
+                })
+                .catch(err => console.error('Failed to load privacy content', err));
+        }
+
+        function init() {
             initTocSections();
+            fetchPrivacyContent();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
         }
     })();
 </script>

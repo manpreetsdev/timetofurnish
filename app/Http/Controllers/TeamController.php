@@ -6,7 +6,7 @@ use App\Models\BusinessSetting;
 use App\Models\TeamMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-
+use Illuminate\Support\Str;
 class TeamController extends Controller
 {
     public function __construct()
@@ -17,12 +17,26 @@ class TeamController extends Controller
         $this->middleware(['permission:delete_website_page'])->only('destroy');
     }
 
+    
+
     public function index(Request $request)
     {
-        $team_members = TeamMember::orderBy('department_sort_order')
+        $departmentOrder = [
+            'hr department' => 1,
+            'operations team' => 2,
+            'accounts department' => 3,
+            'it support' => 4,
+            'sales team' => 5,
+            'customer service team' => 6,
+        ];
+
+        $team_members = TeamMember::where('is_active', 1)
+            ->orderBy('department_sort_order')
             ->orderBy('sort_order')
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw('LOWER(department)')
+            ->orderByRaw('LOWER(name)')
             ->get();
+
         $team_page_status = get_setting('team_members_page_status', 0);
 
         return view('backend.website_settings.team_members.index', compact('team_members', 'team_page_status'));

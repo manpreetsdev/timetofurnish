@@ -28,6 +28,8 @@ class ShippingChargeController extends Controller
 
         $shippingCharge->categories()->sync($request->categories ?? []);
 
+        syncAllProductsShippingCharges();
+
         return redirect()->route('shipping-charges.index')->with('success', translate('Shipping charge created successfully'));
     }
 
@@ -56,6 +58,8 @@ class ShippingChargeController extends Controller
             $shippingCharge->categories()->sync($request->categories ?? []);
         }
 
+        syncAllProductsShippingCharges();
+
         if ($request->ajax()) {
             return 1;
         }
@@ -69,6 +73,8 @@ class ShippingChargeController extends Controller
         $shippingCharge->categories()->detach();
         $shippingCharge->delete();
 
+        syncAllProductsShippingCharges();
+
         return redirect()->route('shipping-charges.index')->with('success', translate('Shipping charge deleted successfully'));
     }
 
@@ -77,6 +83,7 @@ class ShippingChargeController extends Controller
         $shippingCharge = ShippingCharge::findOrFail($request->id);
         $shippingCharge->status = $request->status;
         if ($shippingCharge->save()) {
+            syncAllProductsShippingCharges();
             return 1;
         }
         return 0;

@@ -127,13 +127,17 @@
                             {{-- SELLER PRODUCTS --}}
                             @if (!empty($seller_products))
                                 @foreach ($seller_products as $seller_id => $seller_product)
-                                    <div class="card border-0 rounded-0 mb-4">
-
-                                        <div class="card-header py-3 px-0 border-bottom-0" style="background: transparent;">
+                                    <div class="card border-0 rounded-0 mb-4 checkout-seller-card" style="border-radius:unset !important;box-shadow:none !important; background: transparent;">
+                                        <div class="card-header py-3 px-0 border-bottom-0 d-flex align-items-center gap-2" style="background: transparent !important;    justify-content: flex-start !important; border:none !important;">
+                                            <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 32px; height: 32px; background: #fdf6ed; border: 1px solid #f0e6da;">
+                                                <i class="las la-store text-primary" style="color: #b57a45; font-size: 18px;"></i>
+                                            </div>
                                             <h5 class="fs-16 fw-700 text-dark mb-0">
-                                                {{ translate('Shop Name') }}: {{ get_shop_by_user_id($seller_id)->name }}
-                                                - {{ translate('Products') }}
+                                                {{ get_shop_by_user_id($seller_id)->name }}
                                             </h5>
+                                            <span class="badge badge-inline bg-light border text-muted fs-11" style="border-color: #f0e6da !important; background-color: #faf8f5 !important; color: #8b5e34 !important;">
+                                                {{ translate('Seller') }}
+                                            </span>
                                         </div>
 
                                         <div class="card-body p-0">
@@ -233,8 +237,32 @@
                                                     @endphp
 
                                                     {{-- DESKTOP VIEW --}}
-                                                    <div class="d-none d-lg-flex row align-items-center p-4 delivery-desktop-card position-relative"
-                                                        style="border: 1px solid #f0e6da; border-radius: 12px; margin-bottom: 20px; background: #fff;">
+                                                    <div class="d-none d-lg-block delivery-desktop-card-wrapper">
+                                                        <div class="delivery-desktop-card position-relative">
+                                                            {{-- Edit and Delete Buttons --}}
+                                                            @if($cart)
+                                                            <div class="card-action-btns">
+                                                                <a href="{{ route('cart.editItem', $cart->id) }}"
+                                                                    class="btn-action-edit"
+                                                                    title="{{ translate('Edit options') }}">
+                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                                        xmlns="http://www.w3.org/2000/svg">
+                                                                        <path
+                                                                            d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z"
+                                                                            stroke="#b57a45" stroke-width="1.8" stroke-linecap="round"
+                                                                            stroke-linejoin="round" style="transition: stroke 0.2s;" />
+                                                                    </svg>
+                                                                </a>
+                                                                <a href="javascript:void(0)"
+                                                                    onclick="removeFromCartView(event, {{ $cart->id }})"
+                                                                    class="btn-action-delete"
+                                                                    title="{{ translate('Remove') }}">
+                                                                    <i class="las la-trash fs-18"></i>
+                                                                </a>
+                                                            </div>
+                                                            @endif
+
+                                                            <div class="row align-items-center">
 
                                                         {{-- Product Image, Name & Pricing Breakdown --}}
                                                         <div class="col-lg-7 d-flex align-items-start gap-3 min-w-0">
@@ -265,7 +293,7 @@
                                                                 <div class="price-breakdown-box p-3 rounded-3 mt-3"
                                                                     style="background: #faf8f5; border: 1px solid #f0e6da; border-radius: 8px; max-width: 480px;">
                                                                     {{-- Product Price --}}
-                                                                    <div class="d-flex justify-content-between align-items-center mb-2 fs-13">
+                                                                    <div class="d-flex justify-content-between align-items-center  fs-13">
                                                                         <span class="text-secondary">{{ translate('Product Price') }}</span>
                                                                         <span class="fw-600 text-dark">
                                                                             {{ single_price($base_price ?? 0) }}
@@ -279,7 +307,7 @@
 
                                                                     {{-- Addons Price --}}
                                                                     @if ($calculated_addon_price > 0)
-                                                                        <div class="d-flex justify-content-between align-items-center mb-2 fs-13 border-top pt-2">
+                                                                        <div class="d-flex justify-content-between align-items-center  fs-13 border-top pt-2">
                                                                             <span class="text-secondary">{{ translate('Add-on Price') }}</span>
                                                                             <span class="fw-600 text-dark">
                                                                                 +{{ single_price($calculated_addon_price) }}
@@ -350,13 +378,90 @@
                                                                         {{ $product->dispatch_time }}
                                                                     </div>
                                                                 @endif
+
+                                                                @php
+                                                                    $productShippingCharges = getProductShippingCharges($product);
+                                                                    $productServices = $product->checkoutServices()->where('status', 1)->orderBy('sort_order')->get();
+                                                                    $selectedCartServiceIds = [];
+                                                                    if ($cart && !empty($cart->services)) {
+                                                                        $cartServices = json_decode($cart->services, true);
+                                                                        if (is_array($cartServices)) {
+                                                                            foreach ($cartServices as $cs) {
+                                                                                $selectedCartServiceIds[] = $cs['id'];
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                @endphp
+
+                                                                {{-- Shipping Charges list (desktop) --}}
+                                                                @if($productShippingCharges->count() > 0)
+                                                                    <div class="mt-3 fs-12 text-secondary d-flex flex-wrap align-items-center gap-2">
+                                                                        <span class="fw-700 text-uppercase fs-10 text-muted" style="letter-spacing: 0.5px; white-space: nowrap;">{{ translate('Shipping') }}:</span>
+                                                                        @foreach($productShippingCharges as $charge)
+                                                                            <span class="shipping-badge border">
+                                                                                <i class="las la-truck text-muted" style="font-size: 14px;"></i>
+                                                                                {{ $charge->name }}: <strong class="text-primary" style="color: #b57a45 !important;">{{ single_price($charge->price) }}</strong>
+                                                                            </span>
+                                                                        @endforeach
+                                                                    </div>
+                                                                @endif
+
+                                                                {{-- Available Services checklist (desktop) --}}
+                                                                @if($productServices->count() > 0)
+                                                                    <div class="mt-3">
+                                                                        <span class="fw-700 fs-10 text-uppercase text-secondary d-block mb-2" style="letter-spacing: 0.5px;">{{ translate('Additional Services') }}</span>
+                                                                        <div class="d-flex flex-wrap gap-2">
+                                                                            @foreach($productServices as $service)
+                                                                                <label class="aiz-megabox mb-0">
+                                                                                    <input type="checkbox" name="selected_services[{{ $cart->id }}][]"
+                                                                                        value="{{ $service->id }}"
+                                                                                        class="service-checkbox"
+                                                                                        data-price="{{ $service->price }}"
+                                                                                        @if (in_array($service->id, $selectedCartServiceIds)) checked @endif>
+                                                                                    <span class="d-flex aiz-megabox-elem p-2 align-items-center custom-service-pill" 
+                                                                                          @if(!empty($service->description)) title="{{ $service->description }}" @endif>
+                                                                                        <span class="aiz-rounded-check flex-shrink-0" style="margin-right: 6px; width: 14px; height: 14px;"></span>
+                                                                                        <span class="fs-12 fw-700 text-dark" style="white-space: nowrap;">
+                                                                                            {{ $service->name }} ({{ single_price($service->price) }})
+                                                                                        </span>
+                                                                                    </span>
+                                                                                </label>
+                                                                            @endforeach
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
                                                             </div>
                                                         </div>
 
                                                         {{-- Quantity --}}
                                                         <div class="col-lg-2 d-flex flex-column align-items-center justify-content-center text-center">
                                                             <span class="fs-12 text-secondary mb-2 text-uppercase fw-600" style="letter-spacing: 0.5px;">{{ translate('Quantity') }}</span>
-                                                            <span class="fw-700 fs-18 text-dark">{{ $qty }}</span>
+                                                            @if ($product->auction_product == 0)
+                                                            <div class="quantity-group" style="max-width:110px;">
+                                                                <div class="d-flex flex-wrap input-group input-group-sm">
+                                                                    <button class="btn btn-outline-secondary border-0 px-2 rounded-left"
+                                                                        type="button" data-type="minus"
+                                                                        onclick="handleCartQuantity(this, {{ $cart->id }}, 'minus')"
+                                                                        @if ($qty <= 1) disabled @endif>
+                                                                        <i class="las la-minus"></i>
+                                                                    </button>
+                                                                    <input type="number" name="quantity[{{ $cart->id }}]"
+                                                                        class="form-control text-center fw-bold fs-15 border-0 p-0 cart-qty-input"
+                                                                        value="{{ $qty }}"
+                                                                        min="{{ $product->min_qty ?? 1 }}"
+                                                                        max="{{ $product->stocks->first()->qty ?? 9999 }}"
+                                                                        onchange="updateQuantity({{ $cart->id }}, this)">
+                                                                    <button class="btn btn-outline-secondary border-0 px-2 rounded-right"
+                                                                        type="button" data-type="plus"
+                                                                        onclick="handleCartQuantity(this, {{ $cart->id }}, 'plus')"
+                                                                        @if ($qty >= ($product->stocks->first()->qty ?? 9999)) disabled @endif>
+                                                                        <i class="las la-plus"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            @else
+                                                            <span class="fw-700 fs-18 text-dark">1</span>
+                                                            @endif
                                                         </div>
 
                                                         {{-- Total Amount --}}
@@ -366,31 +471,12 @@
                                                                 {{ single_price($row_total ?? 0) }}
                                                             </span>
                                                         </div>
-
-                                                        {{-- Edit Button --}}
-                                                        @if($cart)
-                                                        <div class="position-absolute" style="top: 20px; right: 20px; z-index: 10;">
-                                                            <a href="{{ route('cart.editItem', $cart->id) }}"
-                                                                class="btn btn-link p-0 d-flex align-items-center justify-content-center"
-                                                                style="outline:none;border:none;    border: 1px solid #EADDCF;background:#fdf6ed;width:38px;height:38px;border-radius:10px;transition:all 0.2s ease-in-out;box-shadow: 0 2px 5px rgba(181, 122, 69, 0.05);"
-                                                                onmouseover="this.style.background='#b57a45'; this.querySelector('svg path').style.stroke='#ffffff'; this.style.transform='scale(1.05)';"
-                                                                onmouseout="this.style.background='#fdf6ed'; this.querySelector('svg path').style.stroke='#b57a45'; this.style.transform='scale(1)';"
-                                                                title="{{ translate('Edit options') }}">
-                                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                                    xmlns="http://www.w3.org/2000/svg">
-                                                                    <path
-                                                                        d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z"
-                                                                        stroke="#b57a45" stroke-width="1.8" stroke-linecap="round"
-                                                                        stroke-linejoin="round" style="transition: stroke 0.2s;" />
-                                                                </svg>
-                                                            </a>
-                                                        </div>
-                                                        @endif
-                                                    </div>
+                                                    </div> {{-- end row --}}
+                                                </div> {{-- end delivery-desktop-card --}}
+                                            </div> {{-- end delivery-desktop-card-wrapper --}}
 
                                                     {{-- MOBILE VIEW --}}
-                                                    <div class="d-block d-lg-none p-3 delivery-mobile-card"
-                                                        style="border: 1px solid #f0e6da; border-radius: 12px; margin-bottom: 15px; background: #fff;">
+                                                    <div class="d-block d-lg-none delivery-mobile-card">
                                                         <div class="d-flex justify-content-between align-items-start mb-3" style="gap:5px;">
                                                             <div class="d-flex align-items-start gap-3 min-w-0">
                                                                 <img src="{{ get_image($product->thumbnail) }}"
@@ -417,23 +503,28 @@
                                                                     @endif
                                                                 </div>
                                                             </div>
-                                                            {{-- Edit button (mobile) --}}
+                                                            {{-- Edit and Delete buttons (mobile) --}}
                                                             @if($cart)
-                                                            <div class="ms-2 flex-shrink-0">
-                                                                <a href="{{ route('cart.editItem', $cart->id) }}"
-                                                                    class="btn btn-link p-0 d-flex align-items-center justify-content-center"
-                                                                    style="outline:none;border:none;border: 1px solid #EADDCF;background:#fdf6ed;width:32px;height:32px;border-radius:8px;transition:all 0.2s ease-in-out;"
-                                                                    onmouseover="this.style.background='#b57a45'; this.querySelector('svg path').style.stroke='#ffffff'; this.style.transform='scale(1.05)';"
-                                                                    onmouseout="this.style.background='#fdf6ed'; this.querySelector('svg path').style.stroke='#b57a45'; this.style.transform='scale(1)';"
-                                                                    title="{{ translate('Edit options') }}">
-                                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                        <path
-                                                                            d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z"
-                                                                            stroke="#b57a45" stroke-width="1.8" stroke-linecap="round"
-                                                                            stroke-linejoin="round" style="transition: stroke 0.2s;" />
-                                                                    </svg>
-                                                                </a>
+                                                            <div class="ms-2 flex-shrink-0 d-flex gap-1">
+                                                                <div class="card-action-btns-mobile">
+                                                                    <a href="{{ route('cart.editItem', $cart->id) }}"
+                                                                        class="btn-action-edit-mobile"
+                                                                        title="{{ translate('Edit options') }}">
+                                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                                            xmlns="http://www.w3.org/2000/svg">
+                                                                            <path
+                                                                                d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z"
+                                                                                stroke="#b57a45" stroke-width="1.8" stroke-linecap="round"
+                                                                                stroke-linejoin="round" style="transition: stroke 0.2s;" />
+                                                                        </svg>
+                                                                    </a>
+                                                                    <a href="javascript:void(0)"
+                                                                        onclick="removeFromCartView(event, {{ $cart->id }})"
+                                                                        class="btn-action-delete-mobile"
+                                                                        title="{{ translate('Remove') }}">
+                                                                        <i class="las la-trash fs-14"></i>
+                                                                    </a>
+                                                                </div>
                                                             </div>
                                                             @endif
                                                         </div>
@@ -442,7 +533,7 @@
                                                         <div class="price-breakdown-box p-3 rounded-3 mb-3"
                                                             style="background: #faf8f5; border: 1px solid #f0e6da; border-radius: 8px;">
                                                             {{-- Product Price --}}
-                                                            <div class="d-flex justify-content-between align-items-center mb-2 fs-13">
+                                                            <div class="d-flex justify-content-between align-items-center fs-13">
                                                                 <span class="text-secondary">{{ translate('Product Price') }}</span>
                                                                 <span class="fw-600 text-dark">
                                                                     {{ single_price($base_price ?? 0) }}
@@ -520,161 +611,153 @@
                                                             @endif
                                                         </div>
 
-                                                        @if ($product->dispatch_time)
-                                                            <div class="mb-3 fs-12 text-muted">
-                                                                <i class="las la-clock fs-14"></i>
-                                                                <span class="fw-600">{{ translate('Dispatch Time') }}:</span>
-                                                                {{ $product->dispatch_time }}
-                                                            </div>
-                                                        @endif
+                                                        @php
+                                                            $productShippingCharges = getProductShippingCharges($product);
+                                                            $productServices = $product->checkoutServices()->where('status', 1)->orderBy('sort_order')->get();
+                                                            $selectedCartServiceIds = [];
+                                                            if ($cart && !empty($cart->services)) {
+                                                                $cartServices = json_decode($cart->services, true);
+                                                                if (is_array($cartServices)) {
+                                                                    foreach ($cartServices as $cs) {
+                                                                        $selectedCartServiceIds[] = $cs['id'];
+                                                                    }
+                                                                }
+                                                            }
+                                                        @endphp
 
-                                                        {{-- Quantity and total row (mobile) --}}
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <span class="d-block text-secondary fs-11 mb-1">{{ translate('Quantity') }}</span>
-                                                                <span class="fw-700 fs-16 text-dark">{{ $qty }}</span>
-                                                            </div>
-                                                            <div class="text-end">
-                                                                <span class="d-block text-secondary fs-11 mb-1">{{ translate('Total Amount') }}</span>
-                                                                <span class="fw-700 fs-16 text-primary" style="color: #b57a45 !important;">
-                                                                    {{ single_price($row_total ?? 0) }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
+                                                        {{-- Shipping Charges list (mobile) --}}
+                                                         @if($productShippingCharges->count() > 0)
+                                                             <div class="mt-2 fs-11 text-secondary d-flex flex-wrap align-items-center gap-2">
+                                                                 <span class="fw-700 text-uppercase fs-9 text-muted" style="letter-spacing: 0.5px; white-space: nowrap;">{{ translate('Shipping') }}:</span>
+                                                                 @foreach($productShippingCharges as $charge)
+                                                                     <span class="shipping-badge shipping-badge-mobile border">
+                                                                         <i class="las la-truck text-muted" style="font-size: 12px;"></i>
+                                                                         {{ $charge->name }}: <strong class="text-primary" style="color: #b57a45 !important;">{{ single_price($charge->price) }}</strong>
+                                                                     </span>
+                                                                 @endforeach
+                                                             </div>
+                                                         @endif
+
+                                                         {{-- Available Services checklist (mobile) --}}
+                                                         @if($productServices->count() > 0)
+                                                             <div class="mt-2 mb-2">
+                                                                 <span class="fw-700 fs-9 text-uppercase text-secondary d-block mb-1" style="letter-spacing: 0.5px;">{{ translate('Additional Services') }}</span>
+                                                                 <div class="d-flex flex-wrap gap-1">
+                                                                     @foreach($productServices as $service)
+                                                                         <label class="aiz-megabox mb-0">
+                                                                             <input type="checkbox" name="selected_services[{{ $cart->id }}][]"
+                                                                                 value="{{ $service->id }}"
+                                                                                 class="service-checkbox"
+                                                                                 data-price="{{ $service->price }}"
+                                                                                 @if (in_array($service->id, $selectedCartServiceIds)) checked @endif>
+                                                                             <span class="d-flex aiz-megabox-elem p-2 align-items-center custom-service-pill custom-service-pill-mobile" 
+                                                                                   @if(!empty($service->description)) title="{{ $service->description }}" @endif>
+                                                                                 <span class="aiz-rounded-check flex-shrink-0" style="margin-right: 4px; width: 12px; height: 12px;"></span>
+                                                                                 <span class="fs-10 fw-700 text-dark" style="white-space: nowrap;">
+                                                                                     {{ $service->name }} ({{ single_price($service->price) }})
+                                                                                 </span>
+                                                                             </span>
+                                                                         </label>
+                                                                     @endforeach
+                                                                 </div>
+                                                             </div>
+                                                         @endif
+
+                                                         @if ($product->dispatch_time)
+                                                             <div class="mb-3 fs-12 text-muted">
+                                                                 <i class="las la-clock fs-14"></i>
+                                                                 <span class="fw-600">{{ translate('Dispatch Time') }}:</span>
+                                                                 {{ $product->dispatch_time }}
+                                                             </div>
+                                                         @endif
+
+                                                         {{-- Quantity and total row (mobile) --}}
+                                                         <div class="d-flex justify-content-between align-items-center">
+                                                             <div>
+                                                                 <span class="d-block text-secondary fs-11 mb-1">{{ translate('Quantity') }}</span>
+                                                                 @if ($product->auction_product == 0)
+                                                                 <div class="quantity-group" style="max-width:110px;">
+                                                                     <div class="d-flex flex-wrap input-group input-group-sm">
+                                                                         <button class="btn btn-outline-secondary border-0 px-2 rounded-left"
+                                                                             type="button" data-type="minus"
+                                                                             onclick="handleCartQuantity(this, {{ $cart->id }}, 'minus')"
+                                                                             @if ($qty <= 1) disabled @endif>
+                                                                             <i class="las la-minus"></i>
+                                                                         </button>
+                                                                         <input type="number" name="quantity[{{ $cart->id }}]"
+                                                                             class="form-control text-center fw-bold fs-14 border-0 p-0 cart-qty-input-mobile"
+                                                                             value="{{ $qty }}"
+                                                                             min="{{ $product->min_qty ?? 1 }}"
+                                                                             max="{{ $product->stocks->first()->qty ?? 9999 }}"
+                                                                             onchange="updateQuantity({{ $cart->id }}, this)">
+                                                                         <button class="btn btn-outline-secondary border-0 px-2 rounded-right"
+                                                                             type="button" data-type="plus"
+                                                                             onclick="handleCartQuantity(this, {{ $cart->id }}, 'plus')"
+                                                                             @if ($qty >= ($product->stocks->first()->qty ?? 9999)) disabled @endif>
+                                                                             <i class="las la-plus"></i>
+                                                                         </button>
+                                                                     </div>
+                                                                 </div>
+                                                                 @else
+                                                                 <span class="fw-700 fs-16 text-dark">1</span>
+                                                                 @endif
+                                                             </div>
+                                                             <div class="text-end">
+                                                                 <span class="d-block text-secondary fs-11 mb-1">{{ translate('Total Amount') }}</span>
+                                                                 <span class="fw-700 fs-16 text-primary" style="color: #b57a45 !important;">
+                                                                     {{ single_price($row_total ?? 0) }}
+                                                                 </span>
+                                                             </div>
+                                                         </div>
                                                     </div>
-
                                                 @endforeach
                                             </div>
 
-                                            {{-- SERVICES SECTION --}}
-                                            @php
-                                                $allServices = collect();
-                                            @endphp
-
-                                            @foreach ($seller_product as $productId)
-                                                @php
-                                                    $serviceProduct = get_single_product($productId);
-
-                                                    if (
-                                                        $serviceProduct &&
-                                                        isset($serviceProduct->checkoutServices) &&
-                                                        $serviceProduct->checkoutServices->count() > 0
-                                                    ) {
-                                                        $allServices = $allServices->merge(
-                                                            $serviceProduct->checkoutServices,
-                                                        );
-                                                    }
-                                                @endphp
-                                            @endforeach
-
-                                            @php
-                                                $allServices = $allServices->unique('id')->values();
-
-                                                // Find selected services from the carts
-                                                $selectedServiceIds = [];
-                                                foreach ($seller_product as $productId) {
-                                                    $cart = collect($carts)->firstWhere('product_id', $productId);
-                                                    if ($cart && !empty($cart->services)) {
-                                                        $cartServices = json_decode($cart->services, true);
-                                                        foreach ($cartServices as $cs) {
-                                                            $selectedServiceIds[] = $cs['id'];
-                                                        }
-                                                    }
-                                                }
-                                            @endphp
-
-                                            @if ($allServices->count() > 0)
-                                                <div class="custom-services-section mb-4">
-
-                                                    <h5 class="custom-services-title">
-                                                        {{ translate('Additional Services') }}
-                                                    </h5>
-
-                                                    {{-- Error message for service selection --}}
-                                                    <!-- <div id="service-required-error"
-                                                        class="alert alert-danger custom-service-error mb-3 px-3 py-2 fw-600 d-flex align-items-center d-none"
-                                                        style="font-size: 15px;">
-                                                        <span class="mr-2" style="font-size: 1.4em;"><i
-                                                                class="las la-exclamation-circle"></i></span>
-                                                        <span>
-                                                            {{ translate('Please select at least one service to continue.') }}
-                                                        </span>
-                                                    </div> -->
-
-                                                    <div class="row">
-                                                        @foreach ($allServices as $service)
-                                                            <div class="col-md-6 mb-3 pr-1 pl-1">
-                                                                <label class="aiz-megabox d-block mb-0">
-                                                                    <input type="checkbox" name="selected_services[]"
-                                                                        value="{{ $service->id }}"
-                                                                        class="service-checkbox"
-                                                                        data-price="{{ $service->price }}"
-                                                                        @if (in_array($service->id, $selectedServiceIds)) checked @endif>
-                                                                    <span
-                                                                        class="d-flex aiz-megabox-elem custom-service-card p-3">
-                                                                        <span
-                                                                            class="aiz-rounded-check flex-shrink-0 mt-1"></span>
-                                                                        <span class="flex-grow-1 pl-3">
-                                                                            <span class="d-block fw-700 fs-14 text-dark"
-                                                                                style="color: #4a3e3d !important;">
-                                                                                {{ $service->name }}
-                                                                            </span>
-                                                                            @if (!empty($service->description))
-                                                                                <span class="d-block fs-13 text-muted mt-1"
-                                                                                    style="line-height: 1.4;">
-                                                                                    {{ $service->description }}
-                                                                                </span>
-                                                                            @endif
-                                                                            <span class="d-block fs-13 fw-700 mt-2"
-                                                                                style="color: #685b4e !important;">
-                                                                                {{ ucfirst(str_replace('_', ' ', $service->type)) }}
-                                                                                -
-                                                                                {{ single_price($service->price) }}
-                                                                            </span>
-                                                                        </span>
-                                                                    </span>
-                                                                </label>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-
-                                                </div>
-                                            @endif
-
                                             @php
                                                 $seller_shipping = 0;
+                                                $seller_services_total = 0;
                                                 foreach ($seller_product as $productId) {
                                                     $shippingProduct = get_single_product($productId);
                                                     $shippingCart = collect($carts)->firstWhere(
                                                         'product_id',
                                                         $productId,
                                                     );
-                                                    $seller_shipping += getProductShippingChargeTotal(
-                                                        $shippingProduct,
-                                                        $shippingCart->quantity ?? 1,
-                                                    );
+                                                    if ($shippingProduct) {
+                                                        $seller_shipping += getProductShippingChargeTotal(
+                                                            $shippingProduct,
+                                                            $shippingCart->quantity ?? 1,
+                                                        );
+                                                    }
+                                                    if ($shippingCart && !empty($shippingCart->services)) {
+                                                        $cartServices = json_decode($shippingCart->services, true);
+                                                        if (is_array($cartServices)) {
+                                                            foreach ($cartServices as $cs) {
+                                                                $seller_services_total += (float) ($cs['price'] ?? 0);
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             @endphp
 
                                             {{-- Totals Section --}}
-                                            <div class="px-0 py-3 border-top">
-                                                <div class="d-flex justify-content-between align-items-center mb-2 px-2">
-                                                    <span class="opacity-70 fs-14 text-dark">{{ translate('Subtotal') }}</span>
-                                                    <span class="fw-600 fs-14 text-dark" id="seller-subtotal">{{ single_price($seller_subtotal) }}</span>
+                                            <div class="seller-totals-box p-4 rounded-3 mt-4">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="fs-13 text-secondary">{{ translate('Subtotal') }}</span>
+                                                    <span class="fw-600 text-dark">{{ single_price($seller_subtotal) }}</span>
                                                 </div>
-                                                <div class="d-flex justify-content-between align-items-center mb-2 px-2">
-                                                    <span class="opacity-70 fs-14 text-dark">{{ translate('Shipping Charges') }}</span>
-                                                    <span class="fw-600 fs-14 text-dark shipping-total-display">{{ single_price($seller_shipping) }}</span>
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="fs-13 text-secondary">{{ translate('Shipping Charges') }}</span>
+                                                    <span class="fw-600 text-dark shipping-total-display">{{ single_price($seller_shipping) }}</span>
                                                 </div>
-                                                <div class="d-flex justify-content-between align-items-center mb-2 px-2">
-                                                    <span class="opacity-70 fs-14 text-dark">{{ translate('Services') }}</span>
-                                                    <span class="fw-600 fs-14 text-dark services-total-display">£0.00</span>
+                                                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                                    <span class="fs-13 text-secondary">{{ translate('Services') }}</span>
+                                                    <span class="fw-600 text-dark services-total-display">{{ single_price($seller_services_total) }}</span>
                                                 </div>
-                                                <div class="d-flex justify-content-between align-items-center pt-2 px-2 border-top">
-                                                    <span class="fw-700 fs-18 text-dark">{{ translate('Total') }}</span>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="fw-700 fs-16 text-dark">{{ translate('Total') }}</span>
                                                     <span class="fw-700 fs-20 grand-total-display" style="color: #b57a45;"
                                                         data-base-total="{{ $seller_subtotal + $seller_shipping }}">
-                                                        {{ single_price($seller_subtotal + $seller_shipping) }}
+                                                        {{ single_price($seller_subtotal + $seller_shipping + $seller_services_total) }}
                                                     </span>
                                                 </div>
                                             </div>
@@ -716,13 +799,25 @@
             background: #fdfdfc;
         }
 
+
+        .delivery-desktop-card-wrapper {
+            margin-bottom: 20px;
+        }
+
         .delivery-desktop-card {
-            /* transition: box-shadow .15s; */
+            border: 1px solid #f0e6da;
+            border-radius: 12px;
+            background: #fff;
+            padding: 24px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 20px rgba(181, 122, 69, 0.02);
         }
 
         .delivery-desktop-card:hover {
-            /* box-shadow: 0 2px 8px rgba(124, 113, 94, .05); */
-            background: #faf8f3 !important;
+            border-color: #b57a45;
+            background: #fdfdfb !important;
+            box-shadow: 0 8px 30px rgba(181, 122, 69, 0.06);
+            transform: translateY(-2px);
         }
 
         .delivery-product-name-text {
@@ -813,6 +908,229 @@
                 margin-top: 30px !important;
             }
         }
+
+        /* Premium service pills and quantity styling */
+        .custom-service-pill {
+            border: 1px solid #f0e6da !important;
+            border-radius: 20px !important;
+            background: #fff !important;
+            cursor: pointer;
+            padding: 8px 16px !important;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .custom-service-pill-mobile {
+            padding: 4px 10px !important;
+        }
+
+        .custom-service-pill:hover {
+            border-color: #b57a45 !important;
+            background: #fdfaf6 !important;
+            transform: translateY(-1px);
+        }
+
+        input:checked + .custom-service-pill {
+            border-color: #b57a45 !important;
+            background: #fdf6ed !important;
+            box-shadow: 0 2px 6px rgba(181, 122, 69, 0.1);
+        }
+
+        input:checked + .custom-service-pill .aiz-rounded-check {
+            background-color: #b57a45 !important;
+            border-color: #b57a45 !important;
+        }
+
+        input:checked + .custom-service-pill .text-dark {
+            color: #b57a45 !important;
+        }
+
+        .quantity-group .btn {
+            border: 1px solid #e2d2c0 !important;
+            background: #faf8f5;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-group .btn:hover:not([disabled]) {
+            background: #b57a45;
+            color: #fff !important;
+            border-color: #b57a45 !important;
+        }
+
+        .quantity-group .btn:hover:not([disabled]) i {
+            color: #fff !important;
+        }
+
+        .quantity-group .cart-qty-input {
+            border: 1px solid #e2d2c0 !important;
+            border-left: none !important;
+            border-right: none !important;
+            height: 32px;
+            max-width: 36px;
+            background: #faf8f5;
+            box-shadow: none !important;
+        }
+
+        .quantity-group .cart-qty-input-mobile {
+            border: 1px solid #e2d2c0 !important;
+            border-left: none !important;
+            border-right: none !important;
+            height: 28px;
+            max-width: 32px;
+            background: #faf8f5;
+            box-shadow: none !important;
+        }
+        
+        .quantity-group .input-group {
+            flex-wrap: nowrap !important;
+        }
+
+        .gap-1 {
+            gap: 4px !important;
+        }
+
+        .gap-2 {
+            gap: 8px !important;
+        }
+        
+        .d-flex.flex-wrap {
+            margin-bottom: -4px;
+        }
+        
+        .d-flex.flex-wrap > * {
+            margin-bottom: 4px;
+        }
+
+        /* Action buttons */
+        .card-action-btns {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action-edit {
+            outline: none;
+            border: 1px solid #EADDCF !important;
+            background: #fdf6ed !important;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(181, 122, 69, 0.05);
+        }
+
+        .btn-action-edit:hover {
+            background: #b57a45 !important;
+            border-color: #b57a45 !important;
+            transform: scale(1.05);
+        }
+
+        .btn-action-edit:hover svg path {
+            stroke: #ffffff !important;
+        }
+
+        .btn-action-delete {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid #f8d7da !important;
+            background: #f8d7da !important;
+            color: #721c24 !important;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-action-delete:hover {
+            background: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: #ffffff !important;
+            transform: scale(1.05);
+        }
+
+        .card-action-btns-mobile {
+            display: flex;
+            gap: 4px;
+        }
+
+        .btn-action-edit-mobile {
+            outline: none;
+            border: 1px solid #EADDCF !important;
+            background: #fdf6ed !important;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-action-edit-mobile:hover {
+            background: #b57a45 !important;
+            border-color: #b57a45 !important;
+            transform: scale(1.05);
+        }
+
+        .btn-action-edit-mobile:hover svg path {
+            stroke: #ffffff !important;
+        }
+
+        .btn-action-delete-mobile {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid #f8d7da !important;
+            background: #f8d7da !important;
+            color: #721c24 !important;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-action-delete-mobile:hover {
+            background: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: #ffffff !important;
+            transform: scale(1.05);
+        }
+
+        .shipping-badge {
+            background-color: #faf8f5 !important;
+            border-color: #f0e6da !important;
+            border: 1px solid #f0e6da;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
+            color: #333;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .shipping-badge-mobile {
+            font-size: 10px;
+            padding: 2px 8px;
+        }
+
+        .seller-totals-box {
+            background: #faf8f5;
+            border: 1px solid #f0e6da;
+            border-radius: 12px;
+            max-width: 480px;
+            margin-left: auto;
+        }
     </style>
 @endsection
 
@@ -824,55 +1142,71 @@
             let $continueBtn = $('#continue-to-payment-btn');
             let $serviceError = $('#service-required-error');
 
-            // Initial calculation for all cards
-            $('.card').each(function() {
-                let $card = $(this);
-                let $checkboxes = $card.find('.service-checkbox');
-                if ($checkboxes.length === 0) return;
+            function updateTotals() {
+                $('.checkout-seller-card').each(function() {
+                    let $sellerCard = $(this);
+                    let serviceTotal = 0;
+                    
+                    $sellerCard.find('.service-checkbox:checked:visible').each(function() {
+                        serviceTotal += parseFloat($(this).data('price')) || 0;
+                    });
+                    
+                    let $grandTotal = $sellerCard.find('.grand-total-display');
+                    let baseTotal = parseFloat($grandTotal.data('base-total')) || 0;
+                    let finalTotal = baseTotal + serviceTotal;
+                    
+                    $sellerCard.find('.services-total-display').html('£' + serviceTotal.toFixed(2));
+                    $grandTotal.html('£' + finalTotal.toFixed(2));
+                });
+                
+                checkServiceSelection();
+            }
 
-                // If there is no checked service but there is a free one, select it by default
-                if ($card.find('.service-checkbox:checked').length === 0) {
-                    let $freeService = $checkboxes.filter(function() {
+            // Sync same checkbox in Desktop/Mobile and handle mutual exclusivity per product
+            $serviceCheckboxes.on('change', function() {
+                let name = $(this).attr('name');
+                let val = $(this).val();
+                let isChecked = $(this).is(':checked');
+                
+                // 1. Sync Desktop and Mobile checkbox state for the same service
+                $(`.service-checkbox[name="${name}"][value="${val}"]`).prop('checked', isChecked);
+                
+                // 2. Uncheck other service checkboxes for the same product
+                if (isChecked) {
+                    $(`.service-checkbox[name="${name}"]`).not(`[value="${val}"]`).prop('checked', false);
+                }
+                
+                updateTotals();
+            });
+
+            // Initial auto-selection of free services per product if none checked
+            let uniqueNames = [];
+            $serviceCheckboxes.each(function() {
+                let name = $(this).attr('name');
+                if (uniqueNames.indexOf(name) === -1) {
+                    uniqueNames.push(name);
+                }
+            });
+
+            uniqueNames.forEach(function(name) {
+                let $productCheckboxes = $(`.service-checkbox[name="${name}"]`);
+                if ($productCheckboxes.filter(':checked').length === 0) {
+                    let $freeService = $productCheckboxes.filter(function() {
                         return parseFloat($(this).data('price')) === 0;
                     });
                     if ($freeService.length > 0) {
-                        $freeService.first().prop('checked', true);
+                        let val = $freeService.first().val();
+                        $(`.service-checkbox[name="${name}"][value="${val}"]`).prop('checked', true);
                     }
                 }
-
-                // Trigger a change to calculate initial totals
-                $card.find('.service-checkbox:checked').first().trigger('change');
             });
 
-            // Ensure only one checkbox can be selected at a time per seller card
-            $serviceCheckboxes.on('change', function() {
-                let $card = $(this).closest('.card');
-                let $cardCheckboxes = $card.find('.service-checkbox');
-
-                // Uncheck all others in this card
-                $cardCheckboxes.not(this).prop('checked', false);
-
-                // Update service and grand total
-                let serviceTotal = 0;
-                let $checked = $card.find('.service-checkbox:checked');
-                if ($checked.length > 0) {
-                    serviceTotal = parseFloat($checked.data('price')) || 0;
-                }
-
-                let $grandTotal = $card.find('.grand-total-display');
-                let baseTotal = parseFloat($grandTotal.data('base-total'));
-                let finalTotal = baseTotal + serviceTotal;
-
-                $card.find('.services-total-display').html('£' + serviceTotal.toFixed(2));
-                $grandTotal.html('£' + finalTotal.toFixed(2));
-
-                checkServiceSelection();
-            });
+            // Initial calculation
+            updateTotals();
 
             // Hide or show button depending on if any service-checkbox must be chosen
             function checkServiceSelection() {
                 if ($serviceCheckboxes.length > 0) {
-                    // Services section present
                     if ($('.service-checkbox:checked').length > 0) {
                         $continueBtn.removeAttr('disabled').show();
                         $serviceError.addClass('d-none');
@@ -880,14 +1214,10 @@
                         $continueBtn.attr('disabled', 'disabled').show();
                     }
                 } else {
-                    // No services - button is always visible
                     $continueBtn.show();
                     $serviceError.addClass('d-none');
                 }
             }
-
-            // Initial state
-            checkServiceSelection();
 
             // Prevent form submission if services required and none checked
             $('#delivery-form').on('submit', function(e) {
@@ -897,17 +1227,6 @@
                     e.preventDefault();
                 }
             });
-
-            // If only one (free) option present, prevent unchecking it
-            if ($serviceCheckboxes.length === 1 && parseFloat($serviceCheckboxes.first().data('price')) === 0) {
-                $serviceCheckboxes.on('click', function(e) {
-                    if ($(this).is(':checked')) {
-                        e.preventDefault();
-                        // always keep checked if it's the only (free) option
-                        $(this).prop('checked', true);
-                    }
-                });
-            }
 
             // Arrow rotation for collapse
             $('.collapse').on('show.bs.collapse', function() {
@@ -942,6 +1261,76 @@
 
                 $('.carrier_id_' + type).addClass('d-none');
             }
+        }
+
+        function handleCartQuantity(btn, cartId, type) {
+            let group = btn.closest('.quantity-group');
+            if (!group) return;
+            let inp = group.querySelector('input[type=number]');
+            if (!inp) return;
+            let qty = parseInt(inp.value, 10);
+            let min = parseInt(inp.min, 10) || 1;
+            let max = parseInt(inp.max, 10) || 1;
+
+            if (type === 'plus' && qty < max) {
+                qty += 1;
+                inp.value = qty;
+                updateQuantity(cartId, inp);
+            }
+            if (type === 'minus' && qty > min) {
+                qty -= 1;
+                inp.value = qty;
+                updateQuantity(cartId, inp);
+            }
+        }
+
+        function updateQuantity(key, element) {
+            $.post('{{ route('cart.updateQuantity') }}', {
+                _token: AIZ.data.csrf,
+                id: key,
+                quantity: element.value
+            }, function(data) {
+                location.reload();
+            });
+        }
+
+        function removeFromCartView(e, key) {
+            e.preventDefault();
+            if ($('#remove-cart-modal').length === 0) {
+                $('body').append(`
+                    <div class="modal fade" id="remove-cart-modal" tabindex="-1" role="dialog" aria-labelledby="removeCartModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content text-left">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="removeCartModalLabel">{{ translate("Confirmation") }}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body text-left">
+                            {{ translate("Are you sure you want to remove this item from your cart?") }}
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-dismiss="modal">{{ translate("Cancel") }}</button>
+                            <button type="button" class="btn btn-primary" id="remove-cart-modal-confirm">{{ translate("Remove") }}</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                `);
+            }
+            $('#remove-cart-modal').data('cart-key', key);
+            $('#remove-cart-modal-confirm').off('click').on('click', function(){
+                var cartKey = $('#remove-cart-modal').data('cart-key');
+                $('#remove-cart-modal').modal('hide');
+                $.post('{{ route('cart.removeFromCart') }}', {
+                    _token: AIZ.data.csrf,
+                    id: cartKey
+                }, function(data) {
+                    location.reload();
+                });
+            });
+            $('#remove-cart-modal').modal('show');
         }
     </script>
 @endsection
