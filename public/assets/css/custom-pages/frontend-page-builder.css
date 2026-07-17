@@ -94,9 +94,18 @@
     border: var(--group-border-width, 1px) var(--group-border-style, solid) var(--group-border, transparent);
     border-radius: var(--group-radius, 0);
     padding-top: var(--group-padding-top, 0);
-    padding-bottom: var(--group-padding-bottom, 0);
+    padding-bottom: 0;
     padding-left: var(--group-padding-left, 0);
     padding-right: var(--group-padding-right, 0);
+}
+
+section.ttf-story-section.ttf-story-section--toc {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+section.ttf-page-group {
+    padding-bottom: 0 !important;
 }
 
 .ttf-page-group:last-child {
@@ -1046,8 +1055,8 @@
     .ttf-rich-text.ttf-toc-intro p span,
     .ttf-rich-text.ttf-toc-intro li,
     .ttf-rich-text.ttf-toc-intro li a {
-        font-size: var(--section-body-size, 16px) !important;
-        line-height: var(--section-body-height, 24px) !important;
+        font-size: var(--section-body-size, 18px);
+        line-height: var(--section-body-height, 31px);
     }
 
     .ttf-story-section .ttf-rich-text,
