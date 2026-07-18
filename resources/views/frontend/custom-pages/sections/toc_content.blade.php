@@ -192,10 +192,11 @@
             </aside>
         @endif
 
+        
         <div class="ttf-policy-content">
             @foreach ($tocItems as $tocItem)
-                <section class="ttf-policy-section" id="{{ $tocItem['anchor_id'] }}">
-                    <h2>{!!  ($tocItem['title']) !!}</h2>
+                <section class="ttf-policy-section ttf-toc-section" id="{{ $tocItem['anchor_id'] }}">
+                    <h2>{!! wrapTocNumber($tocItem['title']) !!}</h2>
                     @if (!empty($tocItem['image']))
                         <div class="ttf-policy-section__image mb-3">
                             <img src="{{ uploaded_asset($tocItem['image']) }}" alt="{{ $tocItem['title'] }}" class="img-fluid rounded">
