@@ -176,7 +176,8 @@
                         <div class="p-0">
                             <div class="home-slider slider-full">
                                 @if(!empty($slider_images) && is_array($slider_images))
-                                    <div class="aiz-carousel home_banner_img dots-inside-bottom mobile-img-auto-height" data-dots="true" data-autoplay="false" data-infinite="true">
+                                    <div class="aiz-carousel home_banner_img dots-inside-bottom mobile-img-auto-height" data-dots="true" 
+                        data-items="1" data-xl-items="2" data-lg-items="2" data-md-items="2"data-autoplay="true" data-infinite="true">
                                         @foreach ($slider_images as $key => $imgId)
                                             @php
                                                 $slider_src = is_numeric($imgId) ? uploaded_asset($imgId) : (is_object($imgId) || is_array($imgId) ? (isset($imgId['file_name']) ? my_asset($imgId['file_name']) : '') : $imgId);
