@@ -34,13 +34,24 @@
 }
 
 .ttf-page-banner__crumbs {
-    display: flex;
-    align-items: center;
     justify-content: var(--ttf-banner-justify);
-    gap: 10px;
-    font: 600 18px/1.4 var(--ttf-banner-subtitle-font);
+
     color: var(--ttf-banner-subtitle-color);
     margin-bottom: 14px;
+}
+
+.ttf-page-banner__crumbs h1 {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 50px;
+}
+
+.ttf-page-banner__crumbs .breadcrumb {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 34px;
 }
 
 .ttf-page-banner__crumbs a,
@@ -654,11 +665,20 @@ section.ttf-page-group {
         padding: 20px 0 10px;
     }
 
-    .ttf-page-banner__content h1 {
+    .ttf-page-banner__crumbs h1 {
+        font-family: 'Be Vietnam Pro', sans-serif;
         font-size: 30px;
-        line-height: 50px;
-        margin: 0;
+        font-weight: 700;
+        line-height: 30px;
     }
+
+    .ttf-page-banner__crumbs .breadcrumb {
+        font-family: 'Be Vietnam Pro', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: unset;
+    }
+
 
     .ttf-toc-section .ttf-toc-number {
         font-size: 32px;
