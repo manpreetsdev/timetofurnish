@@ -246,7 +246,7 @@
                         </div>
                         <div class="form-group">
                             <label>{{ translate('Slug') }} <span class="text-danger">*</span></label>
-                            @if (!$isEdit || (isset($page) && $page->type == 'custom_page'))
+                            @if (!$isEdit || isset($page))
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" style="font-size:11px;white-space:nowrap;">{{ route('home') }}/</span>
@@ -258,7 +258,7 @@
                                 <div style="margin-top:6px;">
                                     <label class="ttf-pb-toggle-opt">
                                         <input type="checkbox" value="1" data-page-slug-autofill
-                                               @checked(!$isEdit || $slugValue === '')>
+                                               @checked(!$isEdit || $slugValue === '' )>
                                         <span>{{ translate('Auto fill from title') }}</span>
                                     </label>
                                 </div>
