@@ -501,6 +501,7 @@ public function become_delivery_partner()
         $request->validate([
             'id' => 'required|integer|exists:pages,id',
             'slug' => 'required|string',
+            'title' => 'required|string|max:255',
         ]);
 
         $page = Page::findOrFail($request->id);
@@ -515,14 +516,27 @@ public function become_delivery_partner()
         }
 
         $page->slug = $newSlug;
+        
+        $locale = app()->getLocale();
+        if ($locale == env('DEFAULT_LANGUAGE', 'en')) {
+            $page->title = $request->title;
+        }
         $page->save();
+
+        $page_translation = PageTranslation::firstOrNew([
+            'lang' => $locale,
+            'page_id' => $page->id
+        ]);
+        $page_translation->title = $request->title;
+        $page_translation->save();
 
         \Artisan::call('cache:clear');
 
         return response()->json([
             'success' => true,
             'slug' => $newSlug,
-            'message' => translate('Slug updated successfully.')
+            'title' => $request->title,
+            'message' => translate('Page updated successfully.')
         ]);
     }
 }

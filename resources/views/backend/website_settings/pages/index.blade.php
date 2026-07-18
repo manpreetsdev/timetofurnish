@@ -158,17 +158,20 @@
         	@foreach ($page as $key => $page)
         	<tr>
         		<td>{{ $key+1 }}</td>
-				<td><a href="{{ route('custom-pages.show_custom_page', $page->slug) }}" class="text-reset">{{ $page->getTranslation('title') }}</a></td>
+				<td class="title-cell"><a href="{{ route('custom-pages.show_custom_page', $page->slug) }}" class="text-reset page-title-text">{{ $page->getTranslation('title') }}</a></td>
 				<td class="slug-cell" data-page-id="{{ $page->id }}">
 					<div class="d-flex align-items-center justify-content-between" style="max-width: 320px;">
 						<span class="slug-text text-truncate">{{ route('home') }}/<span class="current-slug fw-600 text-primary">{{ $page->slug }}</span></span>
-						<button type="button" class="btn btn-xs btn-icon btn-circle btn-soft-secondary edit-slug-btn" title="{{ translate('Edit Slug') }}">
+						<button type="button" class="btn btn-xs btn-icon btn-circle btn-soft-secondary edit-slug-btn" title="{{ translate('Edit Title & Slug') }}">
 							<i class="las la-pen"></i>
 						</button>
 					</div>
 					<div class="slug-edit-form d-none mt-1">
+						<div class="form-group mb-2">
+							<input type="text" class="form-control form-control-sm title-input" value="{{ $page->getTranslation('title') }}" placeholder="{{ translate('Title') }}">
+						</div>
 						<div class="input-group input-group-sm">
-							<input type="text" class="form-control slug-input" value="{{ $page->slug }}">
+							<input type="text" class="form-control slug-input" value="{{ $page->slug }}" placeholder="{{ translate('Slug') }}">
 							<div class="input-group-append">
 								<button type="button" class="btn btn-success save-slug-btn"><i class="las la-check"></i></button>
 								<button type="button" class="btn btn-light cancel-slug-btn"><i class="las la-times"></i></button>
@@ -247,7 +250,7 @@
             var cell = $(this).closest('.slug-cell');
             cell.find('.d-flex').addClass('d-none');
             cell.find('.slug-edit-form').removeClass('d-none');
-            cell.find('.slug-input').focus();
+            cell.find('.title-input').focus();
         });
 
         // Cancel Edit using event delegation
@@ -263,6 +266,7 @@
             var cell = btn.closest('.slug-cell');
             var id = cell.data('page-id');
             var slug = cell.find('.slug-input').val();
+            var title = cell.find('.title-input').val();
 
             btn.prop('disabled', true);
 
@@ -272,13 +276,25 @@
                 data: {
                     _token: "{{ csrf_token() }}",
                     id: id,
-                    slug: slug
+                    slug: slug,
+                    title: title
                 },
                 success: function(response) {
                     btn.prop('disabled', false);
                     if (response.success) {
                         cell.find('.current-slug').text(response.slug);
                         cell.find('.slug-input').val(response.slug);
+                        cell.find('.title-input').val(response.title);
+                        
+                        // Update title in the title column
+                        var row = cell.closest('tr');
+                        var titleLink = row.find('.page-title-text');
+                        titleLink.text(response.title);
+                        
+                        // Update title link URL since slug might have changed
+                        var newUrl = "{{ route('custom-pages.show_custom_page', ':slug') }}".replace(':slug', response.slug);
+                        titleLink.attr('href', newUrl);
+
                         cell.find('.slug-edit-form').addClass('d-none');
                         cell.find('.d-flex').removeClass('d-none');
                         AIZ.plugins.notify('success', response.message);
