@@ -45,9 +45,10 @@
     font-size: 40px;
     font-weight: 700;
     line-height: 50px;
+    margin-bottom: 20px;
 }
 
-.ttf-page-banner__crumbs .breadcrumb {
+.ttf-page-banner__crumbs .sub_breadcrumb {
     font-family: 'Be Vietnam Pro', sans-serif;
     font-size: 24px;
     font-weight: 700;
@@ -593,7 +594,7 @@ section.ttf-page-group {
     }
 
     .ttf-page-banner {
-        min-height: 139;
+        min-height: 160px;
     }
 
     .ttf-page-banner__crumbs {
@@ -670,9 +671,10 @@ section.ttf-page-group {
         font-size: 30px;
         font-weight: 700;
         line-height: 30px;
+        margin-bottom: 20px;
     }
 
-    .ttf-page-banner__crumbs .breadcrumb {
+    .ttf-page-banner__crumbs .sub_breadcrumb {
         font-family: 'Be Vietnam Pro', sans-serif;
         font-size: 16px;
         font-weight: 700;
@@ -1151,7 +1153,7 @@ section.ttf-page-group {
     }
 
     .ttf-policy-content .ttf-policy-section:not(:last-child) {
-        margin-bottom: 30px !important;
+        margin-bottom: 17px !important;
     }
 
     .ttf-story-section--toc .ttf-policy-content .ttf-policy-section:last-of-type {
