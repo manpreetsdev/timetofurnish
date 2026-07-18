@@ -294,8 +294,8 @@ public function become_delivery_partner()
         if (Page::where('id','!=', $page->id)
                 ->where('slug', preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug)))
                 ->first() == null) {
-            if($page->type == 'custom_page'){
-              $page->slug           = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug));
+            if($request->slug){
+              $page->slug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug));
             }
             if($request->lang == env("DEFAULT_LANGUAGE")){
               $page->title          = $request->title;
