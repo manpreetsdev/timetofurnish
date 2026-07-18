@@ -232,15 +232,15 @@ section.ttf-page-group {
 }
 
 
-.ttf-story-section h2 span,
-.ttf-story-section h1 span,
-.ttf-story-section h3 span,
-.ttf-story-section h4 span,
-.ttf-story-section h5 span,
-.ttf-story-section h6 span,
+.ttf-story-section h2 span:not(.ttf-toc-number),
+.ttf-story-section h1 span:not(.ttf-toc-number),
+.ttf-story-section h3 span:not(.ttf-toc-number),
+.ttf-story-section h4 span:not(.ttf-toc-number),
+.ttf-story-section h5 span:not(.ttf-toc-number),
+.ttf-story-section h6 span:not(.ttf-toc-number),
 .ttf-policy-toc h2,
-.ttf-policy-content h2 span,
-.ttf-classic-content h2 span {
+.ttf-policy-content h2 span:not(.ttf-toc-number),
+.ttf-classic-content h2 span:not(.ttf-toc-number) {
     color: var(--section-highlight-color, var(--section-accent, var(--ttf-accent))) !important;
 }
 
@@ -832,7 +832,7 @@ section.ttf-page-group {
         margin-bottom: 12px !important;
     }
 
-    /* Mobile TOC Policy Content Headings (30px) */
+    /* Mobile TOC Policy Content Headings (24px) */
     .ttf-policy-content h1,
     .ttf-policy-content h2,
     .ttf-policy-section h1,
@@ -840,6 +840,13 @@ section.ttf-page-group {
         font-size: 24px !important;
         line-height: 20px !important;
         margin-bottom: 12px !important;
+    }
+
+    /* Mobile TOC Number in Section Headings (32px) */
+    .ttf-policy-section h2 .ttf-toc-number,
+    .ttf-policy-content h2 .ttf-toc-number {
+        font-size: 32px !important;
+        line-height: 20px !important;
     }
 
     /* Mobile Body/Paragraph Fonts (16px) */
@@ -889,7 +896,7 @@ section.ttf-page-group {
 
 /* Left Sidebar Table of Contents Title (26px) */
 .ttf-policy-toc h2 {
-    color: #4F4238 !important;
+    color: var(--toc-title-color, #4F4238) !important;
     font-family: var(--toc-title-font, Playfair Display, serif) !important;
     font-size: var(--toc-title-size, 26px) !important;
     font-weight: var(--toc-title-weight, 700) !important;
@@ -939,6 +946,19 @@ section.ttf-page-group {
     margin: 0 0 16px !important;
 }
 
+/* TOC Number Span in Section Headings (40px desktop) */
+.ttf-policy-section h2 .ttf-toc-number,
+.ttf-policy-content h2 .ttf-toc-number {
+    font-size: var(--toc-number-size-desktop, 40px) !important;
+    line-height: var(--toc-number-height, 20px) !important;
+}
+
+/* TOC Number Span in Sidebar Links */
+.ttf-policy-toc a .ttf-toc-number {
+    font-size: inherit !important;
+    line-height: inherit !important;
+}
+
 .ttf-policy-content .ttf-rich-text li a,
 .ttf-policy-content .ttf-rich-text li span,
 .ttf-policy-content .ttf-rich-text li span a,
@@ -972,6 +992,14 @@ section.ttf-page-group {
 @media (max-width: 767.98px) {
     .ttf-policy-content h2 {
         font-size: var(--toc-content-heading-size-mobile, 24px) !important;
+        line-height: var(--toc-content-heading-height, 20px) !important;
+    }
+
+    /* Mobile TOC Number Span (32px) */
+    .ttf-policy-section h2 .ttf-toc-number,
+    .ttf-policy-content h2 .ttf-toc-number {
+        font-size: var(--toc-number-size-mobile, 32px) !important;
+        line-height: var(--toc-number-height, 20px) !important;
     }
 
     .ttf-policy-content .ttf-rich-text,
@@ -1047,10 +1075,10 @@ section.ttf-page-group {
 }
 
 /* Highlight Text color option styling */
-.ttf-story-section h1 span,
-.ttf-story-section h2 span,
-.ttf-story-section h3 span,
-.ttf-story-section h4 span {
+.ttf-story-section h1 span:not(.ttf-toc-number),
+.ttf-story-section h2 span:not(.ttf-toc-number),
+.ttf-story-section h3 span:not(.ttf-toc-number),
+.ttf-story-section h4 span:not(.ttf-toc-number) {
     color: var(--section-highlight-color, #C27325) !important;
 }
 
