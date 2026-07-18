@@ -85,4 +85,33 @@
         'pageBuilderData' => $pageBuilderData,
         'fontFamilyOptions' => $fontFamilyOptions,
     ])
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const titleInput = document.getElementById('ttf-page-title');
+  const slugInput = document.getElementById('ttf-page-slug');
+  const autofillCheckbox = document.querySelector('[data-page-slug-autofill]');
+
+  if (!titleInput || !slugInput) return;
+
+  const slugify = (text) => {
+    return text.toString().toLowerCase().trim()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  };
+
+  const updateSlug = () => {
+    if (autofillCheckbox && autofillCheckbox.checked) {
+      slugInput.value = slugify(titleInput.value);
+    }
+  };
+
+  titleInput.addEventListener('input', updateSlug);
+  if (autofillCheckbox) {
+    autofillCheckbox.addEventListener('change', updateSlug);
+  }
+});
+</script>
 </form>
