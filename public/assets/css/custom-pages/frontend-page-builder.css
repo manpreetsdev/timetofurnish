@@ -50,9 +50,9 @@
 
 .ttf-page-banner__content h1 {
     font-family: var(--ttf-banner-title-font);
-    font-size: clamp(38px, 4vw, 62px);
+    font-size: 40px;
     font-weight: 700;
-    line-height: 1.06;
+    line-height: 50px;
     color: var(--ttf-banner-title-color);
     margin: 0;
 }
@@ -258,7 +258,7 @@ section.ttf-page-group {
     color: var(--section-text, var(--ttf-text, #393939));
     font-weight: var(--section-body-weight, var(--ttf-body-weight, 400));
     font-size: var(--section-body-size, 18px);
-    line-height: var(--section-body-height, 31px);
+    line-height: 32px;
     letter-spacing: var(--section-body-spacing, 0);
 }
 
@@ -562,7 +562,7 @@ section.ttf-page-group {
 }
 
 .ttf-policy-section {
-    margin-bottom: 34px;
+    margin-bottom: 20px;
     scroll-margin-top: 160px;
 }
 
@@ -582,7 +582,7 @@ section.ttf-page-group {
     }
 
     .ttf-page-banner {
-        min-height: 280px;
+        min-height: 139;
     }
 
     .ttf-page-banner__crumbs {
@@ -652,6 +652,12 @@ section.ttf-page-group {
 @media (max-width: 767.98px) {
     .ttf-custom-page__body {
         padding: 20px 0 10px;
+    }
+
+    .ttf-page-banner__content h1 {
+        font-size: 30px;
+        line-height: 50px;
+        margin: 0;
     }
 
     .ttf-toc-section .ttf-toc-number {
