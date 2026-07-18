@@ -945,32 +945,110 @@ class HomeController extends Controller
 
     public function sellerpolicy()
     {
-        $page =  Page::where('type', 'seller_policy_page')->first();
-        return view("frontend.policies.sellerpolicy", compact('page'));
+        $page = Page::find(get_setting('seller_policy_page_id'));
+        if (!$page) {
+            $page = Page::where('slug', 'seller-policy')->first();
+        }
+        if ($page) {
+            return view('frontend.custom_page', compact('page'));
+        }
+        abort(404);
     }
 
     public function returnpolicy()
     {
-        $page =  Page::where('type', 'return_policy_page')->first();
-        return view("frontend.policies.returnpolicy", compact('page'));
+        $page = Page::find(get_setting('return_policy_page_id'));
+        if (!$page) {
+            $page = Page::where('slug', 'return-policy')->first();
+        }
+        if ($page) {
+            return view('frontend.custom_page', compact('page'));
+        }
+        abort(404);
     }
 
     public function supportpolicy()
     {
-        $page =  Page::where('type', 'support_policy_page')->first();
-        return view("frontend.policies.supportpolicy", compact('page'));
+        $page = Page::find(get_setting('support_policy_page_id'));
+        if (!$page) {
+            $page = Page::where('slug', 'support-policy')->first();
+        }
+        if ($page) {
+            return view('frontend.custom_page', compact('page'));
+        }
+        abort(404);
     }
 
     public function terms()
     {
-        $page =  Page::where('type', 'terms_conditions_page')->first();
-        return view("frontend.policies.terms", compact('page'));
+        $page = Page::find(get_setting('terms_conditions_page_id'));
+        if (!$page) {
+            $page = Page::where('slug', 'terms')->first();
+        }
+        if ($page) {
+            return view('frontend.custom_page', compact('page'));
+        }
+        abort(404);
     }
 
     public function privacypolicy()
     {
-        $page =  Page::where('type', 'privacy_policy_page')->first();
-        return view("frontend.policies.privacypolicy", compact('page'));
+        $page = Page::find(get_setting('privacy_policy_page_id'));
+        if (!$page) {
+            $page = Page::where('slug', 'privacy-policy')->first();
+        }
+        if ($page) {
+            return view('frontend.custom_page', compact('page'));
+        }
+        abort(404);
+    }
+
+    public function deliverypolicy()
+    {
+        $page = Page::find(get_setting('delivery_policy_page_id'));
+        if (!$page) {
+            $page = Page::where('slug', 'delivery')->first();
+        }
+        if ($page) {
+            return view('frontend.custom_page', compact('page'));
+        }
+        abort(404);
+    }
+
+    public function disclaimerpolicy()
+    {
+        $page = Page::find(get_setting('disclaimer_policy_page_id'));
+        if (!$page) {
+            $page = Page::where('slug', 'disclaimer')->first();
+        }
+        if ($page) {
+            return view('frontend.custom_page', compact('page'));
+        }
+        abort(404);
+    }
+
+    public function cookiepolicy()
+    {
+        $page = Page::find(get_setting('cookie_policy_page_id'));
+        if (!$page) {
+            $page = Page::where('slug', 'cookie-policy')->first();
+        }
+        if ($page) {
+            return view('frontend.custom_page', compact('page'));
+        }
+        abort(404);
+    }
+
+    public function customertermspolicy()
+    {
+        $page = Page::find(get_setting('customer_terms_policy_page_id'));
+        if (!$page) {
+            $page = Page::where('slug', 'customer-terms-conditions')->first();
+        }
+        if ($page) {
+            return view('frontend.custom_page', compact('page'));
+        }
+        abort(404);
     }
 
     public function get_pick_up_points(Request $request)

@@ -171,7 +171,40 @@ class WebsiteController extends Controller
     public function pages(Request $request)
     {
         $page = Page::where('type', '!=', 'home_page')->get();
-        return view('backend.website_settings.pages.index', compact('page'));
+        $all_pages = $page;
+        return view('backend.website_settings.pages.index', compact('page', 'all_pages'));
+    }
+
+    public function update_policy_pages(Request $request)
+    {
+        $policy_keys = [
+            'return_policy_page_id',
+            'support_policy_page_id',
+            'seller_policy_page_id',
+            'privacy_policy_page_id',
+            'delivery_policy_page_id',
+            'disclaimer_policy_page_id',
+            'cookie_policy_page_id',
+            'customer_terms_policy_page_id',
+            'terms_conditions_page_id',
+        ];
+
+        foreach ($policy_keys as $id_key) {
+            $page_id = $request->input($id_key);
+            
+            // Save page ID
+            $setting_id = BusinessSetting::where('type', $id_key)->first();
+            if (!$setting_id) {
+                $setting_id = new BusinessSetting();
+                $setting_id->type = $id_key;
+            }
+            $setting_id->value = $page_id;
+            $setting_id->save();
+        }
+
+        \Artisan::call('cache:clear');
+        flash(translate('Policy pages configuration has been updated successfully'))->success();
+        return back();
     }
     public function appearance(Request $request)
     {
