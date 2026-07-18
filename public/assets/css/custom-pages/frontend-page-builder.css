@@ -985,6 +985,7 @@ section.ttf-page-group {
     font-size: var(--toc-content-body-size-desktop, 18px) !important;
     line-height: var(--toc-content-body-height-desktop, 31px) !important;
     color: var(--toc-content-body-color, #393939) !important;
+    margin-bottom: 0 !important;
 }
 
 /* TOC Content Body Typography */
@@ -1017,6 +1018,7 @@ section.ttf-page-group {
     .ttf-policy-content .ttf-rich-text li {
         font-size: var(--toc-content-body-size-mobile, 16px) !important;
         line-height: var(--toc-content-body-height-mobile, 28px) !important;
+        margin-bottom: 0 !important;
     }
 }
 
@@ -1114,7 +1116,7 @@ section.ttf-page-group {
         font-family: "Playfair Display", serif !important;
         font-size: 24px !important;
         font-weight: 700 !important;
-        line-height: 20px !important;
+        line-height: 26px !important;
         color: #2c2218 !important;
         padding: 0 !important;
         margin: 0 0 20px !important;
@@ -1123,7 +1125,7 @@ section.ttf-page-group {
     }
 
     .ttf-policy-content .ttf-policy-section:not(:last-child) {
-        margin-bottom: 32px !important;
+        margin-bottom: 0px !important;
     }
 
     .ttf-rich-text.ttf-toc-intro p,
@@ -1144,7 +1146,7 @@ section.ttf-page-group {
         font-family: var(--section-body-font, var(--ttf-text-font)) !important;
         font-weight: 400 !important;
         font-size: 16px !important;
-        line-height: 28px !important;
+        line-height: 26px !important;
         letter-spacing: 0 !important;
     }
 
