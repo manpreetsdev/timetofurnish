@@ -288,7 +288,7 @@ public function become_delivery_partner()
     public function update(Request $request, $id)
     {
         // Retrieve the page by slug (as routes pass slug as $id)
-        $page = Page::where('slug', $id)->firstOrFail();
+        $page = Page::findOrFail($id);
         $content = $this->buildPageContentPayload($request);
         // Ensure slug uniqueness excluding current page ID
         if (Page::where('id','!=', $page->id)

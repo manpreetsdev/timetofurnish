@@ -46,35 +46,26 @@
                             <span class="text-danger">*</span>
                         </label>
                         <div class="input-group ttf-slug-group">
-                            @if (!$isEdit || $page->type == 'custom_page')
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text ttf-slug-prefix">{{ route('home') }}/</span>
-                                </div>
-                                <input
-                                    id="ttf-page-slug"
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="{{ translate('page-slug') }}"
-                                    name="slug"
-                                    value="{{ $slugValue }}"
-                                    data-page-slug-input
-                                    required
-                                >
-                            @else
-                                <input id="ttf-page-slug" class="form-control" value="{{ route('home') }}/{{ $page->slug }}" disabled>
-                            @endif
-                        </div>
-                        @if (!$isEdit || $page->type == 'custom_page')
-                            <div class="ttf-slug-options">
-                                <label class="ttf-toggle-option mb-0">
-                                    <input type="checkbox" value="1" data-page-slug-autofill @checked(!$isEdit || $slugValue === '')>
-                                    <span>{{ translate('Auto fill from page title') }}</span>
-                                </label>
-                                <small class="form-text text-muted mb-0">{{ translate('Use characters, numbers and hyphens only. You can still edit the slug manually.') }}</small>
-                            </div>
-                        @else
-                            <small class="form-text text-muted">{{ translate('Use characters, numbers and hyphens only') }}</small>
-                        @endif
+    <div class="input-group-prepend">
+        <span class="input-group-text ttf-slug-prefix">{{ route('home') }}/</span>
+    </div>
+    <input
+        id="ttf-page-slug"
+        type="text"
+        class="form-control"
+        placeholder="{{ translate('page-slug') }}"
+        name="slug"
+        value="{{ $slugValue }}"
+        data-page-slug-input
+        required>
+</div>
+<div class="ttf-slug-options">
+    <label class="ttf-toggle-option mb-0">
+        <input type="checkbox" value="1" data-page-slug-autofill @checked(!$isEdit || $slugValue === '')>
+        <span>{{ translate('Auto fill from page title') }}</span>
+    </label>
+    <small class="form-text text-muted mb-0">{{ translate('Use characters, numbers and hyphens only. You can still edit the slug manually.') }}</small>
+</div>
                     </div>
                 </div>
             </div>
