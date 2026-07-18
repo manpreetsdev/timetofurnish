@@ -4651,10 +4651,7 @@ li.slick-active {
         padding-right: 15px !important;
     }
 
-    .ttf-policy-content .ttf-policy-section>h2 {
-        font-size: 26px !important;
-        line-height: 1.25 !important;
-    }
+
 }
 
 @media (max-width: 767.98px) {
@@ -4723,21 +4720,7 @@ li.slick-active {
 
 
 
-    /* Main section heading according to Figma */
-    .ttf-policy-content .ttf-policy-section>h2 {
-        font-family: "Playfair Display", serif !important;
-        font-size: 32px !important;
-        font-weight: 700 !important;
-        line-height: 1.2 !important;
-        letter-spacing: 0 !important;
-        color: #2c2218 !important;
 
-        padding: 0 !important;
-        margin: 0 0 20px !important;
-
-        word-break: normal !important;
-        overflow-wrap: normal !important;
-    }
 
     /* Paragraph and all inner content */
     .ttf-story-section--toc .ttf-rich-text,
@@ -4814,10 +4797,7 @@ li.slick-active {
         padding-right: 15px !important;
     }
 
-    .ttf-policy-content .ttf-policy-section>h2 {
-        font-size: 26px !important;
-        line-height: 1.25 !important;
-    }
+
 }
 
 /* Policy intro paragraph */
