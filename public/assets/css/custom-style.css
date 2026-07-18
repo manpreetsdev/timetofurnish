@@ -2570,10 +2570,6 @@ span.badge.badge-primary.badge-circle.position-absolute {
     height: 100% !important;
 }
 
-.banner_Sections_home .slick-track,
-.banner_Sections_home .aiz-carousel .slick-slide {
-    width: 100% !important;
-}
 
 .banner_section_con {
     max-width: 1440px;
