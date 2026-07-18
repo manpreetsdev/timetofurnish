@@ -231,6 +231,11 @@ section.ttf-page-group {
     color: var(--section-text, var(--ttf-text));
 }
 
+.ttf-toc-section .ttf-toc-number {
+    font-size: 40px;
+    line-height: 20px;
+}
+
 
 .ttf-story-section h2 span:not(.ttf-toc-number),
 .ttf-story-section h1 span:not(.ttf-toc-number),
@@ -647,6 +652,11 @@ section.ttf-page-group {
 @media (max-width: 767.98px) {
     .ttf-custom-page__body {
         padding: 20px 0 10px;
+    }
+
+    .ttf-toc-section .ttf-toc-number {
+        font-size: 32px;
+        line-height: 20px;
     }
 
     .ttf-story-section--split .ttf-story-section__media img {
