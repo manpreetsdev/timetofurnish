@@ -1110,6 +1110,22 @@ section.ttf-page-group {
         letter-spacing: var(--section-title-spacing, 0) !important;
     }
 
+    .ttf-policy-content .ttf-policy-section>h2 {
+        font-family: "Playfair Display", serif !important;
+        font-size: 24px !important;
+        font-weight: 700 !important;
+        line-height: 20px !important;
+        color: #2c2218 !important;
+        padding: 0 !important;
+        margin: 0 0 20px !important;
+        word-break: normal !important;
+        overflow-wrap: normal !important;
+    }
+
+    .ttf-policy-content .ttf-policy-section:not(:last-child) {
+        margin-bottom: 32px !important;
+    }
+
     .ttf-rich-text.ttf-toc-intro p,
     .ttf-rich-text.ttf-toc-intro span,
     .ttf-rich-text.ttf-toc-intro a,
@@ -1126,10 +1142,10 @@ section.ttf-page-group {
     .ttf-story-section__intro,
     .ttf-classic-content {
         font-family: var(--section-body-font, var(--ttf-text-font)) !important;
-        font-weight: var(--section-body-weight, var(--ttf-body-weight, 400)) !important;
-        font-size: var(--section-body-size, 16px) !important;
-        line-height: var(--section-body-height, 28px) !important;
-        letter-spacing: var(--section-body-spacing, 0) !important;
+        font-weight: 400 !important;
+        font-size: 16px !important;
+        line-height: 28px !important;
+        letter-spacing: 0 !important;
     }
 
     /* Mobile image sizes */
