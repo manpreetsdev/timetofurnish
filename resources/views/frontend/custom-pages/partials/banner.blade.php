@@ -24,7 +24,7 @@
     <div class="ttf-page-banner__content">
         <div class="ttf-page-banner__crumbs">
              <h1>{{ $bannerTitle }}</h1>
-        <div class="breadcrumb">
+        <div class="sub_breadcrumb">
              <a href="{{ route('home') }}">{{ translate('Home') }}</a>
             <span>&raquo;</span>
             <span>{{ $breadcrumbLabel }}</span>
