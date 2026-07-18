@@ -1125,8 +1125,9 @@ section.ttf-page-group {
     }
 
     .ttf-policy-content .ttf-policy-section:not(:last-child) {
-        margin-bottom: 0px !important;
+        margin-bottom: 30px !important;
     }
+
 
     .ttf-rich-text.ttf-toc-intro p,
     .ttf-rich-text.ttf-toc-intro span,
