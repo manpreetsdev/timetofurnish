@@ -132,7 +132,7 @@
     --toc-title-size: {{ formatDim($section['toc_title_size'] ?? '26') }};
     --toc-title-weight: {{ $section['toc_title_weight'] ?? '700' }};
     --toc-title-height: {{ formatDim($section['toc_title_height'] ?? '24') }};
-    --toc-title-color: {{ $section['toc_title_color'] ?? '#3a2a1f' }};
+    --toc-title-color: {{ $section['toc_title_color'] ?? '#4F4238' }};
     
     --toc-active-font: {{ $section['toc_active_font'] ?? 'Poppins, sans-serif' }};
     --toc-active-size: {{ formatDim($section['toc_active_size'] ?? '18') }};
@@ -149,10 +149,14 @@
     
     --toc-content-heading-font: {{ $section['content_heading_font'] ?? 'Playfair Display, serif' }};
     --toc-content-heading-weight: {{ $section['content_heading_weight'] ?? '700' }};
-    --toc-content-heading-size-desktop: {{ formatDim($section['content_heading_size_desktop'] ?? '40') }};
-    --toc-content-heading-size-mobile: {{ formatDim($section['content_heading_size_mobile'] ?? '32') }};
+    --toc-content-heading-size-desktop: {{ formatDim($section['content_heading_size_desktop'] ?? '28') }};
+    --toc-content-heading-size-mobile: {{ formatDim($section['content_heading_size_mobile'] ?? '24') }};
     --toc-content-heading-height: {{ formatDim($section['content_heading_height'] ?? '20') }};
     --toc-content-heading-color: {{ $section['content_heading_color'] ?? '#2c2218' }};
+    
+    --toc-number-size-desktop: {{ formatDim($section['toc_number_size_desktop'] ?? '40') }};
+    --toc-number-size-mobile: {{ formatDim($section['toc_number_size_mobile'] ?? '32') }};
+    --toc-number-height: {{ formatDim($section['toc_number_height'] ?? '20') }};
     
     --toc-content-body-font: {{ $section['content_body_font'] ?? 'Poppins, sans-serif' }};
     --toc-content-body-weight: {{ $section['content_body_weight'] ?? '400' }};
@@ -191,7 +195,7 @@
         <div class="ttf-policy-content">
             @foreach ($tocItems as $tocItem)
                 <section class="ttf-policy-section" id="{{ $tocItem['anchor_id'] }}">
-                    <h2>{!! wrapTocNumber($tocItem['title']) !!}</h2>
+                    <h2>{!!  ($tocItem['title']) !!}</h2>
                     @if (!empty($tocItem['image']))
                         <div class="ttf-policy-section__image mb-3">
                             <img src="{{ uploaded_asset($tocItem['image']) }}" alt="{{ $tocItem['title'] }}" class="img-fluid rounded">
