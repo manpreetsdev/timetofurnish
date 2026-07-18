@@ -265,6 +265,10 @@ Route::controller(HomeController::class)->group(function () {
     Route::get('/support-policy', 'supportpolicy')->name('supportpolicy');
     Route::get('/terms', 'terms')->name('terms');
     Route::get('/privacy-policy', 'privacypolicy')->name('privacypolicy');
+    Route::get('/delivery', 'deliverypolicy')->name('deliverypolicy');
+    Route::get('/disclaimer', 'disclaimerpolicy')->name('disclaimerpolicy');
+    Route::get('/cookie-policy', 'cookiepolicy')->name('cookiepolicy');
+    Route::get('/customer-terms-conditions', 'customertermspolicy')->name('customertermspolicy');
 
     Route::get('/track-your-order', 'trackOrder')->name('orders.track');
 });

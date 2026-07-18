@@ -322,6 +322,7 @@ Route::resource('sellers', SellerController::class);
             Route::get('/homepage-builder', 'homepage_builder')->name('website.homepage-builder');
             Route::post('/homepage-builder/update', 'homepage_builder_update')->name('website.homepage-builder.update');
             Route::get('/pages', 'pages')->name('website.pages');
+            Route::post('/pages/policies', 'update_policy_pages')->name('website.policy-pages.update');
         });
 
             Route::controller(TeamController::class)->group(function () {
@@ -344,6 +345,7 @@ Route::resource('sellers', SellerController::class);
             Route::get('/custom-pages/destroy/{id}', 'destroy')->name('custom-pages.destroy');
             Route::get('/custom-pages/export/{id}', 'export')->name('custom-pages.export');
             Route::post('/custom-pages/import', 'import')->name('custom-pages.import');
+            Route::post('/custom-pages/update-slug', 'updateSlug')->name('custom-pages.update-slug');
         });
 
         // Homepage Reviews

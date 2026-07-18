@@ -8,6 +8,7 @@ use App\Models\PageTranslation;
 use App\Models\TeamMember;
 use App\Support\CustomPageTemplate;
 use Illuminate\Support\Facades\Mail;
+use App\Models\BusinessSetting;
 use Illuminate\Support\Str;
 
 
@@ -306,7 +307,7 @@ public function become_delivery_partner()
             $page->keywords         = $request->keywords;
             $page->meta_image       = $request->meta_image;
             $page->save();
-
+            \Artisan::call('cache:clear');
             $page_translation           = PageTranslation::firstOrNew(['lang' => $request->lang, 'page_id' => $page->id]);
             $page_translation->title    = $request->title;
             $page_translation->content  = $content;
@@ -493,5 +494,35 @@ public function become_delivery_partner()
         ];
 
         return CustomPageTemplate::encode($payload, $request->title);
+    }
+
+    public function updateSlug(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:pages,id',
+            'slug' => 'required|string',
+        ]);
+
+        $page = Page::findOrFail($request->id);
+        $newSlug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', strtolower($request->slug)));
+
+        $existing = Page::where('slug', $newSlug)->where('id', '!=', $page->id)->first();
+        if ($existing) {
+            return response()->json([
+                'success' => false,
+                'message' => translate('Slug has already been used.')
+            ], 422);
+        }
+
+        $page->slug = $newSlug;
+        $page->save();
+
+        \Artisan::call('cache:clear');
+
+        return response()->json([
+            'success' => true,
+            'slug' => $newSlug,
+            'message' => translate('Slug updated successfully.')
+        ]);
     }
 }
