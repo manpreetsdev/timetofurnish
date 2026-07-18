@@ -246,7 +246,7 @@
                         </div>
                         <div class="form-group">
                             <label>{{ translate('Slug') }} <span class="text-danger">*</span></label>
-                            @if (!$isEdit || (isset($page) && $page->type == 'custom_page'))
+                            
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" style="font-size:11px;white-space:nowrap;">{{ route('home') }}/</span>
@@ -262,9 +262,9 @@
                                         <span>{{ translate('Auto fill from title') }}</span>
                                     </label>
                                 </div>
-                            @else
-                                <input class="form-control" value="{{ route('home') }}/{{ $slugValue }}" disabled>
-                            @endif
+                            
+                                
+                            
                         </div>
                         @if ($isEdit && isset($page))
                             <div class="form-group" style="margin-bottom:0">
