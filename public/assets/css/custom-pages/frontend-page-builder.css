@@ -1,10 +1,7 @@
-/* .ttf-custom-page {
-    background:
-        radial-gradient(circle at left 74%, rgba(214, 194, 178, 0.22) 0, rgba(214, 194, 178, 0.22) 90px, transparent 90px),
-        radial-gradient(circle at right 36%, rgba(214, 194, 178, 0.18) 0, rgba(214, 194, 178, 0.18) 90px, transparent 90px),
-        var(--ttf-page-bg);
+.ttf-custom-page {
+    background: var(--ttf-page-bg);
     color: var(--ttf-text);
-} */
+}
 
 .ttf-page-banner {
     position: relative;
