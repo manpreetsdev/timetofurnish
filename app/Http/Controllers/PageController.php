@@ -287,9 +287,13 @@ public function become_delivery_partner()
      */
     public function update(Request $request, $id)
     {
-        $page = Page::findOrFail($id);
+        // Retrieve the page by slug (as routes pass slug as $id)
+        $page = Page::where('slug', $id)->firstOrFail();
         $content = $this->buildPageContentPayload($request);
-        if (Page::where('id','!=', $id)->where('slug', preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug)))->first() == null) {
+        // Ensure slug uniqueness excluding current page ID
+        if (Page::where('id','!=', $page->id)
+                ->where('slug', preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug)))
+                ->first() == null) {
             if($page->type == 'custom_page'){
               $page->slug           = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug));
             }
