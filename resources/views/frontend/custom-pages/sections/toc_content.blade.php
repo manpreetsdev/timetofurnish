@@ -9,6 +9,19 @@
         }
     }
 
+    if (!function_exists('wrapTocNumber')) {
+        /**
+         * Wraps the leading number (e.g. "1.", "13.") in a <span class="ttf-toc-number">.
+         * Returns safe HTML — the title text is escaped.
+         */
+        function wrapTocNumber(string $title): string {
+            if (preg_match('/^(\d+\.)\s*(.*)$/s', $title, $m)) {
+                return '<span class="ttf-toc-number">' . e($m[1]) . '</span> ' . e($m[2]);
+            }
+            return e($title);
+        }
+    }
+
     $title = (string) ($section['title'] ?? '');
     $highlight = (string) ($section['highlight_text'] ?? '');
     $titleHtml = e($title);
@@ -168,7 +181,7 @@
                 <ul>
                     @foreach ($tocItems as $tocItem)
                         <li>
-                            <a href="#{{ $tocItem['anchor_id'] }}">{{ $tocItem['title'] }}</a>
+                            <a href="#{{ $tocItem['anchor_id'] }}">{!! wrapTocNumber($tocItem['title']) !!}</a>
                         </li>
                     @endforeach
                 </ul>
@@ -178,7 +191,7 @@
         <div class="ttf-policy-content">
             @foreach ($tocItems as $tocItem)
                 <section class="ttf-policy-section" id="{{ $tocItem['anchor_id'] }}">
-                    <h2>{{ $tocItem['title'] }}</h2>
+                    <h2>{!! wrapTocNumber($tocItem['title']) !!}</h2>
                     @if (!empty($tocItem['image']))
                         <div class="ttf-policy-section__image mb-3">
                             <img src="{{ uploaded_asset($tocItem['image']) }}" alt="{{ $tocItem['title'] }}" class="img-fluid rounded">

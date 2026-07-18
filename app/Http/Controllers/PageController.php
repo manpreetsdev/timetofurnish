@@ -134,7 +134,7 @@ public function DeliveryPartner()
             $page_translation->save();
 
             flash(translate('New page has been created successfully'))->success();
-            return redirect()->route('website.pages');
+            return redirect()->route('custom-pages.edit', ['id' => $page->slug, 'lang' => env('DEFAULT_LANGUAGE')]);
         }
 
         flash(translate('Slug has been used already'))->warning();
@@ -309,7 +309,7 @@ public function become_delivery_partner()
             $page_translation->save();
 
             flash(translate('Page has been updated successfully'))->success();
-            return redirect()->route('website.pages');
+            return redirect()->route('custom-pages.edit', ['id' => $page->slug, 'lang' => $request->lang]);
         }
 
       flash(translate('Slug has been used already'))->warning();

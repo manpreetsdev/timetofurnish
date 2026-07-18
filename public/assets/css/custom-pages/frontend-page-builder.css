@@ -507,7 +507,7 @@ section.ttf-page-group {
 
 .ttf-policy-content h1,
 .ttf-policy-content h2 {
-    font-size: var(--section-title-size, 40px) !important;
+    font-size: var(--section-title-size, 28px) !important;
     line-height: 1.12;
     margin: 0 0 16px;
 }
@@ -837,8 +837,8 @@ section.ttf-page-group {
     .ttf-policy-content h2,
     .ttf-policy-section h1,
     .ttf-policy-section h2 {
-        font-size: 30px !important;
-        line-height: 30px !important;
+        font-size: 24px !important;
+        line-height: 20px !important;
         margin-bottom: 12px !important;
     }
 
@@ -870,8 +870,8 @@ section.ttf-page-group {
 .ttf-policy-content h2,
 .ttf-policy-section h1,
 .ttf-policy-section h2 {
-    font-size: var(--toc-content-heading-size-desktop, 40px) !important;
-    line-height: var(--toc-content-heading-height, 40px) !important;
+    font-size: var(--toc-content-heading-size-desktop, 28px) !important;
+    line-height: var(--toc-content-heading-height, 20px) !important;
     font-weight: var(--toc-content-heading-weight, 700) !important;
     margin-bottom: 16px !important;
 }
@@ -933,8 +933,8 @@ section.ttf-page-group {
 .ttf-policy-content h2 {
     font-family: var(--toc-content-heading-font, Playfair Display, serif) !important;
     font-weight: var(--toc-content-heading-weight, 700) !important;
-    font-size: var(--toc-content-heading-size-desktop, 40px) !important;
-    line-height: var(--toc-content-heading-height, 40px) !important;
+    font-size: var(--toc-content-heading-size-desktop, 28px) !important;
+    line-height: var(--toc-content-heading-height, 20px) !important;
     color: var(--toc-content-heading-color, #2c2218) !important;
     margin: 0 0 16px !important;
 }
@@ -971,7 +971,7 @@ section.ttf-page-group {
 /* Mobile Responsiveness for Content Typography */
 @media (max-width: 767.98px) {
     .ttf-policy-content h2 {
-        font-size: var(--toc-content-heading-size-mobile, 32px) !important;
+        font-size: var(--toc-content-heading-size-mobile, 24px) !important;
     }
 
     .ttf-policy-content .ttf-rich-text,
@@ -1090,7 +1090,7 @@ section.ttf-page-group {
         font-family: var(--section-body-font, var(--ttf-text-font)) !important;
         font-weight: var(--section-body-weight, var(--ttf-body-weight, 400)) !important;
         font-size: var(--section-body-size, 16px) !important;
-        line-height: var(--section-body-height, 24px) !important;
+        line-height: var(--section-body-height, 28px) !important;
         letter-spacing: var(--section-body-spacing, 0) !important;
     }
 
