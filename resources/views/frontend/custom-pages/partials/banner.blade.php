@@ -1,7 +1,7 @@
 @php
-    $bannerTitle = $banner['title'] ?? $page->getTranslation('title');
+    $bannerTitle = $banner['title'] ?? 'Default Title';
     $breadcrumbLabel = $banner['breadcrumb_label'] ?? $bannerTitle;
-    $backgroundImage = !empty($banner['background_image']) ? uploaded_asset($banner['background_image']) : uploaded_asset($page->meta_image);
+    $backgroundImage = !empty($banner['background_image']) ? uploaded_asset($banner['background_image']) : static_asset('assets/img/banner.png');
     $bannerAlignment = $banner['text_align'] ?? 'center';
     $bannerJustify = $bannerAlignment === 'left' ? 'flex-start' : ($bannerAlignment === 'right' ? 'flex-end' : 'center');
 @endphp
@@ -30,7 +30,7 @@
             <span>{{ $breadcrumbLabel }}</span>
         </div>
         </div>
-       
+
         @if (!empty($banner['subtitle']))
             <p>{{ $banner['subtitle'] }}</p>
         @endif

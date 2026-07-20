@@ -46,8 +46,8 @@
     --section-radius: {{ ($showBackground || $showBorder) ? (int) ($section['border_radius'] ?? 24) : 0 }}px;
     --section-padding-top: {{ $paddingTop }}px;
     --section-padding-bottom: {{ $paddingBottom }}px;
-    --section-padding-left: {{ $paddingLeft }}px;
-    --section-padding-right: {{ $paddingRight }}px;
+     --section-padding-left: {{ $paddingLeft }}px;
+     --section-padding-right: {{ $paddingRight }}px;
     --section-margin-top: {{ $marginTop }}px;
     --section-margin-bottom: {{ $marginBottom !== null ? $marginBottom . 'px' : 'var(--ttf-section-gap)' }};
     --section-title-size: {{ !empty($section['title_font_size']) ? (is_numeric($section['title_font_size']) ? $section['title_font_size'] . 'px' : $section['title_font_size']) : '' }};
