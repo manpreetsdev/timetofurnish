@@ -530,7 +530,7 @@
     @endphp
 
     <!-- Sliders -->
-    <section class="my-2 mt-2">
+    <section class="my-3 mt-2">
         <div class="container">
             <!-- Categories -->
             <div class="row">

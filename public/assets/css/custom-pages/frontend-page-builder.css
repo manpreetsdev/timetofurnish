@@ -206,8 +206,8 @@ section.ttf-page-group {
     left: 0;
     top: 2px;
 
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
 
     background: #c27325;
@@ -274,7 +274,7 @@ section.ttf-page-group {
 .ttf-story-section--classic.is-split {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 42px;
+    gap: 18px;
     align-items: stretch;
 }
 
@@ -612,6 +612,8 @@ section.ttf-page-group {
 
     .ttf-story-section--split.is-tablet-content-first> :last-child {
         order: 1;
+        padding-left: 10px;
+        padding-right: 0px;
     }
 
     .ttf-story-section--full-width.is-tablet-image-top .ttf-story-section__full-media {
@@ -713,6 +715,8 @@ section.ttf-page-group {
 
     .ttf-story-section--split.is-mobile-content-first> :last-child {
         order: 1;
+        padding-left: 7px;
+        padding-right: 0px;
     }
 
     .ttf-story-section--full-width.is-mobile-image-top .ttf-story-section__full-media {
@@ -1062,7 +1066,7 @@ section.ttf-page-group {
 
 /* Split Widget: Two Column Layout Content & Image Defaults */
 .ttf-story-section--split .ttf-story-section__media img {
-    max-width: 652px !important;
+    max-width: 665px !important;
     height: var(--section-image-height, 553px);
     border-radius: var(--section-image-radius, 10px) !important;
     object-fit: cover !important;
@@ -1184,5 +1188,63 @@ section.ttf-page-group {
         width: 100% !important;
         margin: 0 auto !important;
         display: block !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+
+    .ttf-story-section--split {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .ttf-story-section--split .ttf-story-section__media {
+        order: 1 !important;
+    }
+
+    .ttf-story-section--split .ttf-story-section__content {
+        order: 2 !important;
+    }
+
+    ..ttf-story-section--split .ttf-story-section__media img {
+        border-radius: 10px;
+    }
+
+    .ttf-story-section--split .ttf-story-section__content h2,
+    .ttf-story-section--full-width .ttf-story-section__full-content h2 {
+        font-size: 24px !important;
+    }
+
+    .ttf-story-section--split .ttf-story-section__content .ttf-rich-text p,
+    .ttf-story-section--full-width .ttf-story-section__full-content .ttf-rich-text p,
+    .ttf-check-list li {
+        font-size: 16px !important;
+        line-height: 24px !important;
+        font-family: 'Poppins' !important;
+    }
+
+    .ttf-check-list li::before {
+        height: 18px;
+        width: 18px;
+    }
+
+    .ttf-story-section--split .ttf-story-section__media img {
+        padding-top: 10px;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .ttf-story-section--split {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    .ttf-story-section.ttf-story-section__content {
+        padding-right: 10px;
+        padding-left: 10px;
     }
 }
