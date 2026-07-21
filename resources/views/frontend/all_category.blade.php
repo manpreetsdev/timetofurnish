@@ -116,7 +116,9 @@
                 gap: 8px;
                 padding: 12px 0;
             }
-
+            .category-pills-wrap {
+                display: none !important;
+            }
             /* Always show arrow buttons on mobile */
             .category-pills-nav-btn {
                 display: flex !important;
@@ -306,7 +308,11 @@
             position: relative !important;
             overflow: visible !important;
         }
-        .category-section-card .aiz-carousel .slick-track { justify-content: flex-start !important; }
+        .category-section-card .aiz-carousel .slick-track {
+            justify-content: flex-start !important;
+            margin-left: 0 !important;
+            margin-right: auto !important;
+        }
 
         /* ===== Subcategory carousel arrows – desktop ===== */
         .all-categories-page-wrap .category-section-card .aiz-carousel .slick-prev,
@@ -544,6 +550,43 @@
         // aiz-core.js hardcodes arrows:false below 992 px which removes the
         // arrow DOM elements entirely. We re-inject them after every init /
         // breakpoint change so they always appear inside .category-section-card.
+        function getSubcategoryCanNavigate($slick, slickObj) {
+            if (!$slick || !$slick.length || !slickObj) return false;
+
+            var $list = $slick.find('.slick-list');
+            var $track = $slick.find('.slick-track');
+
+            if (!$list.length || !$track.length) return false;
+
+            var listWidth = $list.outerWidth() || 0;
+            var trackWidth = $track.outerWidth() || 0;
+
+            return slickObj.slideCount > 1 && trackWidth > (listWidth + 1);
+        }
+
+        function syncSubcategoryArrowState($slick, slickObj) {
+            if (!$slick || !$slick.length || !slickObj) return;
+
+            var canNavigate = getSubcategoryCanNavigate($slick, slickObj);
+            var $prev = $slick.find('.slick-prev');
+            var $next = $slick.find('.slick-next');
+
+            if (!canNavigate) {
+                $prev.remove();
+                $next.remove();
+                return;
+            }
+
+            var slidesToShow = parseInt(slickObj.options && slickObj.options.slidesToShow, 10) || 1;
+            var currentSlide = slickObj.currentSlide || 0;
+            var maxIndex = slickObj.options && slickObj.options.infinite
+                ? Number.MAX_SAFE_INTEGER
+                : Math.max(0, (slickObj.slideCount || 0) - slidesToShow);
+
+            $prev.toggleClass('slick-disabled', currentSlide <= 0);
+            $next.toggleClass('slick-disabled', currentSlide >= maxIndex);
+        }
+
         function forceSubcategoryArrows($carousel) {
             if (!$carousel || !$carousel.length) return;
             var $slick = $carousel;
@@ -551,10 +594,20 @@
             // If slick hasn't been initialised yet, bail – the init event will fire
             if (!$slick.hasClass('slick-initialized')) return;
 
+            var slickObj = $slick.slick('getSlick');
+            if (!slickObj) return;
+
+            var canNavigate = getSubcategoryCanNavigate($slick, slickObj);
+
             // Re-enable arrows via slick's public API (won't take effect visually
             // but makes slick aware) then manually inject the buttons if absent.
             var prevArrowHTML = '<button type="button" class="slick-prev slick-arrow"><i class="las la-angle-left"></i></button>';
             var nextArrowHTML = '<button type="button" class="slick-next slick-arrow"><i class="las la-angle-right"></i></button>';
+
+            if (!canNavigate) {
+                $slick.find('.slick-prev, .slick-next').remove();
+                return;
+            }
 
             if (!$slick.find('.slick-prev').length) {
                 $slick.find('.slick-list').before(prevArrowHTML);
@@ -563,7 +616,7 @@
                 $slick.find('.slick-list').after(nextArrowHTML);
             }
 
-            // Wire up click handlers (delegated so works even when re-injected)
+            syncSubcategoryArrowState($slick, slickObj);
         }
 
         function wireSubcategoryArrowClicks() {
@@ -572,9 +625,11 @@
             $(document).off('click.subcatArrow', '.category-section-card .slick-next');
 
             $(document).on('click.subcatArrow', '.category-section-card .slick-prev', function() {
+                if ($(this).hasClass('slick-disabled')) return;
                 $(this).closest('.aiz-carousel').slick('slickPrev');
             });
             $(document).on('click.subcatArrow', '.category-section-card .slick-next', function() {
+                if ($(this).hasClass('slick-disabled')) return;
                 $(this).closest('.aiz-carousel').slick('slickNext');
             });
         }
@@ -642,7 +697,7 @@
             // ── Subcategory carousel arrow fix ──────────────────────────────
             // Hook slick events BEFORE aiz-core initialises the carousels so
             // we catch init + every breakpoint change.
-            $(document).on('init afterChange breakpoint', '.category-section-card .aiz-carousel', function(e, slick) {
+            $(document).on('init reInit afterChange setPosition breakpoint', '.category-section-card .aiz-carousel', function(e, slick) {
                 forceSubcategoryArrows($(this));
             });
 

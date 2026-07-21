@@ -1224,14 +1224,16 @@ section.ttf-page-group {
     }
 
     .ttf-check-list li::before {
-        height: 18px;
-        width: 18px;
+        height: 16px;
+        width: 16px;
+        font-size: 10px;
     }
 
     .ttf-story-section--split .ttf-story-section__media img {
         padding-top: 10px;
         padding-right: 10px;
         padding-left: 10px;
+        height: 308px;
     }
 }
 
@@ -1239,12 +1241,75 @@ section.ttf-page-group {
     .ttf-story-section--split {
         padding-left: 0px !important;
         padding-right: 0px !important;
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
+        padding-top: 10px !impportant;
+        padding-bottom: 0px !important;
     }
 
     .ttf-story-section.ttf-story-section__content {
         padding-right: 10px;
         padding-left: 10px;
+    }
+
+    .ttf-page-group .ttf-grid-column {
+        gap: 0 !important;
+        row-gap: 0 !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+
+    /* Sab split sections se content padding remove */
+    .ttf-story-section--split.is-mobile-content-first>.ttf-story-section__content {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    /* Sirf checklist/Value Proposition section par padding */
+    .ttf-story-section--split.is-mobile-content-first:has(.ttf-check-list)>.ttf-story-section__content {
+        padding-left: 18px !important;
+        padding-right: 18px !important;
+        padding-bottom: 18px !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+
+    /* Sab split sections ki image se padding remove */
+    .ttf-story-section--split>.ttf-story-section__media {
+        padding: 0 !important;
+    }
+
+    .ttf-story-section--split>.ttf-story-section__media img {
+        padding: 0 !important;
+        width: 100% !important;
+        display: block !important;
+    }
+
+    /* Sirf Value Proposition/checklist wale section ki image par padding */
+    .ttf-story-section--split:has(.ttf-check-list)>.ttf-story-section__media {
+        padding: 10px !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .ttf-check-list li {
+        position: relative;
+        padding-left: 34px;
+    }
+
+    .ttf-check-list li::before {
+        top: 30% !important;
+        transform: translateY(-50%);
+    }
+
+    .ttf-story-section--full-width .ttf-story-section__full-content h2 {
+        font-size: 24px !important;
+        line-height: 32.5px !important;
+        margin-bottom: 18px !important;
+    }
+
+    .ttf-story-section--split .ttf-story-section__content h2 {
+        margin-bottom: 12px !important;
+        line-height: 1.25 !important;
     }
 }

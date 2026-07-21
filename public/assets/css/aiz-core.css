@@ -11123,21 +11123,28 @@ div.footable-loader>span.fooicon:after {
     padding: 0;
     border: 0;
     font-size: 0.875rem;
-    border-radius: 50% !important;
-    color: var(--dark);
+    border-radius: 4px !important;
+    color: #685c4e;
+    border: 1px solid #685c4e;
 }
 
 .pagination .page-item {
     margin: 0 10px 0 0;
 }
 
+.aiz-pagination .pagination {
+    justify-content: center;
+}
+
 .pagination .active .page-link {
-    background-color: var(--primary);
-    border-color: var(--primary);
+    background-color: #685c4e;
+    border-color: #685c4e;
+    border-radius: 4px !important;
 }
 
 .pagination .page-link:hover {
-    background-color: var(--primary);
+    background-color: #685c4e;
+    border-color: #685c4e;
     color: #fff;
 }
 
