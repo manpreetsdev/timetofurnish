@@ -190,6 +190,7 @@
                                                         <img class="img-fit m-auto has-transition"
                                                             src="{{ $slider_src ?: static_asset('assets/img/placeholder.jpg') }}"
                                                             alt="{{ env('APP_NAME') }} slide"
+                                                            @if($key == 0) fetchpriority="high" @else loading="lazy" decoding="async" @endif
                                                             onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
                                                     </div>
                                                 </a>
@@ -223,6 +224,7 @@
                                                         <img class="d-block mw-100 img-fit overflow-hidden h-180px h-md-320px h-lg-460px overflow-hidden"
                                                             src="{{ $slider_src ?: static_asset('assets/img/placeholder-rect.jpg') }}"
                                                             alt="{{ env('APP_NAME') }} slide"
+                                                            @if($key == 0) fetchpriority="high" @else loading="lazy" decoding="async" @endif
                                                             onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
                                                     </a>
                                                 </div>
@@ -255,7 +257,7 @@
                                             <a href="{{ $banner_links[$key] ?? '#' }}" class="d-block text-reset overflow-hidden">
                                                 <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"
                                                     data-src="{{ uploaded_asset($imgId) }}" alt="{{ env('APP_NAME') }} banner"
-                                                    class="img-fluid lazyload w-100 has-transition"
+                                                    class="img-fluid lazyload w-100 has-transition" loading="lazy" decoding="async"
                                                     onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
                                             </a>
                                         </div>
@@ -386,7 +388,7 @@
                                                                 title="{{ $flash_deal_product->product->getTranslation('name') }}">
                                                                 <!-- Image -->
                                                                 <img src="{{ get_image($flash_deal_product->product->thumbnail) }}"
-                                                                    class="lazyload h-60px h-md-100px h-lg-120px mw-100 mx-auto has-transition"
+                                                                    class="lazyload h-60px h-md-100px h-lg-120px mw-100 mx-auto has-transition" loading="lazy" decoding="async"
                                                                     alt="{{ $flash_deal_product->product->getTranslation('name') }}"
                                                                     onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
                                                                 <!-- Price -->

@@ -1,5 +1,7 @@
 @extends('frontend.layouts.app')
 
+@section('meta_title') Track Your Order | {{ get_setting('website_name') }} @stop
+@section('meta_description') Track the status of your order. @stop
 @section('content')
     <section class="pt-4 mb-4">
         <div class="container text-center">

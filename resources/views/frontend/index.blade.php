@@ -1,6 +1,7 @@
 @extends('frontend.layouts.app')
 
 @section('content')
+<h1 class="d-none">{{ get_setting('website_name') }} - Premium Furniture Online</h1>
     <!-- Sliders & Today's deal -->
     <div class="home-banner-area mb-3" style="">
         <div class="container">

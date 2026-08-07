@@ -7,316 +7,455 @@
 @section('meta_keywords'){{ $page->tags }}@stop
 
 @section('meta')
-    <!-- Schema.org markup for Google+ -->
-    <meta itemprop="name" content="{{ $page->meta_title }}">
-    <meta itemprop="description" content="{{ $page->meta_description }}">
-    <meta itemprop="image" content="{{ uploaded_asset($page->meta_image) }}">
 
-    <!-- Twitter Card data -->
-    <meta name="twitter:card" content="website">
-    <meta name="twitter:site" content="@publisher_handle">
-    <meta name="twitter:title" content="{{ $page->meta_title }}">
-    <meta name="twitter:description" content="{{ $page->meta_description }}">
-    <meta name="twitter:creator" content="@author_handle">
-    <meta name="twitter:image" content="{{ uploaded_asset($page->meta_image) }}">
+<!-- Schema.org markup for Google+ -->
+<meta itemprop="name" content="{{ $page->meta_title }}">
+<meta itemprop="description" content="{{ $page->meta_description }}">
+<meta itemprop="image" content="{{ uploaded_asset($page->meta_image) }}">
 
-    <!-- Open Graph data -->
-    <meta property="og:title" content="{{ $page->meta_title }}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="{{ URL($page->slug) }}" />
-    <meta property="og:image" content="{{ uploaded_asset($page->meta_image) }}" />
-    <meta property="og:description" content="{{ $page->meta_description }}" />
-    <meta property="og:site_name" content="{{ env('APP_NAME') }}" />
+<!-- Twitter Card data -->
+<meta name="twitter:card" content="website">
+<meta name="twitter:site" content="@publisher_handle">
+<meta name="twitter:title" content="{{ $page->meta_title }}">
+<meta name="twitter:description" content="{{ $page->meta_description }}">
+<meta name="twitter:creator" content="@author_handle">
+<meta name="twitter:image" content="{{ uploaded_asset($page->meta_image) }}">
+
+<!-- Open Graph data -->
+<meta property="og:title" content="{{ $page->meta_title }}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ URL($page->slug) }}" />
+<meta property="og:image" content="{{ uploaded_asset($page->meta_image) }}" />
+<meta property="og:description" content="{{ $page->meta_description }}" />
+<meta property="og:site_name" content="{{ env('APP_NAME') }}" />
 @endsection--}}
 
 @section('content')
-<section class="pt-4 mb-4  breadcrumb-banner">
-    <div class="container text-center">
-        <div class="row">
-          {{--  <div class="col-lg-6 text-center text-lg-left">
-                <h1 class="fw-600 h4">Contact Us</h1>
-            </div>--}}
-            <div class="col-lg-12">
-                <ul class="breadcrumb bg-transparent p-0 justify-content-center justify-content-lg-center  breadcrumbfont">
-                    <li class="breadcrumb-item has-transition opacity-50 hov-opacity-100">
-                        <a class="text-reset" href="{{ route('home') }}">{{ translate('Home')}}</a>
+<section class="contact-banner">
+    <div class="contact-overlay">
+        <div class="container">
+            <div class="banner-content">
+
+                <h1>Contact Us</h1>
+
+                <ul class="breadcrumb justify-content-center bg-transparent p-0 mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('home') }}">Home</a>
                     </li>
-                    <li class="text-dark fw-600 breadcrumb-item">
-                        "Contact Us"
+
+                    <li class="breadcrumb-item active">
+                        Contact Us
                     </li>
                 </ul>
+
             </div>
         </div>
     </div>
 </section>
 
-<section class="mb-5">
-	<div class="container">
-        <div class="modern-contact-card shadow-sm overflow-hidden mx-auto">
-            <div class="row no-gutters">
+<section class="contact-section py-5">
+    <div class="container">
+        <div class="row g-5 align-items-start contactdetail">
 
-                <!-- Left Column: Contact Info -->
-                <div class="col-md-5 modern-contact-info d-flex flex-column justify-content-between p-4 p-md-5">
+            <!-- Left Side -->
+            <div class="col-lg-5">
+
+                <h2 class="contact-heading">
+                    We'd <span>Love</span> to Hear From You
+                </h2>
+
+                <p class="contact-text">
+                    Have any questions about our furniture, custom orders, or shipping?
+                    Reach out to us and we'll get back to you as soon as possible.
+                </p>
+
+                <!-- Office -->
+                <div class="info-card">
+                    <div class="icon-box">
+                        <i class="fas fa-location-dot"></i>
+                    </div>
+
                     <div>
-                        <span class="contact-eyebrow text-uppercase fw-700 fs-12">Get in Touch</span>
-                        <h2 class="mt-2 mb-4 fw-800">We'd Love to Hear From You</h2>
-                        <p class="mb-5 fs-14">Have any questions about our furniture, custom orders, or shipping? Reach out to us and we'll get back to you as soon as possible.</p>
+                        <h5>Our Office</h5>
 
-                        <div class="modern-info-items">
-								
-                            <div class="d-flex align-items-start mb-2">
-                                <div class="modern-info-icon mr-3 d-flex align-items-center justify-content-center">
-                                    <i class="las la-map-marker" style="font-size: 22px;"></i>
-                                </div>
-                                <div>
-                                    <h5 class="fs-14 fw-700 mb-1">Our Office</h5>
-                                    <p class="mb-0 fs-13">20 Wenlock Road<br>London, England, N1 7GU</p>
-									<p class="c"> <strong> Registered VAT NO :</strong><b> 519774256</b></p>
-									
-                                </div>
-                            </div>
-							
-						
-							
+                        <p>
+                            20 Wenlock Road London,
+                            England, N1 7GU
+                        </p>
 
-                            <div class="d-flex align-items-start mb-4">
-                                <div class="modern-info-icon mr-3 d-flex align-items-center justify-content-center">
-                                    <i class="lab la-whatsapp" style="font-size: 22px;"></i>
-                                </div>
-                                <div>
-                                    <h5 class="fs-14 fw-700 mb-1">WhatsApp Chat</h5>
-                                    <p class="mb-0 fs-13">
-                                        <a href="https://wa.me/447751510365" target="_blank" rel="noopener">+44 7751 510365</a>
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="d-flex align-items-start">
-                                <div class="modern-info-icon mr-3 d-flex align-items-center justify-content-center">
-                                    <i class="las la-envelope" style="font-size: 22px;"></i>
-                                </div>
-                                <div>
-                                    <h5 class="fs-14 fw-700 mb-1">Email Support</h5>
-                                    <p class="mb-0 fs-13">
-                                        <a href="mailto:askus@timetofurnish.com">askus@timetofurnish.com</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        <small>
+                            <strong class="reg">Registered VAT NO:</strong>
+                            519774256
+                        </small>
                     </div>
                 </div>
 
-                <!-- Right Column: Contact Form -->
-                <div class="col-md-7 modern-contact-form p-4 p-md-5 bg-white">
-                    @if(session()->has('success'))
-                        <div class="alert alert-success border-0 rounded-3 px-4 py-3 mb-4 fs-14" style="background-color: #f0fdf4; color: #166534;">
-                            <i class="las la-check-circle mr-2" style="font-size: 16px;"></i>{{ session('success') }}
-                        </div>
-                    @endif
+                <!-- Whatsapp -->
+                <div class="info-card">
+                    <div class="icon-box">
+                        <i class="fab fa-square-whatsapp"></i>
+                    </div>
 
-                    @if(session('error'))
-                        <div class="alert alert-danger border-0 rounded-3 px-4 py-3 mb-4 fs-14" style="background-color: #fef2f2; color: #991b1b;">
-                            <i class="las la-exclamation-circle mr-2" style="font-size: 16px;"></i>{{ session('error') }}
-                        </div>
-                    @endif
+                    <div>
+                        <h5>WhatsApp Chat</h5>
 
-                    <form action="{{route('contact_us.submit')}}" method="POST">
-                        @csrf
-                        <h3 class="fw-800 mb-4" style="color: #39322a; font-size: 24px;">Send us a Message</h3>
+                        <a href="https://wa.me/447751510365">
+                            +44 7751 510365
+                        </a>
+                    </div>
+                </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-4">
-                                    <label class="fs-12 fw-700 mb-2 text-uppercase tracking-wider" style="color: #4f4238; font-size: 11px;">Full Name</label>
-                                    <input type="text" required class="form-control" name="name" placeholder="Full Name">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-4">
-                                    <label class="fs-12 fw-700 mb-2 text-uppercase tracking-wider" style="color: #4f4238; font-size: 11px;">Email Address</label>
-                                    <input type="email" required class="form-control" name="email" placeholder="Email Address">
-                                </div>
-                            </div>
-                        </div>
+                <!-- Email -->
+                <div class="info-card">
+                    <div class="icon-box">
+                        <i class="fas fa-envelope"></i>
+                    </div>
 
-                        <div class="form-group mb-4">
-                            <label class="fs-12 fw-700 mb-2 text-uppercase tracking-wider" style="color: #4f4238; font-size: 11px;">Phone Number</label>
-                            <input type="tel" required class="form-control" name="phone" placeholder="Phone Number">
-                        </div>
+                    <div>
+                        <h5>Email Support</h5>
 
-                        <div class="form-group mb-4">
-                            <label class="fs-12 fw-700 mb-2 text-uppercase tracking-wider" style="color: #4f4238; font-size: 11px;">Your Message</label>
-                            <textarea required class="form-control" name="message" rows="5" placeholder="Type your Message..."></textarea>
-                        </div>
-
-                        <div class="mt-4 pt-2">
-                            <button type="submit" class="btn btn-modern-submit w-100 py-3 fw-700 text-uppercase tracking-wider fs-13">
-                                Send Message <i class="las la-paper-plane ml-2"></i>
-                            </button>
-                        </div>
-                    </form>
+                        <a href="mailto:askus@timetofurnish.com">
+                            askus@timetofurnish.com
+                        </a>
+                    </div>
                 </div>
 
             </div>
+
+            <!-- Right Side -->
+            <div class="col-lg-7">
+
+                <div class="contact-form-box">
+
+                    <h3>
+                        Send us a <span>message</span>
+                    </h3>
+
+                    <p class="mb-4">
+                        Tell us how we can help, and we'll respond soon.
+                    </p>
+
+                    <form action="{{ route('contact_us.submit') }}" method="POST">
+                        @csrf
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <label>First Name*</label>
+
+                                <input
+                                    type="text"
+                                    name="first_name"
+                                    class="form-control"
+                                    required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label>Last Name*</label>
+
+                                <input
+                                    type="text"
+                                    name="last_name"
+                                    class="form-control"
+                                    required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label>Email Address*</label>
+
+                                <input
+                                    type="email"
+                                    name="email"
+                                    class="form-control"
+                                    required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label>Phone Number*</label>
+
+                                <input
+                                    type="text"
+                                    name="phone"
+                                    class="form-control"
+                                    required>
+                            </div>
+
+                            <div class="col-12 mb-4">
+                                <label>Your Message*</label>
+
+                                <textarea
+                                    rows="5"
+                                    name="message"
+                                    class="form-control"
+                                    required></textarea>
+                            </div>
+
+                            <div class="col-12">
+
+                                <button class="contact-btn w-100">
+                                    Subscribe
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
         </div>
-	</div>
+    </div>
 </section>
 
 <style>
-.modern-contact-card {
-    background: #ffffff;
-    border-radius: 18px;
-    border: 1px solid #eadfd3;
-    overflow: hidden;
-    box-shadow: 0 18px 45px rgba(104, 91, 78, 0.08) !important;
-    max-width: 1000px;
-}
-
-.modern-contact-info {
-    background: linear-gradient(145deg, #fff9f2 0%, #f3e8da 100%) !important;
-    color: #39322a;
-    position: relative;
-    overflow: hidden;
-}
-
-.modern-contact-info::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(104, 91, 78, 0.08) 0%, rgba(104, 91, 78, 0) 68%);
-    pointer-events: none;
-}
-
-.contact-eyebrow {
-    color: #8a6f4d;
-    letter-spacing: 1.5px;
-}
-
-.modern-contact-info h2 {
-    color: #2f2924;
-    font-size: 28px;
-    line-height: 1.2;
-}
-
-.modern-contact-info p {
-    color: #6f6257;
-    line-height: 1.6;
-}
-
-.modern-info-items h5 {
-    color: #3d342d;
-}
-
-.modern-info-icon {
-    width: 44px;
-    height: 44px;
-    background: #ffffff;
-    border: 1px solid #eadfd3;
-    border-radius: 50%;
-    color: #685b4e;
-    flex-shrink: 0;
-    box-shadow: 0 8px 18px rgba(104, 91, 78, 0.08);
-}
-
-.modern-info-items a {
-    color: #685b4e;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    transition: color 0.2s ease;
-}
-
-.modern-info-items a:hover {
-    color: #3d342d;
-}
-
-.modern-contact-form {
-    background-color: #ffffff;
-}
-
-.modern-contact-form .form-group label {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-.modern-contact-form .form-control {
-    background: #fdfcfa;
-    border: 1.5px solid #eadfd3;
-    border-radius: 8px;
-    padding: 12px 16px;
-    height: auto;
-    font-size: 14px;
-    color: #39322a;
-    transition: all 0.3s ease;
-}
-
-.modern-contact-form .form-control::placeholder {
-    color: #a3968a;
-}
-
-.modern-contact-form .form-control:focus {
-    background: #ffffff;
-    border-color: #685b4e;
-    box-shadow: 0 0 0 4px rgba(104, 91, 78, 0.12);
-    outline: none;
-}
-
-.modern-contact-form textarea.form-control {
-    resize: none;
-}
-
-.btn-modern-submit {
-    background-color: #685b4e !important;
-    color: #ffffff !important;
-    border: none;
-    border-radius: 30px !important;
-    box-shadow: 0 8px 20px rgba(104, 91, 78, 0.15);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.btn-modern-submit:hover {
-    background-color: #53483e !important;
-    color: #ffffff !important;
-    transform: translateY(-2px);
-    box-shadow: 0 12px 24px rgba(104, 91, 78, 0.25);
-    text-decoration: none !important;
-}
-
-.btn-modern-submit:active {
-    transform: translateY(0);
-}
-
-@media (max-width: 767.98px) {
-    .modern-contact-card {
-        border-radius: 14px;
+    .contact-section {
+        background: #FAF8F5;
+        padding: 70px 0;
     }
 
-    .modern-contact-info,
-    .modern-contact-form {
-        padding: 24px !important;
+    .contact-section .container {
+        max-width: 1180px;
     }
 
-    .modern-contact-info h2 {
-        font-size: 24px;
+    .contact-heading {
+        font-family: 'Playfair Display', serif;
+        font-size: 28px;
+        line-height: 42px;
+        font-weight: 700;
+        color: #221a16;
+
+        max-width: 360px;
     }
 
-    .modern-contact-info p {
-        margin-bottom: 10px !important;
+    .contact-heading span {
+        color: #c78c43;
     }
 
-    .modern-contact-form h3 {
-        font-size: 21px !important;
+    .contact-text {
+        max-width: 420px;
+        font-size: 15px;
+        line-height: 21px;
+        color: #666;
+        margin-bottom: 28px;
     }
 
-    .btn-modern-submit {
-        padding-top: 13px !important;
-        padding-bottom: 13px !important;
+    .info-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        border: 1px solid #e6ddd4;
+        border-radius: 8px;
+
+        padding: 18px 20px;
+        margin-bottom: 28px;
+        min-height: 82px;
     }
-	
-}
-	.c{
-	color:black;
-	}
+
+    .icon-box {
+        width: 40px;
+        height: 40px;
+        border-radius: 6px;
+        background: #f5ebdf;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #9d7754;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .info-card h5 {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .info-card p,
+    .info-card a {
+        font-size: 14px;
+        color: #666;
+        margin: 0;
+        text-decoration: none;
+    }
+
+    .info-card small {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        text-decoration: underline;
+
+    }
+
+    .contact-form-box {
+
+        border: 1px solid #e6ddd4;
+        border-radius: 8px;
+        padding: 28px;
+    }
+
+    .contact-form-box h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .contact-form-box h3 span {
+        color: #c78c43;
+    }
+
+    .contact-form-box p {
+        font-size: 15px;
+        color: #666;
+        margin-bottom: 22px;
+    }
+
+    .contact-form-box label {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 6px;
+    }
+
+    .contact-form-box .form-control {
+        height: 42px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-shadow: none;
+        font-size: 14px;
+        background: transparent;
+    }
+
+    .contact-form-box textarea.form-control {
+        height: 90px !important;
+    }
+
+    .contact-btn {
+        width: 100%;
+        height: 46px;
+        border: none;
+        border-radius: 5px;
+        background: #756657;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .contact-btn:hover {
+        background: #67584c;
+    }
+
+    .icon-box {
+        width: 40px;
+        height: 40px;
+        background: #F7ECDD;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .icon-box i {
+        font-size: 18px;
+        color: #9A7855;
+    }
+
+    .reg {
+        font-weight: 600;
+    }
+
+    .contact-banner {
+        background:url('{{ static_asset("assets/img/contact-banner.jpg") }}') center center/cover no-repeat;
+        height: 300px;
+        position: relative;
+    }
+
+    .contact-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, .35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .banner-content {
+        text-align: center;
+    }
+
+    .banner-content h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 48px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 12px;
+    }
+
+    .banner-content .breadcrumb {
+        justify-content: center;
+    }
+
+    .banner-content .breadcrumb-item,
+    .banner-content .breadcrumb-item a {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    .banner-content .breadcrumb-item+.breadcrumb-item::before {
+        content: "»";
+        color: #fff;
+        padding: 0 10px;
+    }
+
+    .banner-content .breadcrumb-item.active {
+        color: #fff;
+    }
+
+    .contactdetail {
+        margin: 0 122px;
+    }
+
+    .contactdetail>.col-lg-5 {
+        padding-right: 45px;
+    }
+
+    .contactdetail>.col-lg-7 {
+        padding-left: 16px;
+    }
+
+    @media (max-width: 767px) {
+        .contactdetail {
+            margin: 0;
+        }
+
+        .contactdetail>.col-lg-5 {
+            padding: 0px;
+        }
+
+        .info-card {
+            padding: 7px 7px;
+        }
+
+        .contactdetail>.col-lg-7 {
+            padding: 0px;
+        }
+
+        .contact-form-box {
+            padding: 20px 15px;
+
+        }
+
+        .contact-form-box h3 {
+            font-size: 20px;
+        }
+
+        .contact-heading {
+            font-size: 22px;
+        }
+    }
 </style>
 @endsection

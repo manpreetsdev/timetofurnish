@@ -5,19 +5,34 @@
 
 @section('content')
 <?php
-    $bannerImage = get_setting('team_members_banner_image');
-    $bannerBg = $bannerImage
-        ? (is_numeric($bannerImage) ? uploaded_asset($bannerImage) : asset($bannerImage))
-        : asset('assets/img/team/team-banner.png');
+$bannerImage = get_setting('team_members_banner_image');
+$bannerBg = $bannerImage
+    ? (is_numeric($bannerImage) ? uploaded_asset($bannerImage) : asset($bannerImage))
+    : asset('assets/img/team/team-banner.png');
 
-    $bannerTitle = get_setting('team_members_banner_title', translate('Meet Our Team'));
-    $bannerSubtitle = get_setting('team_members_banner_subtitle', translate('Discover the people who keep Time To Furnish moving.'));
-    $bannerDescription = get_setting('team_members_banner_desc', '');
+$bannerTitle = get_setting('team_members_banner_title', translate('Meet Our Team'));
+$bannerSubtitle = get_setting('team_members_banner_subtitle', translate('Discover the people who keep Time To Furnish moving.'));
+$bannerDescription = get_setting('team_members_banner_desc', '');
 
-    $introSubtitle = get_setting('team_members_intro_subtitle', translate('Welcome to Time To Furnish.'));
-    $introBody = get_setting('team_members_intro_body', "My name is Mrs. H. Kaur, and I am proud to welcome you to a company built on generations of passion, craftsmanship, and trust. Our journey began in the early 1980s, when my father established a furniture business alongside a sawmill in North India. For over two decades, he dedicated his life to the furniture and timber industry, mastering the art of woodworking while earning a reputation for quality and integrity. Growing up around timber, furniture manufacturing, and skilled craftsmen gave me not only valuable knowledge but also a deep appreciation for fine furniture and the people who create it. Inspired by my father's legacy, I always dreamed of building something that would connect exceptional manufacturers directly with customers. As technology transformed the way people shop, we saw an opportunity to remove unnecessary barriers between manufacturers and buyers. That vision became Time To Furnish. Our mission is simple: to bring the UK's finest furniture manufacturers just one click away from every customer. We have created a platform where quality, affordability, and convenience come together. By simplifying the buying process, we also help manufacturers receive faster payments - reducing waiting times from months to just days - allowing them to focus on what they do best: creating outstanding furniture. We proudly partner with some of the UK's leading delivery companies to ensure your furniture arrives safely, quickly, and professionally. Whether you're furnishing your bedroom, living room, dining room, or any other space, we are committed to delivering beautiful, high-quality furniture directly to your doorstep, with professional installation available for your convenience. At Time To Furnish, we believe that everyone deserves stylish, durable, and affordable furniture without compromise. Every product reflects our commitment to craftsmanship, customer satisfaction, and innovation. Thank you for choosing Time To Furnish. We look forward to helping you create a home you'll love for years to come.");
-    $introSignature = get_setting('team_members_intro_signature', "Mrs. H. Kaur\nManaging Director\nTime To Furnish");
+$introSubtitle = get_setting('team_members_intro_subtitle', translate('Welcome from the Managing Director'));
 
+$introBody = get_setting('team_members_intro_body', "My name is Mrs. H. Kaur, and it is my pleasure to welcome you to a company built on generations of craftsmanship, dedication, and trust.
+
+Our story began in the early 1980s when my father established a furniture business alongside a sawmill in North India. For more than two decades, he devoted himself to the furniture and timber industry, earning a reputation for exceptional quality, honest workmanship, and outstanding customer service. Growing up surrounded by skilled craftsmen, premium timber, and furniture manufacturing gave me not only invaluable industry knowledge but also a lifelong passion for creating beautiful furniture.
+
+Inspired by my father's legacy, I envisioned building a business that would connect trusted furniture manufacturers directly with customers. As technology transformed the retail industry, we recognised the opportunity to create a modern marketplace that removes unnecessary barriers between manufacturers and buyers.
+
+That vision became Time To Furnish.
+
+Today, Time To Furnish is a dedicated online furniture marketplace committed to bringing the finest UK furniture manufacturers together with customers across the country. Our goal is simple—to make high-quality furniture more accessible, more affordable, and easier to purchase than ever before.
+
+By streamlining the buying process, we also help manufacturers receive faster payments, reducing delays from months to just days. This allows them to focus on what they do best—designing and crafting exceptional furniture while continuing to invest in quality and innovation.
+
+To provide a complete customer experience, we proudly work with some of the UK's leading delivery partners, ensuring every order is delivered safely, efficiently, and professionally. From bedrooms and living rooms to dining spaces and home offices, we offer a carefully selected collection of furniture designed to suit every style and budget. Professional room-of-choice delivery and assembly services are also available for added convenience.
+
+At Time To Furnish, we believe that everyone deserves stylish, durable, and affordable furniture without compromising on quality. Every product on our platform reflects our commitment to craftsmanship, value, customer satisfaction, and innovation. On behalf of the entire Time To Furnish team, thank you for choosing us. We are honoured to be part of your home furnishing journey and look forward to helping you create beautiful living spaces for many years to come.");
+
+$introSignature = get_setting('team_members_intro_signature', "Mrs. H. Kaur\nManaging Director\n(Time To Furnish)");
 ?>
 
 <style>
@@ -37,9 +52,8 @@
         overflow: hidden;
         padding: 82px 0 74px;
         color: #fff;
-        background:
-            linear-gradient(135deg, rgba(38, 30, 23, 0.78), rgba(104, 91, 78, 0.72)),
-            url('{{ $bannerBg }}');
+        background: linear-gradient(135deg, rgba(38, 30, 23, 0.78), rgba(104, 91, 78, 0.72)),
+        url('{{ $bannerBg }}');
         background-size: cover;
         background-position: center;
     }
@@ -81,6 +95,8 @@
         letter-spacing: -0.03em;
         line-height: 1.02;
         margin-bottom: 14px;
+        font-family: playfair display;
+        text-align: center;
     }
 
     .hero-subtitle,
@@ -117,157 +133,143 @@
         margin-right: auto;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | INTRODUCTION SECTION
+    |--------------------------------------------------------------------------
+    */
     .intro-panel {
-        border-radius: 22px;
-        overflow: hidden;
-        background: #fff;
-        border: 1px solid var(--team-line);
-        box-shadow: var(--team-shadow);
+        position: relative;
+
+        border: 1px solid #E5E0DB;
+        padding: 40px;
+        margin-bottom: 50px;
+        overflow: visible;
+        border-radius: 10px;
     }
 
     .intro-hero {
         position: relative;
-        padding: 46px 36px 18px;
-        background: #fff;
-        border-bottom: 1px solid var(--team-line);
-    }
+        padding: 0;
 
-    .intro-hero::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
+        border-bottom: 0;
     }
 
     .intro-hero-copy {
         position: relative;
         z-index: 1;
-        max-width: 820px;
+        max-width: none;
         width: 100%;
-        text-align: center;
+        text-align: left;
         color: var(--team-primary-dark);
-        margin: 0 auto;
+        margin: 0;
     }
 
-    .intro-hero-copy .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 7px 14px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.84);
-        color: var(--team-primary);
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        font-size: 0.72rem;
+    .intro-heading-wrapper {
+        position: absolute;
+        top: -18px;
+        left: 28px;
+
+        padding: 0 14px;
+        z-index: 20;
+    }
+
+
+
+    .intro-heading-label {
+        display: block;
+        background: #f8f4ef;
+        font-family: "Playfair Display", serif;
+        font-size: 28px;
         font-weight: 700;
-        margin-bottom: 12px;
-        border: 1px solid rgba(79, 69, 60, 0.1);
+        line-height: 1;
+        color: #393939;
     }
 
     .director-title {
         margin: 0;
-        font-size: 1.9rem;
-        font-weight: 800;
-        letter-spacing: -0.045em;
-        line-height: 1.05;
-        color: var(--team-text);
+        font-family: 'Playfair Display', serif;
+        font-size: 36px;
+        font-weight: 700;
+        line-height: 50px;
+        letter-spacing: 0;
+        color: #393939;
+        margin-bottom: 13px;
+    }
+
+    .director-title-first-letter {
+        color: #C27325;
     }
 
     .director-subtitle {
-        margin: 10px 0 0;
-        color: var(--team-muted);
-        font-size: 1rem;
-    }
-
-    .intro-hero-copy p {
-        margin-bottom: 0;
-        color: var(--team-muted);
-        font-size: 0.98rem;
+        display: none;
     }
 
     .intro-body {
-        padding: 30px 36px 34px;
-        background: #fff;
-    }
+        padding: 0;
 
-    .intro-body-title {
-        margin: 0 0 12px;
-        color: var(--team-text);
-        font-size: 0.86rem;
-        font-weight: 800;
-        letter-spacing: 0.12em;
-        text-align: center;
-        text-transform: uppercase;
     }
 
     .intro-body-subtitle {
-        margin: 0 0 14px;
-        color: var(--team-text);
-        font-size: 1.2rem;
-        font-weight: 800;
-        letter-spacing: -0.04em;
-        text-align: center;
-    }
-
-    .intro-message {
-        max-width: 840px;
-        margin: 0 auto;
-        position: relative;
-        padding: 12px 0 0;
+        display: none;
     }
 
     .decor-line {
-        width: 150px;
-        height: 20px;
-        margin: 14px auto 0;
+        display: none;
+    }
+
+    .intro-message {
+        max-width: none;
+        margin: 0;
         position: relative;
-    }
-
-    .decor-line::before,
-    .decor-line::after {
-        content: '';
-        position: absolute;
-        top: 10px;
-        width: 60px;
-        height: 1px;
-        background: var(--team-primary);
-        opacity: 0.72;
-    }
-
-    .decor-line::before {
-        left: 0;
-    }
-
-    .decor-line::after {
-        right: 0;
-    }
-
-    .decor-line span {
-        width: 9px;
-        height: 9px;
-        background: var(--team-primary);
-        display: block;
-        transform: rotate(45deg);
-        margin: 6px auto 0;
+        padding: 0;
     }
 
     .intro-message-body {
-        color: #4a4239;
-        line-height: 2;
-        text-align: center;
-        font-size: 0.96rem;
+        color: #393939;
+        line-height: 1.85;
+        text-align: left;
+        font-size: 1rem;
+        font-family: "Poppins", sans-serif;
+    }
+
+    .intro-message-body p {
+        margin: 0 0 22px;
+    }
+
+    .intro-message-body p:last-child {
+        margin-bottom: 0;
+    }
+
+    .intro-message-body strong {
+        font-weight: 700;
+    }
+
+    .intro-message-body .intro-opening {
+        font-weight: 600;
+    }
+
+    .intro-message-body .intro-heading {
+        display: block;
+        margin: 24px 0 12px;
+        color: var(--team-text);
+        font-family: "Playfair Display", Georgia, serif;
+        font-size: 1.55rem;
+        font-weight: 700;
+        line-height: 1.3;
     }
 
     .signature-block {
-        margin: 24px auto 0;
-        padding-top: 18px;
-        border-top: 1px solid rgba(79, 69, 60, 0.1);
-        text-align: center;
+        margin-top: 20px;
+        padding-top: 0;
+        border-top: none;
+        text-align: left;
         white-space: pre-line;
-        color: var(--team-primary-dark);
+        color: #393939;
+        font-size: 18px;
         font-weight: 700;
-        line-height: 1.55;
+        line-height: 33px;
+        letter-spacing: 0;
     }
 
     .team-grid {
@@ -412,15 +414,33 @@
 
     @media (max-width: 767.98px) {
         .intro-panel {
-            border-radius: 22px;
+            border-radius: 10px;
+            padding: 10px;
         }
 
         .intro-hero {
-            padding: 30px 18px 14px;
+            padding: 0;
         }
 
         .intro-body {
-            padding: 22px 18px 26px;
+            padding: 0;
+        }
+
+        .director-title {
+            font-size: 1.55rem;
+        }
+
+        .intro-message-body {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .intro-message-body .intro-heading {
+            font-size: 1.3rem;
+        }
+
+        .signature-block {
+            font-size: 0.9rem;
         }
 
         .team-member-card {
@@ -446,19 +466,6 @@
         .team-member-designation {
             font-size: 0.92rem;
         }
-
-        .director-title {
-            font-size: 1.55rem;
-        }
-
-        .intro-message {
-            padding-top: 10px;
-        }
-
-        .intro-message-body {
-            font-size: 0.95rem;
-            line-height: 1.9;
-        }
     }
 
     @media (min-width: 768px) {
@@ -477,7 +484,7 @@
         }
 
         .team-mobile-carousel-wrap .slick-list {
-                    border-radius: 20px;
+            border-radius: 20px;
         }
 
         .team-mobile-carousel-wrap .slick-track {
@@ -490,7 +497,7 @@
             display: flex !important;
         }
 
-        .team-mobile-carousel-wrap .slick-slide > div {
+        .team-mobile-carousel-wrap .slick-slide>div {
             display: flex !important;
             flex: 1 1 auto !important;
             width: 100% !important;
@@ -515,39 +522,91 @@
             font-size: 1.45rem;
         }
 
-        .intro-hero {
-            padding: 26px 14px 12px;
-        }
-
-        .intro-body {
-            padding: 20px 14px 24px;
-        }
-
         .director-title {
             font-size: 1.35rem;
         }
+    }
 
-        .intro-body-subtitle {
-            font-size: 1.05rem;
-        }
+    .team-hero {
+        position: relative;
+        text-align: center;
+    }
+
+    .team-hero .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-family: "Playfair Display", serif;
+        font-size: 40px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 10px;
+    }
+
+    .hero-subtitle {
+        display: none;
+    }
+
+    .team-hero .breadcrumb {
+        justify-content: center;
+    }
+
+    .team-hero .breadcrumb-item,
+    .team-hero .breadcrumb-item a {
+        color: #fff !important;
+        font-size: 18px;
+        font-weight: 500;
+        text-decoration: none;
+        font-family: Be Vietnam Pro;
+    }
+
+    .team-hero .breadcrumb-item+.breadcrumb-item::before {
+        color: #fff;
+        content: "»";
     }
 </style>
 
 <div class="team-page">
+
     <section class="team-hero">
         <div class="container">
             <div class="row">
-                <div class="col-lg-9 col-xl-8">
-                    <div class="hero-pill">{{ translate('Meet the people behind the Time To Furnish') }}</div>
-                    <h1 class="display-5 hero-title">{{ $bannerTitle }}</h1>
-                    <p class="lead hero-subtitle mb-3">{{ $bannerSubtitle }}</p>
+                <div class="col-lg-9 col-xl-12">
+                    {{-- <div class="hero-pill">
+                        
+                    </div>--}}
+
+                    <h1 class="display-5 hero-title">
+                        {{ $bannerTitle }}
+                    </h1>
+
+                    <p class="lead hero-subtitle mb-3">
+                        {{ $bannerSubtitle }}
+                    </p>
+
                     @if($bannerDescription)
-                        <p class="hero-description mb-4">{{ $bannerDescription }}</p>
+                    <p class="hero-description mb-4">
+                        {{ $bannerDescription }}
+                    </p>
                     @endif
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb bg-transparent px-0 mb-0" style="--bs-breadcrumb-divider: '>'; ">
-                            <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-white text-decoration-none">{{ translate('Home') }}</a></li>
-                            <li class="breadcrumb-item active text-white-50" aria-current="page">{{ translate('Meet the Team') }}</li>
+
+                    <nav aria-label="breadcrumb" class="d-flex justify-content-center">
+                        <ol class="breadcrumb bg-transparent px-0 mb-0"
+                            style="--bs-breadcrumb-divider: '»';">
+
+                            <li class="breadcrumb-item">
+                                <a href="{{ route('home') }}" class="text-white">
+                                    {{ translate('Home') }}
+                                </a>
+                            </li>
+
+                            <li class="breadcrumb-item active text-white"
+                                aria-current="page">
+                                {{ translate('Meet the Team') }}
+                            </li>
+
                         </ol>
                     </nav>
                 </div>
@@ -556,141 +615,333 @@
     </section>
 
     <section class="team-content">
+
         <div class="container">
-            <!-- <div class="row justify-content-center mb-4">
-                <div class="col-xl-9 col-lg-10 text-center">
-                    <p class="section-kicker">{{ translate('Welcome') }}</p>
-                    <h2 class="section-title">{{ translate('Welcome from the Managing Director') }}</h2>
-                    <p class="section-subtitle">{{ translate('A clean introduction with the full message available on demand.') }}</p>
-                </div>
-            </div> -->
 
-            <div class="intro-panel mb-5">
-                <div class="intro-hero">
-                    <div class="intro-hero-copy">
-                        <div class="eyebrow">{{ translate('Managing Director') }}</div>
-                        <h3 class="director-title">{{ translate('A Message from our Managing Director') }}</h3>
-                        <p class="director-subtitle">{{ $introSubtitle }}</p>
+            <div class="intro-panel1 mb-5">
+
+                <div class="intro-panel">
+
+                    <div class="intro-heading-wrapper">
+                        <span class="intro-heading-label">
+                            {{ translate('Mrs H Kaur') }}
+                        </span>
                     </div>
-                </div>
 
-                <div class="intro-body">
-                    <p class="intro-body-subtitle">{{ translate('Mrs H Kaur') }}</p>
-                    <div class="decor-line"><span></span></div>
-                    <div class="intro-message">
-                        <div class="intro-message-body">{!! nl2br(e($introBody)) !!}</div>
+                    <div class="intro-hero">
+
+                        <div class="intro-hero-copy">
+
+                            <h3 class="director-title">
+                                A <span class="director-title-first-letter">Message</span>
+                                from our Managing Director
+                            </h3>
+
+                        </div>
+
                     </div>
-                    <div class="signature-block">{{ $introSignature }}</div>
-                </div>
-            </div>
 
-            <div class="row justify-content-center mb-4">
-                <div class="col-xl-9 col-lg-10 text-center">
-                    <p class="section-kicker">{{ translate('Meet our dedicated team') }}</p>
-                    <h2 class="section-title">{{ translate('Team Members') }}</h2>
-                    <div class="decor-line"><span></span></div>
-                </div>
-            </div>
 
-            @if($team_members->isEmpty())
+                    <div class="intro-body">
+
+                        <div class="intro-message">
+
+                            <div class="intro-message-body">
+
+                                <p class="intro-opening">
+                                    My name is Mrs. H. Kaur, and it is my pleasure to welcome you to a company built on generations of craftsmanship, dedication, and trust.
+                                </p>
+
+                                <p>
+                                    Our story began in the early 1980s when my
+                                    <strong>father</strong>
+                                    established a furniture business alongside a sawmill in North India. For more than two decades, he devoted himself to the furniture and timber industry, earning a reputation for exceptional quality, honest workmanship, and outstanding customer service. Growing up surrounded by skilled craftsmen, premium timber, and furniture manufacturing gave me not only invaluable industry knowledge but also a lifelong passion for creating beautiful furniture.
+                                </p>
+
+                                <p>
+                                    Inspired by my
+                                    <strong>father's legacy</strong>,
+                                    I envisioned building a business that would connect trusted furniture manufacturers directly with customers. As technology transformed the retail industry, we recognised the opportunity to create a modern marketplace that removes unnecessary barriers between manufacturers and buyers.
+                                </p>
+
+                                <span class="intro-heading">
+                                    That vision became Time To Furnish.
+                                </span>
+
+                                <p>
+                                    Today, Time To Furnish is a dedicated online furniture marketplace committed to bringing the finest UK furniture manufacturers together with customers across the country. Our goal is simple—to make high-quality furniture more accessible, more affordable, and easier to purchase than ever before.
+                                </p>
+
+                                <p>
+                                    By streamlining the buying process, we also help manufacturers receive faster payments, reducing delays from months to just days. This allows them to focus on what they do best—designing and crafting exceptional furniture while continuing to invest in quality and innovation.
+                                </p>
+
+                                <p>
+                                    To provide a complete
+                                    <strong>customer experience</strong>,
+                                    we proudly work with some of the UK's leading delivery partners, ensuring every order is delivered safely, efficiently, and professionally. From
+                                    <strong>bedrooms and living rooms</strong>
+                                    to dining spaces and
+                                    <strong>home offices</strong>,
+                                    we offer a carefully selected collection of furniture designed to suit every style and budget. Professional room-of-choice delivery and assembly services are also available for added convenience.
+                                </p>
+
+                                <p>
+                                    At Time To Furnish, we believe that everyone deserves stylish, durable, and affordable furniture without compromising on quality. Every product on our platform reflects our commitment to craftsmanship, value, customer satisfaction, and innovation. On behalf of the entire Time To Furnish team, thank you for choosing us. We are honoured to be part of your home furnishing journey and look forward to helping you create beautiful living spaces for many years to come.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <div class="signature-block">
+                            {{ $introSignature }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row justify-content-center mb-4">
+
+                    <div class="col-xl-9 col-lg-10 text-center">
+
+                        <p class="section-kicker">
+                            {{ translate('Meet our dedicated team') }}
+                        </p>
+
+                        <h2 class="section-title">
+                            {{ translate('Team Members') }}
+                        </h2>
+
+                        <div class="decor-line">
+                            <span></span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                @if($team_members->isEmpty())
+
                 <div class="alert team-empty mb-0">
                     {{ translate('No team members have been added yet.') }}
                 </div>
-            @else
-                <div class="row g-4 team-grid team-desktop-grid" style="row-gap: 1.5rem;">
+
+                @else
+
+                <div class="row g-4 team-grid team-desktop-grid"
+                    style="row-gap: 1.5rem;">
+
                     @foreach($team_members as $member)
+
+                    @php
+
+                    $initial = strtoupper(substr($member->name, 0, 1));
+
+                    $bio = $member->bio
+                    ?: translate('No biography added yet.');
+
+                    $photoUrl = null;
+
+                    if ($member->photo) {
+
+                    if (is_numeric($member->photo)) {
+
+                    $photoUrl = uploaded_asset($member->photo);
+
+                    } elseif (file_exists(public_path($member->photo))) {
+
+                    $photoUrl = asset($member->photo);
+
+                    }
+
+                    }
+
+                    @endphp
+
+                    <div class="col-12 col-md-6 col-lg-4">
+
+                        <article class="team-member-card h-100">
+
+                            <div class="team-member-card-inner">
+
+                                <div class="team-member-header">
+
+                                    <div class="team-member-monogram">
+
+                                        @if($photoUrl)
+
+                                        <img src="{{ $photoUrl }}"
+                                            alt="{{ $member->name }}"
+                                            class="img-fluid rounded-circle">
+
+                                        @else
+
+                                        {{ $initial }}
+
+                                        @endif
+
+                                    </div>
+
+                                    <div class="team-member-heading">
+
+                                        <h3 class="team-member-name">
+                                            {{ $member->name }}
+                                        </h3>
+
+                                        @if($member->email)
+
+                                        <p class="team-member-email">
+                                            {{ $member->email }}
+                                        </p>
+
+                                        @endif
+
+                                        <div class="team-member-designation">
+                                            {{ $member->designation ?: translate('Team Member') }}
+                                        </div>
+
+                                        <div class="team-member-divider"></div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="team-member-body">
+
+                                    <p class="team-member-bio">
+                                        {{ $bio }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                    @endforeach
+
+                </div>
+
+
+                <div class="team-mobile-carousel-wrap d-md-none">
+
+                    <div class="aiz-carousel sm-gutters-16 arrow-none team-mobile-carousel"
+                        data-items="1"
+                        data-xl-items="1"
+                        data-lg-items="1"
+                        data-md-items="1"
+                        data-sm-items="1"
+                        data-xs-items="1"
+                        data-arrows="false"
+                        data-dots="true"
+                        data-infinite="true"
+                        data-autoplay="true">
+
+                        @foreach($team_members as $member)
+
                         @php
-                            $initial = strtoupper(substr($member->name, 0, 1));
-                            $bio = $member->bio ?: translate('No biography added yet.');
-                            $photoUrl = null;
-                            if ($member->photo) {
-                                if (is_numeric($member->photo)) {
-                                    $photoUrl = uploaded_asset($member->photo);
-                                } elseif (file_exists(public_path($member->photo))) {
-                                    $photoUrl = asset($member->photo);
-                                }
-                            }
+
+                        $initial = strtoupper(substr($member->name, 0, 1));
+
+                        $bio = $member->bio
+                        ?: translate('No biography added yet.');
+
+                        $photoUrl = null;
+
+                        if ($member->photo) {
+
+                        if (is_numeric($member->photo)) {
+
+                        $photoUrl = uploaded_asset($member->photo);
+
+                        } elseif (file_exists(public_path($member->photo))) {
+
+                        $photoUrl = asset($member->photo);
+
+                        }
+
+                        }
+
                         @endphp
-                        <div class="col-12 col-md-6 col-lg-4">
+
+                        <div class="team-carousel-item">
+
                             <article class="team-member-card h-100">
+
                                 <div class="team-member-card-inner">
+
                                     <div class="team-member-header">
+
                                         <div class="team-member-monogram">
+
                                             @if($photoUrl)
-                                                <img src="{{ $photoUrl }}" alt="{{ $member->name }}" class="img-fluid rounded-circle">
+
+                                            <img src="{{ $photoUrl }}"
+                                                alt="{{ $member->name }}"
+                                                class="img-fluid rounded-circle">
+
                                             @else
-                                                {{ $initial }}
+
+                                            {{ $initial }}
+
                                             @endif
+
                                         </div>
+
                                         <div class="team-member-heading">
-                                            <h3 class="team-member-name">{{ $member->name }}</h3>
+
+                                            <h3 class="team-member-name">
+                                                {{ $member->name }}
+                                            </h3>
+
                                             @if($member->email)
-                                                <p class="team-member-email">{{ $member->email }}</p>
+
+                                            <p class="team-member-email">
+                                                {{ $member->email }}
+                                            </p>
+
                                             @endif
-                                            <div class="team-member-designation">{{ $member->designation ?: translate('Team Member') }}</div>
+
+                                            <div class="team-member-designation">
+                                                {{ $member->designation ?: translate('Team Member') }}
+                                            </div>
+
                                             <div class="team-member-divider"></div>
+
                                         </div>
+
                                     </div>
 
                                     <div class="team-member-body">
-                                        <p class="team-member-bio">{{ $bio }}</p>
+
+                                        <p class="team-member-bio">
+                                            {{ $bio }}
+                                        </p>
+
                                     </div>
+
                                 </div>
+
                             </article>
+
                         </div>
-                    @endforeach
-                </div>
 
-                <div class="team-mobile-carousel-wrap d-md-none">
-                    <div class="aiz-carousel sm-gutters-16 arrow-none team-mobile-carousel"
-                        data-items="1" data-xl-items="1" data-lg-items="1" data-md-items="1"
-                        data-sm-items="1" data-xs-items="1" data-arrows="false"
-                        data-dots="true" data-infinite="true" data-autoplay="true">
-                        @foreach($team_members as $member)
-                        @php
-                            $initial = strtoupper(substr($member->name, 0, 1));
-                            $bio = $member->bio ?: translate('No biography added yet.');
-                            $photoUrl = null;
-                            if ($member->photo) {
-                                if (is_numeric($member->photo)) {
-                                    $photoUrl = uploaded_asset($member->photo);
-                                } elseif (file_exists(public_path($member->photo))) {
-                                    $photoUrl = asset($member->photo);
-                                }
-                            }
-                        @endphp
-                            <div class="team-carousel-item">
-                                <article class="team-member-card h-100">
-                                    <div class="team-member-card-inner">
-                                        <div class="team-member-header">
-                                            <div class="team-member-monogram">
-                                                @if($photoUrl)
-                                                    <img src="{{ $photoUrl }}" alt="{{ $member->name }}" class="img-fluid rounded-circle">
-                                                @else
-                                                    {{ $initial }}
-                                                @endif
-                                            </div>
-                                            <div class="team-member-heading">
-                                                <h3 class="team-member-name">{{ $member->name }}</h3>
-                                                @if($member->email)
-                                                    <p class="team-member-email">{{ $member->email }}</p>
-                                                @endif
-                                                <div class="team-member-designation">{{ $member->designation ?: translate('Team Member') }}</div>
-                                                <div class="team-member-divider"></div>
-                                            </div>
-                                        </div>
-
-                                        <div class="team-member-body">
-                                            <p class="team-member-bio">{{ $bio }}</p>
-                                        </div>
-                                    </div>
-                                </article>
-                            </div>
                         @endforeach
+
                     </div>
+
                 </div>
-            @endif
-        </div>
+
+                @endif
+
+            </div>
+
     </section>
+
 </div>
+
 @endsection

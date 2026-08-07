@@ -532,9 +532,9 @@
     <!-- Product Name -->
     <link rel="stylesheet" href="{{ static_asset('assets/css/product-category-info.css') }}">
     <div class="flex-row d-flex align-items-center justify-content-between product-title-row">
-        <h2 class="mb-2 fs-18 lg-fs-26 md-fs-26 fw-700 text-dark product-title-text" style="letter-spacing:0.5px !important">
+        <h1 class="mb-2 fs-18 lg-fs-26 md-fs-26 fw-700 text-dark product-title-text" style="letter-spacing:0.5px !important">
             {{ ucfirst($detailedProduct->getTranslation('name')) }}
-        </h2>
+        </h1>
     </div>
         @include('frontend.product_details.category_info_badge')
 

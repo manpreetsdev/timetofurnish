@@ -1,5 +1,5 @@
 @php
-    $bannerTitle = $banner['title'] ?? 'Default Title';
+    $bannerTitle = $banner['title'] ?? (isset($page) ? $page->getTranslation('title') : 'Default Title');
     $breadcrumbLabel = $banner['breadcrumb_label'] ?? $bannerTitle;
     $backgroundImage = !empty($banner['background_image']) ? uploaded_asset($banner['background_image']) : static_asset('assets/img/banner.png');
     $bannerAlignment = $banner['text_align'] ?? 'center';
