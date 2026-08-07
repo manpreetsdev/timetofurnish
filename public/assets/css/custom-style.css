@@ -9,6 +9,19 @@
     padding-bottom: 0px;
 }
 
+
+@media (max-width:767.98px) {
+
+    .newsletter-form-wrap .footer_submit_btn span {
+        display: inline !important;
+        color: #fff !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        font-size: 14px !important;
+    }
+
+}
+
 /* Category/search product listing: match the polished home product-card rhythm */
 .product-listing-page .product-listing-grid {
     align-items: stretch !important;
@@ -360,7 +373,9 @@
         padding-top: 18px !important;
     }
 
-
+    .aiz-mobile-side-nav .aiz-side-nav-list .aiz-side-nav-text {
+        color: #292933 !important;
+    }
 
     .product-listing-page .container {
         padding-left: 14px !important;
@@ -4813,6 +4828,73 @@ li.slick-active {
 }
 
 .ttf-rich-text.ttf-toc-intro span {
-    line-height: 2 !important;
     letter-spacing: 0.5px !important;
+}
+
+.category-banner {
+    width: 100%;
+    height: 500px;
+    margin-top: 20px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #fbeee4;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-banner img {
+    width: 100%;
+    height: 80%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+}
+
+@media (max-width: 767px) {
+    .category-banner {
+        height: 350px;
+        margin-top: 12px;
+        border-radius: 8px;
+    }
+}
+
+.blogtexttitle {
+    /* padding-bottom: 19px !important; */
+    font-family: 'Playfair Display' !important;
+    font-size: 17px !important;
+    margin-bottom: 10px !important;
+
+}
+
+.blogtext {
+    font-size: 14px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* Show only 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+
+.blogdate {
+    font-weight: 800 !important;
+}
+
+.blogreadmoretext {
+    color: #685b4e !important;
+    font-size: 15px !important;
+    font-family: 'Poppins';
+}
+
+.blog-header p {
+    font-size: 16px;
+    font-weight: 500;
+    color: #8A6A55;
+
+    margin-top: 10px;
+    margin-bottom: 0;
 }

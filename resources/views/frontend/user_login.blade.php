@@ -1,5 +1,7 @@
 @extends('frontend.layouts.app')
 
+@section('meta_title') Login | {{ get_setting('website_name') }} @stop
+@section('meta_description') Login to your account. @stop
 @section('content')
 
 <section class="login-card-container py-5 py-md-6" style="background: #FAF7F2; min-height: 80vh; display: flex; align-items: center;">

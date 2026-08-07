@@ -1,5 +1,7 @@
 @extends('frontend.layouts.app')
 
+@section('meta_title') Reset Password | {{ get_setting('website_name') }} @stop
+@section('meta_description') Reset your account password. @stop
 @section('content')
 
     <div class="py-6">

@@ -329,7 +329,7 @@ class HomeController extends Controller
                 abort(404);
             }
 
-            if ($detailedProduct->added_by == 'seller' && $detailedProduct->user->banned == 1) {
+            if ($detailedProduct->added_by == 'seller' && optional($detailedProduct->user)->banned == 1) {
                 abort(404);
             }
 
@@ -386,7 +386,7 @@ class HomeController extends Controller
         //$shop  = Shop::where('slug', $slug)->with(['country', 'state', 'city'])->first();
         $shop  = Shop::where('slug', $slug)->with(['country', 'city'])->first();
         if ($shop != null) {
-            if ($shop->user->banned == 1) {
+            if (optional($shop->user)->banned == 1) {
                 abort(404);
             }
             if ($shop->verification_status != 0) {
@@ -405,7 +405,7 @@ class HomeController extends Controller
         }
         $shop  = Shop::where('slug', $slug)->first();
         if ($shop != null && $type != null) {
-            if ($shop->user->banned == 1) {
+            if (optional($shop->user)->banned == 1) {
                 abort(404);
             }
             if ($type == 'all-products') {

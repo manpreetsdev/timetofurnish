@@ -363,6 +363,7 @@ Route::get('/test-mail', function () {
 
 Route::get('/career', [CareerController::class, 'index'])->name('career');
 Route::post('/career-submit', [CareerController::class, 'submit'])->name('career.submit');
+Route::get('/career-submit', function () { return redirect()->route('career', [], 301); });
 
 // Classified Product
 Route::controller(CustomerProductController::class)->group(function () {
@@ -659,6 +660,7 @@ Route::controller(PageController::class)->group(function () {
     // ->name('contact.us.submit');
     Route::get('/contact-us', [PageController::class, 'contact_us'])->name('contact_us');
     Route::post('/Contact-Us-submit', [PageController::class, 'submit_contact'])->name('contact_us.submit');
+    Route::get('/Contact-Us-submit', function () { return redirect()->route('contact_us', [], 301); });
 
     Route::get('/meet-the-team', [PageController::class, 'meet_the_team'])->name('meet.the.team');
 
@@ -673,6 +675,7 @@ Route::get('/contact-us', [PageController::class, 'contact_us'])->name('contact_
 
     Route::get('/become-delivery-partnerr', [PageController::class, 'DeliveryPartner'])->name('become_delivery_partner');
      Route::post('/delivery-partner-submit', [PageController::class, 'submitDeliveryPartner'])->name('delivery.partner.submit');
+     Route::get('/delivery-partner-submit', function () { return redirect()->route('become_delivery_partner', [], 301); });
 
 
     //mobile app balnk page for webview
