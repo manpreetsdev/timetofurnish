@@ -323,8 +323,7 @@ class HomeController extends Controller
             }
         }
 
-        // old if ($detailedProduct != null && $detailedProduct->published) {
-        if ($detailedProduct != null) {
+        if ($detailedProduct != null && $detailedProduct->published == 1) {
             if ((get_setting('vendor_system_activation') != 1) && $detailedProduct->added_by == 'seller') {
                 abort(404);
             }

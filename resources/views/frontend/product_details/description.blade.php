@@ -47,9 +47,9 @@
                     </div>
                     <div class="readmore-btn-wrap">
                         <span class="readmore-ellipsis">...</span>
-                        <a href="javascript:void(0)" class="readmore-btn readmore-btn-link" role="button">
+                        <button type="button" class="readmore-btn readmore-btn-link border-0 bg-transparent p-0">
                             {{ translate('Read More') }}
-                        </a>
+                        </button>
                     </div>
                 </div>
 
@@ -66,9 +66,9 @@
                         </div>
                         <div class="readmore-btn-wrap">
                             <span class="readmore-ellipsis">...</span>
-                            <a href="javascript:void(0)" class="readmore-btn readmore-btn-link" role="button">
+                            <button type="button" class="readmore-btn readmore-btn-link border-0 bg-transparent p-0">
                                 {{ translate('Read More') }}
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -374,7 +374,7 @@
                 // Create collapsed inline wrapper
                 const toggleSpan = document.createElement('span');
                 toggleSpan.className = 'readmore-btn-wrap-inline';
-                toggleSpan.innerHTML = '<span class="readmore-ellipsis">...</span><a href="javascript:void(0)" class="readmore-btn readmore-btn-link">' + "{{ translate('Read More') }}" + '</a>';
+                toggleSpan.innerHTML = '<span class="readmore-ellipsis">...</span><button type="button" class="readmore-btn readmore-btn-link border-0 bg-transparent p-0">' + "{{ translate('Read More') }}" + '</button>';
                 
                 content.innerHTML = truncatedText;
                 content.appendChild(toggleSpan);
@@ -404,7 +404,7 @@
                     
                     const toggleSpan = document.createElement('span');
                     toggleSpan.className = 'readmore-btn-wrap-inline';
-                    toggleSpan.innerHTML = '<span class="readmore-ellipsis">...</span><a href="javascript:void(0)" class="readmore-btn readmore-btn-link">' + "{{ translate('Read More') }}" + '</a>';
+                    toggleSpan.innerHTML = '<span class="readmore-ellipsis">...</span><button type="button" class="readmore-btn readmore-btn-link border-0 bg-transparent p-0">' + "{{ translate('Read More') }}" + '</button>';
                     
                     content.innerHTML = truncatedText;
                     content.appendChild(toggleSpan);
@@ -420,7 +420,7 @@
                     
                     const toggleSpan = document.createElement('span');
                     toggleSpan.className = 'readmore-btn-wrap-inline';
-                    toggleSpan.innerHTML = ' <a href="javascript:void(0)" class="readmore-btn readmore-btn-link">' + "{{ translate('Read Less') }}" + '</a>';
+                    toggleSpan.innerHTML = ' <button type="button" class="readmore-btn readmore-btn-link border-0 bg-transparent p-0">' + "{{ translate('Read Less') }}" + '</button>';
                     
                     appendInlineToggle(content, toggleSpan);
                     wrapper.classList.add('expanded');

@@ -52,7 +52,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
             class="d-md-none img-fit h-100" alt="{{ translate('topbar_banner') }}">
     </a>
     <button class="btn text-white h-100 absolute-top-right set-session" data-key="top-banner" data-value="removed"
-        data-toggle="remove-parent" data-parent=".top-banner">
+        data-toggle="remove-parent" data-parent=".top-banner" aria-label="{{ translate('Close') }}">
         <i class="la la-close la-2x"></i>
     </button>
 </div>
@@ -83,22 +83,22 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                 </div>
                 <!-- Search Icon for small device -->
                 <div class="d-lg-none small ml-auto mr-0 d-flex align-items-center">
-                    <a class="p-2 d-block text-reset d-flex align-items-center" href="javascript:void(0);"
-                        data-toggle="class-toggle" data-target=".front-header-search">
+                    <button type="button" class="btn p-2 d-block text-reset d-flex align-items-center"
+                        data-toggle="class-toggle" data-target=".front-header-search" aria-label="{{ translate('Search') }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
                             fill="none" stroke="#685b4e" stroke-width="1.75" stroke-linecap="round"
                             stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
-                    </a>
+                    </button>
                 </div>
 
                 <div class="mobile_search front-header-search flex-grow-1 px-3 px-lg-0">
                     <form action="{{ route('search') }}" method="GET" class="stop-propagation ">
                         <div class="d-flex position-relative align-items-center">
                             <div class="d-lg-none" data-toggle="class-toggle" data-target=".front-header-search">
-                                <button class="btn px-2 d-flex align-items-center" type="button">
+                                <button class="btn px-2 d-flex align-items-center" type="button" aria-label="{{ translate('Close Search') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                         viewBox="0 0 24 24" fill="none" stroke="#685b4e" stroke-width="1.75"
                                         stroke-linecap="round" stroke-linejoin="round">
@@ -157,7 +157,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                                 <div class="justify-content-center d-flex position-relative align-items-center">
                                     <div class="d-lg-none" data-toggle="class-toggle"
                                         data-target=".front-header-search">
-                                        <button class="btn px-2 d-flex align-items-center" type="button">
+                                        <button class="btn px-2 d-flex align-items-center" type="button" aria-label="{{ translate('Close Search') }}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                                 viewBox="0 0 24 24" fill="none" stroke="#685b4e"
                                                 stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
@@ -298,7 +298,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                     </div>
                     <!-- top menu sidebar button (Moved to right after flag) -->
                     <button type="button" class="btnNav d-lg-none ml-3 p-0 active d-flex align-items-center"
-                        data-toggle="class-toggle" data-target=".aiz-top-menu-sidebar">
+                        data-toggle="class-toggle" data-target=".aiz-top-menu-sidebar" aria-label="{{ translate('Toggle Menu') }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="none" stroke="#685b4e" stroke-width="1.75" stroke-linecap="round"
                             stroke-linejoin="round">

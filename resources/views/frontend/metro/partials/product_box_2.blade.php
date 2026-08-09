@@ -109,9 +109,9 @@
                 <div class="modern-card-actions-bottom" style="position: relative; z-index: 2;">
                     @if ($product->auction_product == 0)
                         <!-- Wishlist Icon -->
-                        <a href="javascript:void(0)" class="modern-action-btn wishlist-btn"
+                        <button type="button" class="modern-action-btn wishlist-btn"
                             onclick="addToWishList({{ $product->id }})" data-toggle="tooltip"
-                            data-title="{{ translate('Add to wishlist') }}" data-placement="top">
+                            title="{{ translate('Add to wishlist') }}" aria-label="{{ translate('Add to wishlist') }}" data-placement="top">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="svg-heart-icon">
@@ -119,13 +119,13 @@
                                     d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
                                 </path>
                             </svg>
-                        </a>
+                        </button>
 
                         <!-- Add to Basket (Sleek Cart Icon) -->
-                        <a href="javascript:void(0)"
+                        <button type="button"
                             class="modern-action-btn cart-btn @if (in_array($product->id, $cart_added)) active @endif"
                             @if (Auth::check()) onclick="showAddToCartModal({{ $product->id }})" @else onclick="showLoginModal()" @endif
-                            data-toggle="tooltip" data-title="{{ translate('Add to Basket') }}" data-placement="top">
+                            data-toggle="tooltip" title="{{ translate('Add to Basket') }}" aria-label="{{ translate('Add to Basket') }}" data-placement="top">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="svg-cart-icon">
@@ -133,7 +133,7 @@
                                 <circle cx="20" cy="21" r="1"></circle>
                                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                             </svg>
-                        </a>
+                        </button>
                     @endif
 
                     @if (
@@ -149,9 +149,9 @@
                             $highest_bid = $product->bids->max('amount');
                             $min_bid_amount = $highest_bid != null ? $highest_bid + 1 : $product->starting_bid;
                         @endphp
-                        <a href="javascript:void(0)" class="modern-action-btn bid-btn"
+                        <button type="button" class="modern-action-btn bid-btn"
                             onclick="bid_single_modal({{ $product->id }}, {{ $min_bid_amount }})"
-                            data-toggle="tooltip" data-title="{{ translate('Place Bid') }}" data-placement="top">
+                            data-toggle="tooltip" title="{{ translate('Place Bid') }}" aria-label="{{ translate('Place Bid') }}" data-placement="top">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="svg-bid-icon">
@@ -159,7 +159,7 @@
                                     d="m14 13-5 5M16 11l-3.5 3.5M6 15H2v8h8v-4M21 3l-7 7M21 3a2.5 2.5 0 1 0-3.5 3.5L21 3Z">
                                 </path>
                             </svg>
-                        </a>
+                        </button>
                     @endif
                 </div>
             </div>

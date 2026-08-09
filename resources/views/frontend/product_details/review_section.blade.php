@@ -28,10 +28,10 @@
                     </div>
                 </div>
                 <div class="col-md-4 text-right">
-                    <a  href="javascript:void(0);" onclick="product_review('{{ $detailedProduct->id }}')" 
+                    <button type="button" onclick="product_review('{{ $detailedProduct->id }}')" 
                         class="btn borderbtn fw-400 rounded-0">
                         <span class="d-md-inline-block"> {{ translate('Rate this Product') }}</span>
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
