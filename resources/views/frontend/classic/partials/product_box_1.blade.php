@@ -23,12 +23,17 @@
             @endphp
             <!-- Image -->
             <a href="{{ $product_url }}" class="d-block h-100">
-                <img class="lazyload mx-auto img-fit has-transition modern-product-img" style="height: 100% !important;"
-                    src="{{ static_asset('assets/img/placeholder.jpg') }}"
-                    data-src="{{ get_image($product->thumbnail) }}" alt="{{ $product->getTranslation('name') }}"
-                    loading="lazy"
-                    title="{{ $product->getTranslation('name') }}"
-                    onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
+                <picture>
+                    <source srcset="{{ get_image($product->thumbnail) }}" type="image/webp">
+                    <img class="lazyload mx-auto img-fit has-transition modern-product-img" style="height: 100% !important;"
+                        src="{{ static_asset('assets/img/placeholder.jpg') }}"
+                        data-src="{{ get_image($product->thumbnail) }}" alt="{{ $product->getTranslation('name') }}"
+                        loading="lazy"
+                        width="400"
+                        height="400"
+                        title="{{ $product->getTranslation('name') }}"
+                        onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
+                </picture>
             </a>
 
             <!-- Discount percentage tag -->
