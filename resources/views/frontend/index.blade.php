@@ -1,5 +1,29 @@
 @extends('frontend.layouts.app')
 
+@section('meta')
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "{{ get_setting('website_name') }}",
+        "url": "{{ env('APP_URL') }}",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ env('APP_URL') }}/search?keyword={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "{{ get_setting('website_name') }}",
+        "url": "{{ env('APP_URL') }}",
+        "logo": "{{ uploaded_asset(get_setting('header_logo')) }}"
+    }
+    </script>
+@endsection
 @section('content')
 <h1 class="d-none">{{ get_setting('website_name') }} - Premium Furniture Online</h1>
     <!-- Sliders & Today's deal -->
@@ -25,6 +49,8 @@
                                         <img class="d-block mw-100 img-fit overflow-hidden h-sm-auto h-md-320px h-lg-460px overflow-hidden"
                                             src="{{ $slider ? my_asset($slider->file_name) : static_asset('assets/img/placeholder.jpg') }}"
                                             alt="{{ env('APP_NAME') }} promo"
+                                            @if($key == 0) loading="eager" fetchpriority="high" @else loading="lazy" @endif
+                                            width="100%" height="460"
                                             onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
                                     </a>
                                 </div>
@@ -119,8 +145,10 @@
                                                         class="d-block py-md-3 overflow-hidden hov-scale-img"
                                                         title="{{ $flash_deal_product->product->getTranslation('name') }}">
                                                         <!-- Image -->
-                                                        <img src="{{ $flash_deal_product->product->thumbnail != null ? my_asset($flash_deal_product->product->thumbnail->file_name) : static_asset('assets/img/placeholder.jpg') }}"
+                                                        <img src="{{ static_asset('assets/img/placeholder.jpg') }}"
+                                                            data-src="{{ $flash_deal_product->product->thumbnail != null ? my_asset($flash_deal_product->product->thumbnail->file_name) : static_asset('assets/img/placeholder.jpg') }}"
                                                             class="lazyload h-60px h-md-100px h-lg-140px mw-100 mx-auto has-transition"
+                                                            loading="lazy"
                                                             alt="{{ $flash_deal_product->product->getTranslation('name') }}"
                                                             onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
                                                         <!-- Price -->
@@ -224,8 +252,10 @@
                             <div
                                 class="carousel-box position-relative text-center has-transition hov-scale-img hov-animate-outline border-right border-top border-bottom @if ($key == 0) border-left @endif">
                                 <a href="{{ route('products.category', $category->slug) }}" class="d-block">
-                                    <img src="{{ isset($category->bannerImage->file_name) ? my_asset($category->bannerImage->file_name) : static_asset('assets/img/placeholder.jpg') }}"
+                                    <img src="{{ static_asset('assets/img/placeholder.jpg') }}"
+                                        data-src="{{ isset($category->bannerImage->file_name) ? my_asset($category->bannerImage->file_name) : static_asset('assets/img/placeholder.jpg') }}"
                                         class="lazyload h-130px mx-auto has-transition p-2 p-sm-4 mw-100"
+                                        loading="lazy"
                                         alt="{{ $category->getTranslation('name') }}"
                                         onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
                                 </a>

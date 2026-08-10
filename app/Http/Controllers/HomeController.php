@@ -86,7 +86,7 @@ class HomeController extends Controller
     public function load_todays_deal_section()
     {
         $todays_deal_products = Cache::remember('todays_deal_products_home', 3600, function () {
-            return filter_products(Product::with('thumbnail')->where('todays_deal', '1'))->get();
+            return filter_products(Product::with(['thumbnail', 'stocks', 'taxes'])->where('todays_deal', '1'))->get();
         });
         return view('frontend.' . get_setting('homepage_select') . '.partials.todays_deal', compact('todays_deal_products'));
     }
@@ -94,7 +94,7 @@ class HomeController extends Controller
     public function load_newest_product_section()
     {
         $newest_products = Cache::remember('newest_products', 3600, function () {
-            return filter_products(Product::latest())->limit(12)->get();
+            return filter_products(Product::with(['thumbnail', 'stocks', 'taxes'])->latest())->limit(12)->get();
         });
 
         return view('frontend.' . get_setting('homepage_select') . '.partials.newest_products_section', compact('newest_products'));
@@ -323,8 +323,7 @@ class HomeController extends Controller
             }
         }
 
-        // old if ($detailedProduct != null && $detailedProduct->published) {
-        if ($detailedProduct != null) {
+        if ($detailedProduct != null && $detailedProduct->published == 1) {
             if ((get_setting('vendor_system_activation') != 1) && $detailedProduct->added_by == 'seller') {
                 abort(404);
             }

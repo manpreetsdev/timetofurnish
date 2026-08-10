@@ -9,7 +9,7 @@
     }
 @endphp
 <!-- Cart button with cart count -->
-<a href="javascript:void(0)" class="d-flex align-items-center text-dark px-3 h-100" data-toggle="dropdown" data-display="static" title="{{translate('Cart')}}">
+<button type="button" class="d-flex align-items-center text-dark px-3 h-100 border-0 bg-transparent" data-toggle="dropdown" data-display="static" aria-label="{{translate('Cart')}}">
     <span class="mr-2">
         <svg class="icon-bag" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#685b4e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
@@ -23,7 +23,7 @@
         (<span class="cart-count">{{count($carts) > 0 ? count($carts) : 0 }}</span> {{translate('Items')}})
 
     </span>
-</a>
+</button>
 
 <!-- Cart Items -->
 <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg p-0 stop-propagation rounded-0">

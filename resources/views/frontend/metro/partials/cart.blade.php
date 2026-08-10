@@ -23,8 +23,8 @@
 @endphp
 
 <!-- Cart Button -->
-<a href="javascript:void(0)" class="d-flex align-items-center text-dark px-3 h-100 position-relative"
-    data-toggle="dropdown" data-display="static" title="{{ translate('Cart') }}">
+<button type="button" class="d-flex align-items-center text-dark px-3 h-100 position-relative border-0 bg-transparent"
+    data-toggle="dropdown" data-display="static" aria-label="{{ translate('Cart') }}">
     <span class="position-relative">
         <svg class="icon-bag" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#685b4e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
@@ -36,7 +36,7 @@
                 style="top:-6px; right:-8px; font-size:10px; min-width:18px; height:18px; line-height:18px;">{{ $cart_count }}</span>
         @endif
     </span>
-</a>
+</button>
 
 <!-- Cart Dropdown - Redesigned (Simple, modern, minimal, responsive, no heavy shadows, subtle radius) -->
 <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg p-0 stop-propagation cart-dropdown-minimal"

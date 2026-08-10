@@ -2,10 +2,9 @@
 </div>
 @if (get_setting('footer_title') != null || get_setting('footer_description') != null)
     <section class="bg-light border-top border-bottom mt-auto">
-        <!--<h1>j</h1>-->
         <div class="container py-4">
-            <h1 class="fs-18 fw-700 text-gray-dark mb-3">{{ get_setting('footer_title', null, $system_language->code) }}
-            </h1>
+            <h4 class="fs-18 fw-700 text-gray-dark mb-3">{{ get_setting('footer_title', null, $system_language->code) }}
+            </h4>
             <p class="fs-13 text-gray-dark text-justify mb-0">
                 {!! nl2br(get_setting('footer_description', null, $system_language->code)) !!}
             </p>
