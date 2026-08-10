@@ -81,12 +81,16 @@
                 }
                 $has_content = !empty($banner_images) && is_array($banner_images);
             } elseif ($type == 'offers') {
-                $has_content = \App\Models\Offer::homeSection()->count() > 0;
+                $has_content = \Cache::remember('homepage_offers_count', 86400, function () {
+                    return \App\Models\Offer::homeSection()->count() > 0;
+                });
             } elseif ($type == 'flash_deals') {
                 $flash_deal = get_featured_flash_deal();
                 $has_content = ($flash_deal != null);
             } elseif ($type == 'reviews') {
-                $homepage_reviews_count = \App\Models\HomepageReview::where('status', 1)->count();
+                $homepage_reviews_count = \Cache::remember('homepage_reviews_count', 86400, function () {
+                    return \App\Models\HomepageReview::where('status', 1)->count();
+                });
                 $section_status = get_setting('homepage_reviews_section_status', 1);
                 $has_content = ($section_status == 1 && $homepage_reviews_count > 0);
             } else {
@@ -94,7 +98,7 @@
                 $products = collect();
                 if ($type == 'todays_deal') {
                     $products = \Cache::remember('todays_deal_products_home', 3600, function () {
-                        return filter_products(\App\Models\Product::with('thumbnail')->where('todays_deal', '1'))->get();
+                        return filter_products(\App\Models\Product::with(['thumbnail', 'stocks', 'taxes'])->where('todays_deal', '1'))->get();
                     });
                     $default_heading = translate("Today's Deals");
                     $default_subheading = translate('Unbeatable offers await, ensuring maximum savings');
@@ -111,19 +115,21 @@
                     $view_all_link = route('search');
                 } elseif ($type == 'newest_products') {
                     $products = \Cache::remember('newest_products', 3600, function () {
-                        return filter_products(\App\Models\Product::latest())->limit(12)->get();
+                        return filter_products(\App\Models\Product::with(['thumbnail', 'stocks', 'taxes'])->latest())->limit(12)->get();
                     });
                     $default_heading = translate('Latest Products');
                     $default_subheading = translate('Discover our newest arrivals added recently');
                     $view_all_link = route('search', ['sort_by' => 'newest']);
                 } elseif ($type == 'category_products' && !empty($section['category_id'])) {
                     $catId = $section['category_id'];
-                    $category = \App\Models\Category::find($catId);
+                    $category = \Cache::rememberForever('category_model_' . $catId, function () use ($catId) {
+                        return \App\Models\Category::find($catId);
+                    });
                     if ($category) {
                         $products = \Cache::remember('category_products_home_' . $catId, 3600, function () use ($catId) {
                             $category_ids = \App\Utility\CategoryUtility::children_ids($catId);
                             $category_ids[] = $catId;
-                            return filter_products(\App\Models\Product::whereIn('category_id', $category_ids)->latest())->limit(12)->get();
+                            return filter_products(\App\Models\Product::with(['thumbnail', 'stocks', 'taxes'])->whereIn('category_id', $category_ids)->latest())->limit(12)->get();
                         });
                         $default_heading = $category->getTranslation('name');
                         $default_subheading = translate('Explore products in ') . $category->getTranslation('name');

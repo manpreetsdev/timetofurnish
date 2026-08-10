@@ -2382,24 +2382,24 @@ if (!function_exists('get_slider_images')) {
 if (!function_exists('get_featured_flash_deal')) {
     function get_featured_flash_deal()
     {
-        $flash_deal_query = FlashDeal::query();
-        $featured_flash_deal = $flash_deal_query->isActiveAndFeatured()
-            ->where('start_date', '<=', strtotime(date('Y-m-d H:i:s')))
-            ->where('end_date', '>=', strtotime(date('Y-m-d H:i:s')))
-            ->first();
-
-        return $featured_flash_deal;
+        return Cache::remember('featured_flash_deal', 3600, function () {
+            $flash_deal_query = FlashDeal::query();
+            return $flash_deal_query->isActiveAndFeatured()
+                ->where('start_date', '<=', strtotime(date('Y-m-d H:i:s')))
+                ->where('end_date', '>=', strtotime(date('Y-m-d H:i:s')))
+                ->first();
+        });
     }
 }
 
 if (!function_exists('get_flash_deal_products')) {
     function get_flash_deal_products($flash_deal_id)
     {
-        $flash_deal_product_query = FlashDealProduct::query();
-        $flash_deal_product_query->where('flash_deal_id', $flash_deal_id);
-        $flash_deal_products = $flash_deal_product_query->with(['product.thumbnail', 'product.stocks', 'product.taxes'])->limit(10)->get();
-
-        return $flash_deal_products;
+        return Cache::remember('flash_deal_products_' . $flash_deal_id, 3600, function () use ($flash_deal_id) {
+            $flash_deal_product_query = FlashDealProduct::query();
+            $flash_deal_product_query->where('flash_deal_id', $flash_deal_id);
+            return $flash_deal_product_query->with(['product.thumbnail', 'product.stocks', 'product.taxes'])->limit(10)->get();
+        });
     }
 }
 
