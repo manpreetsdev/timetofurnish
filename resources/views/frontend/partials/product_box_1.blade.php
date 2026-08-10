@@ -11,12 +11,17 @@
         @endphp
         <!-- Image -->
         <a href="{{ $product_url }}" class="d-block h-100">
-            <img class="lazyload mx-auto img-fit has-transition"
-                src="{{ static_asset('assets/img/placeholder.jpg') }}"
-                data-src="{{ $product->thumbnail != null ? my_asset($product->thumbnail->file_name) : static_asset('assets/img/placeholder.jpg') }}"
-                loading="lazy"
-                alt="{{ $product->getTranslation('name') }}" title="{{ $product->getTranslation('name') }}"
-                onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
+            <picture>
+                <source srcset="{{ $product->thumbnail != null ? my_asset($product->thumbnail->file_name) : static_asset('assets/img/placeholder.jpg') }}" type="image/webp">
+                <img class="lazyload mx-auto img-fit has-transition"
+                    src="{{ static_asset('assets/img/placeholder.jpg') }}"
+                    data-src="{{ $product->thumbnail != null ? my_asset($product->thumbnail->file_name) : static_asset('assets/img/placeholder.jpg') }}"
+                    loading="lazy"
+                    width="400"
+                    height="400"
+                    alt="{{ $product->getTranslation('name') }}" title="{{ $product->getTranslation('name') }}"
+                    onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
+            </picture>
         </a>
         <!-- Discount percentage tag -->
         @php

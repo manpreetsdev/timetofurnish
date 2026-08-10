@@ -46,12 +46,15 @@
                             @foreach ($sliders as $key => $slider)
                                 <div class="carousel-box">
                                     <a href="{{ json_decode(get_setting('home_slider_links'), true)[$key] }}">
-                                        <img class="d-block mw-100 img-fit overflow-hidden h-sm-auto h-md-320px h-lg-460px overflow-hidden"
-                                            src="{{ $slider ? my_asset($slider->file_name) : static_asset('assets/img/placeholder.jpg') }}"
-                                            alt="{{ env('APP_NAME') }} promo"
-                                            @if($key == 0) loading="eager" fetchpriority="high" @else loading="lazy" @endif
-                                            width="100%" height="460"
-                                            onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
+                                        <picture>
+                                            <source srcset="{{ $slider ? my_asset($slider->file_name) : static_asset('assets/img/placeholder.jpg') }}" type="image/webp">
+                                            <img class="d-block mw-100 img-fit overflow-hidden h-sm-auto h-md-320px h-lg-460px overflow-hidden"
+                                                src="{{ $slider ? my_asset($slider->file_name) : static_asset('assets/img/placeholder.jpg') }}"
+                                                alt="{{ env('APP_NAME') }} promo"
+                                                @if($key == 0) loading="eager" fetchpriority="high" @else loading="lazy" @endif
+                                                width="1200" height="460"
+                                                onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
+                                        </picture>
                                     </a>
                                 </div>
                             @endforeach
@@ -145,12 +148,15 @@
                                                         class="d-block py-md-3 overflow-hidden hov-scale-img"
                                                         title="{{ $flash_deal_product->product->getTranslation('name') }}">
                                                         <!-- Image -->
-                                                        <img src="{{ static_asset('assets/img/placeholder.jpg') }}"
-                                                            data-src="{{ $flash_deal_product->product->thumbnail != null ? my_asset($flash_deal_product->product->thumbnail->file_name) : static_asset('assets/img/placeholder.jpg') }}"
-                                                            class="lazyload h-60px h-md-100px h-lg-140px mw-100 mx-auto has-transition"
-                                                            loading="lazy"
-                                                            alt="{{ $flash_deal_product->product->getTranslation('name') }}"
-                                                            onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
+                                                        <picture>
+                                                            <source srcset="{{ $flash_deal_product->product->thumbnail != null ? my_asset($flash_deal_product->product->thumbnail->file_name) : static_asset('assets/img/placeholder.jpg') }}" type="image/webp">
+                                                            <img src="{{ static_asset('assets/img/placeholder.jpg') }}"
+                                                                data-src="{{ $flash_deal_product->product->thumbnail != null ? my_asset($flash_deal_product->product->thumbnail->file_name) : static_asset('assets/img/placeholder.jpg') }}"
+                                                                class="lazyload h-60px h-md-100px h-lg-140px mw-100 mx-auto has-transition"
+                                                                loading="lazy" width="400" height="400"
+                                                                alt="{{ $flash_deal_product->product->getTranslation('name') }}"
+                                                                onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
+                                                        </picture>
                                                         <!-- Price -->
                                                         <div
                                                             class="fs-10 fs-md-14 mt-md-3 text-center h-md-48px has-transition overflow-hidden pt-md-4 flash-deal-price">
@@ -209,10 +215,14 @@
                             <div class="carousel-box overflow-hidden hov-scale-img">
                                 <a href="{{ json_decode(get_setting('home_banner1_links'), true)[$key] }}"
                                     class="d-block text-reset overflow-hidden">
-                                    <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"
-                                        data-src="{{ uploaded_asset($value) }}" alt="{{ env('APP_NAME') }} promo"
-                                        class="img-fluid lazyload w-100 has-transition"
-                                        onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
+                                    <picture>
+                                        <source srcset="{{ uploaded_asset($value) }}" type="image/webp">
+                                        <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"
+                                            data-src="{{ uploaded_asset($value) }}" alt="{{ env('APP_NAME') }} promo"
+                                            class="img-fluid lazyload w-100 has-transition"
+                                            loading="lazy" width="800" height="400"
+                                            onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
+                                    </picture>
                                 </a>
                             </div>
                         @endforeach
@@ -252,12 +262,15 @@
                             <div
                                 class="carousel-box position-relative text-center has-transition hov-scale-img hov-animate-outline border-right border-top border-bottom @if ($key == 0) border-left @endif">
                                 <a href="{{ route('products.category', $category->slug) }}" class="d-block">
-                                    <img src="{{ static_asset('assets/img/placeholder.jpg') }}"
-                                        data-src="{{ isset($category->bannerImage->file_name) ? my_asset($category->bannerImage->file_name) : static_asset('assets/img/placeholder.jpg') }}"
-                                        class="lazyload h-130px mx-auto has-transition p-2 p-sm-4 mw-100"
-                                        loading="lazy"
-                                        alt="{{ $category->getTranslation('name') }}"
-                                        onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
+                                    <picture>
+                                        <source srcset="{{ isset($category->bannerImage->file_name) ? my_asset($category->bannerImage->file_name) : static_asset('assets/img/placeholder.jpg') }}" type="image/webp">
+                                        <img src="{{ static_asset('assets/img/placeholder.jpg') }}"
+                                            data-src="{{ isset($category->bannerImage->file_name) ? my_asset($category->bannerImage->file_name) : static_asset('assets/img/placeholder.jpg') }}"
+                                            class="lazyload h-130px mx-auto has-transition p-2 p-sm-4 mw-100"
+                                            loading="lazy" width="200" height="200"
+                                            alt="{{ $category->getTranslation('name') }}"
+                                            onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
+                                    </picture>
                                 </a>
                                 <h6 class="text-dark mb-3 h-40px text-truncate-2">
                                     <a class="text-reset fw-700 fs-14 hov-text-primary"
@@ -291,10 +304,14 @@
                         <div class="carousel-box overflow-hidden hov-scale-img">
                             <a href="{{ json_decode(get_setting('home_banner2_links'), true)[$key] }}"
                                 class="d-block text-reset overflow-hidden">
-                                <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"
-                                    data-src="{{ uploaded_asset($value) }}" alt="{{ env('APP_NAME') }} promo"
-                                    class="img-fluid lazyload w-100 has-transition"
-                                    onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
+                                <picture>
+                                    <source srcset="{{ uploaded_asset($value) }}" type="image/webp">
+                                    <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"
+                                        data-src="{{ uploaded_asset($value) }}" alt="{{ env('APP_NAME') }} promo"
+                                        class="img-fluid lazyload w-100 has-transition"
+                                        loading="lazy" width="800" height="400"
+                                        onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
+                                </picture>
                             </a>
                         </div>
                     @endforeach
@@ -330,10 +347,14 @@
                         <div class="carousel-box overflow-hidden hov-scale-img">
                             <a href="{{ json_decode(get_setting('home_banner3_links'), true)[$key] }}"
                                 class="d-block text-reset overflow-hidden">
-                                <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"
-                                    data-src="{{ uploaded_asset($value) }}" alt="{{ env('APP_NAME') }} promo"
-                                    class="img-fluid lazyload w-100 has-transition"
-                                    onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
+                                <picture>
+                                    <source srcset="{{ uploaded_asset($value) }}" type="image/webp">
+                                    <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"
+                                        data-src="{{ uploaded_asset($value) }}" alt="{{ env('APP_NAME') }} promo"
+                                        class="img-fluid lazyload w-100 has-transition"
+                                        loading="lazy" width="800" height="400"
+                                        onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
+                                </picture>
                             </a>
                         </div>
                     @endforeach
