@@ -361,7 +361,7 @@ if (!function_exists('get_cached_products')) {
     function get_cached_products($category_id = null)
     {
         return Cache::remember('products-category-' . $category_id, 3600, function () use ($category_id) {
-            return filter_products(Product::with(['thumbnail', 'stocks.wholesalePrices', 'taxes', 'bids'])->where('category_id', $category_id))->latest()->take(5)->get();
+            return filter_products(Product::with(['thumbnail', 'stocks', 'taxes'])->where('category_id', $category_id))->latest()->take(5)->get();
         });
     }
 }
@@ -2397,7 +2397,7 @@ if (!function_exists('get_flash_deal_products')) {
     {
         $flash_deal_product_query = FlashDealProduct::query();
         $flash_deal_product_query->where('flash_deal_id', $flash_deal_id);
-        $flash_deal_products = $flash_deal_product_query->with(['product.thumbnail', 'product.stocks.wholesalePrices', 'product.taxes', 'product.bids'])->limit(10)->get();
+        $flash_deal_products = $flash_deal_product_query->with(['product.thumbnail', 'product.stocks', 'product.taxes'])->limit(10)->get();
 
         return $flash_deal_products;
     }
@@ -2569,7 +2569,7 @@ if (!function_exists('get_featured_products')) {
     function get_featured_products()
     {
         return Cache::remember('featured_products', 3600, function () {
-            $product_query = Product::with(['thumbnail', 'stocks.wholesalePrices', 'taxes', 'bids']);
+            $product_query = Product::with(['thumbnail', 'stocks', 'taxes']);
             return filter_products($product_query->where('featured', '1'))->latest()->limit(12)->get();
         });
     }
@@ -2579,7 +2579,7 @@ if (!function_exists('get_best_selling_products')) {
     function get_best_selling_products($limit, $user_id = null)
     {
         return Cache::remember('best_selling_products_' . $limit . '_' . ($user_id ?? 'all'), 3600, function () use ($limit, $user_id) {
-            $product_query = Product::with(['thumbnail', 'stocks.wholesalePrices', 'taxes', 'bids']);
+            $product_query = Product::with(['thumbnail', 'stocks', 'taxes']);
             if ($user_id) {
                 $product_query = $product_query->where('user_id', $user_id);
             }

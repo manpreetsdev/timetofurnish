@@ -53,7 +53,10 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
     </a>
     <button class="btn text-white h-100 absolute-top-right set-session" data-key="top-banner" data-value="removed"
         data-toggle="remove-parent" data-parent=".top-banner" aria-label="{{ translate('Close') }}">
-        <i class="la la-close la-2x"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
     </button>
 </div>
 @endif
@@ -765,7 +768,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
         <div class="ml-2 footer-social">
             <!-- Social -->
             @if (get_setting('show_social_links'))
-            <h5 class="fs-14 fw-700 text-secondary text-uppercase mt-3 mt-lg-0">{{ translate('Follow Us') }}</h5>
+            <h5 class="fs-14 fw-700 text-secondary text-uppercase mt-0 mt-lg-0">{{ translate('Follow Us') }}</h5>
             <ul class="list-inline social colored mb-4">
                 @if (!empty(get_setting('facebook_link')))
                 <li class="list-inline-item ml-2 mr-2">
@@ -825,7 +828,9 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                 @if (!empty(get_setting('pinterest_link')))
                 <li class="list-inline-item ml-2 mr-2">
                     <a href="{{ get_setting('pinterest_link') }}" target="_blank" class="pinterest" aria-label="Pinterest">
-                        <i class="lab la-pinterest-p"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 0a8 8 0 0 0-2.915 15.452c-.088-.556-.166-1.41.034-2.022.183-.559 1.183-5.011 1.183-5.011s-.303-.605-.303-1.5c0-1.406.816-2.457 1.83-2.457.86 0 1.275.645 1.275 1.418 0 .864-.55 2.158-.834 3.359-.237 1.006.505 1.826 1.498 1.826 1.796 0 3.178-1.895 3.178-4.631 0-2.42-1.74-4.11-4.225-4.11-2.887 0-4.582 2.167-4.582 4.404 0 .87.335 1.803.754 2.311.083.1.095.19.07.288-.077.319-.248 1.012-.281 1.147-.044.178-.146.216-.328.131-1.226-.574-1.993-2.37-1.993-3.818 0-3.111 2.261-5.968 6.529-5.968 3.42 0 6.079 2.43 6.079 5.674 0 3.398-2.14 6.134-5.112 6.134-1 0-1.939-.519-2.26-1.134 0 0-.495 1.884-.614 2.344-.223.856-.822 1.925-1.225 2.58A8 8 0 1 0 8 0" />
+                        </svg>
                     </a>
                 </li>
                 @endif
@@ -1066,7 +1071,6 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
     .mobile-menu-list li a.active {
         background: #fcf9f5 !important;
         color: #8a6f4d !important;
-        border-left: 4px solid #8a6f4d !important;
         padding-left: 16px !important;
     }
 
