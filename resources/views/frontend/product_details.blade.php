@@ -1,8 +1,21 @@
 @extends('frontend.layouts.app')
 
-@section('meta_title'){{ $detailedProduct->meta_title }}@stop
+@php
+    $seoTitle = seo_title(
+        $detailedProduct->meta_title,
+        ucfirst($detailedProduct->getTranslation('name')) . ' | ' . get_setting('website_name')
+    );
+    $seoDescription = seo_description(
+        $detailedProduct->meta_description,
+        $detailedProduct->getTranslation('description')
+    );
+@endphp
 
-@section('meta_description'){{ $detailedProduct->meta_description }}@stop
+@section('meta_title'){{ $seoTitle }}@stop
+
+@section('meta_description'){{ $seoDescription }}@stop
+
+@section('canonical_url'){{ route('product', $detailedProduct->slug) }}@stop
 
 @section('meta_keywords'){{ $detailedProduct->tags }}@stop
 
@@ -35,26 +48,26 @@
         }
     @endphp
     <!-- Schema.org markup for Google+ -->
-    <meta itemprop="name" content="{{ $detailedProduct->meta_title }}">
-    <meta itemprop="description" content="{{ $detailedProduct->meta_description }}">
+    <meta itemprop="name" content="{{ $seoTitle }}">
+    <meta itemprop="description" content="{{ $seoDescription }}">
     <meta itemprop="image" content="{{ $merchantImage }}">
 
     <!-- Twitter Card data -->
     <meta name="twitter:card" content="product">
     <meta name="twitter:site" content="@publisher_handle">
-    <meta name="twitter:title" content="{{ $detailedProduct->meta_title }}">
-    <meta name="twitter:description" content="{{ $detailedProduct->meta_description }}">
+    <meta name="twitter:title" content="{{ $seoTitle }}">
+    <meta name="twitter:description" content="{{ $seoDescription }}">
     <meta name="twitter:creator" content="@author_handle">
     <meta name="twitter:image" content="{{ $merchantImage }}">
     <meta name="twitter:data1" content="{{ single_price($merchantPrice) }}">
     <meta name="twitter:label1" content="Price">
 
     <!-- Open Graph data -->
-    <meta property="og:title" content="{{ $detailedProduct->meta_title }}" />
+    <meta property="og:title" content="{{ $seoTitle }}" />
     <meta property="og:type" content="og:product" />
     <meta property="og:url" content="{{ route('product', $detailedProduct->slug) }}" />
     <meta property="og:image" content="{{ $merchantImage }}" />
-    <meta property="og:description" content="{{ $detailedProduct->meta_description }}" />
+    <meta property="og:description" content="{{ $seoDescription }}" />
     <meta property="og:site_name" content="{{ get_setting('meta_title') }}" />
     <meta property="og:price:amount" content="{{ $merchantPrice }}" />
     <meta property="product:brand" content="{{ $detailedProduct->brand ? $detailedProduct->brand->name : env('APP_NAME') }}">
@@ -69,8 +82,8 @@
         {!! json_encode([
             '@context' => 'https://schema.org/',
             '@type' => 'Product',
-            'name' => $detailedProduct->meta_title ?: $detailedProduct->getTranslation('name'),
-            'description' => $detailedProduct->meta_description,
+            'name' => $seoTitle,
+            'description' => $seoDescription,
             'image' => [$merchantImage],
             'sku' => $detailedProduct->slug,
             'brand' => [

@@ -1,8 +1,15 @@
 @extends('frontend.layouts.app')
 
-@section('meta_title'){{ $shop->meta_title }}@stop
+@php
+    $seoTitle = seo_title($shop->meta_title, $shop->name . ' | ' . get_setting('website_name'));
+    $seoDescription = seo_description($shop->meta_description, translate('Shop products and deals'));
+@endphp
 
-@section('meta_description'){{ $shop->meta_description }}@stop
+@section('meta_title'){{ $seoTitle }}@stop
+
+@section('meta_description'){{ $seoDescription }}@stop
+
+@section('canonical_url'){{ route('shop.visit', $shop->slug) }}@stop
 
 @section('meta')
     <!-- Schema.org markup for Google+ -->

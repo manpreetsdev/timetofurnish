@@ -1101,7 +1101,7 @@
                 <div class="text-secondary fs-14 fw-400">{{ translate('Seller Guarantees') }}</div>
             </div>
             <div class="col-10">
-                @if ($detailedProduct->user->shop->verification_status == 1)
+                @if (optional($detailedProduct->user->shop)->verification_status == 1)
                     <span class="text-success fs-14 fw-700">{{ translate('Verified seller') }}</span>
                 @else
                     <span class="text-danger fs-14 fw-700">{{ translate('Non verified seller') }}</span>

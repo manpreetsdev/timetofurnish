@@ -3723,3 +3723,54 @@ if (!function_exists('validate_uploaded_file')) {
         return true;
     }
 }
+
+if (!function_exists('seo_title')) {
+    function seo_title($title, $fallback = null)
+    {
+        $title = trim(strip_tags((string) $title));
+        if ($title !== '') {
+            return $title;
+        }
+
+        if ($fallback !== null) {
+            $fallback = trim(strip_tags((string) $fallback));
+            if ($fallback !== '') {
+                return $fallback;
+            }
+        }
+
+        return trim(get_setting('website_name') . ' | ' . get_setting('site_motto'));
+    }
+}
+
+if (!function_exists('seo_description')) {
+    function seo_description($description, $fallback = null)
+    {
+        $description = trim(strip_tags((string) $description));
+        if ($description !== '') {
+            return \Illuminate\Support\Str::limit($description, 160);
+        }
+
+        if ($fallback !== null) {
+            $fallback = trim(strip_tags((string) $fallback));
+            if ($fallback !== '') {
+                return \Illuminate\Support\Str::limit($fallback, 160);
+            }
+        }
+
+        return get_setting('meta_description');
+    }
+}
+
+if (!function_exists('asset_version')) {
+    function asset_version($path)
+    {
+        $fullPath = public_path(ltrim($path, '/'));
+
+        if (is_file($fullPath)) {
+            return (string) filemtime($fullPath);
+        }
+
+        return config('app.version', '1');
+    }
+}

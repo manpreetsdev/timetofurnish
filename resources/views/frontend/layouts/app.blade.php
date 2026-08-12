@@ -46,10 +46,10 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="@yield('meta_robots', 'index, follow')">
     <meta name="description" content="{{ strip_tags(trim($page_desc)) }}" />
     <meta name="keywords" content="@yield('meta_keywords', get_setting('meta_keywords'))">
-    <link rel="canonical" href="{{ url()->current() }}" />
+    <link rel="canonical" href="@yield('canonical_url', url()->current())" />
 
     @yield('meta')
 
@@ -96,7 +96,7 @@
     @if ($rtl == 1)
     <link rel="stylesheet" href="{{ static_asset('assets/css/bootstrap-rtl.min.css') }}">
     @endif
-    <link rel="stylesheet" href="{{ static_asset('assets/css/aiz-core.css?v=') }}{{ rand(1000, 9999) }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/aiz-core.css?v=') }}{{ asset_version('assets/css/aiz-core.css') }}">
     <link rel="stylesheet" href="{{ static_asset('assets/css/custom-style.css') }}?v={{ filemtime(public_path('assets/css/custom-style.css')) }}">
      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ static_asset('assets/css/custom-pages/frontend-page-builder.css') }}?v={{ filemtime(public_path('assets/css/custom-pages/frontend-page-builder.css')) }}">
@@ -759,7 +759,7 @@
     <!-- SCRIPTS -->
     <script src="{{ static_asset('assets/js/vendors.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <script src="{{ static_asset('assets/js/aiz-core.js?v=') }}{{ rand(1000, 9999) }}"></script>
+    <script src="{{ static_asset('assets/js/aiz-core.js?v=') }}{{ asset_version('assets/js/aiz-core.js') }}"></script>
 
 
 

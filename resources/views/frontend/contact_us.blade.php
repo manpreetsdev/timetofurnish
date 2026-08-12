@@ -1,4 +1,14 @@
 @extends('frontend.layouts.app')
+
+@php
+    $seoTitle = seo_title($page->meta_title ?? null, translate('Contact Us') . ' | ' . get_setting('website_name'));
+    $seoDescription = seo_description($page->meta_description ?? null, translate('Get in touch with us for support, inquiries, and feedback.'));
+@endphp
+
+@section('meta_title'){{ $seoTitle }}@stop
+@section('meta_description'){{ $seoDescription }}@stop
+@section('canonical_url'){{ route('contact_us') }}@stop
+
 {{--
 @section('meta_title'){{ $page->meta_title }}@stop
 

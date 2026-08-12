@@ -2,23 +2,28 @@
 
 @if (isset($category_id))
 @php
-$meta_title = $category->meta_title;
-$meta_description = $category->meta_description;
+$meta_title = seo_title($category->meta_title, $category->getTranslation('name') . ' | ' . get_setting('website_name'));
+$meta_description = seo_description($category->meta_description, $category->getTranslation('description'));
+$canonical_url = route('products.category', $category->slug);
 @endphp
 @elseif (isset($brand_id))
 @php
-$meta_title = get_single_brand($brand_id)->meta_title;
-$meta_description = get_single_brand($brand_id)->meta_description;
+$brand = get_single_brand($brand_id);
+$meta_title = seo_title($brand->meta_title, $brand->getTranslation('name') . ' | ' . get_setting('website_name'));
+$meta_description = seo_description($brand->meta_description, $brand->getTranslation('description'));
+$canonical_url = route('products.brand', $brand->slug);
 @endphp
 @else
 @php
-$meta_title = get_setting('meta_title');
-$meta_description = get_setting('meta_description');
+$meta_title = seo_title(get_setting('meta_title'), translate('All Products') . ' | ' . get_setting('website_name'));
+$meta_description = seo_description(get_setting('meta_description'));
+$canonical_url = url()->current();
 @endphp
 @endif
 
 @section('meta_title'){{ $meta_title }}@stop
 @section('meta_description'){{ $meta_description }}@stop
+@section('canonical_url'){{ $canonical_url }}@stop
 
 @section('meta')
 <!-- Schema.org markup for Google+ -->
