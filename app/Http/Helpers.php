@@ -1909,8 +1909,13 @@ if (!function_exists('app_timezone')) {
 if (!function_exists('uploaded_asset')) {
     function uploaded_asset($id)
     {
-        if (($asset = Upload::find($id)) != null) {
-            return $asset->external_link == null ? my_asset($asset->file_name) : $asset->external_link;
+        if (!empty($id) && ($asset = Upload::find($id)) != null) {
+            if (!empty($asset->external_link)) {
+                return $asset->external_link;
+            }
+            if (!empty($asset->file_name)) {
+                return my_asset($asset->file_name);
+            }
         }
         return static_asset('assets/img/placeholder.jpg');
     }
@@ -3348,11 +3353,33 @@ if (!function_exists('get_Affiliate_onfig_value')) {
 if (!function_exists('get_image')) {
     function get_image($image)
     {
-        $image_url = static_asset('assets/img/placeholder.jpg');
-        if ($image != null) {
-            $image_url = $image->external_link == null ? my_asset($image->file_name) : $image->external_link;
+        $default_placeholder = static_asset('assets/img/placeholder.jpg');
+
+        if (empty($image)) {
+            return $default_placeholder;
         }
-        return $image_url;
+
+        if (is_numeric($image) || is_string($image) && ctype_digit($image)) {
+            $image = Upload::find($image);
+            if (!$image) {
+                return $default_placeholder;
+            }
+        }
+
+        if (is_object($image)) {
+            if (!empty($image->external_link)) {
+                return $image->external_link;
+            }
+            if (!empty($image->file_name)) {
+                return my_asset($image->file_name);
+            }
+        }
+
+        if (is_string($image) && !empty($image)) {
+            return my_asset($image);
+        }
+
+        return $default_placeholder;
     }
 }
 
