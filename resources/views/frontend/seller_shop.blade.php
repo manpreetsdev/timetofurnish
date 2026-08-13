@@ -86,11 +86,12 @@
                             </a>
                             <div class="ml-3">
                                 <!-- Shop Name & Verification Status -->
-                                <a href="{{ route('shop.visit', $shop->slug) }}"
-                                    class="text-dark d-block fs-16 fw-700">
-                                  {{--  {{ $shop->name }} --}}
-                                  {{ \App\Models\User::where('id', $shop->user_id)->value('name') }}
-                                    @if ($shop->verification_status == 1)
+                                <h1 class="fs-18 fs-md-22 fw-700 m-0 p-0 text-dark" style="display: inline-block;">
+                                    <a href="{{ route('shop.visit', $shop->slug) }}" class="text-dark">
+                                        {{ \App\Models\User::where('id', $shop->user_id)->value('name') ?? $shop->name }}
+                                    </a>
+                                </h1>
+                                @if ($shop->verification_status == 1)
                                         <span class="ml-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="17.5" height="17.5" viewBox="0 0 17.5 17.5">
                                                 <g id="Group_25616" data-name="Group 25616" transform="translate(-537.249 -1042.75)">
@@ -203,7 +204,7 @@
 
     @if (!isset($type))
         @php
-            $feature_products = $shop->user->products->where('published', 1)->where('approved', 1)->where('seller_featured', 1);
+            $feature_products = \App\Models\Product::where('user_id', $shop->user->id)->where('published', 1)->where('approved', 1)->where('seller_featured', 1)->with(['thumbnail', 'stocks', 'taxes'])->latest()->get();
         @endphp
         @if (count($feature_products) > 0)
             <!-- Featured Products -->
@@ -226,7 +227,7 @@
                         <div class="aiz-carousel sm-gutters-16 arrow-none" data-items="6" data-xl-items="5" data-lg-items="4"  data-md-items="3" data-sm-items="2" data-xs-items="2" data-arrows='true' data-autoplay='true' data-infinute="true">
                             @foreach ($feature_products as $key => $product)
                             <div class="carousel-box px-3 position-relative has-transition hov-animate-outline border-right border-top border-bottom @if($key == 0) border-left @endif">
-                                @include('frontend.'.get_setting('homepage_select').'.partials.product_box_1',['product' => $product])
+                                @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
                             </div>
                             @endforeach
                         </div>
@@ -352,15 +353,18 @@
             @endphp
 
             @if (!isset($type))
-                <!-- New Arrival Products Section -->
-                <div class="px-sm-3 pb-3">
-                    <div class="aiz-carousel sm-gutters-16 arrow-none" data-items="6" data-xl-items="5" data-lg-items="4"  data-md-items="3" data-sm-items="2" data-xs-items="2" data-arrows='true' data-infinite='false'>
+                <!-- New Arrival Products Section (Grid with Pagination for fast loading) -->
+                <div class="px-3">
+                    <div class="row gutters-16 row-cols-xxl-4 row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-2">
                         @foreach ($products as $key => $product)
-                        <div class="carousel-box px-3 position-relative has-transition hov-animate-outline border-right border-top border-bottom @if($key == 0) border-left @endif">
-                            @include('frontend.'.get_setting('homepage_select').'.partials.product_box_1',['product' => $product])
-                        </div>
+                            <div class="col mb-4 d-flex align-items-stretch">
+                                @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
+                            </div>
                         @endforeach
                     </div>
+                </div>
+                <div class="aiz-pagination mt-4 mb-4">
+                    {{ $products->links() }}
                 </div>
 
                 @if ($shop->banner_full_width_2)
@@ -585,9 +589,9 @@
                             <div class="text-left mb-2">
                                 <div class="row gutters-5 flex-wrap">
                                     <div class="col-lg col-10">
-                                        <h1 class="fs-20 fs-md-24 fw-700 text-dark">
+                                        <h2 class="fs-20 fs-md-24 fw-700 text-dark">
                                             {{ translate('All Products') }}
-                                        </h1>
+                                        </h2>
                                     </div>
                                     <div class="col-2 col-lg-auto d-xl-none mb-lg-3 text-right">
                                         <button type="button" class="btn btn-icon p-0" data-toggle="class-toggle" data-target=".aiz-filter-sidebar">
@@ -611,7 +615,7 @@
                                 <div class="row gutters-16 row-cols-xxl-4 row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-2">
                                     @foreach ($products as $key => $product)
                                         <div class="col mb-4 d-flex align-items-stretch">
-                                            @include('frontend.'.get_setting('homepage_select').'.partials.product_box_1',['product' => $product])
+                                            @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
                                         </div>
                                     @endforeach
                                 </div>
@@ -628,7 +632,7 @@
                     <div class="row gutters-16 row-cols-xxl-6 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-2">
                         @foreach ($products as $key => $product)
                             <div class="col mb-4 d-flex align-items-stretch">
-                                @include('frontend.'.get_setting('homepage_select').'.partials.product_box_1',['product' => $product])
+                                @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
                             </div>
                         @endforeach
                     </div>

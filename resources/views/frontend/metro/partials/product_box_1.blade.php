@@ -22,7 +22,9 @@
             <!-- Image -->
             <a href="{{ $product_url }}" class="d-block h-100 position-relative" style="z-index:2;">
                 <img class="lazyload mx-auto img-fit has-transition modern-product-img" style="height: 100% !important;"
-                    src="{{ get_image($product->thumbnail) }}" alt="{{ $product->getTranslation('name') }}"
+                    src="{{ get_image($product->thumbnail) }}"
+                    data-src="{{ get_image($product->thumbnail) }}"
+                    alt="{{ $product->getTranslation('name') }}"
                     title="{{ $product->getTranslation('name') }}"
                     onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
             </a>
