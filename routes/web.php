@@ -290,8 +290,68 @@ Route::get('/seller/get-shipping-charges', [SellerProductController::class, 'get
     ->name('seller.products.shipping-charges');
 
 Route::get('/sitemap.xml', function () {
-    return base_path('sitemap.xml');
-});
+    $xml = new XMLWriter();
+    $xml->openMemory();
+    $xml->startDocument('1.0', 'UTF-8');
+    $xml->startElement('urlset');
+    $xml->writeAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+
+    // 1. Homepage
+    $xml->startElement('url');
+    $xml->writeElement('loc', url('/'));
+    $xml->writeElement('changefreq', 'daily');
+    $xml->writeElement('priority', '1.0');
+    $xml->endElement();
+
+    // 2. Static pages & main routes
+    $staticRoutes = ['search', 'all-notifications', 'todays-deal', 'flash-deals', 'categories.all', 'brands.all', 'terms', 'privacypolicy'];
+    foreach ($staticRoutes as $routeName) {
+        if (\Route::has($routeName)) {
+            $xml->startElement('url');
+            $xml->writeElement('loc', route($routeName));
+            $xml->writeElement('changefreq', 'weekly');
+            $xml->writeElement('priority', '0.8');
+            $xml->endElement();
+        }
+    }
+
+    // 3. Categories
+    \App\Models\Category::select('slug', 'updated_at')->chunk(200, function ($categories) use ($xml) {
+        foreach ($categories as $category) {
+            $xml->startElement('url');
+            $xml->writeElement('loc', route('products.category', $category->slug));
+            if ($category->updated_at) {
+                $xml->writeElement('lastmod', $category->updated_at->toAtomString());
+            }
+            $xml->writeElement('changefreq', 'weekly');
+            $xml->writeElement('priority', '0.8');
+            $xml->endElement();
+        }
+    });
+
+    // 4. Products (only published & approved)
+    \App\Models\Product::select('slug', 'updated_at')
+        ->where('published', 1)
+        ->where('approved', 1)
+        ->where('auction_product', 0)
+        ->chunk(300, function ($products) use ($xml) {
+            foreach ($products as $product) {
+                $xml->startElement('url');
+                $xml->writeElement('loc', route('product', $product->slug));
+                if ($product->updated_at) {
+                    $xml->writeElement('lastmod', $product->updated_at->toAtomString());
+                }
+                $xml->writeElement('changefreq', 'daily');
+                $xml->writeElement('priority', '0.7');
+                $xml->endElement();
+            }
+        });
+
+    $xml->endElement();
+    $xml->endDocument();
+
+    return response($xml->outputMemory(), 200)->header('Content-Type', 'application/xml; charset=UTF-8');
+})->name('sitemap');
 
 Route::get('/google-merchant-feed.xml', function () {
     $xml = new XMLWriter();
