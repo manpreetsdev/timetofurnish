@@ -2599,10 +2599,13 @@ if (!function_exists('get_all_sellers')) {
 
 // Get Seller Products
 if (!function_exists('get_seller_products')) {
-    function get_seller_products($user_id)
+    function get_seller_products($user_id, $paginate = 16)
     {
         $product_query = Product::query();
-        return $product_query->where('user_id', $user_id)->isApprovedPublished()->orderBy('created_at', 'desc')->limit(15)->get();
+        if ($paginate) {
+            return $product_query->where('user_id', $user_id)->isApprovedPublished()->orderBy('created_at', 'desc')->paginate($paginate);
+        }
+        return $product_query->where('user_id', $user_id)->isApprovedPublished()->orderBy('created_at', 'desc')->get();
     }
 }
 
