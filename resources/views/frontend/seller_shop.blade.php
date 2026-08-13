@@ -366,7 +366,6 @@
                 <div class="aiz-pagination mt-4 mb-4">
                     {{ $products->links() }}
                 </div>
-            @endif
 
                 @if ($shop->banner_full_width_2)
                     <!-- Banner full width 2 -->
