@@ -328,8 +328,10 @@ class HomeController extends Controller
                 abort(404);
             }
 
-            if ($detailedProduct->added_by == 'seller' && optional($detailedProduct->user)->banned == 1) {
-                abort(404);
+            if ($detailedProduct->added_by == 'seller') {
+                if (!$detailedProduct->user || $detailedProduct->user->banned == 1) {
+                    abort(404);
+                }
             }
 
             if (!addon_is_activated('wholesale') && $detailedProduct->wholesale_product == 1) {
@@ -359,18 +361,23 @@ class HomeController extends Controller
                 $review_status = $OrderDetail ? 1 : 0;
             }
             if ($request->has('product_referral_code') && addon_is_activated('affiliate_system')) {
-                $affiliate_validation_time = AffiliateConfig::where('type', 'validation_time')->first();
-                $cookie_minute = 30 * 24;
-                if ($affiliate_validation_time) {
-                    $cookie_minute = $affiliate_validation_time->value * 60;
+                try {
+                    $affiliate_validation_time = AffiliateConfig::where('type', 'validation_time')->first();
+                    $cookie_minute = 30 * 24;
+                    if ($affiliate_validation_time) {
+                        $cookie_minute = $affiliate_validation_time->value * 60;
+                    }
+                    Cookie::queue('product_referral_code', $request->product_referral_code, $cookie_minute);
+                    Cookie::queue('referred_product_id', $detailedProduct->id, $cookie_minute);
+
+                    $referred_by_user = User::where('referral_code', $request->product_referral_code)->first();
+
+                    if ($referred_by_user && class_exists(AffiliateController::class)) {
+                        $affiliateController = new AffiliateController;
+                        $affiliateController->processAffiliateStats($referred_by_user->id, 1, 0, 0, 0);
+                    }
+                } catch (\Exception $e) {
                 }
-                Cookie::queue('product_referral_code', $request->product_referral_code, $cookie_minute);
-                Cookie::queue('referred_product_id', $detailedProduct->id, $cookie_minute);
-
-                $referred_by_user = User::where('referral_code', $request->product_referral_code)->first();
-
-                $affiliateController = new AffiliateController;
-                $affiliateController->processAffiliateStats($referred_by_user->id, 1, 0, 0, 0);
             }
             return view('frontend.product_details', compact('detailedProduct', 'product_queries', 'total_query', 'reviews', 'review_status', 'cartItem', 'alreadyInCart'));
         }
@@ -512,6 +519,10 @@ class HomeController extends Controller
     public function variant_price(Request $request)
     {
         $product = Product::find($request->id);
+
+        if (!$product) {
+            return response()->json(['success' => false, 'message' => translate('Product not found')], 404);
+        }
 
         $quantity = 0;
         $tax = 0;
