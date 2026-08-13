@@ -204,7 +204,7 @@
 
     @if (!isset($type))
         @php
-            $feature_products = $shop->user->products->where('published', 1)->where('approved', 1)->where('seller_featured', 1);
+            $feature_products = \App\Models\Product::where('user_id', $shop->user->id)->where('published', 1)->where('approved', 1)->where('seller_featured', 1)->with(['thumbnail', 'stocks', 'taxes'])->latest()->get();
         @endphp
         @if (count($feature_products) > 0)
             <!-- Featured Products -->
@@ -227,7 +227,7 @@
                         <div class="aiz-carousel sm-gutters-16 arrow-none" data-items="6" data-xl-items="5" data-lg-items="4"  data-md-items="3" data-sm-items="2" data-xs-items="2" data-arrows='true' data-autoplay='true' data-infinute="true">
                             @foreach ($feature_products as $key => $product)
                             <div class="carousel-box px-3 position-relative has-transition hov-animate-outline border-right border-top border-bottom @if($key == 0) border-left @endif">
-                                @include('frontend.'.get_setting('homepage_select').'.partials.product_box_1',['product' => $product])
+                                @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
                             </div>
                             @endforeach
                         </div>
@@ -358,7 +358,7 @@
                     <div class="row gutters-16 row-cols-xxl-4 row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-2">
                         @foreach ($products as $key => $product)
                             <div class="col mb-4 d-flex align-items-stretch">
-                                @include('frontend.'.get_setting('homepage_select').'.partials.product_box_1',['product' => $product])
+                                @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
                             </div>
                         @endforeach
                     </div>
@@ -615,7 +615,7 @@
                                 <div class="row gutters-16 row-cols-xxl-4 row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-2">
                                     @foreach ($products as $key => $product)
                                         <div class="col mb-4 d-flex align-items-stretch">
-                                            @include('frontend.'.get_setting('homepage_select').'.partials.product_box_1',['product' => $product])
+                                            @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
                                         </div>
                                     @endforeach
                                 </div>
@@ -632,7 +632,7 @@
                     <div class="row gutters-16 row-cols-xxl-6 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-2">
                         @foreach ($products as $key => $product)
                             <div class="col mb-4 d-flex align-items-stretch">
-                                @include('frontend.'.get_setting('homepage_select').'.partials.product_box_1',['product' => $product])
+                                @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
                             </div>
                         @endforeach
                     </div>
