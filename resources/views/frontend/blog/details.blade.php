@@ -1,8 +1,15 @@
 @extends('frontend.layouts.app')
 
-@section('meta_title'){{ $blog->meta_title }}@stop
+@php
+    $seoTitle = seo_title($blog->meta_title, $blog->title . ' | ' . get_setting('website_name'));
+    $seoDescription = seo_description($blog->meta_description, $blog->short_description);
+@endphp
 
-@section('meta_description'){{ $blog->meta_description }}@stop
+@section('meta_title'){{ $seoTitle }}@stop
+
+@section('meta_description'){{ $seoDescription }}@stop
+
+@section('canonical_url'){{ url('blog/' . $blog->slug) }}@stop
 
 @section('meta_keywords'){{ $blog->meta_keywords }}@stop
 

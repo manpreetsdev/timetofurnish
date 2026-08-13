@@ -1,4 +1,16 @@
 @extends('frontend.layouts.app')
+
+@php
+    $seoTitle = seo_title($customer_product->meta_title, $customer_product->getTranslation('name') . ' | ' . get_setting('website_name'));
+    $seoDescription = seo_description($customer_product->meta_description, $customer_product->getTranslation('description'));
+@endphp
+
+@section('meta_title'){{ $seoTitle }}@stop
+
+@section('meta_description'){{ $seoDescription }}@stop
+
+@section('canonical_url'){{ route('customer.product', $customer_product->slug) }}@stop
+
 @section('meta')
     <!-- Schema.org markup for Google+ -->
     <meta itemprop="name" content="{{ $customer_product->meta_title }}">
@@ -19,7 +31,7 @@
     <!-- Open Graph data -->
     <meta property="og:title" content="{{ $customer_product->meta_title }}" />
     <meta property="og:type" content="product" />
-    <meta property="og:url" content="{{ route('product', $customer_product->slug) }}" />
+    <meta property="og:url" content="{{ route('customer.product', $customer_product->slug) }}" />
     <meta property="og:image" content="{{ uploaded_asset($customer_product->meta_img) }}" />
     <meta property="og:description" content="{{ $customer_product->meta_description }}" />
     <meta property="og:site_name" content="{{ get_setting('meta_title') }}" />

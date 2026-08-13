@@ -5,11 +5,15 @@
         $page->getTranslation('content'),
         $page->getTranslation('title')
     );
+    $seoTitle = seo_title($page->meta_title, $page->getTranslation('title') . ' | ' . get_setting('website_name'));
+    $seoDescription = seo_description($page->meta_description, strip_tags($page->getTranslation('content')));
 @endphp
 
-@section('meta_title'){{ $page->meta_title }}@stop
+@section('meta_title'){{ $seoTitle }}@stop
 
-@section('meta_description'){{ $page->meta_description }}@stop
+@section('meta_description'){{ $seoDescription }}@stop
+
+@section('canonical_url'){{ url()->current() }}@stop
 
 @section('meta_keywords'){{ $page->keywords }}@stop
 
@@ -17,7 +21,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ static_asset('assets/css/custom-pages/frontend-page-builder.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/custom-pages/frontend-page-builder.css') }}?v={{ asset_version('assets/css/custom-pages/frontend-page-builder.css') }}">
 
     <meta itemprop="name" content="{{ $page->meta_title }}">
     <meta itemprop="description" content="{{ $page->meta_description }}">
