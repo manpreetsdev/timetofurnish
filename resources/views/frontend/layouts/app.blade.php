@@ -1511,13 +1511,39 @@
             }
         }
 
+        function updateHomeSectionArrowStates($carousel) {
+            var $section = $carousel.closest('.home-mobile-product-section');
+            if (!$section.length) return;
+            
+            var slick = $carousel.slick('getSlick');
+            if (!slick) return;
+
+            var currentSlide = slick.currentSlide || 0;
+            var slideCount = slick.slideCount || 0;
+            var slidesToShow = slick.options.slidesToShow || 1;
+
+            var isPrevDisabled = currentSlide === 0;
+            var isNextDisabled = currentSlide >= (slideCount - slidesToShow);
+
+            var $prevBtn = $section.find('.home-section-arrow.is-prev');
+            var $nextBtn = $section.find('.home-section-arrow.is-next');
+
+            $prevBtn.prop('disabled', isPrevDisabled).toggleClass('disabled', isPrevDisabled);
+            $nextBtn.prop('disabled', isNextDisabled).toggleClass('disabled', isNextDisabled);
+        }
+
         function homeSectionSlide(direction, id) {
             var $carousel = $('#' + id + ' .aiz-carousel').first();
             if (!$carousel.length || !$carousel.hasClass('slick-initialized')) {
                 return;
             }
             $carousel.slick(direction === 'prev' ? 'slickPrev' : 'slickNext');
+            updateHomeSectionArrowStates($carousel);
         }
+
+        $(document).on('afterChange init rePosition', '.home-mobile-product-carousel', function(event, slick, currentSlide) {
+            updateHomeSectionArrowStates($(this));
+        });
 
         function goToView(params) {
             document.getElementById(params).scrollIntoView({
