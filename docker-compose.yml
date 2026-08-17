@@ -24,7 +24,7 @@ services:
       MYSQL_ROOT_PASSWORD: root_password
     command: --default-authentication-plugin=mysql_native_password
     ports:
-      - "3307:3306"
+      - "3308:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -43,7 +43,7 @@ services:
       PMA_PASSWORD: root_password
       UPLOAD_LIMIT: 256M
     ports:
-      - "8081:80"
+      - "8082:80"
     networks:
       - timetofurnish
 
