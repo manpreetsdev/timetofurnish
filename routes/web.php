@@ -383,6 +383,13 @@ Route::get('/google-merchant-feed.xml', function () {
                     $imageId = $product->meta_img;
                 }
 
+                $imageUrl = uploaded_asset($imageId);
+                $validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff'];
+                $ext = strtolower(pathinfo(parse_url($imageUrl, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION));
+                if (!in_array($ext, $validExtensions)) {
+                    continue; // Skip product with unsupported image type
+                }
+
                 $price = number_format((float) home_discounted_base_price($product, false), 2, '.', '');
                 $currency = get_system_default_currency()->code;
                 $qty = $product->variant_product
@@ -394,7 +401,7 @@ Route::get('/google-merchant-feed.xml', function () {
                 $xml->writeElement('g:title', $product->getTranslation('name'));
                 $xml->writeElement('g:description', strip_tags($product->meta_description ?: $product->description ?: $product->getTranslation('name')));
                 $xml->writeElement('g:link', route('product', $product->slug));
-                $xml->writeElement('g:image_link', uploaded_asset($imageId));
+                $xml->writeElement('g:image_link', $imageUrl);
                 $xml->writeElement('g:availability', $qty > 0 ? 'in_stock' : 'out_of_stock');
                 $xml->writeElement('g:price', $price . ' ' . $currency);
                 $xml->writeElement('g:condition', 'new');
