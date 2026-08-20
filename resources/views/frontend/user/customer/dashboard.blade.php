@@ -45,7 +45,7 @@ $wishlists = get_user_wishlist();
                 Continue Shopping
             </a>
 
-            <a href="{{ route('purchase_history.index') }}" class="dashboard-secondary-btn">
+            <a rel="nofollow" href="{{ route('purchase_history.index') }}" class="dashboard-secondary-btn">
                 <i class="las la-box"></i>
                 View Orders
             </a>
@@ -110,7 +110,7 @@ $wishlists = get_user_wishlist();
                 {{ $wishlistCount > 0 ? sprintf("%02d", $wishlistCount) : '00' }}
             </h3>
 
-            <a href="{{ route('wishlists.index') }}">
+            <a rel="nofollow" href="{{ route('wishlists.index') }}">
                 View Wishlist
                 <i class="las la-arrow-right"></i>
             </a>
@@ -137,7 +137,7 @@ $wishlists = get_user_wishlist();
                 {{ $totalOrdered > 0 ? sprintf("%02d", $totalOrdered) : '00' }}
             </h3>
 
-            <a href="{{ route('purchase_history.index') }}">
+            <a rel="nofollow" href="{{ route('purchase_history.index') }}">
                 View Orders
                 <i class="las la-arrow-right"></i>
             </a>
@@ -200,7 +200,7 @@ $wishlists = get_user_wishlist();
                     </h3>
                 </div>
 
-                <a href="{{ route('purchase_history.index') }}"
+                <a rel="nofollow" href="{{ route('purchase_history.index') }}"
                     class="dashboard-view-all">
                     View All
                     <i class="las la-arrow-right"></i>
@@ -333,7 +333,7 @@ $wishlists = get_user_wishlist();
             <!-- Account Links -->
             <div class="account-links">
 
-                <a href="{{ route('purchase_history.index') }}">
+                <a rel="nofollow" href="{{ route('purchase_history.index') }}">
 
                     <span>
                         <i class="las la-shopping-bag"></i>
@@ -345,7 +345,7 @@ $wishlists = get_user_wishlist();
                 </a>
 
 
-                <a href="{{ route('wishlists.index') }}">
+                <a rel="nofollow" href="{{ route('wishlists.index') }}">
 
                     <span>
                         <i class="lar la-heart"></i>
@@ -476,7 +476,7 @@ $wishlists = get_user_wishlist();
             </h3>
         </div>
 
-        <a href="{{ route('wishlists.index') }}"
+        <a rel="nofollow" href="{{ route('wishlists.index') }}"
             class="dashboard-view-all">
             View All
             <i class="las la-arrow-right"></i>
