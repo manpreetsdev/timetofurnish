@@ -1909,12 +1909,17 @@ if (!function_exists('app_timezone')) {
 if (!function_exists('uploaded_asset')) {
     function uploaded_asset($id)
     {
-        if (!empty($id) && ($asset = Upload::find($id)) != null) {
-            if (!empty($asset->external_link)) {
-                return $asset->external_link;
-            }
-            if (!empty($asset->file_name)) {
-                return my_asset($asset->file_name);
+        if (!empty($id)) {
+            $asset = \Illuminate\Support\Facades\Cache::remember('upload_'.$id, 86400, function() use ($id) {
+                return \App\Models\Upload::find($id);
+            });
+            if ($asset != null) {
+                if (!empty($asset->external_link)) {
+                    return $asset->external_link;
+                }
+                if (!empty($asset->file_name)) {
+                    return my_asset($asset->file_name);
+                }
             }
         }
         return static_asset('assets/img/placeholder.jpg');
@@ -2063,17 +2068,31 @@ if (!function_exists('isUnique')) {
 if (!function_exists('get_setting')) {
     function get_setting($key, $default = null, $lang = false)
     {
-        $settings = Cache::remember('business_settings', 86400, function () {
-            return BusinessSetting::all();
+        $settings_map = Cache::remember('business_settings_map', 86400, function () {
+            $all = \App\Models\BusinessSetting::all();
+            $map = [];
+            foreach ($all as $setting) {
+                $lang_key = $setting->lang ?: '_default';
+                if (!isset($map[$setting->type])) {
+                    $map[$setting->type] = [];
+                }
+                $map[$setting->type][$lang_key] = $setting->value;
+            }
+            return $map;
         });
 
-        if ($lang == false) {
-            $setting = $settings->where('type', $key)->first();
-        } else {
-            $setting = $settings->where('type', $key)->where('lang', $lang)->first();
-            $setting = !$setting ? $settings->where('type', $key)->first() : $setting;
+        if (isset($settings_map[$key])) {
+            if ($lang !== false && isset($settings_map[$key][$lang])) {
+                return $settings_map[$key][$lang];
+            }
+            if (isset($settings_map[$key]['_default'])) {
+                return $settings_map[$key]['_default'];
+            }
+            // Fallback to the first available if neither matched
+            return reset($settings_map[$key]);
         }
-        return $setting == null ? $default : $setting->value;
+
+        return $default;
     }
 }
 
