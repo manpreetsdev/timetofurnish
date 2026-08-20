@@ -30,8 +30,9 @@ class SeoLinkFixer
                 $attr1 = preg_replace('/\s*rel="nofollow"/i', '', $matches[1]);
                 $attr2 = preg_replace('/\s*rel="nofollow"/i', '', $matches[3]);
                 $url = $matches[2];
+                $encodedUrl = base64_encode($url);
                 
-                return '<a' . $attr1 . ' href="javascript:void(0);" onclick="window.location.href=\''.$url.'\'"' . $attr2 . '>';
+                return '<a' . $attr1 . ' href="javascript:void(0);" onclick="window.location.href=atob(\''.$encodedUrl.'\')"' . $attr2 . '>';
             }, $content);
             
             $response->setContent($content);
