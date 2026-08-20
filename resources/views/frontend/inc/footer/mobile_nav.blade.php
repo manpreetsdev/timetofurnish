@@ -87,7 +87,7 @@
 
         <!-- Notifications -->
         <div class="col">
-            <a href="{{ route('all-notifications') }}"
+            <a rel="nofollow" href="{{ route('all-notifications') }}"
                 class="text-secondary d-block text-center pb-2 pt-3 {{ areActiveRoutes(['all-notifications'], 'svg-active') }}">
                 <span class="d-inline-block position-relative px-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="13.6" height="16" viewBox="0 0 13.6 16">
@@ -123,7 +123,7 @@
                         <span class="d-block mt-1 fs-10 fw-600 text-reset">{{ translate('My Account') }}</span>
                     </a>
                 @elseif(isSeller())
-                    <a href="{{ route('dashboard') }}" class="text-secondary d-block text-center pb-2 pt-3">
+                    <a rel="nofollow" href="{{ route('dashboard') }}" class="text-secondary d-block text-center pb-2 pt-3">
                         <span class="d-block mx-auto">
                             @if ($user->avatar_original != null)
                                 <img src="{{ $user_avatar }}" alt="{{ translate('avatar') }}"

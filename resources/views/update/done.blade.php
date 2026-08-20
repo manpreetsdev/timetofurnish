@@ -54,7 +54,7 @@
 
 					<div class="mb-4 pb-4 absolute-bottom-left right-0 d-flex justify-content-center">
 						<a href="{{ env('APP_URL') }}" class="btn btn-primary text-uppercase mr-3" style="border-radius: 1.5rem !important;">{{ translate('Go to Home') }}</a>
-						<a href="{{ env('APP_URL') }}/admin" class="btn btn-success text-uppercase" style="border-radius: 1.5rem !important;">{{ translate('Login to Admin panel') }}</a>
+						<a rel="nofollow" href="{{ env('APP_URL') }}/admin" class="btn btn-success text-uppercase" style="border-radius: 1.5rem !important;">{{ translate('Login to Admin panel') }}</a>
 					</div>
 				</div>
 
