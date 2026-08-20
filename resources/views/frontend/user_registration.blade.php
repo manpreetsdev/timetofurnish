@@ -184,10 +184,13 @@
         $page = \App\Models\Page::where('id', 11)->first();
           @endphp
  
-
-
-    <h2>{{ $page->title }}</h2>
-      <p2>@php echo $page->content @endphp</p>
+    @if($page)
+        <h2>{{ $page->title }}</h2>
+        <p>@php echo $page->content @endphp</p>
+    @else
+        <h2>Terms and Conditions</h2>
+        <p>Terms and conditions content is currently unavailable.</p>
+    @endif
 
   </div></div>
 </div>
