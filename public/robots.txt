@@ -1,13 +1,2 @@
 User-agent: *
 Disallow: /cdn-cgi/
-Disallow: /cookies/accept-all
-Disallow: /auction_product_bids
-Disallow: /dashboard
-Disallow: /shops
-Disallow: /purchase_history
-Disallow: /all-notifications
-Disallow: /wishlists
-Disallow: /logout
-Disallow: /conversations
-Disallow: /admin
-Disallow: /followed-seller/
