@@ -77,7 +77,7 @@
 
     <div class="actions">
         <button style="color: #fff;" id="custom-cookie" onclick="custom_cookie()" class="btn custom">Customize</button>
-        <a href="{{ route('cookies.acceptAll') }}" rel="nofollow" class="btn accept">Accept All</a>
+        <button type="button" style="color: #fff;" onclick="window.location.href='{{ route('cookies.acceptAll') }}'" class="btn accept">Accept All</button>
       </div>
   </div>
 </div>

@@ -22,14 +22,14 @@ class SeoLinkFixer
                 '\/cookies\/accept-all'
             ];
             
-            // Match any <a> tag that points to one of these routes
-            $pattern = '/<a([^>]*?)href="([^"]*(?:' . implode('|', $routes) . ')[^"]*)"([^>]*?)>/i';
+            // Match any <a> tag that points to one of these routes, handling both single and double quotes
+            $pattern = '/<a([^>]*?)href=(["\'])([^"\']*(?:' . implode('|', $routes) . ')[^"\']*)\2([^>]*?)>/i';
             
             $content = preg_replace_callback($pattern, function($matches) {
                 // Remove rel="nofollow" if it was added manually earlier
                 $attr1 = preg_replace('/\s*rel="nofollow"/i', '', $matches[1]);
-                $attr2 = preg_replace('/\s*rel="nofollow"/i', '', $matches[3]);
-                $url = $matches[2];
+                $attr2 = preg_replace('/\s*rel="nofollow"/i', '', $matches[4]);
+                $url = $matches[3];
                 $encodedUrl = base64_encode($url);
                 
                 return '<a' . $attr1 . ' href="javascript:void(0);" onclick="window.location.href=atob(\''.$encodedUrl.'\')"' . $attr2 . '>';
