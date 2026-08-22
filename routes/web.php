@@ -308,7 +308,7 @@ Route::get('/sitemap.xml', function () {
     $xml->endElement();
 
     // 2. Static pages & main routes
-    $staticRoutes = ['search', 'all-notifications', 'todays-deal', 'flash-deals', 'categories.all', 'brands.all', 'terms', 'privacypolicy'];
+    $staticRoutes = ['search', 'todays-deal', 'flash-deals', 'categories.all', 'brands.all', 'terms', 'privacypolicy'];
     foreach ($staticRoutes as $routeName) {
         if (\Route::has($routeName)) {
             $xml->startElement('url');
