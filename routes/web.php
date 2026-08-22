@@ -69,9 +69,9 @@ use App\Models\Product as ProductModel;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
-Route::get('/cdn-cgi/l/email-protection', function () {
+Route::any('/cdn-cgi/{any}', function () {
     return response('', 200);
-});
+})->where('any', '.*');
 
 Route::get('/clear-all-cache', function () {
 
