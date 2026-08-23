@@ -213,13 +213,13 @@
                                                     @else
                                                         @auth
                                                             <li class="mb-2 pb-2">
-                                                                <a class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}" rel="nofollow">{{ !empty($w['logout_text']) ? translate($w['logout_text']) : translate('Logout') }}</a>
+                                                                <a class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}">{{ !empty($w['logout_text']) ? translate($w['logout_text']) : translate('Logout') }}</a>
                                                             </li>
                                                             <li class="mb-2 pb-2">
-                                                                <a class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}" rel="nofollow">{{ !empty($w['order_history_text']) ? translate($w['order_history_text']) : translate('Order History') }}</a>
+                                                                <a class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ !empty($w['order_history_text']) ? translate($w['order_history_text']) : translate('Order History') }}</a>
                                                             </li>
                                                             <li class="mb-2 pb-2">
-                                                                <a class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}" rel="nofollow">{{ !empty($w['wishlist_text']) ? translate($w['wishlist_text']) : translate('My Wishlist') }}</a>
+                                                                <a class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ !empty($w['wishlist_text']) ? translate($w['wishlist_text']) : translate('My Wishlist') }}</a>
                                                             </li>
                                                         @else
                                                             <li class="mb-2 pb-2">
@@ -321,13 +321,13 @@
                                             @else
                                                 @auth
                                                     <li class="mb-2 pb-2">
-                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}" rel="nofollow">{{ !empty($w['logout_text']) ? translate($w['logout_text']) : translate('Logout') }}</a>
+                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}">{{ !empty($w['logout_text']) ? translate($w['logout_text']) : translate('Logout') }}</a>
                                                     </li>
                                                     <li class="mb-2 pb-2">
-                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}" rel="nofollow">{{ !empty($w['order_history_text']) ? translate($w['order_history_text']) : translate('Order History') }}</a>
+                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ !empty($w['order_history_text']) ? translate($w['order_history_text']) : translate('Order History') }}</a>
                                                     </li>
                                                     <li class="mb-2 pb-2">
-                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}" rel="nofollow">{{ !empty($w['wishlist_text']) ? translate($w['wishlist_text']) : translate('My Wishlist') }}</a>
+                                                        <a class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ !empty($w['wishlist_text']) ? translate($w['wishlist_text']) : translate('My Wishlist') }}</a>
                                                     </li>
                                                 @else
                                                     <li class="mb-2 pb-2">

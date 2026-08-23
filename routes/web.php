@@ -46,6 +46,7 @@ use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\AuctionProductBidController;
 use App\Http\Controllers\CookieController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\SellerController;
@@ -66,6 +67,8 @@ use App\Http\Controllers\Seller\ProductController as SellerProductController;
 use App\Models\CombinedOrder;
 use App\Models\Order;
 use App\Models\Product as ProductModel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
@@ -76,6 +79,70 @@ Route::any('/cdn-cgi/l/email-protection', function () {
 Route::any('/cdn-cgi/{any}', function () {
     return response('', 204);
 })->where('any', '.*');
+
+Route::get('/dashboard', function (Request $request) {
+    if (Auth::check()) {
+        return app(HomeController::class)->dashboard();
+    }
+
+    return app(HomeController::class)->login();
+});
+
+Route::get('/all-notifications', function () {
+    if (Auth::check()) {
+        return app(NotificationController::class)->index();
+    }
+
+    return app(HomeController::class)->login();
+});
+
+Route::get('/purchase_history', function () {
+    if (Auth::check()) {
+        return app(PurchaseHistoryController::class)->index();
+    }
+
+    return app(HomeController::class)->login();
+});
+
+Route::get('/wishlists', function () {
+    if (Auth::check()) {
+        return app(WishlistController::class)->index();
+    }
+
+    return app(HomeController::class)->login();
+});
+
+Route::get('/conversations', function () {
+    if (Auth::check()) {
+        return app(ConversationController::class)->index();
+    }
+
+    return app(HomeController::class)->login();
+});
+
+Route::get('/auction_product_bids', function () {
+    if (Auth::check()) {
+        return app(AuctionProductBidController::class)->index();
+    }
+
+    return app(HomeController::class)->login();
+});
+
+Route::get('/shops', function () {
+    if (Auth::check()) {
+        return app(ShopController::class)->index();
+    }
+
+    return view('frontend.seller_form');
+});
+
+Route::get('/logout', function (Request $request) {
+    if (Auth::check()) {
+        return app(LoginController::class)->logout($request);
+    }
+
+    return app(HomeController::class)->login();
+});
 
 Route::get('/clear-all-cache', function () {
 
