@@ -776,7 +776,7 @@ Route::get('/dashboard', function (Request $request) {
         'heading' => 'Customer Dashboard',
         'body' => 'Please log in to access your account dashboard.',
     ]);
-});
+})->name('dashboard');
 
 Route::get('/all-notifications', function () {
     if (Auth::check()) {
