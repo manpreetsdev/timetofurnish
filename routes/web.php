@@ -730,41 +730,6 @@ Route::controller(BlogController::class)->group(function () {
 
 
 
-Route::controller(PageController::class)->group(function () {
-
-    //contact us page
-    // Route::get('/contact-us', 'contact_us')->name('contact_us');
-    // Route::post('/contact-us-submit', [PageController::class, 'submit_contact'])
-    // ->name('contact.us.submit');
-    Route::get('/contact-us', [PageController::class, 'contact_us'])->name('contact_us');
-    Route::post('/Contact-Us-submit', [PageController::class, 'submit_contact'])->name('contact_us.submit');
-    Route::get('/Contact-Us-submit', function () { return redirect()->route('contact_us', [], 301); });
-
-    Route::get('/meet-the-team', [PageController::class, 'meet_the_team'])->name('meet.the.team');
-
-
-// Contact Us Page
-Route::get('/contact-us', [PageController::class, 'contact_us'])->name('contact_us');
-
-// Contact Us Form Submit
-// Route::post('/contact-us-submit', [PageController::class, 'submit_contact'])->name('contact.us.submit');
-
-
-
-    Route::get('/become-delivery-partnerr', [PageController::class, 'DeliveryPartner'])->name('become_delivery_partner');
-     Route::post('/delivery-partner-submit', [PageController::class, 'submitDeliveryPartner'])->name('delivery.partner.submit');
-     Route::get('/delivery-partner-submit', function () { return redirect()->route('become_delivery_partner', [], 301); });
-
-
-    //mobile app balnk page for webview
-    Route::get('/mobile-page/{slug}', 'mobile_custom_page')->name('mobile.custom-pages');
-
-    //Custom page
-    Route::get('/{slug}', 'show_custom_page')->name('custom-pages.show_custom_page');
-});
-
-// Keep these guest-access SEO routes at the very end so they override
-// the auth-protected versions above for crawler requests.
 Route::get('/dashboard', function (Request $request) {
     if (Auth::check()) {
         return app(HomeController::class)->dashboard();
@@ -867,4 +832,37 @@ Route::get('/logout', function (Request $request) {
         'heading' => 'Logout',
         'body' => 'You are not currently logged in.',
     ]);
+});
+
+Route::controller(PageController::class)->group(function () {
+
+    //contact us page
+    // Route::get('/contact-us', 'contact_us')->name('contact_us');
+    // Route::post('/contact-us-submit', [PageController::class, 'submit_contact'])
+    // ->name('contact.us.submit');
+    Route::get('/contact-us', [PageController::class, 'contact_us'])->name('contact_us');
+    Route::post('/Contact-Us-submit', [PageController::class, 'submit_contact'])->name('contact_us.submit');
+    Route::get('/Contact-Us-submit', function () { return redirect()->route('contact_us', [], 301); });
+
+    Route::get('/meet-the-team', [PageController::class, 'meet_the_team'])->name('meet.the.team');
+
+
+// Contact Us Page
+Route::get('/contact-us', [PageController::class, 'contact_us'])->name('contact_us');
+
+// Contact Us Form Submit
+// Route::post('/contact-us-submit', [PageController::class, 'submit_contact'])->name('contact.us.submit');
+
+
+
+    Route::get('/become-delivery-partnerr', [PageController::class, 'DeliveryPartner'])->name('become_delivery_partner');
+     Route::post('/delivery-partner-submit', [PageController::class, 'submitDeliveryPartner'])->name('delivery.partner.submit');
+     Route::get('/delivery-partner-submit', function () { return redirect()->route('become_delivery_partner', [], 301); });
+
+
+    //mobile app balnk page for webview
+    Route::get('/mobile-page/{slug}', 'mobile_custom_page')->name('mobile.custom-pages');
+
+    //Custom page
+    Route::get('/{slug}', 'show_custom_page')->name('custom-pages.show_custom_page');
 });
