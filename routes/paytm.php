@@ -4,7 +4,6 @@
 
 use App\Http\Controllers\Payment\PaytmController;
 use App\Http\Controllers\Payment\ToyyibpayController;
-use App\Http\Controllers\Payment\MyfatoorahController;
 use App\Http\Controllers\Payment\KhaltiController;
 
 
@@ -27,8 +26,7 @@ Route::controller(ToyyibpayController::class)->group(function () {
     Route::post('/toyyibpay-callback', 'callback')->name( 'toyyibpay-callback');
 });
 
-//Myfatoorah START
-Route::get('/myfatoorah/callback', [MyfatoorahController::class,'callback'])->name('myfatoorah.callback');
+// MyFatoorah route disabled until its controller is restored.
 
 //Khalti START
 Route::any('/khalti/payment/done', [KhaltiController::class,'paymentDone'])->name('khalti.success');
