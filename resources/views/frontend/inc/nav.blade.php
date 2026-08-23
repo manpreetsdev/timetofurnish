@@ -533,7 +533,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
     @endphp
 
     <!-- Sliders -->
-    <section class="my-3 mt-2">
+    <section class="my-4 mt-2" style="margin-bottom: 30px !important;">
         <div class="container">
             <!-- Categories -->
             <div class="row">

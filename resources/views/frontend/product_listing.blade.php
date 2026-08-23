@@ -1,23 +1,38 @@
 @extends('frontend.layouts.app')
 
+@php
+    $page_suffix = request()->has('page') && request('page') > 1 ? ' - ' . translate('Page') . ' ' . request('page') : '';
+@endphp
+
 @if (isset($category_id))
 @php
-$meta_title = seo_title($category->meta_title, $category->getTranslation('name') . ' | ' . get_setting('website_name'));
-$meta_description = seo_description($category->meta_description, $category->getTranslation('description'));
+$meta_title = seo_title($category->meta_title, $category->getTranslation('name') . ' | ' . get_setting('website_name')) . $page_suffix;
+$fallback_desc = $category->getTranslation('description') ?: "Shop " . $category->getTranslation('name') . " at " . get_setting('website_name') . ". Browse our wide selection of " . strtolower($category->getTranslation('name')) . " for your home, office and lifestyle.";
+$meta_description = seo_description($category->meta_description, $fallback_desc) . $page_suffix;
 $canonical_url = route('products.category', $category->slug);
+if (request()->has('page') && request('page') > 1) {
+    $canonical_url .= '?page=' . request('page');
+}
 @endphp
 @elseif (isset($brand_id))
 @php
 $brand = get_single_brand($brand_id);
-$meta_title = seo_title($brand->meta_title, $brand->getTranslation('name') . ' | ' . get_setting('website_name'));
-$meta_description = seo_description($brand->meta_description, $brand->getTranslation('description'));
+$meta_title = seo_title($brand->meta_title, $brand->getTranslation('name') . ' | ' . get_setting('website_name')) . $page_suffix;
+$brand_fallback_desc = $brand->getTranslation('description') ?: "Shop " . $brand->getTranslation('name') . " products at " . get_setting('website_name') . ". Browse our wide selection of " . strtolower($brand->getTranslation('name')) . " items for your home.";
+$meta_description = seo_description($brand->meta_description, $brand_fallback_desc) . $page_suffix;
 $canonical_url = route('products.brand', $brand->slug);
+if (request()->has('page') && request('page') > 1) {
+    $canonical_url .= '?page=' . request('page');
+}
 @endphp
 @else
 @php
-$meta_title = seo_title(get_setting('meta_title'), translate('All Products') . ' | ' . get_setting('website_name'));
-$meta_description = seo_description(get_setting('meta_description'));
+$meta_title = seo_title(get_setting('meta_title'), translate('All Products') . ' | ' . get_setting('website_name')) . $page_suffix;
+$meta_description = seo_description(get_setting('meta_description')) . $page_suffix;
 $canonical_url = url()->current();
+if (request()->has('page') && request('page') > 1) {
+    $canonical_url .= '?page=' . request('page');
+}
 @endphp
 @endif
 
