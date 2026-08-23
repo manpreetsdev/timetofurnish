@@ -1,5 +1,9 @@
 @extends('backend.layouts.layout')
 
+@section('meta_title') Seller Login | {{ get_setting('website_name') }} @stop
+@section('meta_description') Login to your seller account to manage your shop, products, and orders on {{ get_setting('website_name') }}. @stop
+@section('meta_robots', 'noindex, follow')
+
 @section('content')
 
 <div class="h-100 bg-cover bg-center py-5 d-flex align-items-center seller_login_banner" style="background-image: url({{ uploaded_asset(get_setting('seller_login_page_bg')) }})">
@@ -109,4 +113,3 @@
         });
     </script>
 @endsection
-

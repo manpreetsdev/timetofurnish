@@ -1,6 +1,7 @@
 @extends('frontend.layouts.app')
 
 @section('content')
+    <h1 class="sr-only">{{ get_setting('website_name') }} - Premium Furniture Online</h1>
     @include('frontend.partials.homepage_section_renderer')
 
     <!-- Featured Categories -->

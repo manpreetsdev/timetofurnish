@@ -1,6 +1,7 @@
 @extends('frontend.layouts.app')
 
 @section('content')
+    <h1 class="sr-only">{{ get_setting('website_name') }} - Premium Furniture Online</h1>
     <style>
         #section_featured .slick-slider .slick-list {
             /* background: ; */

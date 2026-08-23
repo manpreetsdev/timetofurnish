@@ -12,10 +12,17 @@
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="robots" content="@yield('meta_robots', 'noindex, nofollow')">
+
+	@php
+		$backendTitle = trim($__env->yieldContent('meta_title', get_setting('website_name').' | '.get_setting('site_motto')));
+		$backendDescription = trim($__env->yieldContent('meta_description', 'Secure account and administration access for '.get_setting('website_name').'.'));
+	@endphp
 
 	<!-- Favicon -->
 	<link rel="icon" href="{{ uploaded_asset(get_setting('site_icon')) }}">
-	<title>{{ get_setting('website_name').' | '.get_setting('site_motto') }}</title>
+	<title>{{ $backendTitle }}</title>
+	<meta name="description" content="{{ strip_tags($backendDescription) }}">
 
 	<!-- google font -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700">

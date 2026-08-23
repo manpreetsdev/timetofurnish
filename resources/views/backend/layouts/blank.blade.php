@@ -7,9 +7,16 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="@yield('meta_robots', 'noindex, nofollow')">
+
+    @php
+        $blankTitle = trim($__env->yieldContent('meta_title', config('app.name', 'eCommerce')));
+        $blankDescription = trim($__env->yieldContent('meta_description', 'Account access page for '.get_setting('website_name').'.'));
+    @endphp
 
     <!-- Favicon -->
-  	<title>{{ config('app.name', 'eCommerce') }}</title>
+  	<title>{{ $blankTitle }}</title>
+    <meta name="description" content="{{ strip_tags($blankDescription) }}">
 
     <!-- google font -->
     {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700"> --}}

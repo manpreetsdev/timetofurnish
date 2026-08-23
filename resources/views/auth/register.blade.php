@@ -1,5 +1,9 @@
 @extends('backend.layouts.blank')
 
+@section('meta_title') Register | {{ get_setting('website_name') }} @stop
+@section('meta_description') Create a new account on {{ get_setting('website_name') }} to shop furniture and manage your orders. @stop
+@section('meta_robots', 'noindex, follow')
+
 @section('content')
 
 
@@ -10,6 +14,7 @@
                 <div class="card text-left">
                     <div class="card-header">{{ translate('Create a New Account') }}</div>
                     <div class="card-body">
+                        <h1 class="sr-only">{{ translate('Create a New Account') }}</h1>
                         <form method="POST" action="{{ route('register') }}">
                             @csrf
 

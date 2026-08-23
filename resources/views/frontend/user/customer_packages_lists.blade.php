@@ -1,5 +1,8 @@
 @extends('frontend.layouts.app')
 
+@section('meta_title') Premium Customer Packages | {{ get_setting('website_name') }} @stop
+@section('meta_description') Compare premium customer subscription packages, benefits, and pricing on {{ get_setting('website_name') }}. @stop
+
 @section('content')
     <section class="py-8 bg-primary text-white">
         <div class="container">

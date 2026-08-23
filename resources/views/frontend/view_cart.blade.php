@@ -1,6 +1,11 @@
 @extends('frontend.layouts.app')
 
+@section('meta_title'){{ translate('Shopping Cart') }} | {{ get_setting('website_name') }}@stop
+@section('meta_description'){{ translate('Review the furniture and home products currently saved in your shopping cart before checkout.') }}@stop
+@section('meta_robots', 'noindex, follow')
+
 @section('content')
+    <h1 class="sr-only">{{ translate('Shopping Cart') }}</h1>
     <!-- Steps -->
     <section class="pt-5 mb-4 cart_tabs">
         <div class="container">

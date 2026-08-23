@@ -1,5 +1,9 @@
 @extends('backend.layouts.layout')
 
+@section('meta_title') Admin Login | {{ get_setting('website_name') }} @stop
+@section('meta_description') Secure administrator login for the {{ get_setting('website_name') }} management dashboard. @stop
+@section('meta_robots', 'noindex, nofollow')
+
 @section('content')
 
 <style>

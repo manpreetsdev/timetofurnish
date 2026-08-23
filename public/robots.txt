@@ -10,3 +10,14 @@ Disallow: /admin
 Disallow: /purchase_history
 Disallow: /logout
 Disallow: /wishlists
+Disallow: /login
+Disallow: /register
+Disallow: /seller/login
+Disallow: /password/
+Disallow: /all-notifications
+Disallow: /auction_product_bids
+Disallow: /followed-seller/
+Disallow: /conversations
+Disallow: /shops
+Disallow: /seller
+Disallow: /deliveryboy

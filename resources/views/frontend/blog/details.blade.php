@@ -15,24 +15,24 @@
 
 @section('meta')
 <!-- Schema.org markup for Google+ -->
-<meta itemprop="name" content="{{ $blog->meta_title }}">
-<meta itemprop="description" content="{{ $blog->meta_description }}">
+<meta itemprop="name" content="{{ $seoTitle }}">
+<meta itemprop="description" content="{{ $seoDescription }}">
 <meta itemprop="image" content="{{ uploaded_asset($blog->meta_img) }}">
 
 <!-- Twitter Card data -->
 <meta name="twitter:card" content="summary">
 <meta name="twitter:site" content="@publisher_handle">
-<meta name="twitter:title" content="{{ $blog->meta_title }}">
-<meta name="twitter:description" content="{{ $blog->meta_description }}">
+<meta name="twitter:title" content="{{ $seoTitle }}">
+<meta name="twitter:description" content="{{ $seoDescription }}">
 <meta name="twitter:creator" content="@author_handle">
 <meta name="twitter:image" content="{{ uploaded_asset($blog->meta_img) }}">
 
 <!-- Open Graph data -->
-<meta property="og:title" content="{{ $blog->meta_title }}" />
+<meta property="og:title" content="{{ $seoTitle }}" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="{{ route('blog.details', $blog->slug) }}" />
 <meta property="og:image" content="{{ uploaded_asset($blog->meta_img) }}" />
-<meta property="og:description" content="{{ $blog->meta_description }}" />
+<meta property="og:description" content="{{ $seoDescription }}" />
 <meta property="og:site_name" content="{{ env('APP_NAME') }}" />
 @endsection
 
@@ -51,6 +51,8 @@
 
             <span class="active">{{ $blog->title }}</span>
         </nav>
+
+        <h1 class="sr-only">{{ $blog->title }}</h1>
 
         <!-- Blog Title -->
 
