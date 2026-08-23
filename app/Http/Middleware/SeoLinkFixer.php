@@ -25,15 +25,16 @@ class SeoLinkFixer
             // Match any <a> tag that points to one of these routes, handling both single and double quotes
             $pattern = '/<a([^>]*?)href=(["\'])([^"\']*(?:' . implode('|', $routes) . ')[^"\']*)\2([^>]*?)>/i';
             
-            $content = preg_replace_callback($pattern, function($matches) {
-                // Remove rel="nofollow" if it was added manually earlier
-                $attr1 = preg_replace('/\s*rel="nofollow"/i', '', $matches[1]);
-                $attr2 = preg_replace('/\s*rel="nofollow"/i', '', $matches[4]);
-                $url = $matches[3];
-                $encodedUrl = base64_encode($url);
-                
-                return '<a' . $attr1 . ' href="javascript:void(0);" onclick="window.location.href=atob(\''.$encodedUrl.'\')"' . $attr2 . '>';
-            }, $content);
+            if (!auth()->check()) {
+                $loginUrl = route('user.login');
+
+                $content = preg_replace_callback($pattern, function($matches) use ($loginUrl) {
+                    $attr1 = preg_replace('/\s*rel=(["\']).*?\1/i', '', $matches[1]);
+                    $attr2 = preg_replace('/\s*rel=(["\']).*?\1/i', '', $matches[4]);
+
+                    return '<a' . $attr1 . ' href="' . e($loginUrl) . '" rel="nofollow"' . $attr2 . '>';
+                }, $content);
+            }
             
             $response->setContent($content);
         }

@@ -187,8 +187,9 @@
                                         <span class="fw-700">{{ translate('Followed') }}</span> &nbsp; ({{ count($shop->followers) }})
                                     </a>
                                 @else
-                                    <a href="{{ route("followed_seller.store", ['id'=>$shop->id]) }}"
+                                    <a href="{{ Auth::check() ? route("followed_seller.store", ['id'=>$shop->id]) : route('user.login') }}"
                                         class="btn borderbtn d-flex align-items-center justify-content-center fs-12 w-190px "
+                                        @guest rel="nofollow" @endguest
                                         style="height: 40px; border-radius: 30px !important; justify-content: center;">
                                         <i class="las la-plus fs-16 mr-2"></i>
                                         <span class="fw-700">{{ translate('Follow Seller') }}</span> &nbsp; ({{ count($shop->followers) }})
