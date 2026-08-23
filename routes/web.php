@@ -46,7 +46,6 @@ use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\AuctionProductBidController;
 use App\Http\Controllers\CookieController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\SellerController;
@@ -147,7 +146,7 @@ Route::get('/conversations', function () {
 
 Route::get('/auction_product_bids', function () {
     if (Auth::check()) {
-        return app(AuctionProductBidController::class)->index();
+        return redirect()->route('dashboard');
     }
 
     return view('frontend.seo.guest-gate', [
