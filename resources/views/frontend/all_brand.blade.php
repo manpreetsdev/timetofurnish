@@ -6,7 +6,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 text-lg-left text-center">
-                    <h1 class="fw-700 fs-20 fs-md-24 text-dark">{{ translate('All Brands') }}</h1>
+                    <h1 class="fw-700 fs-20 fs-md-24 text-dark">{{ translate('All Brands') }}@if(request()->has('page') && request('page') > 1)<span class="sr-only"> - {{ translate('Page') }} {{ request('page') }}</span>@endif</h1>
                 </div>
                 <div class="col-lg-6">
                     <ul class="breadcrumb justify-content-center justify-content-lg-end bg-transparent p-0">

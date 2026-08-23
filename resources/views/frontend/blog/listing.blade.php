@@ -7,7 +7,7 @@
     <div class="contact-overlay">
         <div class="container">
             <div class="banner-content">
-                <h1>Blogs</h1>
+                <h1>Blogs@if(request()->has('page') && request('page') > 1)<span class="sr-only"> - {{ translate('Page') }} {{ request('page') }}</span>@endif</h1>
 
                 <ul class="breadcrumb justify-content-center bg-transparent p-0 mb-0">
                     <li class="breadcrumb-item">
@@ -54,7 +54,7 @@
                 <!-- Breadcrumb -->
                 <div class="row gutters-16 mb-4">
                     {{-- <div class="col-5 col-xl-6">
-                            <h1 class="fw-700 fs-20 fs-md-24 text-dark mb-0">{{ translate('Blogs')}}</h1>
+                            <h1 class="fw-700 fs-20 fs-md-24 text-dark mb-0">{{ translate('Blogs')}}@if(request()->has('page') && request('page') > 1)<span class="sr-only"> - {{ translate('Page') }} {{ request('page') }}</span>@endif</h1>
                 </div>
                 <div class="col-5 col-xl-6">
                     <ul class="breadcrumb bg-transparent p-0 justify-content-end">

@@ -258,6 +258,9 @@ if (request()->has('page') && request('page') > 1) {
                                     @else
                                     {{ translate('All Products') }}
                                     @endif
+                                    @if(request()->has('page') && request('page') > 1)
+                                        <span class="sr-only">{{ $page_suffix }}</span>
+                                    @endif
                                 </h1>
                                 <input type="hidden" name="keyword" value="{{ $query }}">
                             </div>

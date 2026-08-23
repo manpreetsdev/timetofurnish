@@ -5,6 +5,14 @@
 
     RewriteEngine On
 
+    # Redirect www to non-www
+    RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+    # Force HTTPS
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
     # Redirect legacy /public/* asset URLs to clean paths
     RewriteRule ^public/(.*)$ /$1 [L,R=301]
 
