@@ -85,7 +85,12 @@ Route::get('/dashboard', function (Request $request) {
         return app(HomeController::class)->dashboard();
     }
 
-    return app(HomeController::class)->login();
+    return view('frontend.seo.guest-gate', [
+        'metaTitle' => 'Customer Dashboard Access | ' . get_setting('website_name'),
+        'metaDescription' => 'Login to access your customer dashboard, saved products, and account tools on ' . get_setting('website_name') . '.',
+        'heading' => 'Customer Dashboard',
+        'body' => 'Please log in to access your account dashboard.',
+    ]);
 });
 
 Route::get('/all-notifications', function () {
@@ -93,7 +98,12 @@ Route::get('/all-notifications', function () {
         return app(NotificationController::class)->index();
     }
 
-    return app(HomeController::class)->login();
+    return view('frontend.seo.guest-gate', [
+        'metaTitle' => 'Notifications Access | ' . get_setting('website_name'),
+        'metaDescription' => 'Login to view your account notifications on ' . get_setting('website_name') . '.',
+        'heading' => 'Notifications',
+        'body' => 'Please log in to view your notifications.',
+    ]);
 });
 
 Route::get('/purchase_history', function () {
@@ -101,7 +111,12 @@ Route::get('/purchase_history', function () {
         return app(PurchaseHistoryController::class)->index();
     }
 
-    return app(HomeController::class)->login();
+    return view('frontend.seo.guest-gate', [
+        'metaTitle' => 'Purchase History Access | ' . get_setting('website_name'),
+        'metaDescription' => 'Login to view your purchase history and order details on ' . get_setting('website_name') . '.',
+        'heading' => 'Purchase History',
+        'body' => 'Please log in to view your purchase history.',
+    ]);
 });
 
 Route::get('/wishlists', function () {
@@ -109,7 +124,12 @@ Route::get('/wishlists', function () {
         return app(WishlistController::class)->index();
     }
 
-    return app(HomeController::class)->login();
+    return view('frontend.seo.guest-gate', [
+        'metaTitle' => 'Wishlist Access | ' . get_setting('website_name'),
+        'metaDescription' => 'Login to access your saved wishlist items on ' . get_setting('website_name') . '.',
+        'heading' => 'Wishlist',
+        'body' => 'Please log in to view your wishlist.',
+    ]);
 });
 
 Route::get('/conversations', function () {
@@ -117,7 +137,12 @@ Route::get('/conversations', function () {
         return app(ConversationController::class)->index();
     }
 
-    return app(HomeController::class)->login();
+    return view('frontend.seo.guest-gate', [
+        'metaTitle' => 'Conversations Access | ' . get_setting('website_name'),
+        'metaDescription' => 'Login to view your seller and support conversations on ' . get_setting('website_name') . '.',
+        'heading' => 'Conversations',
+        'body' => 'Please log in to view your conversations.',
+    ]);
 });
 
 Route::get('/auction_product_bids', function () {
@@ -125,7 +150,12 @@ Route::get('/auction_product_bids', function () {
         return app(AuctionProductBidController::class)->index();
     }
 
-    return app(HomeController::class)->login();
+    return view('frontend.seo.guest-gate', [
+        'metaTitle' => 'Auction Bids Access | ' . get_setting('website_name'),
+        'metaDescription' => 'Login to view and manage your auction product bids on ' . get_setting('website_name') . '.',
+        'heading' => 'Auction Product Bids',
+        'body' => 'Please log in to view your auction bids.',
+    ]);
 });
 
 Route::get('/shops', function () {
@@ -133,7 +163,12 @@ Route::get('/shops', function () {
         return app(ShopController::class)->index();
     }
 
-    return view('frontend.seller_form');
+    return view('frontend.seo.guest-gate', [
+        'metaTitle' => 'Seller Shop Access | ' . get_setting('website_name'),
+        'metaDescription' => 'Login or register to create and manage your seller shop on ' . get_setting('website_name') . '.',
+        'heading' => 'Seller Shop',
+        'body' => 'Please log in or register as a seller to manage your shop.',
+    ]);
 });
 
 Route::get('/logout', function (Request $request) {
@@ -141,7 +176,12 @@ Route::get('/logout', function (Request $request) {
         return app(LoginController::class)->logout($request);
     }
 
-    return app(HomeController::class)->login();
+    return view('frontend.seo.guest-gate', [
+        'metaTitle' => 'Account Logout | ' . get_setting('website_name'),
+        'metaDescription' => 'Account logout page for ' . get_setting('website_name') . '.',
+        'heading' => 'Logout',
+        'body' => 'You are not currently logged in.',
+    ]);
 });
 
 Route::get('/clear-all-cache', function () {
