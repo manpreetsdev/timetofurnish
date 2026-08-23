@@ -533,7 +533,14 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
     @endphp
 
     <!-- Sliders -->
-    <section class="my-4 mt-2" style="margin-bottom: 30px !important;">
+    <style>
+        @media only screen and (min-width:991px) {
+            .header_nav {
+                margin-bottom: 30px !important;
+            }
+        }
+    </style>
+    <section class="my-3 mt-2 header_nav">
         <div class="container">
             <!-- Categories -->
             <div class="row">
