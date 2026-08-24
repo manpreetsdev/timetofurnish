@@ -9,8 +9,8 @@ $routes = [
 $pattern = '/<a([^>]*?)href=(["\'])([^"\']*(?:' . implode('|', $routes) . ')[^"\']*)\2([^>]*?)>/i';
 
 $content = preg_replace_callback($pattern, function($matches) {
-    $attr1 = preg_replace('/\s*rel="nofollow"/i', '', $matches[1]);
-    $attr2 = preg_replace('/\s*rel="nofollow"/i', '', $matches[4]);
+    $attr1 = preg_replace('/\s*/i', '', $matches[1]);
+    $attr2 = preg_replace('/\s*/i', '', $matches[4]);
     $url = $matches[3];
     $encodedUrl = base64_encode($url);
     

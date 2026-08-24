@@ -1,4 +1,5 @@
 @extends('frontend.layouts.app')
+@section('meta_robots', 'noindex, nofollow')
 @section('content')
 <section class="py-5">
     <div class="container">

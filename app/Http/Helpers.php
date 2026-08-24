@@ -1978,7 +1978,7 @@ if (!function_exists('my_asset')) {
             // Ignore
         }
 
-        return 'public/' . $path;
+        return $path;
     }
 
     /**

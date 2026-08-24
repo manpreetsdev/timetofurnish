@@ -397,3 +397,25 @@ staging
 ```
 /usr/lib/plesk-9.0/composer.phar
 ```
+
+---
+
+# 20. Fix Image Uploads (Missing Images)
+
+If uploaded images are showing as broken links or returning the website layout (like `staging.timetofurnish.com/public/uploads/all/...`), it is due to two main reasons on Plesk:
+
+### A. Missing Write Permissions for Uploads
+Laravel stores images in the `public/uploads` directory based on your `config/filesystems.php`. You must grant write permissions to this directory, just like you did for `storage`.
+
+Run this command via SSH:
+```bash
+chmod -R 775 /var/www/vhosts/timetofurnish.com/staging/public/uploads
+```
+*(If the folder doesn't exist yet, create it first: `mkdir -p /var/www/vhosts/timetofurnish.com/staging/public/uploads/all`)*
+
+### B. Incorrect Document Root in Plesk (Optional but Recommended)
+If your image URLs contain `/public/` in them, it means your Plesk Document Root is set to the base folder (`staging`). For Laravel, the Document Root should **always** be the `public` directory.
+1. Go to **Plesk > Hosting Settings** for `staging.timetofurnish.com`.
+2. Change the **Document root** from `staging` to `staging/public`.
+3. Save the changes. 
+*(Note: If you do this, previously uploaded images with `/public/` hardcoded in the database might need a quick database search-and-replace, or you can just re-upload them).*

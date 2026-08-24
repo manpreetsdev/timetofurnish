@@ -32,7 +32,7 @@ class SeoLinkFixer
                     $attr1 = preg_replace('/\s*rel=(["\']).*?\1/i', '', $matches[1]);
                     $attr2 = preg_replace('/\s*rel=(["\']).*?\1/i', '', $matches[4]);
 
-                    return '<a' . $attr1 . ' href="' . e($loginUrl) . '" rel="nofollow"' . $attr2 . '>';
+                    return '<a' . $attr1 . ' href="' . e($loginUrl) . ' ' . $attr2 . '>';
                 }, $content);
             }
             

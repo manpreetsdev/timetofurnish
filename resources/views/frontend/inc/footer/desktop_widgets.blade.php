@@ -153,9 +153,9 @@
                                             @endforeach
                                         @else
                                             @if (Auth::check())
-                                                <li><a class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}">{{ !empty($w['logout_text']) ? translate($w['logout_text']) : translate('Logout') }}</a></li>
-                                                <li><a class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ !empty($w['order_history_text']) ? translate($w['order_history_text']) : translate('Order History') }}</a></li>
-                                                <li><a class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ !empty($w['wishlist_text']) ? translate($w['wishlist_text']) : translate('My Wishlist') }}</a></li>
+                                                <li><a rel="nofollow" class="fs-14 text-light animate-underline-white" href="{{ route('logout') }}">{{ !empty($w['logout_text']) ? translate($w['logout_text']) : translate('Logout') }}</a></li>
+                                                <li><a rel="nofollow" class="fs-14 text-light animate-underline-white" href="{{ route('purchase_history.index') }}">{{ !empty($w['order_history_text']) ? translate($w['order_history_text']) : translate('Order History') }}</a></li>
+                                                <li><a rel="nofollow" class="fs-14 text-light animate-underline-white" href="{{ route('wishlists.index') }}">{{ !empty($w['wishlist_text']) ? translate($w['wishlist_text']) : translate('My Wishlist') }}</a></li>
                                             @else
                                                 <li><a class="fs-14 text-light animate-underline-white" href="{{ route('user.login') }}">{{ !empty($w['login_text']) ? translate($w['login_text']) : translate('Login') }}</a></li>
                                             @endif
@@ -214,7 +214,7 @@
                                         <div class="sub-widget-title">{{ $w['subheading_2'] ?? translate('Join Our Partner Network') }}</div>
                                         <ul class="list-unstyled mb-3">
                                             <li>
-                                                 <a href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-14 text-light animate-underline-white">
+                                                 <a rel="nofollow" href="{{ !empty($w['become_seller_url']) ? $w['become_seller_url'] : route('shops.create') }}" class="fs-14 text-light animate-underline-white">
                                                     {{ !empty($w['become_seller_text']) ? translate($w['become_seller_text']) : translate('Register your shop') }}
                                                 </a>
                                             </li>

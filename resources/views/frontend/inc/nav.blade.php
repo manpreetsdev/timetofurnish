@@ -376,7 +376,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                         <ul class="list-unstyled no-scrollbar mb-0 text-left">
                             @if (isAdmin())
                             <li class="user-top-nav-element border border-top-0" data-id="1">
-                                <a href="{{ route('admin.dashboard') }}"
+                                <a rel="nofollow" href="{{ route('admin.dashboard') }}"
                                     class="text-truncate text-dark px-4 fs-14 d-flex align-items-center hov-column-gap-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         viewBox="0 0 16 16">
@@ -390,7 +390,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                             </li>
                             @else
                             <li class="user-top-nav-element border border-top-0" data-id="1">
-                                <a href="{{ route('dashboard') }}"
+                                <a rel="nofollow" href="{{ route('dashboard') }}"
                                     class="text-truncate text-dark px-4 fs-14 d-flex align-items-center hov-column-gap-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         viewBox="0 0 16 16">
@@ -406,7 +406,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
 
                             @if (isCustomer())
                             <li class="user-top-nav-element border border-top-0" data-id="1">
-                                <a href="{{ route('purchase_history.index') }}"
+                                <a rel="nofollow" href="{{ route('purchase_history.index') }}"
                                     class="text-truncate text-dark px-4 fs-14 d-flex align-items-center hov-column-gap-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         viewBox="0 0 16 16">
@@ -445,7 +445,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
 
                             @if (get_setting('conversation_system') == 1)
                             <li class="user-top-nav-element border border-top-0" data-id="1">
-                                <a href="{{ route('conversations.index') }}"
+                                <a rel="nofollow" href="{{ route('conversations.index') }}"
                                     class="text-truncate text-dark px-4 fs-14 d-flex align-items-center hov-column-gap-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         viewBox="0 0 16 16">
@@ -499,7 +499,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
 
                             @endif
                             <li class="user-top-nav-element border border-top-0" data-id="1">
-                                <a href="{{ route('logout') }}"
+                                <a rel="nofollow" href="{{ route('logout') }}"
                                     class="text-truncate text-dark px-4 fs-14 d-flex align-items-center hov-column-gap-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15.999"
                                         viewBox="0 0 16 15.999">
@@ -686,7 +686,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
             @auth
             @if (isAdmin())
             <li class="mr-0 mobile-menu-account-item">
-                <a href="{{ route('admin.dashboard') }}">
+                <a rel="nofollow" href="{{ route('admin.dashboard') }}">
                     <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                         <circle cx="12" cy="7" r="4" />
@@ -696,7 +696,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
             </li>
             @else
             <li class="mr-0 mobile-menu-account-item">
-                <a href="{{ route('dashboard') }}"
+                <a rel="nofollow" href="{{ route('dashboard') }}"
                     class="{{ areActiveRoutes(['dashboard'], ' active') }}">
                     <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -708,7 +708,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
             @endif
             @if (isCustomer())
             <li class="mr-0">
-                <a href="{{ route('all-notifications') }}"
+                <a rel="nofollow" href="{{ route('all-notifications') }}"
                     class="{{ areActiveRoutes(['all-notifications'], ' active') }}">
                     <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -718,7 +718,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                 </a>
             </li>
             <li class="mr-0">
-                <a href="{{ route('wishlists.index') }}"
+                <a rel="nofollow" href="{{ route('wishlists.index') }}"
                     class="{{ areActiveRoutes(['wishlists.index'], ' active') }}">
                     <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
@@ -739,7 +739,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
             </li>
             @endif
             <li class="mr-0 mobile-menu-logout-item">
-                <a href="{{ route('logout') }}" class="logout-link">
+                <a rel="nofollow" href="{{ route('logout') }}" class="logout-link">
                     <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                         <polyline points="16 17 21 12 16 7" />
