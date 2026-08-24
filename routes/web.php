@@ -730,135 +730,17 @@ Route::controller(BlogController::class)->group(function () {
 
 
 
-Route::get('/dashboard', function (Request $request) {
-    if (Auth::check()) {
-        return app(HomeController::class)->dashboard();
-    }
-
-    return view('frontend.seo.guest-gate', [
-        'metaTitle' => 'Customer Dashboard Access | ' . get_setting('website_name'),
-        'metaDescription' => 'Login to access your customer dashboard, saved products, and account tools on ' . get_setting('website_name') . '.',
-        'heading' => 'Customer Dashboard',
-        'body' => 'Please log in to access your account dashboard.',
-    ]);
-})->name('dashboard');
-
-Route::get('/all-notifications', function () {
-    if (Auth::check()) {
-        return app(NotificationController::class)->index();
-    }
-
-    return view('frontend.seo.guest-gate', [
-        'metaTitle' => 'Notifications Access | ' . get_setting('website_name'),
-        'metaDescription' => 'Login to view your account notifications on ' . get_setting('website_name') . '.',
-        'heading' => 'Notifications',
-        'body' => 'Please log in to view your notifications.',
-    ]);
-});
-
-Route::get('/purchase_history', function () {
-    if (Auth::check()) {
-        return app(PurchaseHistoryController::class)->index();
-    }
-
-    return view('frontend.seo.guest-gate', [
-        'metaTitle' => 'Purchase History Access | ' . get_setting('website_name'),
-        'metaDescription' => 'Login to view your purchase history and order details on ' . get_setting('website_name') . '.',
-        'heading' => 'Purchase History',
-        'body' => 'Please log in to view your purchase history.',
-    ]);
-});
-
-Route::get('/wishlists', function () {
-    if (Auth::check()) {
-        return app(WishlistController::class)->index();
-    }
-
-    return view('frontend.seo.guest-gate', [
-        'metaTitle' => 'Wishlist Access | ' . get_setting('website_name'),
-        'metaDescription' => 'Login to access your saved wishlist items on ' . get_setting('website_name') . '.',
-        'heading' => 'Wishlist',
-        'body' => 'Please log in to view your wishlist.',
-    ]);
-});
-
-Route::get('/conversations', function () {
-    if (Auth::check()) {
-        return app(ConversationController::class)->index();
-    }
-
-    return view('frontend.seo.guest-gate', [
-        'metaTitle' => 'Conversations Access | ' . get_setting('website_name'),
-        'metaDescription' => 'Login to view your seller and support conversations on ' . get_setting('website_name') . '.',
-        'heading' => 'Conversations',
-        'body' => 'Please log in to view your conversations.',
-    ]);
-});
-
-Route::get('/auction_product_bids', function () {
-    if (Auth::check()) {
-        return redirect()->route('dashboard');
-    }
-
-    return view('frontend.seo.guest-gate', [
-        'metaTitle' => 'Auction Bids Access | ' . get_setting('website_name'),
-        'metaDescription' => 'Login to view and manage your auction product bids on ' . get_setting('website_name') . '.',
-        'heading' => 'Auction Product Bids',
-        'body' => 'Please log in to view your auction bids.',
-    ]);
-});
-
-Route::get('/shops', function () {
-    if (Auth::check()) {
-        return app(ShopController::class)->index();
-    }
-
-    return view('frontend.seo.guest-gate', [
-        'metaTitle' => 'Seller Shop Access | ' . get_setting('website_name'),
-        'metaDescription' => 'Login or register to create and manage your seller shop on ' . get_setting('website_name') . '.',
-        'heading' => 'Seller Shop',
-        'body' => 'Please log in or register as a seller to manage your shop.',
-    ]);
-});
-
-Route::get('/logout', function (Request $request) {
-    if (Auth::check()) {
-        return app(LoginController::class)->logout($request);
-    }
-
-    return view('frontend.seo.guest-gate', [
-        'metaTitle' => 'Account Logout | ' . get_setting('website_name'),
-        'metaDescription' => 'Account logout page for ' . get_setting('website_name') . '.',
-        'heading' => 'Logout',
-        'body' => 'You are not currently logged in.',
-    ]);
-});
+Route::get('/contact-us', [PageController::class, 'contact_us'])->name('contact_us');
+Route::post('/contact-us-submit', [PageController::class, 'submit_contact'])->name('contact_us.submit');
+Route::post('/Contact-Us-submit', [PageController::class, 'submit_contact']);
+Route::get('/contact-us-submit', function () { return redirect()->route('contact_us', [], 301); });
+Route::get('/Contact-Us-submit', function () { return redirect()->route('contact_us', [], 301); });
 
 Route::controller(PageController::class)->group(function () {
-
-    //contact us page
-    // Route::get('/contact-us', 'contact_us')->name('contact_us');
-    // Route::post('/contact-us-submit', [PageController::class, 'submit_contact'])
-    // ->name('contact.us.submit');
-    Route::get('/contact-us', [PageController::class, 'contact_us'])->name('contact_us');
-    Route::post('/Contact-Us-submit', [PageController::class, 'submit_contact'])->name('contact_us.submit');
-    Route::get('/Contact-Us-submit', function () { return redirect()->route('contact_us', [], 301); });
-
     Route::get('/meet-the-team', [PageController::class, 'meet_the_team'])->name('meet.the.team');
-
-
-// Contact Us Page
-Route::get('/contact-us', [PageController::class, 'contact_us'])->name('contact_us');
-
-// Contact Us Form Submit
-// Route::post('/contact-us-submit', [PageController::class, 'submit_contact'])->name('contact.us.submit');
-
-
-
     Route::get('/become-delivery-partnerr', [PageController::class, 'DeliveryPartner'])->name('become_delivery_partner');
-     Route::post('/delivery-partner-submit', [PageController::class, 'submitDeliveryPartner'])->name('delivery.partner.submit');
-     Route::get('/delivery-partner-submit', function () { return redirect()->route('become_delivery_partner', [], 301); });
-
+    Route::post('/delivery-partner-submit', [PageController::class, 'submitDeliveryPartner'])->name('delivery.partner.submit');
+    Route::get('/delivery-partner-submit', function () { return redirect()->route('become_delivery_partner', [], 301); });
 
     //mobile app balnk page for webview
     Route::get('/mobile-page/{slug}', 'mobile_custom_page')->name('mobile.custom-pages');
