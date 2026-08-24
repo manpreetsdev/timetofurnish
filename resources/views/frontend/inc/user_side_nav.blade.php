@@ -45,7 +45,7 @@
 
                 <!-- Dashboard -->
                 <li class="aiz-side-nav-item">
-                    <a rel="nofollow" href="{{ route('dashboard') }}" class="aiz-side-nav-link {{ areActiveRoutes(['dashboard']) }}">
+                    <a href="{{ route('dashboard') }}" class="aiz-side-nav-link {{ areActiveRoutes(['dashboard']) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                             <g id="Group_24768" data-name="Group 24768" transform="translate(3495.144 -602)">
                                 <path id="Path_2916" data-name="Path 2916" d="M15.3,5.4,9.561.481A2,2,0,0,0,8.26,0H7.74a2,2,0,0,0-1.3.481L.7,5.4A2,2,0,0,0,0,6.92V14a2,2,0,0,0,2,2H14a2,2,0,0,0,2-2V6.92A2,2,0,0,0,15.3,5.4M10,15H6V9A1,1,0,0,1,7,8H9a1,1,0,0,1,1,1Zm5-1a1,1,0,0,1-1,1H11V9A2,2,0,0,0,9,7H7A2,2,0,0,0,5,9v6H2a1,1,0,0,1-1-1V6.92a1,1,0,0,1,.349-.76l5.74-4.92A1,1,0,0,1,7.74,1h.52a1,1,0,0,1,.651.24l5.74,4.92A1,1,0,0,1,15,6.92Z" transform="translate(-3495.144 602)" fill="#b5b5bf" />
@@ -62,7 +62,7 @@
 
                 <!-- Purchase History -->
                 <li class="aiz-side-nav-item">
-                    <a rel="nofollow" href="{{ route('purchase_history.index') }}"
+                    <a href="{{ route('purchase_history.index') }}"
                         class="aiz-side-nav-link {{ areActiveRoutes(['purchase_history.index', 'purchase_history.details']) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                             <g id="Group_8109" data-name="Group 8109" transform="translate(-27.466 -542.963)">
@@ -85,7 +85,7 @@
 
                 <!-- Downloads -->
                 {{--<li class="aiz-side-nav-item">
-                    <a rel="nofollow" href="{{ route('digital_purchase_history.index') }}"
+                    <a href="{{ route('digital_purchase_history.index') }}"
                 class="aiz-side-nav-link {{ areActiveRoutes(['digital_purchase_history.index']) }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16.001" height="16" viewBox="0 0 16.001 16">
                     <g id="Group_8110" data-name="Group 8110" transform="translate(-1388.154 -562.604)">
@@ -115,7 +115,7 @@
 
                 <!-- Wishlist -->
                 <li class="aiz-side-nav-item">
-                    <a rel="nofollow" href="{{ route('wishlists.index') }}"
+                    <a href="{{ route('wishlists.index') }}"
                         class="aiz-side-nav-link {{ areActiveRoutes(['wishlists.index']) }}">
                         <svg id="Group_8116" data-name="Group 8116" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="14" viewBox="0 0 16 14">
                             <defs>
@@ -210,7 +210,7 @@
                             </a>
                         </li>
                         <li class="aiz-side-nav-item">
-                            <a rel="nofollow" href="{{ route('auction_product.purchase_history') }}"
+                            <a href="{{ route('auction_product.purchase_history') }}"
                                 class="aiz-side-nav-link">
                                 <span class="aiz-side-nav-text">{{ translate('Purchase History') }}</span>
                             </a>
@@ -225,7 +225,7 @@
                 $conversation = get_non_viewed_conversations();
                 @endphp
                 <li class="aiz-side-nav-item">
-                    <a rel="nofollow" href="{{ route('conversations.index') }}"
+                    <a href="{{ route('conversations.index') }}"
                         class="aiz-side-nav-link {{ areActiveRoutes(['conversations.index', 'conversations.show']) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                             <g id="Group_8134" data-name="Group 8134" transform="translate(1053.151 256.688)">
@@ -373,7 +373,7 @@
             </ul>
 
             <!-- logout -->
-            <a rel="nofollow" href="{{ route('logout') }}" class="btn btn-primary btn-block fs-14 fw-700 mb-5 mb-md-0" style="border-radius: 25px;">{{ translate('Sign Out') }}</a>
+            <a href="{{ route('logout') }}" class="btn btn-primary btn-block fs-14 fw-700 mb-5 mb-md-0" style="border-radius: 25px;">{{ translate('Sign Out') }}</a>
         </div>
 
     </div>

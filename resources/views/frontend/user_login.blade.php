@@ -417,7 +417,7 @@ input:-webkit-autofill:active {
                     $('#social-login-wrap').addClass('d-none');
                     $('#register-link-wrap').html(`
                         <p class="fs-12 mb-1" style="color: #5d5247;">{{ translate("Don't have an account?") }}</p>
-                        <a rel="nofollow" href="{{ route('shops.create') }}" class="fw-700 text-decoration-underline" style="color: #685b4e;">
+                        <a href="{{ route('shops.create') }}" class="fw-700 text-decoration-underline" style="color: #685b4e;">
                             {{ translate('Register your shop') }}
                         </a>
                     `);
