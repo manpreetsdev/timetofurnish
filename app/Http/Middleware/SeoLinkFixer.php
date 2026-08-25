@@ -61,7 +61,7 @@ class SeoLinkFixer
             ],
         ];
 
-        if (!auth()->check() && $request->isMethod('GET')) {
+        if (!auth()->check() && ($request->isMethod('GET') || $request->isMethod('HEAD'))) {
             $path = '/' . ltrim($request->path(), '/');
 
             if (array_key_exists($path, $guestOnlyPages)) {
@@ -123,13 +123,43 @@ class SeoLinkFixer
                     $attr1 = preg_replace('/\s*rel=(["\']).*?\1/i', '', $matches[1]);
                     $attr2 = preg_replace('/\s*rel=(["\']).*?\1/i', '', $matches[4]);
 
-                    return '<a' . $attr1 . ' href="' . e($loginUrl) . '" rel="nofollow" ' . $attr2 . '>';
+                    return '<a' . $attr1 . ' href="' . e($loginUrl) . '"' . $attr2 . '>';
                 }, $content);
             }
+
+            $requestHost = $request->getHost();
+            $content = preg_replace_callback('/<a\b([^>]*?)href=(["\'])([^"\']+)\2([^>]*)>/i', function ($matches) use ($requestHost) {
+                $href = html_entity_decode($matches[3], ENT_QUOTES, 'UTF-8');
+
+                if (!$this->isInternalHref($href, $requestHost)) {
+                    return $matches[0];
+                }
+
+                $attr1 = preg_replace('/\s*rel=(["\']).*?\1/i', '', $matches[1]);
+                $attr2 = preg_replace('/\s*rel=(["\']).*?\1/i', '', $matches[4]);
+
+                return '<a' . $attr1 . ' href=' . $matches[2] . $matches[3] . $matches[2] . $attr2 . '>';
+            }, $content);
 
             $response->setContent($content);
         }
 
         return $response;
+    }
+
+    private function isInternalHref(string $href, string $requestHost): bool
+    {
+        if ($href === '' || Str::startsWith($href, ['#', 'mailto:', 'tel:', 'javascript:'])) {
+            return false;
+        }
+
+        $parsedHost = parse_url($href, PHP_URL_HOST);
+        $parsedPath = parse_url($href, PHP_URL_PATH);
+
+        if ($parsedHost !== null) {
+            return strcasecmp($parsedHost, $requestHost) === 0;
+        }
+
+        return $parsedPath !== null && Str::startsWith($parsedPath, '/');
     }
 }
