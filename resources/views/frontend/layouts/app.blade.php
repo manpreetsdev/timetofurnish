@@ -1066,6 +1066,7 @@
                         .replace(/,/g, '')
                         .replace(/[^0-9.]/g, '')
                     ) || 0;
+                    let has_backend_variant_price = data.price !== '-' && base_price > 0;
 
                     let addon_total = 0;
                     let variant_ready = true;
@@ -1141,7 +1142,7 @@
                         }
                     });
 
-                    if (!variant_ready) {
+                    if (!has_backend_variant_price && !variant_ready) {
                         let original_actual = parseFloat($('.js-product-base-price').first().attr('data-original-actual-base-price'));
                         if (isNaN(original_actual)) {
                             original_actual = parseFloat($('.js-product-base-price').first().data('actual-base-price')) || 0;
