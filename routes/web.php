@@ -609,7 +609,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('/reviews', ReviewController::class);
 
     // Product Conversation
-    Route::resource('conversations', ConversationController::class);
+    Route::resource('conversations', ConversationController::class)->except(['index']);
     Route::controller(ConversationController::class)->group(function () {
         Route::get('/conversations/destroy/{id}', 'destroy')->name('conversations.destroy');
         Route::post('conversations/refresh', 'refresh')->name('conversations.refresh');
@@ -630,6 +630,19 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/addresses/set-default/{id}', 'set_default')->name('addresses.set_default');
     });
 });
+
+Route::match(['get', 'head'], 'conversations', function () {
+    if (auth()->check()) {
+        return app(ConversationController::class)->index();
+    }
+
+    return response()->view('frontend.seo.guest-gate', [
+        'metaTitle' => 'Messages Login',
+        'metaDescription' => 'Sign in to access your TimetoFurnish conversations and messages.',
+        'heading' => 'Login Required',
+        'body' => 'Please sign in to view your conversations and messages.',
+    ], 200);
+})->name('conversations.index');
 
 Route::controller(AddressController::class)->group(function () {
     Route::post('/get-states', 'getStates')->name('get-state');

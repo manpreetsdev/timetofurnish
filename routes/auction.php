@@ -11,10 +11,11 @@
 |
 */
 
-use App\Http\Controllers\AuctionProductController;
-use App\Http\Controllers\AuctionProductBidController;
+use App\Http\Controllers\Api\V2\AuctionProductController;
+use App\Http\Controllers\Api\V2\AuctionProductBidController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
+use App\Models\AuctionProductBid;
 
 //Admin
 Route::group(['prefix' =>'admin', 'middleware' => ['auth', 'admin']], function(){
@@ -57,8 +58,26 @@ Route::group(['prefix' => 'seller', 'middleware' => ['seller', 'verified', 'user
     });
 });
 
+Route::match(['get', 'head'], 'auction_product_bids', function () {
+    if (auth()->check()) {
+        $bids = AuctionProductBid::with('product')
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->paginate(10);
+
+        return view('frontend.user.auction_product_bids.index', compact('bids'));
+    }
+
+    return response()->view('frontend.seo.guest-gate', [
+        'metaTitle' => 'Auction Bids Login',
+        'metaDescription' => 'Sign in to access your TimetoFurnish auction bids.',
+        'heading' => 'Login Required',
+        'body' => 'Please sign in to manage your auction bids and activity.',
+    ], 200);
+})->name('auction_product_bids.index');
+
 Route::group(['middleware' => ['auth']], function() {
-    Route::resource('auction_product_bids', AuctionProductBidController::class);
+    Route::resource('auction_product_bids', AuctionProductBidController::class)->except(['index']);
 
     Route::post('/auction/cart/show-cart-modal', [CartController::class, 'showCartModalAuction'])->name('auction.cart.showCartModal');
     Route::get('/auction/purchase_history', [AuctionProductController::class, 'purchase_history_user'])->name('auction_product.purchase_history');
