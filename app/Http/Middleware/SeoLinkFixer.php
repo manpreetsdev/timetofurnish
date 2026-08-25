@@ -128,6 +128,16 @@ class SeoLinkFixer
             }
 
             $requestHost = $request->getHost();
+            $content = preg_replace_callback('/<a\b[^>]*href=(["\'])([^"\']+)\1[^>]*>(.*?)<\/a>/is', function ($matches) use ($requestHost) {
+                $href = html_entity_decode($matches[2], ENT_QUOTES, 'UTF-8');
+
+                if (!$this->isInternalCdnCgiHref($href, $requestHost)) {
+                    return $matches[0];
+                }
+
+                return $matches[3];
+            }, $content);
+
             $content = preg_replace_callback('/<a\b([^>]*?)href=(["\'])([^"\']+)\2([^>]*)>/i', function ($matches) use ($requestHost) {
                 $href = html_entity_decode($matches[3], ENT_QUOTES, 'UTF-8');
 
@@ -145,6 +155,22 @@ class SeoLinkFixer
         }
 
         return $response;
+    }
+
+    private function isInternalCdnCgiHref(string $href, string $requestHost): bool
+    {
+        $parsedHost = parse_url($href, PHP_URL_HOST);
+        $parsedPath = parse_url($href, PHP_URL_PATH);
+
+        if ($parsedPath === null || !Str::startsWith($parsedPath, '/cdn-cgi/')) {
+            return false;
+        }
+
+        if ($parsedHost === null) {
+            return true;
+        }
+
+        return strcasecmp($parsedHost, $requestHost) === 0;
     }
 
     private function isInternalHref(string $href, string $requestHost): bool

@@ -2867,7 +2867,7 @@ if (!function_exists('get_single_attribute_name')) {
 if (!function_exists('normalize_product_variant_part')) {
     function normalize_product_variant_part($value)
     {
-        return strtolower(str_replace(' ', '', trim((string) $value)));
+        return strtolower(str_replace([' ', '"', "'", '-', '_'], '', trim((string) $value)));
     }
 }
 
