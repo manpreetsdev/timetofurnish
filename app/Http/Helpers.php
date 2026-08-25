@@ -2918,19 +2918,32 @@ if (!function_exists('get_product_attribute_option_details')) {
             return (string) $id;
         })->values();
         $attributeIndex = $attributeIds->search((string) $attributeId);
-        $normalizedValue = normalize_product_variant_part($value);
+        $normalizeCandidates = function ($rawValue) {
+            $candidates = [normalize_product_variant_part($rawValue)];
+
+            if (is_string($rawValue) && preg_match('/^#[A-Fa-f0-9]{3,8}$/', trim($rawValue))) {
+                $color = \App\Models\Color::where('code', $rawValue)->first();
+                if ($color && !empty($color->name)) {
+                    $candidates[] = normalize_product_variant_part($color->name);
+                }
+            }
+
+            return array_values(array_unique(array_filter($candidates)));
+        };
+
+        $normalizedValues = $normalizeCandidates($value);
 
         $stocks = $product->relationLoaded('stocks') ? $product->stocks : $product->stocks()->get();
 
-        $matchedStocks = $stocks->filter(function ($stock) use ($attributeIndex, $attributeIds, $normalizedValue, $selectedOptions) {
+        $matchedStocks = $stocks->filter(function ($stock) use ($attributeIndex, $attributeIds, $normalizedValues, $selectedOptions, $normalizeCandidates) {
             $variantParts = collect(explode('-', (string) $stock->variant))->map(function ($part) {
                 return normalize_product_variant_part($part);
             });
 
             $matched = false;
-            if ($attributeIndex !== false && $variantParts->get($attributeIndex) === $normalizedValue) {
+            if ($attributeIndex !== false && in_array($variantParts->get($attributeIndex), $normalizedValues, true)) {
                 $matched = true;
-            } elseif (normalize_product_variant_part($stock->variant) === $normalizedValue) {
+            } elseif (in_array(normalize_product_variant_part($stock->variant), $normalizedValues, true)) {
                 $matched = true;
             }
 
@@ -2948,7 +2961,7 @@ if (!function_exists('get_product_attribute_option_details')) {
                     continue;
                 }
 
-                if ($variantParts->get($selectedIndex) !== normalize_product_variant_part($selectedValue)) {
+                if (!in_array($variantParts->get($selectedIndex), $normalizeCandidates($selectedValue), true)) {
                     return false;
                 }
             }

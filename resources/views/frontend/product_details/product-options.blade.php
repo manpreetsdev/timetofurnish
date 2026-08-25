@@ -97,15 +97,7 @@
                                                 in_array($normalizedValNoDashes, $normalizedParts) ||
                                                 $normalizedVariation === $normalizedValNoDashes);
 
-                                        $attributeLabel = $choice->name ?? get_single_attribute_name($choice->attribute_id);
-                                        $isColorAttribute = \Illuminate\Support\Str::contains(
-                                            \Illuminate\Support\Str::lower($attributeLabel),
-                                            'color',
-                                        );
                                         $optionDisplayLabel = $optionDetails['label'];
-                                        if ($isColorAttribute && (float) $optionDetails['price'] > 0) {
-                                            $optionDisplayLabel .= ' (+' . $optionDetails['formatted_price'] . ')';
-                                        }
                                     @endphp
 
                                     <option value="{{ e($value) }}" data-price="{{ $optionDetails['price'] }}"
