@@ -138,6 +138,16 @@ class SeoLinkFixer
                 return $matches[3];
             }, $content);
 
+            $content = preg_replace_callback('/<a\b([^>]*?)href=(["\']?)([^"\'>\s]+)\2([^>]*)>(.*?)<\/a>/is', function ($matches) use ($requestHost) {
+                $href = html_entity_decode($matches[3], ENT_QUOTES, 'UTF-8');
+
+                if (!$this->isInternalCdnCgiHref($href, $requestHost)) {
+                    return $matches[0];
+                }
+
+                return $matches[5];
+            }, $content);
+
             $content = preg_replace_callback('/<a\b([^>]*?)href=(["\'])([^"\']+)\2([^>]*)>/i', function ($matches) use ($requestHost) {
                 $href = html_entity_decode($matches[3], ENT_QUOTES, 'UTF-8');
 
@@ -151,10 +161,57 @@ class SeoLinkFixer
                 return '<a' . $attr1 . ' href=' . $matches[2] . $matches[3] . $matches[2] . $attr2 . '>';
             }, $content);
 
+            $content = preg_replace_callback('/<a\b([^>]*?)href=(["\']?)([^"\'>\s]+)\2([^>]*)>/i', function ($matches) use ($requestHost) {
+                $href = html_entity_decode($matches[3], ENT_QUOTES, 'UTF-8');
+
+                if (!$this->isInternalHref($href, $requestHost)) {
+                    return $matches[0];
+                }
+
+                $cleanStart = $this->removeInternalRelAttributes($matches[1]);
+                $cleanEnd = $this->removeInternalRelAttributes($matches[4]);
+                $quote = $matches[2] !== '' ? $matches[2] : '"';
+
+                return '<a' . $cleanStart . ' href=' . $quote . $matches[3] . $quote . $cleanEnd . '>';
+            }, $content);
+
             $response->setContent($content);
+            $this->appendNoTransformDirective($response);
         }
 
         return $response;
+    }
+
+    private function removeInternalRelAttributes(string $attributes): string
+    {
+        return preg_replace_callback('/\s*rel=(["\'])(.*?)\1/i', function ($matches) {
+            $tokens = preg_split('/\s+/', trim($matches[2])) ?: [];
+            $tokens = array_values(array_filter($tokens, function ($token) {
+                return !in_array(Str::lower($token), ['nofollow', 'ugc', 'sponsored'], true);
+            }));
+
+            if (empty($tokens)) {
+                return '';
+            }
+
+            return ' rel=' . $matches[1] . implode(' ', $tokens) . $matches[1];
+        }, $attributes);
+    }
+
+    private function appendNoTransformDirective($response): void
+    {
+        if (!method_exists($response, 'headers')) {
+            return;
+        }
+
+        $cacheControl = (string) $response->headers->get('Cache-Control', '');
+        $directives = array_filter(array_map('trim', explode(',', $cacheControl)));
+
+        if (!in_array('no-transform', $directives, true)) {
+            $directives[] = 'no-transform';
+        }
+
+        $response->headers->set('Cache-Control', implode(', ', $directives));
     }
 
     private function isInternalCdnCgiHref(string $href, string $requestHost): bool

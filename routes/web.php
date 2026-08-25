@@ -72,11 +72,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
 Route::any('/cdn-cgi/l/email-protection', function () {
-    return response('', 204);
+    return response('', 204)->header('X-Robots-Tag', 'noindex, nofollow');
 });
 
 Route::any('/cdn-cgi/{any}', function () {
-    return response('', 204);
+    return response('', 204)->header('X-Robots-Tag', 'noindex, nofollow');
 })->where('any', '.*');
 
 
