@@ -2904,10 +2904,15 @@ if (!function_exists('get_product_attribute_option_details')) {
         $displayValue = $value;
         $colorName = '';
         if (is_string($value) && preg_match('/^#[A-Fa-f0-9]{3,8}$/', trim($value))) {
-            $color = \App\Models\Color::where('code', $value)->first();
+            $color = \App\Models\Color::where('code', $value)->orWhere('code', trim($value, '#'))->first();
             if ($color) {
                 $colorName = $color->name;
                 $displayValue = $colorName;
+            }
+        } elseif (is_string($value) && !empty($value)) {
+            $color = \App\Models\Color::where('name', $value)->first();
+            if ($color) {
+                $colorName = $color->name;
             }
         }
 
@@ -2918,19 +2923,56 @@ if (!function_exists('get_product_attribute_option_details')) {
             return (string) $id;
         })->values();
         $attributeIndex = $attributeIds->search((string) $attributeId);
-        $normalizedValue = normalize_product_variant_part($value);
+
+        $normalizedCandidates = array_unique(array_filter([
+            normalize_product_variant_part($value),
+            $colorName ? normalize_product_variant_part($colorName) : null,
+            $colorName ? normalize_product_variant_part(str_replace('_', ' ', $colorName)) : null,
+            $colorName ? normalize_product_variant_part(str_replace('_', '', $colorName)) : null,
+            $displayValue ? normalize_product_variant_part($displayValue) : null,
+            $displayValue ? normalize_product_variant_part(str_replace('_', ' ', $displayValue)) : null,
+            $displayValue ? normalize_product_variant_part(str_replace('_', '', $displayValue)) : null,
+        ]));
+
+        $linkedStockIds = [];
+        if ($product && isset($product->id)) {
+            $linkedStockIds = \App\Models\ProductStockAttribute::where('product_id', $product->id)
+                ->where(function ($q) use ($value, $colorName, $displayValue) {
+                    $q->where('attribute_value', $value);
+                    if (!empty($colorName)) {
+                        $q->orWhere('attribute_value', $colorName);
+                    }
+                    if (!empty($displayValue)) {
+                        $q->orWhere('attribute_value', $displayValue);
+                    }
+                })
+                ->pluck('product_stock_id')
+                ->filter()
+                ->toArray();
+        }
 
         $stocks = $product->relationLoaded('stocks') ? $product->stocks : $product->stocks()->get();
 
-        $matchedStocks = $stocks->filter(function ($stock) use ($attributeIndex, $attributeIds, $normalizedValue, $selectedOptions) {
+        $matchedStocks = $stocks->filter(function ($stock) use ($attributeIndex, $attributeIds, $normalizedCandidates, $linkedStockIds, $selectedOptions) {
             $variantParts = collect(explode('-', (string) $stock->variant))->map(function ($part) {
                 return normalize_product_variant_part($part);
             });
 
             $matched = false;
-            if ($attributeIndex !== false && $variantParts->get($attributeIndex) === $normalizedValue) {
+            if (!empty($linkedStockIds) && in_array($stock->id, $linkedStockIds)) {
                 $matched = true;
-            } elseif (normalize_product_variant_part($stock->variant) === $normalizedValue) {
+            } elseif ($attributeIndex !== false && in_array($variantParts->get($attributeIndex), $normalizedCandidates, true)) {
+                $matched = true;
+            } else {
+                foreach ($variantParts as $part) {
+                    if (in_array($part, $normalizedCandidates, true)) {
+                        $matched = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!$matched && in_array(normalize_product_variant_part($stock->variant), $normalizedCandidates, true)) {
                 $matched = true;
             }
 
@@ -2948,7 +2990,22 @@ if (!function_exists('get_product_attribute_option_details')) {
                     continue;
                 }
 
-                if ($variantParts->get($selectedIndex) !== normalize_product_variant_part($selectedValue)) {
+                $selectedNormalized = normalize_product_variant_part($selectedValue);
+                $selectedColorName = '';
+                if (is_string($selectedValue) && preg_match('/^#[A-Fa-f0-9]{3,8}$/', trim($selectedValue))) {
+                    $col = \App\Models\Color::where('code', $selectedValue)->orWhere('code', trim($selectedValue, '#'))->first();
+                    if ($col) {
+                        $selectedColorName = $col->name;
+                    }
+                }
+                $selectedCandidates = array_unique(array_filter([
+                    $selectedNormalized,
+                    $selectedColorName ? normalize_product_variant_part($selectedColorName) : null,
+                    $selectedColorName ? normalize_product_variant_part(str_replace('_', '', $selectedColorName)) : null,
+                ]));
+
+                $partVal = $variantParts->get($selectedIndex);
+                if ($partVal !== null && !in_array($partVal, $selectedCandidates, true)) {
                     return false;
                 }
             }
