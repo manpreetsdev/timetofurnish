@@ -294,36 +294,13 @@ if (request()->has('page') && request('page') > 1) {
                             </div>
                         </div>
                     </div>
-                    {{-- Category-wise banner --}}
-                    {{-- Category-wise banner --}}
-                    @if (isset($category_id))
-
-                    @php
-                    $categoryName = strtolower(trim($category->getTranslation('name')));
-
-                    $categoryBanners = [
-                    'wardrobe' => 'wardrobe.jpg',
-                    'dining room' => 'dinning room.jpeg',
-                    'outdoor and garden' => 'outdoor and garden.jpg',
-                    'outdoor & garden' => 'outdoor and garden.jpg',
-                    'rugs' => 'rugs.jpg',
-                    'kids & nursery' => 'kids.jpg',
-                    'living room' => 'living room.jpg',
-                    'office & home office' => 'office and home.jpg',
-                    'office & home' => 'office and home.jpg',
-                    ];
-
-                    $bannerImage = $categoryBanners[$categoryName] ?? null;
-                    @endphp
-
-                    @if ($bannerImage)
+                    {{-- Category "Coming Soon" banner: only when the category has no product --}}
+                    @if (isset($category_id) && $category->coming_soon_image && $category->products()->count() == 0)
                     <div class="category-banner mb-4">
                         <img
-                            src="{{ url('/public/assets/img/' . $bannerImage) }}"
-                            alt="{{ $category->getTranslation('name') }} Banner">
+                            src="{{ uploaded_asset($category->coming_soon_image) }}"
+                            alt="{{ $category->getTranslation('name') }} {{ translate('Coming Soon') }}">
                     </div>
-                    @endif
-
                     @endif
 
 

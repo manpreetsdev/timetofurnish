@@ -36,6 +36,10 @@ class Category extends Model
     	return $this->belongsTo(Upload::class, 'banner');
     }
 
+    public function comingSoonImage(){
+    	return $this->belongsTo(Upload::class, 'coming_soon_image');
+    }
+
     public function classified_products(){
     	return $this->hasMany(CustomerProduct::class);
     }

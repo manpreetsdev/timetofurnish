@@ -551,7 +551,17 @@
                             }
                         }
 
-                        if (opt.img) {
+                        // Set uploader input if it's numeric
+                        var uploaderInput = optRow.querySelector('.selected-files');
+                        if (uploaderInput) {
+                            if (opt.img && !isNaN(opt.img)) {
+                                uploaderInput.value = opt.img;
+                            } else {
+                                uploaderInput.value = '';
+                            }
+                        }
+
+                        if (opt.img && isNaN(opt.img)) {
                             var imgCol = optRow.querySelector('[data-label="Image"]');
                             if (imgCol) {
                                 var preview = document.createElement('div');
@@ -573,6 +583,9 @@
 
             wrapper.appendChild(block);
             initializeBlock(block, forceEnabled);
+            if (typeof AIZ !== 'undefined' && AIZ.uploader && AIZ.uploader.previewGenerate) {
+                AIZ.uploader.previewGenerate();
+            }
         }
 
         window.addProductAddonFromData = addAddon;
@@ -643,6 +656,9 @@
         document.querySelectorAll('#addon-wrapper .addon-block').forEach(function (block) {
             initializeBlock(block, false);
         });
+        if (typeof AIZ !== 'undefined' && AIZ.uploader && AIZ.uploader.previewGenerate) {
+            AIZ.uploader.previewGenerate();
+        }
 
         // Dynamic local image preview helper
         document.addEventListener('change', function (event) {

@@ -169,8 +169,28 @@ class CartController extends Controller
             }
         }
 
-        // Base variant price only (after discount) — addons are stored separately
-        $price = CartUtility::get_price($product, $product_stock, $request->quantity);
+        // Full base price for ALL selected variant attributes (after discount).
+        // Uses the exact combined stock row when present, otherwise sums every
+        // individual attribute stock row — same logic as the product page's
+        // variant_price endpoint. Addons are still stored separately.
+        if ($product->wholesale_product && $product_stock) {
+            // Wholesale needs the concrete stock row for tiered pricing
+            $price = CartUtility::get_price($product, $product_stock, $request->quantity);
+        } else {
+            $price = CartUtility::get_variant_price($product, $request->all(), $request->quantity);
+        }
+
+        \Log::info('CART_PRICE_DEBUG', [
+            'variant_str'      => $str,
+            'has_product_stock' => (bool) $product_stock,
+            'computed_price'   => $price,
+            'attr_fields'      => collect($request->all())->filter(function ($v, $k) {
+                return str_starts_with($k, 'attribute_id_');
+            })->all(),
+            'choices'          => collect(get_product_stock_choices($product))->map(function ($c) {
+                return ['attribute_id' => $c->attribute_id, 'name' => $c->name ?? null, 'values' => $c->values ?? null];
+            })->all(),
+        ]);
 
         //shivani  (addon code)
         $addons = [];
@@ -266,26 +286,20 @@ class CartController extends Controller
             $cartItem['discount'] = 0;
             $cartItem['coupon_applied'] = 0;
             $cartItem['coupon_code'] = '';
-            $quantity = $product_stock->qty;
-            $price = $product_stock->price;
 
-            //discount calculation
-            $discount_applicable = false;
-
-            if ($product->discount_start_date == null) {
-                $discount_applicable = true;
-            } elseif (
-                strtotime(date('d-m-Y H:i:s')) >= $product->discount_start_date &&
-                strtotime(date('d-m-Y H:i:s')) <= $product->discount_end_date
-            ) {
-                $discount_applicable = true;
-            }
-
-            if ($discount_applicable && !get_product_active_offer($product)) {
-                if ($product->discount_type == 'percent') {
-                    $price -= ($price * $product->discount) / 100;
-                } elseif ($product->discount_type == 'amount') {
-                    $price -= $product->discount;
+            // Available quantity: use the exact combined stock row when present,
+            // otherwise the smallest qty among the individual attribute stocks.
+            if ($product_stock) {
+                $quantity = $product_stock->qty;
+            } else {
+                $quantity = 99999;
+                foreach ($product->stocks as $stock) {
+                    if ($cartItem['variation'] != '' && strpos($cartItem['variation'], str_replace(' ', '', $stock->variant)) !== false) {
+                        $quantity = min($quantity, $stock->qty);
+                    }
+                }
+                if ($quantity === 99999) {
+                    $quantity = $request->quantity;
                 }
             }
 
@@ -295,7 +309,11 @@ class CartController extends Controller
                 }
             }
 
-            if ($product->wholesale_product) {
+            // Base price = sum of each selected attribute's own option price
+            // (same rule as the product page and checkout). Already discounted.
+            $price = cart_product_price($cartItem, $product, false, false);
+
+            if ($product->wholesale_product && $product_stock) {
                 $wholesalePrice = $product_stock->wholesalePrices->where('min_qty', '<=', $request->quantity)->where('max_qty', '>=', $request->quantity)->first();
                 if ($wholesalePrice) {
                     $price = $wholesalePrice->price;

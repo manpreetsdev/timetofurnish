@@ -482,6 +482,80 @@ if (!function_exists('discount_in_percentage')) {
     }
 }
 
+// Generic variant base price from a stored cart "variation" string.
+// Reconstructs which option was picked for every attribute of the product and
+// sums each option's own price via get_product_attribute_option_details() — the
+// exact function that produces the product page's per-option "data-price".
+// Returns the (already discounted) total, or null when it cannot resolve any
+// option (caller then falls back to stock-row / unit price).
+if (!function_exists('cart_variant_base_price')) {
+    function cart_variant_base_price($product, $variationString)
+    {
+        if ($product === null || $variationString === null || $variationString === '') {
+            return null;
+        }
+
+        if (!function_exists('get_product_stock_choices') || !function_exists('get_product_attribute_option_details')) {
+            return null;
+        }
+
+        $choices = get_product_stock_choices($product);
+        if (empty($choices)) {
+            return null;
+        }
+
+        $selected_options = [];
+        foreach ($choices as $choice) {
+            $attribute_id = $choice->attribute_id ?? null;
+            $values = $choice->values ?? [];
+            foreach ($values as $v) {
+                $raw = is_array($v) ? ($v['value'] ?? '') : (is_object($v) ? ($v->value ?? '') : $v);
+                if ($raw === '' || $raw === null) {
+                    continue;
+                }
+
+                // Normalised token as used when the variation string was built:
+                // hex colour -> colour name, then spaces stripped.
+                $token = $raw;
+                if (is_string($raw) && preg_match('/^#[A-Fa-f0-9]{3,8}$/', trim($raw))) {
+                    $color = \App\Models\Color::where('code', $raw)->orWhere('code', trim($raw, '#'))->first();
+                    if ($color) {
+                        $token = $color->name;
+                    }
+                }
+                $token = str_replace(' ', '', (string) $token);
+                if ($token === '') {
+                    continue;
+                }
+
+                if (preg_match('/(^|-)' . preg_quote($token, '/') . '($|-)/', $variationString)) {
+                    $selected_options[$attribute_id] = $raw;
+                    break; // one value per attribute
+                }
+            }
+        }
+
+        if (empty($selected_options)) {
+            return null;
+        }
+
+        $total = 0;
+        $matched = 0;
+        foreach ($selected_options as $attribute_id => $value) {
+            // No 4th "selected options" arg (see note in CartUtility): it would
+            // cross-filter out single-attribute stock rows. Matches the product
+            // page's per-option data-price.
+            $details = get_product_attribute_option_details($product, $attribute_id, $value);
+            if (!empty($details) && (float) ($details['price'] ?? 0) > 0) {
+                $total += (float) $details['price'];
+                $matched++;
+            }
+        }
+
+        return $matched > 0 ? $total : null;
+    }
+}
+
 //Shows Price on page based on carts
 if (!function_exists('cart_product_price')) {
     function cart_product_price($cart_product, $product, $formatted = true, $tax = true)
@@ -491,36 +565,44 @@ if (!function_exists('cart_product_price')) {
             if ($cart_product['variation'] != null) {
                 $str = $cart_product['variation'];
             }
-            $price = 0;
             $product_stock = $product->stocks->where('variant', $str)->first();
-            if ($product_stock) {
-                $price = $product_stock->price;
-            }
 
-            if ($product->wholesale_product) {
-                $wholesalePrice = $product_stock->wholesalePrices->where('min_qty', '<=', $cart_product['quantity'])->where('max_qty', '>=', $cart_product['quantity'])->first();
-                if ($wholesalePrice) {
-                    $price = $wholesalePrice->price;
+            // Generic price model: sum each selected attribute's own option
+            // price (same source as the product page's "data-price"). Works for
+            // any number of attributes / any attribute ids. Already discounted.
+            $computed = cart_variant_base_price($product, $str);
+
+            if ($computed !== null && $computed > 0) {
+                $price = $computed;
+            } else {
+                // Fallbacks: exact combined stock row, then wholesale tier.
+                $price = $product_stock ? $product_stock->price : 0;
+
+                if ($product->wholesale_product && $product_stock) {
+                    $wholesalePrice = $product_stock->wholesalePrices->where('min_qty', '<=', $cart_product['quantity'])->where('max_qty', '>=', $cart_product['quantity'])->first();
+                    if ($wholesalePrice) {
+                        $price = $wholesalePrice->price;
+                    }
                 }
-            }
 
-            //discount calculation
-            $discount_applicable = false;
+                //discount calculation
+                $discount_applicable = false;
 
-            if ($product->discount_start_date == null) {
-                $discount_applicable = true;
-            } elseif (
-                strtotime(date('d-m-Y H:i:s')) >= $product->discount_start_date &&
-                strtotime(date('d-m-Y H:i:s')) <= $product->discount_end_date
-            ) {
-                $discount_applicable = true;
-            }
+                if ($product->discount_start_date == null) {
+                    $discount_applicable = true;
+                } elseif (
+                    strtotime(date('d-m-Y H:i:s')) >= $product->discount_start_date &&
+                    strtotime(date('d-m-Y H:i:s')) <= $product->discount_end_date
+                ) {
+                    $discount_applicable = true;
+                }
 
-            if ($discount_applicable) {
-                if ($product->discount_type == 'percent') {
-                    $price -= ($price * $product->discount) / 100;
-                } elseif ($product->discount_type == 'amount') {
-                    $price -= $product->discount;
+                if ($discount_applicable) {
+                    if ($product->discount_type == 'percent') {
+                        $price -= ($price * $product->discount) / 100;
+                    } elseif ($product->discount_type == 'amount') {
+                        $price -= $product->discount;
+                    }
                 }
             }
         } else {
@@ -556,27 +638,11 @@ if (!function_exists('cart_product_tax')) {
             $str = $cart_product['variation'];
         }
         $product_stock = $product->stocks->where('variant', $str)->first();
-        $price = $product_stock->price;
+        // Use the same base price the cart/checkout use (sum of each selected
+        // attribute's own option price) rather than a single stock row.
+        $price = cart_product_price($cart_product, $product, false, false);
 
-        //discount calculation
-        $discount_applicable = false;
-
-        if ($product->discount_start_date == null) {
-            $discount_applicable = true;
-        } elseif (
-            strtotime(date('d-m-Y H:i:s')) >= $product->discount_start_date &&
-            strtotime(date('d-m-Y H:i:s')) <= $product->discount_end_date
-        ) {
-            $discount_applicable = true;
-        }
-
-        if ($discount_applicable) {
-            if ($product->discount_type == 'percent') {
-                $price -= ($price * $product->discount) / 100;
-            } elseif ($product->discount_type == 'amount') {
-                $price -= $product->discount;
-            }
-        }
+        // $price already includes any active discount (from cart_product_price)
 
         //calculation of taxes
         $tax = 0;

@@ -58,3 +58,6 @@ public/storage/app/public/files/
 .env
 .env
 .env
+
+/public/.htaccess
+

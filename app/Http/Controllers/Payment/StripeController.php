@@ -16,6 +16,7 @@ use Session;
 use App\Models\Order;
 use Illuminate\Support\Facades\Mail;
 use Auth;
+
 class StripeController extends Controller
 {
     /**
@@ -49,11 +50,11 @@ class StripeController extends Controller
                 $client_reference_id = auth()->id();
             }
         }
-        
+
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-        if(auth()->user()->stripe_id){
+        if (auth()->user()->stripe_id) {
             $customerId = auth()->user()->stripe_id;
-        }else{
+        } else {
             $customer = \Stripe\Customer::create(array(
                 'name' => auth()->user()->name,
                 'email' => auth()->user()->email,
@@ -66,9 +67,8 @@ class StripeController extends Controller
 
 
 
-        $session = \Stripe\Checkout\Session::create([
-            'payment_method_types' => ['card'],
-            'customer' => $customerId, 
+        $session_data = [
+            'customer' => $customerId,
             'line_items' => [
                 [
                     'price_data' => [
@@ -87,47 +87,50 @@ class StripeController extends Controller
             // 'success_url' => env('APP_URL') . "/stripe/success?session_id={CHECKOUT_SESSION_ID}",
             'success_url' => url("/stripe/success?session_id={CHECKOUT_SESSION_ID}"),
             'cancel_url' => route('stripe.cancel'),
+        ];
+
+        if (env('STRIPE_PAYMENT_METHOD_CONF')) {
+            $session_data['payment_method_configuration'] = env('STRIPE_PAYMENT_METHOD_CONF');
+        }
+
+        $session = \Stripe\Checkout\Session::create($session_data, [
+            'stripe_version' => '2023-10-16'
         ]);
 
         return response()->json(['id' => $session->id, 'status' => 200]);
     }
 
-    public function checkout_payment_detail()
-    {
-    }
+    public function checkout_payment_detail() {}
 
     public function success(Request $request)
     {
         $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
-        
-       // try {
-            $session = $stripe->checkout->sessions->retrieve($request->session_id);
-            $payment = ["status" => "Success"];
-            $payment_type = Session::get('payment_type');
 
-            if($session->status == 'complete') {
-                $combined_order_id = $request->session()->get('combined_order_id');
-                //$order = Order::with('shop','orderDetails','user')->where('combined_order_id', $combined_order_id)->first();
-                $orders = Order::with('shop.user','shop.city','orderDetails.product','user')->where('combined_order_id', $combined_order_id)->get();
-                if ($orders->isNotEmpty()) {
-                    $order = $orders->first();
-                }
-                if ($payment_type == 'cart_payment') {
-                    return (new CheckoutController)->checkout_done(session()->get('combined_order_id'), json_encode($payment));
-                }
-                else if ($payment_type == 'wallet_payment') {
-                    return (new WalletController)->wallet_payment_done(session()->get('payment_data'), json_encode($payment));
-                }
-                else if ($payment_type == 'customer_package_payment') {
-                    return (new CustomerPackageController)->purchase_payment_done(session()->get('payment_data'), json_encode($payment));
-                }
-                else if ($payment_type == 'seller_package_payment') {
-                    return (new SellerPackageController)->purchase_payment_done(session()->get('payment_data'), json_encode($payment));
-                }
-            } else {
-                flash(translate('Payment failed'))->error();
-                return redirect()->route('home');
+        // try {
+        $session = $stripe->checkout->sessions->retrieve($request->session_id);
+        $payment = ["status" => "Success"];
+        $payment_type = Session::get('payment_type');
+
+        if ($session->status == 'complete') {
+            $combined_order_id = $request->session()->get('combined_order_id');
+            //$order = Order::with('shop','orderDetails','user')->where('combined_order_id', $combined_order_id)->first();
+            $orders = Order::with('shop.user', 'shop.city', 'orderDetails.product', 'user')->where('combined_order_id', $combined_order_id)->get();
+            if ($orders->isNotEmpty()) {
+                $order = $orders->first();
             }
+            if ($payment_type == 'cart_payment') {
+                return (new CheckoutController)->checkout_done(session()->get('combined_order_id'), json_encode($payment));
+            } else if ($payment_type == 'wallet_payment') {
+                return (new WalletController)->wallet_payment_done(session()->get('payment_data'), json_encode($payment));
+            } else if ($payment_type == 'customer_package_payment') {
+                return (new CustomerPackageController)->purchase_payment_done(session()->get('payment_data'), json_encode($payment));
+            } else if ($payment_type == 'seller_package_payment') {
+                return (new SellerPackageController)->purchase_payment_done(session()->get('payment_data'), json_encode($payment));
+            }
+        } else {
+            flash(translate('Payment failed'))->error();
+            return redirect()->route('home');
+        }
         /*} catch (\Exception $e) {
             flash(translate('Payment failed'))->error();
             return redirect()->route('home');
@@ -137,8 +140,8 @@ class StripeController extends Controller
     public function cancel(Request $request)
     {
         flash(translate('Payment is cancelled'))->error();
-      //  $order = Order::where('user_id', Auth::user()->id)->where('payment_status', 'unpaid')->orderBy('code', 'desc')->first();
-      //  return redirect()->route('re_order', [encrypt($order->id),"cancelled"]);
+        //  $order = Order::where('user_id', Auth::user()->id)->where('payment_status', 'unpaid')->orderBy('code', 'desc')->first();
+        //  return redirect()->route('re_order', [encrypt($order->id),"cancelled"]);
         return redirect()->route('home');
     }
 }
