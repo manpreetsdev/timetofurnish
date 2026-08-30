@@ -4898,3 +4898,15 @@ li.slick-active {
     margin-top: 10px;
     margin-bottom: 0;
 }
+
+/* Home Slider Resizing & Shifting Fix */
+.home-slider {
+    overflow: hidden !important;
+    width: 100% !important;
+}
+.home-slider .slick-list {
+    overflow: hidden !important;
+}
+.slick-slide {
+    flex-shrink: 0 !important;
+}

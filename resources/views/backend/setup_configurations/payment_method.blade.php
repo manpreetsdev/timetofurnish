@@ -2,6 +2,38 @@
 
     @section('content')
         <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0 h6 ">{{ translate('Checkout Payment Gateways Images') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <form class="form-horizontal" action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="form-group row">
+                                <label class="col-md-3 col-from-label">{{ translate('Payment method images') }}</label>
+                                <div class="col-md-9">
+                                    <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="true">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                                        </div>
+                                        <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                        <input type="hidden" name="types[]" value="payment_method_images">
+                                        <input type="hidden" name="payment_method_images" value="{{ get_setting('payment_method_images') }}" class="selected-files">
+                                    </div>
+                                    <div class="file-preview box sm">
+                                    </div>
+                                    <small class="text-muted">{{ translate('These images will be displayed in the checkout payment page under "Pay securely with".') }}</small>
+                                </div>
+                            </div>
+                            <div class="form-group mb-0 text-right">
+                                <button type="submit" class="btn btn-sm btn-primary">{{ translate('Save') }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">

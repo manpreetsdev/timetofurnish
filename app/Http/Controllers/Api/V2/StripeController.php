@@ -24,10 +24,10 @@ class StripeController extends Controller
         $data['package_id'] = 0;
 
 
-        if(isset($request->package_id)) {
+        if (isset($request->package_id)) {
             $data['package_id'] = $request->package_id;
         }
-        
+
         return view('frontend.payment.stripe_app', $data);
     }
 
@@ -55,8 +55,7 @@ class StripeController extends Controller
 
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        $session = \Stripe\Checkout\Session::create([
-            'payment_method_types' => ['card'],
+        $session_data = [
             'line_items' => [
                 [
                     'price_data' => [
@@ -74,6 +73,14 @@ class StripeController extends Controller
             // 'success_url' => route('api.stripe.success', $data),
             'success_url' => env('APP_URL') . "/api/v2/stripe/success?session_id={CHECKOUT_SESSION_ID}",
             'cancel_url' => route('api.stripe.cancel'),
+        ];
+
+        if (env('STRIPE_PAYMENT_METHOD_CONF')) {
+            $session_data['payment_method_configuration'] = env('STRIPE_PAYMENT_METHOD_CONF');
+        }
+
+        $session = \Stripe\Checkout\Session::create($session_data, [
+            'stripe_version' => '2023-10-16'
         ]);
 
         return response()->json(['id' => $session->id, 'status' => 200]);
@@ -82,12 +89,12 @@ class StripeController extends Controller
     public function payment_success(Request $request)
     {
         $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
-        
+
         try {
             $session = $stripe->checkout->sessions->retrieve($request->session_id);
-            
+
             $decoded_reference_data = json_decode($session->client_reference_id);
-            
+
             $payment = ["status" => "Success"];
 
             $payment_type = $decoded_reference_data->payment_type;
@@ -108,8 +115,6 @@ class StripeController extends Controller
             }
 
             return response()->json(['result' => true, 'message' => translate("Payment is successful")]);
-
-
         } catch (\Exception $e) {
             return response()->json(['result' => false, 'message' => translate("Payment is failed")]);
         }

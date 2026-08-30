@@ -345,9 +345,18 @@ class ProductController extends Controller
 
                             $imagePath = 'addon/' . $filename;
                         } else {
-
-                            // ✅ Keep existing image if no new upload
-                            $imagePath = $request->input("addons.$aIndex.options.$oIndex.existing_img");
+                            $imgInput = $request->input("addons.$aIndex.options.$oIndex.img");
+                            if (!empty($imgInput)) {
+                                if (is_numeric($imgInput)) {
+                                    $upload = \App\Models\Upload::find($imgInput);
+                                    $imagePath = $upload ? $upload->file_name : $imgInput;
+                                } else {
+                                    $imagePath = $imgInput;
+                                }
+                            } else {
+                                // ✅ Keep existing image if no new upload
+                                $imagePath = $request->input("addons.$aIndex.options.$oIndex.existing_img");
+                            }
                         }
 
                         // ✅ CREATE or UPDATE OPTION
@@ -756,10 +765,19 @@ class ProductController extends Controller
                                 //unlink(public_path($oldImage));
                             }
                         } else {
-
-                            // 👉 priority: hidden input → DB → null
-                            $imagePath = $request->input("addons.$aIndex.options.$oIndex.existing_img")
-                                ?? ($existingOption->img ?? null);
+                            $imgInput = $request->input("addons.$aIndex.options.$oIndex.img");
+                            if (!empty($imgInput)) {
+                                if (is_numeric($imgInput)) {
+                                    $upload = \App\Models\Upload::find($imgInput);
+                                    $imagePath = $upload ? $upload->file_name : $imgInput;
+                                } else {
+                                    $imagePath = $imgInput;
+                                }
+                            } else {
+                                // 👉 priority: hidden input → DB → null
+                                $imagePath = $request->input("addons.$aIndex.options.$oIndex.existing_img")
+                                    ?? ($existingOption->img ?? null);
+                            }
                         }
 
                         /*

@@ -1713,6 +1713,46 @@
             $(this).siblings('input[type="radio"]').prop("checked", true);
         });
     </script>
+    <script>
+        // Smoothly update Slick Carousel position in real-time during window resize
+        (function() {
+            var ticking = false;
+            
+            function updateSlick() {
+                if (window.jQuery) {
+                    jQuery('.aiz-carousel.slick-initialized').each(function() {
+                        var $slick = jQuery(this);
+                        $slick.find('.slick-track').css({
+                            'transition': 'none',
+                            '-webkit-transition': 'none'
+                        });
+                        $slick.slick('setPosition');
+                    });
+                }
+                ticking = false;
+            }
+
+            window.addEventListener('resize', function() {
+                if (!ticking) {
+                    window.requestAnimationFrame(updateSlick);
+                    ticking = true;
+                }
+            });
+
+            var restoreTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(restoreTimer);
+                restoreTimer = setTimeout(function() {
+                    if (window.jQuery) {
+                        jQuery('.slick-track').css({
+                            'transition': '',
+                            '-webkit-transition': ''
+                        });
+                    }
+                }, 150);
+            });
+        })();
+    </script>
     @yield('script')
 
     @php

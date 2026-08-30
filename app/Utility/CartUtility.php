@@ -3,10 +3,82 @@
 namespace App\Utility;
 
 use App\Models\Cart;
+use App\Models\ProductStock;
 use Cookie;
 
 class CartUtility
 {
+
+    /**
+     * Resolve the full base price for a set of selected variant attributes.
+     *
+     * Generic for ANY number of attributes / ANY attribute ids: for every
+     * selected "attribute_id_*" field it looks up that option's own price with
+     * get_product_attribute_option_details() — the exact same function that
+     * renders the "data-price" on the product page — and sums them, so the cart
+     * always matches what the customer saw. Returned price already includes any
+     * active product discount.
+     *
+     * @param  \App\Models\Product  $product
+     * @param  array  $request  full request payload (attribute_id_* fields)
+     * @param  int    $quantity
+     * @return float
+     */
+    public static function get_variant_price($product, $request, $quantity)
+    {
+        if ($product->auction_product == 1) {
+            return $product->bids->max('amount');
+        }
+
+        // Collect every selected attribute value keyed by its attribute id.
+        $selected_options = [];
+        foreach (get_product_stock_choices($product) as $choice) {
+            $field = 'attribute_id_' . $choice->attribute_id;
+            if (isset($request[$field]) && $request[$field] !== '' && $request[$field] !== null) {
+                $selected_options[$choice->attribute_id] = trim($request[$field]);
+            }
+        }
+
+        if (!empty($selected_options)) {
+            $price = 0;
+            $matched = 0;
+            foreach ($selected_options as $attribute_id => $value) {
+                // NOTE: no 4th "selected options" arg — passing it enables
+                // cross-attribute filtering which discards single-attribute
+                // stock rows. The product page's data-price omits it too.
+                $details = get_product_attribute_option_details($product, $attribute_id, $value);
+                if (!empty($details) && (float) ($details['price'] ?? 0) > 0) {
+                    $price += (float) $details['price'];
+                    $matched++;
+                }
+            }
+            if ($matched > 0) {
+                return $price; // already discounted
+            }
+        }
+
+        // Fallbacks: exact combined stock row, then product unit price.
+        $str = self::create_cart_variant($product, $request);
+        $combined_stock = ProductStock::where('product_id', $product->id)
+            ->where('variant', $str)
+            ->first();
+
+        if ($combined_stock) {
+            $price = $combined_stock->price;
+            if ($product->wholesale_product) {
+                $wholesalePrice = $combined_stock->wholesalePrices
+                    ->where('min_qty', '<=', $quantity)
+                    ->where('max_qty', '>=', $quantity)
+                    ->first();
+                if ($wholesalePrice) {
+                    $price = $wholesalePrice->price;
+                }
+            }
+            return self::discount_calculation($product, $price);
+        }
+
+        return self::discount_calculation($product, $product->unit_price);
+    }
 
     public static function create_cart_variant($product, $request)
     {

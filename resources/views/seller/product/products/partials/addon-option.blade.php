@@ -64,15 +64,21 @@
 
     <div data-label="Image" class="image">
 
-        <input type="file"
-               name="addons[{{ $groupIndex }}][options][{{ $optIndex }}][img]"
-               class="form-control option-input">
+        <div class="input-group" data-toggle="aizuploader" data-type="image">
+            <div class="input-group-prepend">
+                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+            </div>
+            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+            <input type="hidden" name="addons[{{ $groupIndex }}][options][{{ $optIndex }}][img]" class="selected-files option-input" value="{{ is_numeric($img) ? $img : '' }}">
+        </div>
+        <div class="file-preview box sm">
+        </div>
 
         <input type="hidden"
                name="addons[{{ $groupIndex }}][options][{{ $optIndex }}][existing_img]"
                value="{{ $img }}">
 
-        @if(!empty($img))
+        @if(!empty($img) && !is_numeric($img))
             <div class="mt-2 text-left addon-preview-thumb">
                 <img src="{{ asset($img) }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #e2dfd8;">
             </div>
