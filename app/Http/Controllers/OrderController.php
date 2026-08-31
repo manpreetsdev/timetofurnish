@@ -400,7 +400,10 @@ class OrderController extends Controller
             
 
                 $product_stock = $product->stocks->where('variant', $product_variation)->first();
-                if ($product->digital != 1 && ($product_stock === null || $cartItem['quantity'] > $product_stock->qty)) {
+                // subtract stock other shoppers are still holding via an active reservation
+                $reserved_by_others = \App\Models\Cart::reservedQuantityByOthers($product->id, $product_variation);
+                $sellable_qty = $product_stock ? ($product_stock->qty - $reserved_by_others) : 0;
+                if ($product->digital != 1 && ($product_stock === null || $cartItem['quantity'] > $sellable_qty)) {
                     flash(translate('The requested quantity is not available for ') . $product->getTranslation('name'))->warning();
                     $order->delete();
                     $combined_order->delete();

@@ -482,6 +482,49 @@ if (!function_exists('discount_in_percentage')) {
     }
 }
 
+// Available quantity for a stored cart line: the exact combined stock row when
+// it exists, otherwise the smallest qty among the individual attribute stock
+// rows that appear as a hyphen-delimited segment of the variation string.
+// Blank/base stock rows are ignored. Also subtracts units other shoppers are
+// holding via an active reservation.
+if (!function_exists('cart_available_qty')) {
+    function cart_available_qty($cart_product, $product): int
+    {
+        if ($product === null) {
+            return 0;
+        }
+
+        $variation = (string) ($cart_product['variation'] ?? '');
+        $stocks = $product->relationLoaded('stocks') ? $product->stocks : $product->stocks()->get();
+
+        $combined = $stocks->firstWhere('variant', $variation);
+        if ($combined) {
+            $qty = (int) $combined->qty;
+        } else {
+            $qty = null;
+            if ($variation !== '') {
+                foreach ($stocks as $stock) {
+                    $needle = str_replace(' ', '', (string) $stock->variant);
+                    if ($needle === '') {
+                        continue;
+                    }
+                    if (preg_match('/(^|-)' . preg_quote($needle, '/') . '($|-)/', $variation)) {
+                        $qty = $qty === null ? (int) $stock->qty : min($qty, (int) $stock->qty);
+                    }
+                }
+            }
+            if ($qty === null) {
+                // nothing matched — fall back to the largest single stock row
+                $qty = (int) ($stocks->max('qty') ?? 0);
+            }
+        }
+
+        $qty -= \App\Models\Cart::reservedQuantityByOthers($product->id, $variation);
+
+        return max(0, $qty);
+    }
+}
+
 // Generic variant base price from a stored cart "variation" string.
 // Reconstructs which option was picked for every attribute of the product and
 // sums each option's own price via get_product_attribute_option_details() — the

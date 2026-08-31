@@ -56,6 +56,53 @@
         @include('frontend.'.get_setting('homepage_select').'.partials.cart_details', ['carts' => $carts])
     </section>
 
+    {{-- Reservation expired: items the shopper had reserved for 1 hour but did
+         not buy. Kept here for reference only — they no longer hold stock and
+         cannot be checked out. --}}
+    @if(isset($expired_carts) && count($expired_carts) > 0)
+    <section class="mb-5" id="recently-in-cart">
+        <div class="container">
+            <div class="mx-auto col-xl-10">
+                <div class="p-3 p-md-4" style="background:#faf8f5;border:1px solid #e4dcd2;border-radius:14px;">
+                    <h2 class="mb-1 fs-18 fw-700 text-dark">{{ translate('Recently in cart') }}</h2>
+                    <p class="mb-3 fs-13 text-secondary">
+                        {{ translate('Your 1-hour reservation on these items has expired, so they were released for other shoppers. They can be re-added if still in stock.') }}
+                    </p>
+
+                    @foreach($expired_carts as $expired)
+                        @php $expired_product = $expired->product; @endphp
+                        @if($expired_product)
+                        <div class="py-3 d-flex align-items-center border-top" style="gap:14px;">
+                            <a href="{{ route('product', $expired_product->slug) }}" class="flex-shrink-0">
+                                <img src="{{ get_image($expired_product->thumbnail) }}"
+                                     onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';"
+                                     alt="{{ $expired_product->getTranslation('name') }}"
+                                     style="width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid #e4dcd2;">
+                            </a>
+                            <div class="flex-grow-1 min-w-0">
+                                <a href="{{ route('product', $expired_product->slug) }}" class="d-block fs-14 fw-600 text-dark text-truncate">
+                                    {{ $expired_product->getTranslation('name') }}
+                                    @if($expired->variation) <span class="text-secondary fw-400">({{ $expired->variation }})</span>@endif
+                                </a>
+                                <div class="fs-12 mt-1" style="color:#b5462f;">
+                                    <i class="las la-clock"></i> {{ translate('Reservation expired') }} &middot; {{ translate('Quantity') }}: 0
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 d-flex align-items-center" style="gap:8px;">
+                                <a href="{{ route('product', $expired_product->slug) }}" class="btn btn-sm btn-outline-primary">{{ translate('View Product') }}</a>
+                                <button type="button" class="btn btn-sm btn-light" onclick="removeFromCart({{ $expired->id }})" aria-label="{{ translate('Remove') }}">
+                                    <i class="las la-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+    @endif
+
 @endsection
 
 @section('script')
