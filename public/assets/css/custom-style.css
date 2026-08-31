@@ -5046,3 +5046,46 @@ img.lazyload:not([data-src]):not([data-srcset]) {
 .home_Section .aiz-carousel.sm-gutters-16 .slick-slide:first-child .carousel-box {
     padding-left: 0 !important;
 }
+
+/* =====================================================================
+   PRODUCT-ROW CAROUSELS – pre-init anti-FOUC.
+   Before slick.js runs, lay the cards out as a clipped 4-up row (matching
+   the final layout) instead of one giant full-width blank card that then
+   snaps. Uses display:block + inline-block (NOT flex) so it cannot disturb
+   slick's width measurement, and only applies while .slick-initialized is
+   absent — it stops the instant slick takes over.
+   ===================================================================== */
+.home-mobile-product-carousel:not(.slick-initialized),
+.aiz-carousel[data-items="4"]:not(.slick-initialized),
+.aiz-carousel[data-items="5"]:not(.slick-initialized),
+.aiz-carousel[data-items="6"]:not(.slick-initialized) {
+    display: block !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    max-height: 540px;
+}
+.home-mobile-product-carousel:not(.slick-initialized) > .carousel-box,
+.aiz-carousel[data-items="4"]:not(.slick-initialized) > .carousel-box,
+.aiz-carousel[data-items="5"]:not(.slick-initialized) > .carousel-box,
+.aiz-carousel[data-items="6"]:not(.slick-initialized) > .carousel-box {
+    display: inline-block !important;
+    white-space: normal;
+    vertical-align: top;
+    width: 25%;
+}
+@media (max-width: 991.98px) {
+    .home-mobile-product-carousel:not(.slick-initialized) > .carousel-box,
+    .aiz-carousel[data-items="4"]:not(.slick-initialized) > .carousel-box,
+    .aiz-carousel[data-items="5"]:not(.slick-initialized) > .carousel-box,
+    .aiz-carousel[data-items="6"]:not(.slick-initialized) > .carousel-box {
+        width: 33.333%;
+    }
+}
+@media (max-width: 575.98px) {
+    .home-mobile-product-carousel:not(.slick-initialized) > .carousel-box,
+    .aiz-carousel[data-items="4"]:not(.slick-initialized) > .carousel-box,
+    .aiz-carousel[data-items="5"]:not(.slick-initialized) > .carousel-box,
+    .aiz-carousel[data-items="6"]:not(.slick-initialized) > .carousel-box {
+        width: 50%;
+    }
+}
