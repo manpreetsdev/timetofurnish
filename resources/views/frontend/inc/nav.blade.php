@@ -12,38 +12,49 @@ use App\Models\Category;
         cursor: pointer;
     }
 
+    /* ---- Category nav carousel ---- */
+    /* PRE-INIT (before slick.js runs): show the correct number of items per
+       breakpoint in a clipped single row, so a reload never flashes "1 item
+       then snap". These rules stop the instant slick adds .slick-initialized. */
+    .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized) {
+        display: block !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+    }
+    .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized) > li {
+        display: inline-block !important;
+        white-space: normal;
+        vertical-align: top;
+        width: 12.5%;
+        /* xl / lg desktop = 8 per view */
+    }
+    @media (max-width: 1499.98px) {
+        .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized) > li { width: 14.2857%; } /* 7 */
+    }
+    @media (max-width: 1199.98px) {
+        .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized) > li { width: 16.6666%; } /* 6 */
+    }
+    @media (max-width: 991.98px) {
+        .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized) > li { width: 20%; } /* 5 */
+    }
+    @media (max-width: 767.98px) {
+        .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized) > li { width: 25%; } /* 4 */
+    }
+
+    /* POST-INIT tidy: track from the left, viewport = container width */
     .banner-category.custom-banner-category .slick-track {
         display: flex;
-        align-items: center;
-        /* was justify-content:center -> that centred an over-wide track and
-           clipped the first/last category names on both sides. Let slick
-           position the track from the left instead. */
+        align-items: flex-start;
         justify-content: flex-start !important;
         margin-left: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
     }
-    /* every category slot shares the row equally so long names don't push
-       the last item off the edge */
-    .banner-category.custom-banner-category .slick-slide,
-    .banner-category.custom-banner-category > ul > li {
-        flex: 1 1 0 !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        box-sizing: border-box;
-    }
-    /* keep the slick viewport exactly the width of its container */
     .banner-category.custom-banner-category .slick-list {
         width: 100% !important;
         margin: 0 !important;
         overflow: hidden !important;
     }
-    .banner-category.custom-banner-category.aiz-carousel,
-    .banner-category.custom-banner-category .aiz-carousel {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-    /* category label: one line, ellipsis instead of being cut mid-word */
+
+    /* category label: one line, ellipsis instead of cut mid-word */
     .banner-category.custom-banner-category .category_a {
         display: block;
         max-width: 100%;
@@ -587,18 +598,21 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                 <div class="col-md-12">
                     @if (count($featured_categories) > 0)
                     <div class="banner-category custom-banner-category"
-                        style="overflow: hidden !important; position: relative !important;">
-                        <ul class="aiz-carousel sm-gutters-16 arrow" data-items="10" data-xl-items="10"
-                            data-lg-items="8" data-md-items="6" data-sm-items="5" data-xs-items="4"
-                            data-arrows='true' data-infinite='false'
-                            style="display: flex !important; flex-wrap: wrap !important; list-style: none !important; padding: 0 !important; margin: 0 !important;">
+                        style="position: relative !important; overflow: hidden !important;">
+                        {{-- slick carousel; the CSS ".category-nav-row:not(.slick-initialized)"
+                             guard shows the right number of items per breakpoint on first
+                             paint so there is no "1 item then snap" flash on reload --}}
+                        <ul class="aiz-carousel category-nav-row arrow" data-items="8" data-xl-items="8"
+                            data-lg-items="7" data-md-items="6" data-sm-items="5" data-xs-items="4"
+                            data-arrows="true" data-infinite="false" data-scroll-by-page="true"
+                            style="list-style: none !important; padding: 0 !important; margin: 0 !important;">
                             @foreach ($featured_categories as $key => $category)
                             @if ($key < 10)
                                 @php
                                 $category_name=$category->getTranslation('name');
                                 @endphp
                                 <li
-                                    style="position: relative !important; flex: 0 0 auto !important; padding: 0 8px !important; text-align: center !important;">
+                                    style="position: relative !important; padding: 6px !important; text-align: center !important;">
                                     <a href="{{ route('products.category', $category->slug) }}"
                                         style="display: block !important;">
                                         <img src="{{ isset($category->coverImage->file_name) ? my_asset($category->coverImage->file_name) : static_asset('assets/img/placeholder.jpg') }}"
@@ -607,8 +621,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                                     </a>
                                     <a href="{{ route('products.category', $category->slug) }}"
                                         class="category_a">
-                                        <span
-                                            style="custom-banner-description-text">{{ $category_name }}</span>
+                                        <span class="custom-banner-description-text">{{ $category_name }}</span>
                                     </a>
                                 </li>
                                 @endif

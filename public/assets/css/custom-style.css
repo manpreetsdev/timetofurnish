@@ -3756,7 +3756,6 @@ span.badge.badge-primary.badge-circle.position-absolute {
     .home-mobile-product-section .todays-deal-card-wrap {
         border-radius: 16px !important;
         padding: 0px !important;
-        overflow: hidden !important;
         background: #fffdf9 !important;
         border-color: #bcb2a7 !important;
         box-shadow: 0 12px 32px rgba(104, 91, 78, 0.04) !important;
@@ -5032,14 +5031,14 @@ img.lazyload:not([data-src]):not([data-srcset]) {
 
 /* Safety net: clip at the section wrappers too, so a momentary slick
    mis-measure can never visually escape past the right edge. */
-.home-mobile-product-section>.container,
+/* .home-mobile-product-section>.container,
 .home-mobile-product-section .modern-section-bordered-wrap,
 .home-mobile-product-section .px-sm-3,
 .home_Section>.container,
 .home_Section .modern-section-bordered-wrap,
 .home_Section .px-sm-3 {
     overflow: hidden !important;
-}
+} */
 
 /* first visible card flush with the heading, inner cards keep the gutter */
 .home-mobile-product-section .aiz-carousel.sm-gutters-16 .slick-slide:first-child .carousel-box,
@@ -5064,28 +5063,33 @@ img.lazyload:not([data-src]):not([data-srcset]) {
     white-space: nowrap !important;
     max-height: 540px;
 }
-.home-mobile-product-carousel:not(.slick-initialized) > .carousel-box,
-.aiz-carousel[data-items="4"]:not(.slick-initialized) > .carousel-box,
-.aiz-carousel[data-items="5"]:not(.slick-initialized) > .carousel-box,
-.aiz-carousel[data-items="6"]:not(.slick-initialized) > .carousel-box {
+
+.home-mobile-product-carousel:not(.slick-initialized)>.carousel-box,
+.aiz-carousel[data-items="4"]:not(.slick-initialized)>.carousel-box,
+.aiz-carousel[data-items="5"]:not(.slick-initialized)>.carousel-box,
+.aiz-carousel[data-items="6"]:not(.slick-initialized)>.carousel-box {
     display: inline-block !important;
     white-space: normal;
     vertical-align: top;
-    width: 25%;
+    width: 25% !important;
 }
+
 @media (max-width: 991.98px) {
-    .home-mobile-product-carousel:not(.slick-initialized) > .carousel-box,
-    .aiz-carousel[data-items="4"]:not(.slick-initialized) > .carousel-box,
-    .aiz-carousel[data-items="5"]:not(.slick-initialized) > .carousel-box,
-    .aiz-carousel[data-items="6"]:not(.slick-initialized) > .carousel-box {
-        width: 33.333%;
+
+    .home-mobile-product-carousel:not(.slick-initialized)>.carousel-box,
+    .aiz-carousel[data-items="4"]:not(.slick-initialized)>.carousel-box,
+    .aiz-carousel[data-items="5"]:not(.slick-initialized)>.carousel-box,
+    .aiz-carousel[data-items="6"]:not(.slick-initialized)>.carousel-box {
+        width: 33.333% !important;
     }
 }
+
 @media (max-width: 575.98px) {
-    .home-mobile-product-carousel:not(.slick-initialized) > .carousel-box,
-    .aiz-carousel[data-items="4"]:not(.slick-initialized) > .carousel-box,
-    .aiz-carousel[data-items="5"]:not(.slick-initialized) > .carousel-box,
-    .aiz-carousel[data-items="6"]:not(.slick-initialized) > .carousel-box {
-        width: 50%;
+
+    .home-mobile-product-carousel:not(.slick-initialized)>.carousel-box,
+    .aiz-carousel[data-items="4"]:not(.slick-initialized)>.carousel-box,
+    .aiz-carousel[data-items="5"]:not(.slick-initialized)>.carousel-box,
+    .aiz-carousel[data-items="6"]:not(.slick-initialized)>.carousel-box {
+        width: 50% !important;
     }
 }
