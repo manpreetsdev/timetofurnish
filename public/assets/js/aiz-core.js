@@ -1458,6 +1458,9 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                 var infinite = $this.data("infinite");
                 var focusOnSelect = $this.data("focus-select");
                 var adaptiveHeight = $this.data("auto-height");
+                // when data-scroll-by-page is set, advance a whole page (== visible
+                // count) per arrow / swipe instead of one item at a time
+                var scrollByPage = $this.data("scroll-by-page");
 
 
                 var vertical = $this.data("vertical");
@@ -1517,7 +1520,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                     asNavFor: asNavFor,
                     focusOnSelect: focusOnSelect,
                     adaptiveHeight: adaptiveHeight,
-                    slidesToScroll: 1,
+                    slidesToScroll: scrollByPage ? slidesPerView : 1,
                     prevArrow:
                         '<button type="button" class="slick-prev"><i class="las la-angle-left"></i></button>',
                     nextArrow:
@@ -1527,6 +1530,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                             breakpoint: 1500,
                             settings: {
                                 slidesToShow: slidesPerViewXl,
+                                slidesToScroll: scrollByPage ? slidesPerViewXl : 1,
                                 vertical: verticalXl,
                                 rtl: slidesRtlXL,
                             },
@@ -1535,6 +1539,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                             breakpoint: 1200,
                             settings: {
                                 slidesToShow: slidesPerViewLg,
+                                slidesToScroll: scrollByPage ? slidesPerViewLg : 1,
                                 vertical: verticalLg,
                                 rtl: slidesRtlLg,
                             },
@@ -1545,6 +1550,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                                 arrows: false,
                                 dots: slidesDots,
                                 slidesToShow: slidesPerViewMd,
+                                slidesToScroll: scrollByPage ? slidesPerViewMd : 1,
                                 vertical: verticalMd,
                                 rtl: slidesRtlMd,
                             },
@@ -1555,6 +1561,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                                 arrows: false,
                                 dots: slidesDots,
                                 slidesToShow: slidesPerViewSm,
+                                slidesToScroll: scrollByPage ? slidesPerViewSm : 1,
                                 vertical: verticalSm,
                                 rtl: slidesRtlSm,
                             },
@@ -1565,6 +1572,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                                 arrows: false,
                                 dots: slidesDots,
                                 slidesToShow: slidesPerViewXs,
+                                slidesToScroll: scrollByPage ? slidesPerViewXs : 1,
                                 vertical: verticalXs,
                                 rtl: slidesRtlXs,
                             },
