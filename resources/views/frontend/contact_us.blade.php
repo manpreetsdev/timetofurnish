@@ -1,8 +1,8 @@
 @extends('frontend.layouts.app')
 
 @php
-    $seoTitle = seo_title($page->meta_title ?? null, translate('Contact Us') . ' | ' . get_setting('website_name'));
-    $seoDescription = seo_description($page->meta_description ?? null, translate('Get in touch with us for support, inquiries, and feedback.'));
+$seoTitle = seo_title($page->meta_title ?? null, translate('Contact Us') . ' | ' . get_setting('website_name'));
+$seoDescription = seo_description($page->meta_description ?? null, translate('Get in touch with us for support, inquiries, and feedback.'));
 @endphp
 
 @section('meta_title'){{ $seoTitle }}@stop
@@ -82,7 +82,7 @@
                 <!-- Office -->
                 <div class="info-card">
                     <div class="icon-box">
-                        <i class="fas fa-location-dot"></i>
+                        <img src="{{ static_asset('assets/img/LocationT.png') }}" alt="Location">
                     </div>
 
                     <div>
@@ -103,7 +103,7 @@
                 <!-- Whatsapp -->
                 <div class="info-card">
                     <div class="icon-box">
-                        <i class="fab fa-square-whatsapp"></i>
+                        <img src="{{ static_asset('assets/img/whatsapT.png') }}" alt="whatsapp">
                     </div>
 
                     <div>
@@ -118,7 +118,7 @@
                 <!-- Email -->
                 <div class="info-card">
                     <div class="icon-box">
-                        <i class="fas fa-envelope"></i>
+                        <img src="{{ static_asset('assets/img/EmailT.png') }}" alt="Email">
                     </div>
 
                     <div>

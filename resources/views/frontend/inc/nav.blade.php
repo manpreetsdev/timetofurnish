@@ -15,7 +15,47 @@ use App\Models\Category;
     .banner-category.custom-banner-category .slick-track {
         display: flex;
         align-items: center;
-        justify-content: center;
+        /* was justify-content:center -> that centred an over-wide track and
+           clipped the first/last category names on both sides. Let slick
+           position the track from the left instead. */
+        justify-content: flex-start !important;
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    /* every category slot shares the row equally so long names don't push
+       the last item off the edge */
+    .banner-category.custom-banner-category .slick-slide,
+    .banner-category.custom-banner-category > ul > li {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+    }
+    /* keep the slick viewport exactly the width of its container */
+    .banner-category.custom-banner-category .slick-list {
+        width: 100% !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+    }
+    .banner-category.custom-banner-category.aiz-carousel,
+    .banner-category.custom-banner-category .aiz-carousel {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    /* category label: one line, ellipsis instead of being cut mid-word */
+    .banner-category.custom-banner-category .category_a {
+        display: block;
+        max-width: 100%;
+    }
+    .banner-category.custom-banner-category .category_a span,
+    .banner-category.custom-banner-category .custom-banner-description-text {
+        display: block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
     }
 
     .search-input-box:hover .clear-search-icon,
@@ -548,8 +588,8 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                     @if (count($featured_categories) > 0)
                     <div class="banner-category custom-banner-category"
                         style="overflow: hidden !important; position: relative !important;">
-                        <ul class="aiz-carousel sm-gutters-16 arrow" data-items="9" data-xl-items="7"
-                            data-lg-items="6" data-md-items="5" data-sm-items="5" data-xs-items="5"
+                        <ul class="aiz-carousel sm-gutters-16 arrow" data-items="10" data-xl-items="10"
+                            data-lg-items="8" data-md-items="6" data-sm-items="5" data-xs-items="4"
                             data-arrows='true' data-infinite='false'
                             style="display: flex !important; flex-wrap: wrap !important; list-style: none !important; padding: 0 !important; margin: 0 !important;">
                             @foreach ($featured_categories as $key => $category)

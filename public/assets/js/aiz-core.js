@@ -1440,7 +1440,6 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
         slickCarousel: function () {
             $(".aiz-carousel").not(".slick-initialized").each(function () {
                 var $this = $(this);
-                console.log('ajhjskdgjsgf');
 
 
                 var slidesPerViewXs = $this.data("xs-items");

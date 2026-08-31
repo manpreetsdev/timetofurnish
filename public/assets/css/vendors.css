@@ -9608,20 +9608,13 @@ button.bg-dark:hover {
         padding-top: 1rem !important
     }
 
-    .pr-sm-3,
-    .px-sm-3 {
-        padding-right: 1rem !important
-    }
+
 
     .pb-sm-3,
     .py-sm-3 {
         padding-bottom: 1rem !important
     }
 
-    .pl-sm-3,
-    .px-sm-3 {
-        padding-left: 1rem !important
-    }
 
     .p-sm-4 {
         padding: 1.5rem !important

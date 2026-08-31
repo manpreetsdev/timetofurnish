@@ -1717,7 +1717,33 @@
         // Smoothly update Slick Carousel position in real-time during window resize
         (function() {
             var ticking = false;
-            
+
+            function recalcAllSlick() {
+                if (!window.jQuery) return;
+                jQuery('.aiz-carousel.slick-initialized').each(function() {
+                    try { jQuery(this).slick('setPosition'); } catch (e) {}
+                });
+            }
+
+            // Slick measures slide widths at init time. On first paint the
+            // fonts / images / scrollbar may not be settled yet, which leaves
+            // the last slide overflowing until the user resizes the window.
+            // Re-measure once everything is loaded, plus a couple of delayed
+            // passes to catch late layout shifts.
+            if (document.readyState === 'complete') {
+                recalcAllSlick();
+            } else {
+                window.addEventListener('load', function() {
+                    recalcAllSlick();
+                    setTimeout(recalcAllSlick, 200);
+                    setTimeout(recalcAllSlick, 600);
+                });
+            }
+            // also right after fonts finish (name/label reflow)
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(function() { setTimeout(recalcAllSlick, 50); });
+            }
+
             function updateSlick() {
                 if (window.jQuery) {
                     jQuery('.aiz-carousel.slick-initialized').each(function() {
@@ -1750,6 +1776,142 @@
                         });
                     }
                 }, 150);
+            });
+        })();
+    </script>
+
+    {{-- Click-to-zoom preview for add-on thumbnails (cart, delivery-info,
+         payment-select). Delegated, so it also works after AJAX re-renders. --}}
+    <style>
+        .addon-zoom-hint { cursor: zoom-in; }
+        #addon-zoom-pop {
+            position: absolute;
+            z-index: 20000;
+            background: rgba(33, 33, 33, 0.96);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            border-radius: 12px;
+            padding: 10px;
+            min-width: 180px;
+            max-width: 300px;
+            box-shadow: 0 12px 34px rgba(0, 0, 0, 0.32);
+            text-align: center;
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        #addon-zoom-pop img {
+            width: 220px;
+            max-width: 62vw;
+            height: 220px;
+            max-height: 62vw;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        #addon-zoom-pop .azp-name {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.4;
+            padding: 0 4px;
+            word-break: break-word;
+        }
+        #addon-zoom-pop .azp-arrow {
+            position: absolute;
+            top: 100%;
+            border: 9px solid transparent;
+            border-top-color: rgba(33, 33, 33, 0.96);
+        }
+    </style>
+    <script>
+        (function() {
+            var SEL = '.addon-details img, .addon-row img, .addon-inline-row img, img.addon-inline-img,' +
+                ' .sub-detail-label img, .addon-item img, .addon-name-text img, .selected-addons img,' +
+                ' .addon-preview img, [data-addon-thumb]';
+
+            function matchImg(node) {
+                return (node && node.closest) ? node.closest(SEL) : null;
+            }
+
+            function closePop() {
+                var p = document.getElementById('addon-zoom-pop');
+                if (p) p.parentNode.removeChild(p);
+            }
+
+            function openPop(img) {
+                closePop();
+                var src = img.getAttribute('src') || img.getAttribute('data-src');
+                if (!src) return;
+                var name = img.getAttribute('alt') || img.getAttribute('data-name') || '';
+
+                var pop = document.createElement('div');
+                pop.id = 'addon-zoom-pop';
+                var im = document.createElement('img');
+                im.src = src;
+                im.alt = '';
+                var nm = document.createElement('div');
+                nm.className = 'azp-name';
+                nm.textContent = name;
+                var ar = document.createElement('span');
+                ar.className = 'azp-arrow';
+                pop.appendChild(im);
+                if (name) pop.appendChild(nm);
+                pop.appendChild(ar);
+                document.body.appendChild(pop);
+
+                var r = img.getBoundingClientRect();
+                var pw = pop.offsetWidth,
+                    ph = pop.offsetHeight;
+                var docW = document.documentElement.clientWidth;
+
+                var left = window.scrollX + r.left + r.width / 2 - pw / 2;
+                left = Math.max(8, Math.min(left, window.scrollX + docW - pw - 8));
+
+                var top = window.scrollY + r.top - ph - 12;
+                if (top < window.scrollY + 8) {
+                    top = window.scrollY + r.bottom + 12;
+                    ar.style.top = 'auto';
+                    ar.style.bottom = '100%';
+                    ar.style.borderTopColor = 'transparent';
+                    ar.style.borderBottomColor = 'rgba(33,33,33,0.96)';
+                }
+                pop.style.left = left + 'px';
+                pop.style.top = top + 'px';
+
+                var ax = window.scrollX + r.left + r.width / 2 - left;
+                ax = Math.max(14, Math.min(ax, pw - 14));
+                ar.style.left = ax + 'px';
+                ar.style.marginLeft = '-9px';
+            }
+
+            document.addEventListener('click', function(e) {
+                var img = matchImg(e.target);
+                if (img) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (document.getElementById('addon-zoom-pop')) {
+                        closePop();
+                    } else {
+                        openPop(img);
+                    }
+                } else if (!(e.target.closest && e.target.closest('#addon-zoom-pop'))) {
+                    closePop();
+                }
+            }, true);
+
+            document.addEventListener('mouseover', function(e) {
+                var img = matchImg(e.target);
+                if (img && !img.classList.contains('addon-zoom-hint')) {
+                    img.classList.add('addon-zoom-hint');
+                }
+            });
+
+            window.addEventListener('scroll', closePop, true);
+            window.addEventListener('resize', closePop);
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closePop();
             });
         })();
     </script>

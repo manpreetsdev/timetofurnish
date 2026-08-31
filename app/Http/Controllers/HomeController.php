@@ -638,6 +638,20 @@ class HomeController extends Controller
             $has_stocks = true;
         }
 
+        // Inventory hold: units another shopper is holding via an active
+        // 1-hour reservation are not available to this viewer. ($cart_qty is
+        // this viewer's own line, already added back above.)
+        if ($product->digital != 1 && $product->auction_product != 1) {
+            $reserved_by_others = \App\Models\Cart::reservedQuantityByOthers($product->id, $str);
+            if ($reserved_by_others > 0) {
+                $quantity = max(0, $quantity - $reserved_by_others);
+                $max_limit = max(0, $max_limit - $reserved_by_others);
+                if ($quantity <= 0) {
+                    $has_stocks = false;
+                }
+            }
+        }
+
         /*
     NO STOCK FOUND
     */

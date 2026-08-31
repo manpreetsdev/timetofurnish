@@ -4904,9 +4904,145 @@ li.slick-active {
     overflow: hidden !important;
     width: 100% !important;
 }
+
 .home-slider .slick-list {
     overflow: hidden !important;
 }
-.slick-slide {
-    flex-shrink: 0 !important;
+
+
+/* =====================================================================
+   HOME BANNER ONLY – anti-FOUC / no-jump.
+   Scoped strictly to the home banner slider so it can NOT affect the
+   product-row carousels (Today's Deals etc.) or the category nav.
+   No display:flex here — slick must measure a normal block on init.
+   ===================================================================== */
+
+/* Before slick runs: reserve height + show only the first slide,
+   clipped, so the page below doesn't collapse-then-jump. */
+.home-slider .aiz-carousel.dots-inside-bottom:not(.slick-initialized) {
+    overflow: hidden;
+    max-height: 460px;
+}
+
+.home-slider .aiz-carousel.dots-inside-bottom:not(.slick-initialized)>.carousel-box~.carousel-box {
+    display: none !important;
+}
+
+.home-slider .aiz-carousel.dots-inside-bottom:not(.slick-initialized)>.carousel-box {
+    width: 100%;
+}
+
+.home-slider .aiz-carousel.dots-inside-bottom:not(.slick-initialized) img {
+    width: 100%;
+    max-height: 460px;
+    object-fit: cover;
+    object-position: center;
+}
+
+@media (max-width: 991.98px) {
+
+    .home-slider .aiz-carousel.dots-inside-bottom:not(.slick-initialized),
+    .home-slider .aiz-carousel.dots-inside-bottom:not(.slick-initialized) img {
+        max-height: 320px;
+    }
+}
+
+@media (max-width: 767.98px) {
+
+    .home-slider .aiz-carousel.dots-inside-bottom:not(.slick-initialized),
+    .home-slider .aiz-carousel.dots-inside-bottom:not(.slick-initialized) img {
+        max-height: none;
+    }
+}
+
+/* =====================================================================
+   HOME BANNER DOTS – make them visible again.
+   The global ".slick-dots { bottom:-25px !important }" pushed the banner
+   dots outside the clipped slider. Pin the inside-bottom variant back
+   inside the image.  (Only the dots-inside-bottom variant is touched.)
+   ===================================================================== */
+.aiz-carousel.dots-inside-bottom {
+    position: relative;
+}
+
+.aiz-carousel.dots-inside-bottom .slick-dots {
+    bottom: 15px !important;
+    top: auto !important;
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    -webkit-transform: translateX(-50%) !important;
+    width: auto !important;
+    z-index: 5;
+}
+
+.aiz-carousel.dots-inside-bottom .slick-dots li button {
+    background: rgba(255, 255, 255, 0.55) !important;
+}
+
+.aiz-carousel.dots-inside-bottom .slick-dots li.slick-active button {
+    background: #ffffff !important;
+}
+
+/* =====================================================================
+   LAZYLOAD – stop the "wrong default image, then the real one" flash.
+   lazysizes adds .lazyloaded once the real file is decoded. Until then
+   keep the <img> blank (neutral background) and fade the real image in,
+   instead of showing the placeholder that sits in the src attribute.
+   ===================================================================== */
+img.lazyload,
+img.lazyloading {
+    opacity: 0;
+    background-color: #f3f0ec;
+}
+
+img.lazyloaded {
+    opacity: 1;
+    transition: opacity .25s ease-in;
+    background-color: transparent;
+}
+
+/* never hide images that lazysizes will not touch (no data-src) */
+img.lazyload:not([data-src]):not([data-srcset]) {
+    opacity: 1;
+}
+
+/* =====================================================================
+   HOME PRODUCT ROWS (Today's Deals / Featured / Best Selling / Newest)
+   The ".aiz-carousel.sm-gutters-16" theme rule adds a -16px side margin
+   AND ".slick-list { width: calc(100% + 4px) }". On desktop nothing
+   clips the section edge, so the NEXT card's edge peeks out past the
+   right of the last visible card. Pin the slider strictly inside the
+   section so exactly N cards show and nothing pokes through.
+   ===================================================================== */
+
+.home-mobile-product-section .aiz-carousel.sm-gutters-16,
+.home_Section .aiz-carousel.sm-gutters-16 {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow: hidden !important;
+}
+
+.home-mobile-product-section .aiz-carousel.sm-gutters-16 .slick-list,
+.home_Section .aiz-carousel.sm-gutters-16 .slick-list {
+    width: 100% !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Safety net: clip at the section wrappers too, so a momentary slick
+   mis-measure can never visually escape past the right edge. */
+.home-mobile-product-section>.container,
+.home-mobile-product-section .modern-section-bordered-wrap,
+.home-mobile-product-section .px-sm-3,
+.home_Section>.container,
+.home_Section .modern-section-bordered-wrap,
+.home_Section .px-sm-3 {
+    overflow: hidden !important;
+}
+
+/* first visible card flush with the heading, inner cards keep the gutter */
+.home-mobile-product-section .aiz-carousel.sm-gutters-16 .slick-slide:first-child .carousel-box,
+.home_Section .aiz-carousel.sm-gutters-16 .slick-slide:first-child .carousel-box {
+    padding-left: 0 !important;
 }

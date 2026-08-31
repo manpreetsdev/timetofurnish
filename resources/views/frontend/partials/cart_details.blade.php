@@ -39,6 +39,7 @@
                         $product_stock = $product->stocks
                         ->where('variant', $cartItem['variation'])
                         ->first();
+                        $available_qty = cart_available_qty($cartItem, $product);
                         $product_name_with_choice = $product->getTranslation('name');
                         if ($cartItem['variation'] != null) {
                         $product_name_with_choice =
@@ -152,10 +153,12 @@
                                             @foreach ($cartItem_addons as $addon)
                                             @php
                                                 $addonImage = $addon['image'] ?? ($addon['img'] ?? ($addon['image_url'] ?? ''));
-                                                $addonImageSrc = $addonImage
-                                                    ? (\Illuminate\Support\Str::startsWith($addonImage, ['http://', 'https://', 'data:'])
-                                                        ? $addonImage
-                                                        : asset(ltrim($addonImage, '/')))
+                                                 $addonImageSrc = $addonImage
+                                                     ? (\Illuminate\Support\Str::startsWith($addonImage, ['http://', 'https://', 'data:'])
+                                                         ? $addonImage
+                                                         : (str_starts_with(ltrim($addonImage, '/'), 'addon/') || str_starts_with(ltrim($addonImage, '/'), 'addons/')
+                                                             ? asset('public/' . ltrim($addonImage, '/'))
+                                                             : asset(ltrim($addonImage, '/'))))
                                                     : '';
                                             @endphp
                                             <table
@@ -237,14 +240,14 @@
                                                 class="form-control text-center fw-bold fs-15 border-0 p-0 cart-qty-input"
                                                 value="{{ $cartItem['quantity'] }}"
                                                 min="{{ $product->min_qty }}"
-                                                max="{{ $product_stock->qty ?? 1 }}"
+                                                max="{{ $available_qty }}"
                                                 onchange="updateQuantity({{ $cartItem['id'] }}, this)"
                                                 style="max-width:46px;height:32px;">
                                             <button class="btn btn-outline-secondary border-0 px-2"
                                                 type="button" data-type="plus"
                                                 onclick="handleCartQuantity(this, {{ $cartItem['id'] }}, 'plus')"
                                                 style="background:#f3f3f5; color:#555;"
-                                                @if ($cartItem['quantity']>= ($product_stock->qty ?? 1)) disabled @endif>
+                                                @if ($cartItem['quantity']>= ($available_qty)) disabled @endif>
                                                 <i class="las la-plus"></i>
                                             </button>
                                         </div>
@@ -352,7 +355,9 @@
                                                         $addonImageSrc = $addonImage
                                                             ? (\Illuminate\Support\Str::startsWith($addonImage, ['http://', 'https://', 'data:'])
                                                                 ? $addonImage
-                                                                : asset(ltrim($addonImage, '/')))
+                                                                : (str_starts_with(ltrim($addonImage, '/'), 'addon/') || str_starts_with(ltrim($addonImage, '/'), 'addons/')
+                                                                    ? asset('public/' . ltrim($addonImage, '/'))
+                                                                    : asset(ltrim($addonImage, '/'))))
                                                             : '';
                                                     @endphp
                                                     <tr>
@@ -432,14 +437,14 @@
                                                     class="form-control text-center fw-bold fs-15 border-0 p-0 cart-qty-input"
                                                     value="{{ $cartItem['quantity'] }}"
                                                     min="{{ $product->min_qty }}"
-                                                    max="{{ $product_stock->qty ?? 1 }}"
+                                                    max="{{ $available_qty }}"
                                                     onchange="updateQuantity({{ $cartItem['id'] }}, this)"
                                                     style="max-width:46px;height:32px;">
                                                 <button class="btn btn-outline-secondary border-0 px-2"
                                                     type="button" data-type="plus"
                                                     onclick="handleCartQuantity(this, {{ $cartItem['id'] }}, 'plus')"
                                                     style="background:#f3f3f5; color:#555;"
-                                                    @if ($cartItem['quantity']>= ($product_stock->qty ?? 1)) disabled @endif>
+                                                    @if ($cartItem['quantity']>= ($available_qty)) disabled @endif>
                                                     <i class="las la-plus"></i>
                                                 </button>
                                             </div>

@@ -115,7 +115,9 @@
                                                         $addonImageSrc = $addonImage
                                                             ? (\Illuminate\Support\Str::startsWith($addonImage, ['http://', 'https://', 'data:'])
                                                                 ? $addonImage
-                                                                : asset(ltrim($addonImage, '/')))
+                                                                : (str_starts_with(ltrim($addonImage, '/'), 'addon/') || str_starts_with(ltrim($addonImage, '/'), 'addons/')
+                                                                    ? asset('public/' . ltrim($addonImage, '/'))
+                                                                    : asset(ltrim($addonImage, '/'))))
                                                             : '';
                                                     @endphp
                                                     <div

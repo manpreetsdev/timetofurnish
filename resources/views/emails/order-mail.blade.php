@@ -351,10 +351,17 @@
         $invoiceGeneratedAt = $invoiceGeneratedAt ?? now();
         $isPdf = $isPdf ?? false;
         $assetPath = function ($path) use ($isPdf) {
+            $path = ltrim($path, '/');
             if (!$isPdf) {
+                if (str_starts_with($path, 'addon/') || str_starts_with($path, 'addons/')) {
+                    $path = 'public/' . $path;
+                }
                 return asset($path);
             }
 
+            if (str_starts_with($path, 'public/')) {
+                $path = substr($path, 7);
+            }
             $absolutePath = public_path($path);
             if (!is_file($absolutePath)) {
                 return '';

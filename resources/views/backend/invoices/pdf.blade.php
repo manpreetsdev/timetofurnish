@@ -353,6 +353,10 @@
         $isPdf = true;
         
         $assetPath = function ($path) use ($isPdf) {
+            $path = ltrim($path, '/');
+            if (str_starts_with($path, 'public/')) {
+                $path = substr($path, 7);
+            }
             $absolutePath = public_path($path);
             if (!is_file($absolutePath)) {
                 return '';

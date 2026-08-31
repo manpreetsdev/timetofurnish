@@ -51,10 +51,12 @@ class CartController extends Controller
             Session::forget('edit_cart_item_id');
         }
 
+        $expired_carts = collect();
+
         if (auth()->user() != null) {
             $user_id = Auth::user()->id;
             if ($request->session()->get('temp_user_id')) {
-                Cart::where('temp_user_id', $request->session()->get('temp_user_id'))
+                Cart::withExpiredReservations()->where('temp_user_id', $request->session()->get('temp_user_id'))
                     ->update(
                         [
                             'user_id' => $user_id,
@@ -65,14 +67,18 @@ class CartController extends Controller
                 Session::forget('temp_user_id');
             }
             $carts = Cart::where('user_id', $user_id)->get();
+            $expired_carts = Cart::expiredReservations()->where('user_id', $user_id)->latest('reserved_until')->get();
         } else {
             $temp_user_id = $request->session()->get('temp_user_id');
             // $carts = Cart::where('temp_user_id', $temp_user_id)->get();
-            $carts = ($temp_user_id != null) ? Cart::where('temp_user_id', $temp_user_id)->get() : [];
+            $carts = ($temp_user_id != null) ? Cart::where('temp_user_id', $temp_user_id)->get() : collect();
+            if ($temp_user_id != null) {
+                $expired_carts = Cart::expiredReservations()->where('temp_user_id', $temp_user_id)->latest('reserved_until')->get();
+            }
         }
 
         sync_cart_prices($carts);
-        return view('frontend.view_cart', compact('carts'));
+        return view('frontend.view_cart', compact('carts', 'expired_carts'));
     }
 
     public function showCartModal(Request $request)
@@ -120,9 +126,13 @@ class CartController extends Controller
 
         $product_stock = $product->stocks->where('variant', $str)->first();
 
+        // Units of this exact variant currently held by OTHER shoppers' active
+        // 1-hour reservations. They must not be sellable to this viewer.
+        $reserved_by_others = \App\Models\Cart::reservedQuantityByOthers($product->id, $str);
+
         $is_update = false;
         if ($request->has('cart_item_id') && !empty($request->cart_item_id)) {
-            $cart = Cart::find($request->cart_item_id);
+            $cart = Cart::withExpiredReservations()->find($request->cart_item_id);
             if ($cart && $cart->user_id == auth()->user()->id) {
                 $cart->variation = $str;
                 $is_update = true;
@@ -138,7 +148,7 @@ class CartController extends Controller
         }
 
         if ($is_update) {
-            if ($product_stock && $product_stock->qty < $request['quantity']) {
+            if ($product_stock && ($product_stock->qty - $reserved_by_others) < $request['quantity']) {
                 return array(
                     'status' => 0,
                     'cart_count' => count($carts),
@@ -157,7 +167,7 @@ class CartController extends Controller
                         'nav_cart_view' => view('frontend.' . get_setting('homepage_select') . '.partials.cart')->render(),
                     );
                 }
-                if ($product_stock && $product_stock->qty < $cart->quantity + $request['quantity']) {
+                if ($product_stock && ($product_stock->qty - $reserved_by_others) < $cart->quantity + $request['quantity']) {
                     return array(
                         'status' => 0,
                         'cart_count' => count($carts),
@@ -179,18 +189,6 @@ class CartController extends Controller
         } else {
             $price = CartUtility::get_variant_price($product, $request->all(), $request->quantity);
         }
-
-        \Log::info('CART_PRICE_DEBUG', [
-            'variant_str'      => $str,
-            'has_product_stock' => (bool) $product_stock,
-            'computed_price'   => $price,
-            'attr_fields'      => collect($request->all())->filter(function ($v, $k) {
-                return str_starts_with($k, 'attribute_id_');
-            })->all(),
-            'choices'          => collect(get_product_stock_choices($product))->map(function ($c) {
-                return ['attribute_id' => $c->attribute_id, 'name' => $c->name ?? null, 'values' => $c->values ?? null];
-            })->all(),
-        ]);
 
         //shivani  (addon code)
         $addons = [];
@@ -240,12 +238,17 @@ class CartController extends Controller
         // Tax is calculated on the combined total (base + addons) for accuracy
         $tax = CartUtility::tax_calculation($product, $price + $addon_total);
 
+        // (Re)start the 1-hour inventory hold for this line. Physical products
+        // only — digital/auction items are not stock-limited.
+        if (\App\Models\Cart::reservationEnabled() && $product->digital == 0 && $product->auction_product == 0) {
+            $cart->reserved_until = now()->addMinutes(\App\Models\Cart::RESERVATION_MINUTES);
+        }
+
         // save_cart_data saves $price as the BASE price only (addons in addon_price column)
         CartUtility::save_cart_data($cart, $product, $price, $tax, $quantity);
 
 
 
-        \Log::info([$cart, $product, $price, $tax, $quantity]);
         Session::forget('edit_cart_item_id');
         $carts = Cart::where('user_id', auth()->user()->id)->get();
         return array(
@@ -259,7 +262,8 @@ class CartController extends Controller
     //removes from Cart
     public function removeFromCart(Request $request)
     {
-        Cart::destroy($request->id);
+        // include expired-reservation lines so their "Remove" button works
+        Cart::withExpiredReservations()->whereKey($request->id)->delete();
         if (auth()->user() != null) {
             $user_id = Auth::user()->id;
             $carts = Cart::where('user_id', $user_id)->get();
@@ -287,26 +291,27 @@ class CartController extends Controller
             $cartItem['coupon_applied'] = 0;
             $cartItem['coupon_code'] = '';
 
-            // Available quantity: use the exact combined stock row when present,
-            // otherwise the smallest qty among the individual attribute stocks.
-            if ($product_stock) {
-                $quantity = $product_stock->qty;
-            } else {
-                $quantity = 99999;
-                foreach ($product->stocks as $stock) {
-                    if ($cartItem['variation'] != '' && strpos($cartItem['variation'], str_replace(' ', '', $stock->variant)) !== false) {
-                        $quantity = min($quantity, $stock->qty);
-                    }
-                }
-                if ($quantity === 99999) {
-                    $quantity = $request->quantity;
-                }
-            }
+            // Available quantity (combined row or min of individual attribute
+            // rows), already net of other shoppers' active reservations.
+            $quantity = cart_available_qty($cartItem, $product);
 
-            if ($quantity >= $request->quantity) {
-                if ($request->quantity >= $product->min_qty) {
-                    $cartItem['quantity'] = $request->quantity;
-                }
+            // Clamp the requested quantity between min_qty and what is available
+            // instead of silently ignoring it (so the -/+ buttons always work,
+            // and lowering the quantity is never blocked by a stock shortfall).
+            $min_qty = max(1, (int) $product->min_qty);
+            $available = max($min_qty, (int) $quantity);
+            $requested = (int) $request->quantity;
+            if ($requested < $min_qty) {
+                $requested = $min_qty;
+            }
+            if ($requested > $available) {
+                $requested = $available;
+            }
+            $cartItem['quantity'] = $requested;
+
+            // Editing the line renews this shopper's 1-hour hold.
+            if (\App\Models\Cart::reservationEnabled() && $product->digital == 0 && $product->auction_product == 0) {
+                $cartItem->reserved_until = now()->addMinutes(\App\Models\Cart::RESERVATION_MINUTES);
             }
 
             // Base price = sum of each selected attribute's own option price
