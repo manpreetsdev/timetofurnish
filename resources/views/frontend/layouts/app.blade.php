@@ -31,6 +31,7 @@
         if (request()->has('page') && request()->page > 1) {
             $page_title .= ' - Page ' . request()->page;
         }
+        $page_title = html_entity_decode(html_entity_decode($page_title, ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
         $yield_desc = $__env->yieldContent('meta_description');
         if(empty(trim($yield_desc))) {
@@ -41,6 +42,7 @@
         if (request()->has('page') && request()->page > 1) {
             $page_desc .= ' (Page ' . request()->page . ')';
         }
+        $page_desc = html_entity_decode(html_entity_decode($page_desc, ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     @endphp
     <title>{{ trim($page_title) }}</title>
 
