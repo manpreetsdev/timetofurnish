@@ -98,6 +98,7 @@
     @endif
     <link rel="stylesheet" href="{{ static_asset('assets/css/aiz-core.css?v=') }}{{ asset_version('assets/css/aiz-core.css') }}">
     <link rel="stylesheet" href="{{ static_asset('assets/css/custom-style.css') }}?v={{ filemtime(public_path('assets/css/custom-style.css')) }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/home-banner-mobile.css') }}?v={{ filemtime(public_path('assets/css/sub-custom.css')) }}">
      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ static_asset('assets/css/custom-pages/frontend-page-builder.css') }}?v={{ filemtime(public_path('assets/css/custom-pages/frontend-page-builder.css')) }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
@@ -154,8 +155,6 @@
             --primary: {{ get_setting('base_color', '#d43533') }};
             --hov-primary: {{ get_setting('base_hov_color', '#9d1b1a') }};
             --soft-primary: {{ hex2rgba(get_setting('base_color', '#d43533'), 0.15) }};
-
-            ;
         }
 
         body {
@@ -428,7 +427,7 @@
             box-shadow: 0 4px 12px rgba(181, 122, 69, 0.02) !important;
             margin-bottom: 15px !important;
             table-layout: fixed !important;
-        }.addon-details table td
+        }
 
         .addon-details table th,
         .addon-details table td {

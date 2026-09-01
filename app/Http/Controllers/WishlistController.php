@@ -15,7 +15,14 @@ class WishlistController extends Controller
      */
     public function index()
     {
-        $wishlists = Wishlist::where('user_id', Auth::user()->id)->paginate(15);
+        $wishlists = Wishlist::where('user_id', Auth::user()->id)
+            ->whereHas('product', function ($query) {
+                $query->where('published', 1);
+            })
+            ->with(['product', 'product.stocks', 'product.taxes'])
+            ->latest()
+            ->paginate(12);
+
         return view('frontend.user.view_wishlist', compact('wishlists'));
     }
 

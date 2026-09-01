@@ -373,7 +373,7 @@
             </ul>
 
             <!-- logout -->
-            <a href="{{ route('logout') }}" class="btn btn-primary btn-block fs-14 fw-700 mb-5 mb-md-0" style="border-radius: 25px;">{{ translate('Sign Out') }}</a>
+            <a href="{{ route('logout') }}" class="btn btn-primary btn-block fs-14 fw-700 mb-5 mb-md-0">{{ translate('Sign Out') }}</a>
         </div>
 
     </div>
@@ -546,21 +546,21 @@
 
     /* Inactive Link Hover */
     .aiz-side-nav-link:not(.active):not([aria-expanded="true"]):hover {
-        background: #f8f2eb !important;
-        color: #9e5e38 !important;
+        background: #faf7f2 !important;
+        color: #685b4e !important;
     }
 
     .aiz-side-nav-link:not(.active):not([aria-expanded="true"]):hover svg path,
     .aiz-side-nav-link:not(.active):not([aria-expanded="true"]):hover svg g,
     .aiz-side-nav-link:not(.active):not([aria-expanded="true"]):hover svg rect {
-        fill: #9e5e38 !important;
+        fill: #685b4e !important;
     }
 
     /* Active Link State */
     .aiz-side-nav-link.active {
-        background: #9e5e38 !important;
+        background: #685b4e !important;
         color: #ffffff !important;
-        box-shadow: 0 6px 16px rgba(158, 94, 56, 0.28) !important;
+        box-shadow: 0 6px 16px rgba(104, 91, 78, 0.25) !important;
     }
 
     .aiz-side-nav-link.active svg path,
@@ -606,13 +606,13 @@
         gap: 8px !important;
         width: 100% !important;
         height: 46px !important;
-        background: #9e5e38 !important;
+        background: #685b4e !important;
         border: none !important;
         color: #ffffff !important;
         font-size: 14px !important;
         font-weight: 700 !important;
-        border-radius: 30px !important;
-        box-shadow: 0 4px 14px rgba(158, 94, 56, 0.2) !important;
+        border-radius: 9px !important;
+        box-shadow: 0 4px 14px rgba(104, 91, 78, 0.2) !important;
         transition: all 0.2s ease-in-out !important;
         margin-top: 10px !important;
         text-decoration: none !important;
@@ -620,9 +620,9 @@
 
     .sidemnenu a[href*="logout"]:hover,
     .sidemnenu .btn-primary:hover {
-        background: #844c2b !important;
+        background: #54493e !important;
         color: #ffffff !important;
-        box-shadow: 0 6px 18px rgba(158, 94, 56, 0.3) !important;
+        box-shadow: 0 6px 18px rgba(104, 91, 78, 0.3) !important;
         transform: translateY(-1px) !important;
     }
 </style>

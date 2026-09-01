@@ -91,6 +91,19 @@
                         continue;
                     }
 
+                    if ($wType === 'single_image') {
+                        $mobileItems[] = [
+                            'kind' => 'single_image',
+                            'display' => $w['mobile_view'] ?? 'section',
+                            'order' => (int) ($w['mobile_order'] ?? (($wIndex + 1) * 10)),
+                            'seq' => $mobileSeq++,
+                            'wIndex' => $wIndex,
+                            'w' => $w,
+                        ];
+                        continue;
+                    }
+
+
                     // Fallback for regular widgets
                     $mobileItems[] = [
                         'kind' => 'regular',
@@ -574,7 +587,85 @@
                             </div>
                         </div>
                     @endif
+                @elseif (($mobileItem['kind'] ?? '') === 'single_image')
+                    @php
+                        $w = $mobileItem['w'];
+                        $wIndex = $mobileItem['wIndex'];
+                        $widget_id = "widget-col-{$col}-{$wIndex}-mob";
+                        $mobileDisplay = $mobileItem['display'] ?? ($w['mobile_view'] ?? 'section');
+                        $mobileToggle = $mobileDisplay === 'toggle';
+                        $mobileFixed = $mobileDisplay === 'fixed_bottom';
+                        $title = $w['title'] ?? '';
+                        $url = $w['url'] ?? '';
+                        $imgs = get_footer_images_helper(!empty($w['img']) ? $w['img'] : '');
+                    @endphp
+
+                    @if($mobileDisplay !== 'hidden')
+                        @if($mobileFixed)
+                            <div id="{{ $widget_id }}" class="ttf-mobile-fixed-bottom-banner text-center py-2 px-3 bg-white border-top shadow-sm" style="position: fixed; bottom: 0; left: 0; right: 0; z-index: 1020;">
+                                <div class="container">
+                                    @if(!empty($title))
+                                        <div class="fw-700 fs-12 mb-1 text-dark">{{ $title }}</div>
+                                    @endif
+                                    @if(!empty($imgs))
+                                        <div class="logo-images-row justify-content-center">
+                                            @foreach($imgs as $img)
+                                                @if(!empty($url))
+                                                    <a href="{{ url($url) }}" class="logo-image-item"><img src="{{ $img }}" alt="{{ $title }}"></a>
+                                                @else
+                                                    <div class="logo-image-item"><img src="{{ $img }}" alt="{{ $title }}"></div>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @elseif($mobileToggle)
+                            <div id="{{ $widget_id }}" class="aiz-accordion-wrap ttf-mobile-accordion ttf-mobile-section">
+                                <div class="container">
+                                    <div class="aiz-accordion-heading">
+                                        <button class="aiz-accordion fs-14 text-white bg-transparent">{{ !empty($title) ? $title : translate('Banner') }}</button>
+                                    </div>
+                                    <div class="aiz-accordion-panel bg-transparent">
+                                        <div class="py-3 text-center">
+                                            @if(!empty($imgs))
+                                                <div class="logo-images-row justify-content-center">
+                                                    @foreach($imgs as $img)
+                                                        @if(!empty($url))
+                                                            <a href="{{ url($url) }}" class="logo-image-item"><img src="{{ $img }}" alt="{{ $title }}"></a>
+                                                        @else
+                                                            <div class="logo-image-item"><img src="{{ $img }}" alt="{{ $title }}"></div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <div id="{{ $widget_id }}" class="secure-payment-box ttf-mobile-section mt-3 text-center">
+                                <div class="container">
+                                    @if(!empty($title))
+                                        <h5 class="secure-payment-title textheading">{{ $title }}</h5>
+                                    @endif
+                                    @if(!empty($imgs))
+                                        <div class="logo-images-row justify-content-center">
+                                            @foreach($imgs as $img)
+                                                @if(!empty($url))
+                                                    <a href="{{ url($url) }}" class="logo-image-item"><img src="{{ $img }}" alt="{{ $title }}"></a>
+                                                @else
+                                                    <div class="logo-image-item"><img src="{{ $img }}" alt="{{ $title }}"></div>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                    @endif
                 @else
+
                     @php
                         $eb = $mobileItem['eb'];
                         $ebIdx = $mobileItem['ebIdx'];

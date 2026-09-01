@@ -245,7 +245,6 @@ if (request()->has('page') && request('page') > 1) {
                         </li>
                         @endif
                     </ul>
-
                     <!-- Top Filters -->
                     <div class="text-left mb-4">
                         <div class="row gutters-10 flex-wrap align-items-center justify-content-between">
@@ -264,6 +263,8 @@ if (request()->has('page') && request('page') > 1) {
                                 </h1>
                                 <input type="hidden" name="keyword" value="{{ $query }}">
                             </div>
+
+                            @if (count($products) > 0)
                             <div class="col-md-6 col-12 d-flex justify-content-between justify-content-md-end align-items-center">
                                 <button type="button" class="btn btn-filter mr-3">
                                     <i class="las la-sliders-h"></i>
@@ -292,8 +293,11 @@ if (request()->has('page') && request('page') > 1) {
                                     </select>
                                 </div>
                             </div>
+                            @endif
+                            
                         </div>
                     </div>
+
                     {{-- Category "Coming Soon" banner: only when the category has no product --}}
                     @if (isset($category_id) && $category->coming_soon_image && $category->products()->count() == 0)
                     <div class="category-banner mb-4">

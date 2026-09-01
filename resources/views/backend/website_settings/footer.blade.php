@@ -493,6 +493,13 @@
     .widgets-list .widget-card[data-type="social_icons"] .card-header span {
         color: #db2777 !important;
     }
+    .widgets-list .widget-card[data-type="single_image"] .card-header {
+        background: #e0f2fe !important;
+        border-bottom-color: #bae6fd !important;
+    }
+    .widgets-list .widget-card[data-type="single_image"] .card-header span {
+        color: #0369a1 !important;
+    }
 
     .widgets-list .widget-card .btn-group .btn {
         padding: 4px 6px !important;
@@ -948,6 +955,12 @@
                         <div class="ttf-widget-library-title">{{ translate('Follow Us') }}</div>
                         <div class="ttf-widget-library-desc">{{ translate('Standalone social widget with extra icons.') }}</div>
                     </button>
+                    <button type="button" class="ttf-widget-library-card" data-quick-widget="single_image">
+                        <span class="ttf-widget-library-icon"><i class="las la-image"></i></span>
+                        <div class="ttf-widget-library-title">{{ translate('Single Image / Banner') }}</div>
+                        <div class="ttf-widget-library-desc">{{ translate('Standalone promo image or banner with optional title & link.') }}</div>
+                    </button>
+
                 </div>
                 <div class="ttf-library-footer">
                     <strong>{{ translate('Selected column:') }}</strong>
@@ -1164,6 +1177,22 @@
                                                         <img src="{{ $trust_img }}" alt="" class="secure-payment-img trustpilot-img">
                                                     </div>
                                                 @endif
+                                            @elseif($wType == 'single_image')
+                                                 <div class="secure-payment-box mb-3">
+                                                     @if(!empty($w['title']))
+                                                         <h5 class="secure-payment-title textheading">{{ $w['title'] }}</h5>
+                                                     @endif
+                                                     @php
+                                                         $single_img = !empty($w['img']) ? uploaded_asset($w['img']) : '';
+                                                     @endphp
+                                                     @if($single_img)
+                                                         <img src="{{ $single_img }}" alt="" class="secure-payment-img">
+                                                     @else
+                                                         <div style="background:#fff; border-radius:4px; height: 40px; width: 100%; border: 1px dashed #cccccc; display: flex; align-items: center; justify-content: center; color: #999; font-size: 12px;">
+                                                             <i class="las la-image mr-1"></i> {{ translate('Banner Image') }}
+                                                         </div>
+                                                     @endif
+                                                 </div>
                                             @endif
                                         @endforeach
                                     </div>
@@ -1742,6 +1771,7 @@
                                                 <option value="seller_zone">{{ translate('Seller Zone Composite') }}</option>
                                                 <option value="images_widget">{{ translate('Delivery & Secure Payment Logos') }}</option>
                                                 <option value="social_icons">{{ translate('Social Follow Icons') }}</option>
+                                                <option value="single_image">{{ translate('Single Image / Banner') }}</option>
                                             </select>
                                             <button type="button" onclick="addWidget({{ $col }})">{{ translate('Add') }}</button>
                                         </div>
@@ -1768,8 +1798,11 @@
                                                 <button type="button" class="btn btn-xs btn-outline-primary d-flex align-items-center justify-content-center p-2 text-center quick-add-widget-btn" onclick="addDirectWidget({{ $col }}, 'images_widget')" style="border-radius: 6px; font-size: 11px; font-weight: 600; gap: 4px; border-color: rgba(135,106,75,0.25) !important; color: #876a4b; background: #fff;">
                                                     <i class="las la-images"></i> {{ translate('Logo Images') }}
                                                 </button>
-                                                <button type="button" class="btn btn-xs btn-outline-primary d-flex align-items-center justify-content-center p-2 text-center quick-add-widget-btn" onclick="addDirectWidget({{ $col }}, 'social_icons')" style="border-radius: 6px; font-size: 11px; font-weight: 600; gap: 4px; border-color: rgba(135,106,75,0.25) !important; color: #876a4b; background: #fff; grid-column: span 2;">
+                                                <button type="button" class="btn btn-xs btn-outline-primary d-flex align-items-center justify-content-center p-2 text-center quick-add-widget-btn" onclick="addDirectWidget({{ $col }}, 'social_icons')" style="border-radius: 6px; font-size: 11px; font-weight: 600; gap: 4px; border-color: rgba(135,106,75,0.25) !important; color: #876a4b; background: #fff;">
                                                     <i class="las la-share-alt"></i> {{ translate('Follow Us') }}
+                                                </button>
+                                                <button type="button" class="btn btn-xs btn-outline-primary d-flex align-items-center justify-content-center p-2 text-center quick-add-widget-btn" onclick="addDirectWidget({{ $col }}, 'single_image')" style="border-radius: 6px; font-size: 11px; font-weight: 600; gap: 4px; border-color: rgba(135,106,75,0.25) !important; color: #876a4b; background: #fff;">
+                                                    <i class="las la-image"></i> {{ translate('Banner Image') }}
                                                 </button>
                                             </div>
                                         </div>
@@ -2337,6 +2370,73 @@
 
                                                             <!-- Inject Collapsible Style Block -->
                                                             @include('backend.website_settings.footer_widget_styles', ['col' => $col, 'wIndex' => $wIndex, 'w' => $w, 'wType' => 'images_widget'])
+                                                        </div>
+                                                    </div>
+                                                @elseif ($wType == 'single_image')
+                                                    <div class="widget-card card mb-3 border" data-type="single_image" draggable="true">
+                                                        <div class="card-header py-2 d-flex justify-content-between align-items-center" style="background:#e0f2fe;">
+                                                            <span class="font-weight-bold" style="color:#0369a1;"><i class="las la-image"></i> {{ translate('Single Image / Banner') }}</span>
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-xs btn-link" onclick="moveWidgetUp(this)"><i class="las la-arrow-up"></i></button>
+                                                                <button type="button" class="btn btn-xs btn-link" onclick="moveWidgetDown(this)"><i class="las la-arrow-down"></i></button>
+                                                                <button type="button" class="btn btn-xs btn-link text-info" onclick="copyWidget(this)"><i class="las la-copy"></i></button>
+                                                                <button type="button" class="btn btn-xs btn-link text-danger" onclick="removeWidget(this)"><i class="las la-trash"></i></button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-body p-3">
+                                                            <input type="hidden" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][type]" value="single_image">
+
+                                                            <div class="form-group mb-3 border-bottom pb-3">
+                                                                <label class="form-label">{{ translate('Heading / Title (Optional)') }}</label>
+                                                                <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][title]" value="{{ $wTitle }}" placeholder="{{ translate('e.g. Flexible Payments Available') }}" oninput="updateColumnPreview({{ $col }})">
+                                                                <small class="form-text text-muted">{{ translate('Title label is optional. Leave blank to show image only.') }}</small>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label class="form-label">{{ translate('Banner Image(s)') }}</label>
+                                                                <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                                                    <div class="input-group-prepend">
+                                                                        <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse') }}</div>
+                                                                    </div>
+                                                                    <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                                                    <input type="hidden" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][img]" class="selected-files" value="{{ $w['img'] ?? '' }}">
+                                                                </div>
+                                                                <div class="file-preview box sm"></div>
+                                                            </div>
+
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label">{{ translate('Target Link URL (Optional)') }}</label>
+                                                                <input type="text" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][url]" value="{{ $w['url'] ?? '' }}" placeholder="https://..." oninput="updateColumnPreview({{ $col }})">
+                                                            </div>
+
+                                                            <div class="widget-mobile-settings mb-3">
+                                                                <div class="mobile-settings-title">{{ translate('Mobile & Display Settings') }}</div>
+                                                                <div class="row">
+                                                                    <div class="col-4">
+                                                                        <label class="form-label fs-10">{{ translate('Desktop') }}</label>
+                                                                        <select class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][show_desktop]" onchange="updateColumnPreview({{ $col }})">
+                                                                            <option value="on" @if(($w['show_desktop'] ?? 'on') == 'on') selected @endif>{{ translate('Show') }}</option>
+                                                                            <option value="off" @if(($w['show_desktop'] ?? '') == 'off') selected @endif>{{ translate('Hide') }}</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-4">
+                                                                        <label class="form-label fs-10">{{ translate('Mobile Display') }}</label>
+                                                                        <select class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][mobile_view]">
+                                                                            <option value="section" @if(($w['mobile_view'] ?? 'section') == 'section') selected @endif>{{ translate('Open Section') }}</option>
+                                                                            <option value="toggle" @if(($w['mobile_view'] ?? '') == 'toggle') selected @endif>{{ translate('Accordion Toggle') }}</option>
+                                                                            <option value="fixed_bottom" @if(($w['mobile_view'] ?? '') == 'fixed_bottom') selected @endif>{{ translate('Fixed at Bottom (Sticky)') }}</option>
+                                                                            <option value="hidden" @if(($w['mobile_view'] ?? '') == 'hidden') selected @endif>{{ translate('Hide') }}</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-4">
+                                                                        <label class="form-label fs-10">{{ translate('Mobile Order') }}</label>
+                                                                        <input type="number" class="form-control form-control-sm" name="foot_col_{{ $col }}_widgets[{{ $wIndex }}][mobile_order]" value="{{ $w['mobile_order'] ?? '90' }}" min="0" step="1">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Inject Collapsible Style Block -->
+                                                            @include('backend.website_settings.footer_widget_styles', ['col' => $col, 'wIndex' => $wIndex, 'w' => $w, 'wType' => 'single_image'])
                                                         </div>
                                                     </div>
                                                 @elseif ($wType == 'social_icons')
@@ -4075,6 +4175,82 @@
                     </div>
                 </div>`;
         }
+        else if (type === 'single_image') {
+            let img_val = data.img || '';
+            let url = data.url || '';
+            let mobile_view = data.mobile_view || 'section';
+            let show_desktop = data.show_desktop || 'on';
+            let mobile_order = data.mobile_order || '90';
+
+            html = `
+                <div class="widget-card card mb-3 border" data-type="single_image" draggable="true">
+                    <div class="card-header py-2 d-flex justify-content-between align-items-center" style="background:#e0f2fe;">
+                        <span class="font-weight-bold" style="color:#0369a1;"><i class="las la-image"></i> Single Image / Banner</span>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-xs btn-link" onclick="moveWidgetUp(this)"><i class="las la-arrow-up"></i></button>
+                            <button type="button" class="btn btn-xs btn-link" onclick="moveWidgetDown(this)"><i class="las la-arrow-down"></i></button>
+                            <button type="button" class="btn btn-xs btn-link text-info" onclick="copyWidget(this)"><i class="las la-copy"></i></button>
+                            <button type="button" class="btn btn-xs btn-link text-danger" onclick="removeWidget(this)"><i class="las la-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body p-3">
+                        <input type="hidden" name="foot_col_${col}_widgets[${index}][type]" value="single_image">
+
+                        <div class="form-group mb-3 border-bottom pb-3">
+                            <label class="form-label">Heading / Title (Optional)</label>
+                            <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][title]" value="${title}" placeholder="e.g. Flexible Payments Available" oninput="updateColumnPreview(${col})">
+                            <small class="form-text text-muted">Title label is optional. Leave blank to show image only.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Banner Image(s)</label>
+                            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">Browse</div>
+                                </div>
+                                <div class="form-control file-amount">Choose File</div>
+                                <input type="hidden" name="foot_col_${col}_widgets[${index}][img]" class="selected-files" value="${img_val}">
+                            </div>
+                            <div class="file-preview box sm"></div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label">Target Link URL (Optional)</label>
+                            <input type="text" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][url]" value="${url}" placeholder="https://..." oninput="updateColumnPreview(${col})">
+                        </div>
+
+                        <div class="widget-mobile-settings mb-3">
+                            <div class="mobile-settings-title">Mobile & Display Settings</div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <label class="form-label fs-10">Desktop</label>
+                                    <select class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][show_desktop]" onchange="updateColumnPreview(${col})">
+                                        <option value="on" ${show_desktop === 'on' ? 'selected' : ''}>Show</option>
+                                        <option value="off" ${show_desktop === 'off' ? 'selected' : ''}>Hide</option>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label fs-10">Mobile Display</label>
+                                    <select class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][mobile_view]">
+                                        <option value="section" ${mobile_view === 'section' ? 'selected' : ''}>Open Section</option>
+                                        <option value="toggle" ${mobile_view === 'toggle' ? 'selected' : ''}>Accordion Toggle</option>
+                                        <option value="fixed_bottom" ${mobile_view === 'fixed_bottom' ? 'selected' : ''}>Fixed at Bottom (Sticky)</option>
+                                        <option value="hidden" ${mobile_view === 'hidden' ? 'selected' : ''}>Hide</option>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label fs-10">Mobile Order</label>
+                                    <input type="number" class="form-control form-control-sm" name="foot_col_${col}_widgets[${index}][mobile_order]" value="${mobile_order}" min="0" step="1">
+                                </div>
+                            </div>
+                        </div>
+
+                        ${stylesCollapseHtml}
+                    </div>
+                </div>`;
+        }
+
+
 
         return html;
     }
@@ -4437,6 +4613,23 @@
                         <li><a href="#" onclick="return false;"><i class="lab la-instagram"></i></a></li>
                     </ul>`;
             }
+            else if (type === 'single_image') {
+                let titleInput = card.querySelector('input[name*="[title]"]');
+                let showDesktopInput = card.querySelector('[name*="[show_desktop]"]');
+                let showDesktop = (showDesktopInput ? showDesktopInput.value : 'on') === 'on';
+                let titleVal = titleInput ? titleInput.value : '';
+
+                if (showDesktop) {
+                    html += `
+                        <div class="secure-payment-box mb-3">
+                            ${titleVal ? `<h5 class="secure-payment-title textheading">${titleVal}</h5>` : ''}
+                            <div style="background:#fff; border-radius:4px; height: 40px; width: 100%; border: 1px dashed #cccccc; display: flex; align-items: center; justify-content: center; color: #999; font-size: 12px;">
+                                <i class="las la-image mr-1"></i> Banner Image
+                            </div>
+                        </div>`;
+                }
+            }
+
         });
 
         cardContainer.innerHTML = html;

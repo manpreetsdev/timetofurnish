@@ -21,24 +21,45 @@ use App\Models\Category;
         white-space: nowrap !important;
         overflow: hidden !important;
     }
-    .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized) > li {
+
+    .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized)>li {
         display: inline-block !important;
         white-space: normal;
         vertical-align: top;
         width: 12.5%;
         /* xl / lg desktop = 8 per view */
     }
+
     @media (max-width: 1499.98px) {
-        .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized) > li { width: 14.2857%; } /* 7 */
+        .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized)>li {
+            width: 14.2857%;
+        }
+
+        /* 7 */
     }
+
     @media (max-width: 1199.98px) {
-        .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized) > li { width: 16.6666%; } /* 6 */
+        .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized)>li {
+            width: 16.6666%;
+        }
+
+        /* 6 */
     }
+
     @media (max-width: 991.98px) {
-        .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized) > li { width: 20%; } /* 5 */
+        .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized)>li {
+            width: 20%;
+        }
+
+        /* 5 */
     }
+
     @media (max-width: 767.98px) {
-        .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized) > li { width: 25%; } /* 4 */
+        .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized)>li {
+            width: 25%;
+        }
+
+        /* 4 */
     }
 
     /* POST-INIT tidy: track from the left, viewport = container width */
@@ -48,6 +69,7 @@ use App\Models\Category;
         justify-content: flex-start !important;
         margin-left: 0 !important;
     }
+
     .banner-category.custom-banner-category .slick-list {
         width: 100% !important;
         margin: 0 !important;
@@ -59,6 +81,7 @@ use App\Models\Category;
         display: block;
         max-width: 100%;
     }
+
     .banner-category.custom-banner-category .category_a span,
     .banner-category.custom-banner-category .custom-banner-description-text {
         display: block;
@@ -602,8 +625,8 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                         {{-- slick carousel; the CSS ".category-nav-row:not(.slick-initialized)"
                              guard shows the right number of items per breakpoint on first
                              paint so there is no "1 item then snap" flash on reload --}}
-                        <ul class="aiz-carousel category-nav-row arrow" data-items="8" data-xl-items="8"
-                            data-lg-items="7" data-md-items="6" data-sm-items="5" data-xs-items="4"
+                        <ul class="aiz-carousel category-nav-row arrow" data-items="9" data-xl-items="9"
+                            data-lg-items="9" data-md-items="6" data-sm-items="5" data-xs-items="4"
                             data-arrows="true" data-infinite="false" data-scroll-by-page="true"
                             style="list-style: none !important; padding: 0 !important; margin: 0 !important;">
                             @foreach ($featured_categories as $key => $category)
