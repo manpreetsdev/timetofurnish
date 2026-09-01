@@ -402,6 +402,11 @@ $seoDescription = seo_description($page->meta_description ?? null, translate('Ge
         color: #fff;
         margin-bottom: 12px;
     }
+	@media (max-width: 767px) {
+    .banner-content h1 {
+        font-size: 30px;
+    }
+}
 
     .banner-content .breadcrumb {
         justify-content: center;

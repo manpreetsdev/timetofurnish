@@ -679,11 +679,7 @@
     <script>
         window.productOfferConfig = {
             discount_type: "{{ $active_offer->discount_type }}",
-            discount_value: {
-                {
-                    (float) $active_offer - > discount_value ?? 0
-                }
-            },
+            discount_value: {{ (float) $active_offer->discount_value ?? 0 }},
             badge_text: "{{ $active_offer->badge_text }}"
         };
     </script>

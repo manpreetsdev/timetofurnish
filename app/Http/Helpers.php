@@ -3310,8 +3310,10 @@ if (!function_exists('get_user_total_expenditure')) {
 if (!function_exists('get_count_by_delivery_viewed')) {
     function get_count_by_delivery_viewed()
     {
-        $order_query = Order::query();
-        return  $order_query->where('user_id', Auth::user()->id)->where('delivery_viewed', 0)->get()->count();
+        if (!Auth::check()) {
+            return 0;
+        }
+        return Order::where('user_id', Auth::user()->id)->where('delivery_viewed', 0)->count();
     }
 }
 
@@ -3390,8 +3392,10 @@ if (!function_exists('get_auction_product_bid_info')) {
 if (!function_exists('get_count_by_payment_status_viewed')) {
     function get_count_by_payment_status_viewed()
     {
-        $order_query = Order::query();
-        return  $order_query->where('user_id', Auth::user()->id)->where('payment_status_viewed', 0)->get()->count();
+        if (!Auth::check()) {
+            return 0;
+        }
+        return Order::where('user_id', Auth::user()->id)->where('payment_status_viewed', 0)->count();
     }
 }
 

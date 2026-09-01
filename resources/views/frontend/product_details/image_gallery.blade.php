@@ -184,57 +184,44 @@
         <div class="aiz-carousel product-gallery arrow-inactive-transparent arrow-lg-none"
             data-nav-for='.product-gallery-thumb' data-fade='true' data-auto-height='false' data-arrows='true'>
             @if (empty($photos))
-            <img src="{{ uploaded_asset($detailedProduct->thumbnail_img) }}" alt="Image" class=" img-fit"
-                height="700px" width="100%">
+            <div class="carousel-box img-zoom rounded-0">
+                <img src="{{ uploaded_asset($detailedProduct->thumbnail_img) }}"
+                    alt="{{ $detailedProduct->getTranslation('name') }}"
+                    class="img-fluid w-100 h-100 carousal_image_custom_height"
+                    width="800" height="600"
+                    onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
+            </div>
             @else
             @if ($detailedProduct->digital == 0)
             @foreach ($detailedProduct->stocks as $key => $stock)
             @if ($stock->image != null)
-            <picture>
-                <source
-                    srcset="{{ uploaded_asset($stock->image) }}"
-                    type="image/webp">
-
-                <img
-                    class="img-fluid w-100 h-100 carousal_image_custom_height lazyload"
-                    src="{{ static_asset('assets/img/placeholder.jpg') }}"
-                    data-src="{{ uploaded_asset($stock->image) }}"
-                    alt="{{ $stock->name ?? 'Product image' }}"
+            <div class="carousel-box img-zoom rounded-0" data-variation="{{ $stock->variant }}">
+                <img class="img-fluid w-100 h-100 carousal_image_custom_height"
+                    src="{{ uploaded_asset($stock->image) }}"
+                    alt="{{ $stock->name ?? $detailedProduct->getTranslation('name') }}"
                     width="800"
                     height="600"
-                    loading="lazy"
-                    decoding="async"
                     onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
-            </picture>
+            </div>
             @endif
             @endforeach
             @endif
 
             @foreach ($photos as $key => $photo)
-            <div class="carousel-box img-zoom rounded-0 ">
-                <picture>
-                    <source
-                        srcset="{{ uploaded_asset($photo) }}"
-                        type="image/webp">
-
-                    <img
-                        src="{{ static_asset('assets/img/placeholder.jpg') }}"
-                        data-src="{{ uploaded_asset($photo) }}"
-                        class="img-fluid w-100 h-100 carousal_image_custom_height lazyload"
-                        alt="{{ $product->name ?? 'Product image' }}"
-                        width="800"
-                        height="600"
-                        loading="lazy"
-                        decoding="async"
-                        onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
-                </picture>
+            <div class="carousel-box img-zoom rounded-0">
+                <img class="img-fluid w-100 h-100 carousal_image_custom_height"
+                    src="{{ uploaded_asset($photo) }}"
+                    alt="{{ $detailedProduct->getTranslation('name') }}"
+                    width="800"
+                    height="600"
+                    onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
             </div>
             @endforeach
             @endif
         </div>
     </div>
     <!-- Thumbnail Images -->
-    <div class="col-12 mt-3  d-lg-block">
+    <div class="col-12 mt-3 d-lg-block">
         <div class="aiz-carousel half-outside-arrow product-gallery-thumb" data-items='7'
             data-nav-for='.product-gallery' data-focus-select='true' data-arrows='true' data-vertical='false'
             data-auto-height='false'>
@@ -243,9 +230,9 @@
             @foreach ($detailedProduct->stocks as $key => $stock)
             @if ($stock->image != null)
             <div class="carousel-box c-pointer rounded-0" data-variation="{{ $stock->variant }}">
-                <img class="lazyload mw-100 size-60px mx-auto border p-1"
-                    src="{{ static_asset('assets/img/placeholder.jpg') }}"
-                    data-src="{{ uploaded_asset($stock->image) }}"
+                <img class="mw-100 size-60px mx-auto border p-1"
+                    src="{{ uploaded_asset($stock->image) }}"
+                    alt="{{ $stock->name ?? 'Thumbnail' }}"
                     onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
             </div>
             @endif
@@ -254,8 +241,9 @@
 
             @foreach ($photos as $key => $photo)
             <div class="carousel-box c-pointer rounded-0">
-                <img class="lazyload mw-100 size-60px mx-auto border p-1"
-                    src="{{ static_asset('assets/img/placeholder.jpg') }}" data-src="{{ uploaded_asset($photo) }}"
+                <img class="mw-100 size-60px mx-auto border p-1"
+                    src="{{ uploaded_asset($photo) }}"
+                    alt="{{ $detailedProduct->getTranslation('name') }}"
                     onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
             </div>
             @endforeach
