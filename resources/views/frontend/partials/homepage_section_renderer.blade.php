@@ -171,20 +171,8 @@ $wrapper_class = 'container';
 
 @if($has_content)
 <style>
-    #wrapper_ {
-            {
-            $secId
-        }
-    }
-
-    .modern-section-title {
-        font-size: {
-                {
-                $heading_size
-            }
-        }
-
-        px !important;
+    #wrapper_{{ $secId }} .modern-section-title {
+        font-size: {{ $heading_size }}px !important;
         line-height: 1.4 !important;
     }
 </style>

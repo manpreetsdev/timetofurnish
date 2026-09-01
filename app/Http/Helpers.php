@@ -3946,38 +3946,38 @@ if (!function_exists('validate_uploaded_file')) {
 if (!function_exists('seo_title')) {
     function seo_title($title, $fallback = null)
     {
-        $title = trim(strip_tags((string) $title));
+        $title = html_entity_decode(trim(strip_tags((string) $title)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         if ($title !== '') {
             return $title;
         }
 
         if ($fallback !== null) {
-            $fallback = trim(strip_tags((string) $fallback));
+            $fallback = html_entity_decode(trim(strip_tags((string) $fallback)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
             if ($fallback !== '') {
                 return $fallback;
             }
         }
 
-        return trim(get_setting('website_name') . ' | ' . get_setting('site_motto'));
+        return html_entity_decode(trim(get_setting('website_name') . ' | ' . get_setting('site_motto')), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
 }
 
 if (!function_exists('seo_description')) {
     function seo_description($description, $fallback = null)
     {
-        $description = trim(strip_tags((string) $description));
+        $description = html_entity_decode(trim(strip_tags((string) $description)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         if ($description !== '') {
             return \Illuminate\Support\Str::limit($description, 160);
         }
 
         if ($fallback !== null) {
-            $fallback = trim(strip_tags((string) $fallback));
+            $fallback = html_entity_decode(trim(strip_tags((string) $fallback)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
             if ($fallback !== '') {
                 return \Illuminate\Support\Str::limit($fallback, 160);
             }
         }
 
-        return get_setting('meta_description');
+        return html_entity_decode(get_setting('meta_description'), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
 }
 
