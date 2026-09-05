@@ -3,6 +3,22 @@
 @section('meta_title'){{ translate('Meet the Team') }} - {{ get_setting('website_name') }}@stop
 @section('meta_description'){{ translate('Meet the team behind the brand and learn more about their experience and expertise.') }}@stop
 
+@php
+    $banner = [
+        'title' => 'Meet Our Team',
+        'breadcrumb_label' => 'Meet Our Team',
+        'background_image' => null,
+        'height' => 340,
+        'text_align' => 'center',
+        'overlay_color' => 'rgba(54, 38, 26, 0.42)',
+        'title_color' => '#ffffff',
+        'subtitle_color' => '#f8f0e7',
+        'title_font_family' => 'Playfair Display, serif',
+        'subtitle_font_family' => 'Poppins, sans-serif',
+        'subtitle' => null,
+    ];
+@endphp
+
 @section('content')
 <?php
 $bannerImage = get_setting('team_members_banner_image');
@@ -570,13 +586,13 @@ $introSignature = get_setting('team_members_intro_signature', "Mrs. H. Kaur\nMan
 
 <div class="team-page">
 
-    <section class="team-hero">
+  {{-- <section class="team-hero">
         <div class="container">
             <div class="row">
                 <div class="col-lg-9 col-xl-12">
-                    {{-- <div class="hero-pill">
+                    <div class="hero-pill">
                         
-                    </div>--}}
+                    </div>
 
                     <h1 class="display-5 hero-title">
                         {{ $bannerTitle }}
@@ -612,7 +628,11 @@ $introSignature = get_setting('team_members_intro_signature', "Mrs. H. Kaur\nMan
                 </div>
             </div>
         </div>
-    </section>
+    </section>--}}
+	{{-- Global Banner --}}
+@include('frontend.custom-pages.partials.banner', [
+    'banner' => $banner
+])
 
     <section class="team-content">
 

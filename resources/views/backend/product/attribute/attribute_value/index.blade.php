@@ -89,6 +89,19 @@
                                 <input type="text" placeholder="{{ translate('Name') }}" id="value" name="value"
                                     class="form-control" required>
                             </div>
+                            @if($attribute->type == 'image')
+                            <div class="form-group mb-3">
+                                <label for="image">{{ translate('Attribute Image') }}</label>
+                                <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse') }}</div>
+                                    </div>
+                                    <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                    <input type="hidden" name="image" class="selected-files">
+                                </div>
+                                <div class="file-preview box sm"></div>
+                            </div>
+                            @endif
                             <div class="form-group mb-3 text-right">
                                 <button type="submit" class="btn btn-primary">{{ translate('Save') }}</button>
                             </div>

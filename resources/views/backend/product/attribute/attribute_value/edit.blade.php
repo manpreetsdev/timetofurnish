@@ -22,14 +22,34 @@
                                 name="value" class="form-control" required value="{{ $attribute_value->value }}">
                         </div>
                     </div>
-                    {{-- <div class="form-group row">
-                  <label class="col-sm-3 col-from-label" for="code">
-                      {{ translate('Color Code')}} 
-                  </label>
-                  <div class="col-sm-9">
-                      <input type="text" placeholder="{{ translate('Color Code')}}" id="code" name="code" class="form-control" required value="{{ $attribute_value->code }}">
-                  </div>
-              </div> --}}
+
+                    @if($attribute_value->attribute && $attribute_value->attribute->type == 'image')
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-from-label" for="image">
+                            {{ translate('Image') }}
+                        </label>
+                        <div class="col-sm-9">
+                            <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse') }}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                <input type="hidden" name="image" class="selected-files" value="{{ $attribute_value->image }}">
+                            </div>
+                            <div class="file-preview box sm">
+                                @if($attribute_value->image)
+                                    <div class="d-flex justify-content-between align-items-center mt-2 file-preview-item" data-id="{{ $attribute_value->image }}">
+                                        <div class="align-items-center align-self-stretch d-flex justify-content-center thumb">
+                                            <img src="{{ is_numeric($attribute_value->image) ? uploaded_asset($attribute_value->image) : my_asset($attribute_value->image) }}" class="img-fit">
+                                        </div>
+                                        <div class="remove"><button class="btn btn-sm btn-link remove-attachment" type="button"><i class="la la-close"></i></button></div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
                     <div class="form-group mb-0 text-right">
                         <button type="submit" class="btn btn-primary">{{ translate('Save') }}</button>
                     </div>

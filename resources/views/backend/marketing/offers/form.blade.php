@@ -124,26 +124,29 @@
             </div>
             <div class="card-body theme-card-body">
                 <!-- Offer Name selection (Dropdown + Custom) -->
+                @php
+                    $current_name = isset($offer) ? $offer->name : '';
+                    $options = get_offer_name_options();
+                    $is_custom = !empty($current_name) && !isset($options[$current_name]);
+                @endphp
                 <div class="form-group mb-4">
                     <label class="form-label theme-form-label" for="offer_name_select">{{ translate('Offer / Deal Name') }} <span class="text-danger">*</span></label>
-                    <select id="offer_name_select" class="form-control aiz-selectpicker rounded-lg border-gray-300" required>
-                        @php
-                            $current_name = isset($offer) ? $offer->name : '';
-                            $options = get_offer_name_options();
-                            $is_custom = $current_name && !isset($options[$current_name]);
-                        @endphp
+                    <select id="offer_name_select" class="form-control aiz-selectpicker rounded-lg border-gray-300">
                         @foreach($options as $key => $val)
-                            <option value="{{ $key }}" @if($current_name == $key) selected @endif>{{ translate($val) }}</option>
+                            <option value="{{ $key }}" @if(!$is_custom && $current_name == $key) selected @endif>{{ translate($val) }}</option>
                         @endforeach
                         <option value="custom" @if($is_custom) selected @endif>{{ translate('-- Enter Custom Offer Name --') }}</option>
                     </select>
                 </div>
 
-                <!-- Custom Offer Name (hidden by default) -->
+                <!-- Custom Offer Name (shown when 'custom' selected) -->
                 <div class="form-group mb-4" id="custom_name_wrapper" style="display: @if($is_custom) block @else none @endif;">
-                    <label class="form-label theme-form-label" for="name">{{ translate('Custom Offer Name') }} <span class="text-danger">*</span></label>
-                    <input type="text" placeholder="{{ translate('Enter your custom offer name') }}" id="name" name="name" class="form-control rounded-lg" value="{{ isset($offer) ? $offer->name : array_key_first(get_offer_name_options()) }}" required>
+                    <label class="form-label theme-form-label" for="custom_name_input">{{ translate('Custom Offer Name') }} <span class="text-danger">*</span></label>
+                    <input type="text" placeholder="{{ translate('Enter your custom offer name') }}" id="custom_name_input" class="form-control rounded-lg" value="{{ $is_custom ? $current_name : '' }}">
                 </div>
+
+                <!-- Hidden Input submitted to Backend -->
+                <input type="hidden" id="name" name="name" value="{{ $current_name ?: array_key_first($options) }}">
 
                 <!-- Custom Text / Description -->
                 <div class="form-group mb-0">
@@ -285,39 +288,95 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function() {
+(function() {
+    function syncOfferName() {
+        var offerSelect = document.getElementById('offer_name_select');
+        var customWrapper = document.getElementById('custom_name_wrapper');
+        var customInput = document.getElementById('custom_name_input');
+        var hiddenNameInput = document.getElementById('name');
+        
+        if (!offerSelect || !customWrapper || !customInput || !hiddenNameInput) return;
+        
+        var selected = offerSelect.value;
+        if (selected === 'custom') {
+            customWrapper.style.display = 'block';
+            customInput.setAttribute('required', 'required');
+            hiddenNameInput.value = customInput.value.trim();
+        } else {
+            customWrapper.style.display = 'none';
+            customInput.removeAttribute('required');
+            hiddenNameInput.value = selected || '';
+        }
+    }
+
+    function syncDiscountType() {
+        var discountSelect = document.getElementById('discount_type');
+        var discountWrapper = document.getElementById('discount_value_wrapper');
+        var discountInput = document.getElementById('discount_value');
+
+        if (!discountSelect || !discountWrapper || !discountInput) return;
+
+        var type = discountSelect.value;
+        if (type === 'badge_only') {
+            discountWrapper.style.display = 'none';
+            discountInput.removeAttribute('required');
+        } else {
+            discountWrapper.style.display = 'block';
+            discountInput.setAttribute('required', 'required');
+        }
+    }
+
+    // Native DOM listeners (runs without depending on jQuery)
+    document.addEventListener('change', function(e) {
+        if (e.target && e.target.id === 'offer_name_select') {
+            syncOfferName();
+        }
+        if (e.target && e.target.id === 'discount_type') {
+            syncDiscountType();
+        }
+    });
+
+    document.addEventListener('input', function(e) {
+        if (e.target && e.target.id === 'custom_name_input') {
+            var hiddenNameInput = document.getElementById('name');
+            if (hiddenNameInput) {
+                hiddenNameInput.value = e.target.value.trim();
+            }
+        }
+    });
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            syncOfferName();
+            syncDiscountType();
+        });
+    } else {
+        syncOfferName();
+        syncDiscountType();
+    }
+
+    // Deferred jQuery handler for bootstrap-select & template preview
+    function initJQueryHandlers() {
+        if (typeof jQuery === 'undefined') {
+            setTimeout(initJQueryHandlers, 100);
+            return;
+        }
+        var $ = jQuery;
+
         $('.timezone-offset-field').val(new Date().getTimezoneOffset());
 
-        // Toggle Custom Name input depending on selection
-        $('#offer_name_select').on('change', function() {
-            var selected = $(this).val();
-            if (selected === 'custom') {
-                $('#custom_name_wrapper').show();
-                $('#name').val('');
-                $('#name').attr('required', 'required');
-            } else {
-                $('#custom_name_wrapper').hide();
-                $('#name').val(selected);
-                $('#name').removeAttr('required');
-            }
+        $(document).on('change changed.bs.select', '#offer_name_select', function() {
+            syncOfferName();
         });
 
-        // Hide discount value if Badge Only is selected
-        $('#discount_type').on('change', function() {
-            var type = $(this).val();
-            if (type === 'badge_only') {
-                $('#discount_value_wrapper').hide();
-                $('#discount_value').removeAttr('required');
-            } else {
-                $('#discount_value_wrapper').show();
-                $('#discount_value').attr('required', 'required');
-            }
+        $(document).on('change changed.bs.select', '#discount_type', function() {
+            syncDiscountType();
         });
 
-        // Update live preview depending on style selection
         function updateTemplatePreview() {
             var style = $('#template_style').val();
             var container = $('#template_preview_container');
+            if (!container.length) return;
             var html = '';
             
             if (style === 'style_1') {
@@ -405,10 +464,9 @@
             container.html(html);
         }
 
-        $('#template_style').on('change', updateTemplatePreview);
+        $(document).on('change changed.bs.select', '#template_style', updateTemplatePreview);
         updateTemplatePreview();
 
-        // Toggle visibility of template selector based on show_on_home for admin
         function toggleTemplateStyleVisibility() {
             var showOnHomeCheckbox = $('input[name="show_on_home"]');
             if (showOnHomeCheckbox.length > 0) {
@@ -422,7 +480,10 @@
             }
         }
 
-        $('input[name="show_on_home"]').on('change', toggleTemplateStyleVisibility);
+        $(document).on('change', 'input[name="show_on_home"]', toggleTemplateStyleVisibility);
         toggleTemplateStyleVisibility();
-    });
+    }
+
+    initJQueryHandlers();
+})();
 </script>

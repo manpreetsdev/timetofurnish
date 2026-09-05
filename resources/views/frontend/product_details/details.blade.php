@@ -543,7 +543,7 @@
             {{ ucfirst($detailedProduct->getTranslation('name')) }}
         </h1>
     </div>
-    @include('frontend.product_details.category_info_badge')
+    @include('frontend.product_details.category_info_badge', ['position' => 'top'])
 
     <div class="mb-3 row align-items-center">
         <!-- Review -->
@@ -684,28 +684,23 @@
         };
     </script>
 
-    <div class="mb-3 row no-gutters">
-        <div class="col-sm-2">
-            <div class="mt-1 text-secondary fs-15 fw-500" style="color: #333 !important;">
-                {{ translate('Price') }}
+    <div class="mb-3 row no-gutters align-items-center">
+        <div class="col-sm-2 col-3">
+            <div class="mt-1 text-secondary fs-15 fw-600" style="color: #685b4e !important; white-space: nowrap;">
+                {{ !empty($active_offer->name) ? translate($active_offer->name) : translate('Offer Price') }}
             </div>
         </div>
-        <div class="col-sm-10 col-10">
-            <!-- Orange Offer Name above prices, matching reference screenshot -->
-            <div class="fs-15 fw-600 mb-1"
-                style="color: #ff9800; font-family: 'Outfit', 'Inter', sans-serif; letter-spacing: 0.3px;">
-                {{ translate($active_offer->name) }}
-            </div>
-            <div class="flex-wrap d-flex align-items-center">
-                <!-- Fake Old Price -->
+        <div class="col-sm-10 col-9">
+            <div class="flex-wrap d-flex align-items-center" style="gap: 10px;">
+                <!-- Fake Old Price (Strikethrough Cut) -->
                 @php $offer_old_price = home_offer_old_price($detailedProduct); @endphp
                 <del class="js-product-old-price" data-default-old-price-text="{{ $offer_old_price }}"
-                    style="text-decoration: line-through; color: #757575 !important; font-size: 18px; font-weight: 500; {{ $offer_old_price ? '' : 'display: none;' }}">
+                    style="text-decoration: line-through; color: #8f97ab !important; font-size: 16px; font-weight: 500; {{ $offer_old_price ? '' : 'display: none;' }}">
                     {{ $offer_old_price }}
                 </del>
                 <!-- Actual Selling Price -->
                 <strong class="js-product-total-price"
-                    style="color: #dc3545 !important; font-size: 26px; font-weight: 700; {{ $offer_old_price ? 'margin-left: 10px;' : '' }}"
+                    style="color: #C27325 !important; font-size: 24px; font-weight: 700; letter-spacing: -0.3px;"
                     data-default-price-text="{{ home_discounted_price($detailedProduct) }}">
                     {{ home_discounted_price($detailedProduct) }}
                 </strong>
@@ -714,15 +709,14 @@
 
                 <!-- Club Point -->
                 @if (addon_is_activated('club_point') && $detailedProduct->earn_point > 0)
-                <div class="px-3 py-1 ml-2 d-inline-flex align-items-center"
-                    style="background: #fff3e5;
-                                    border-radius: 6px;">
+                <div class="px-2.5 py-1 d-inline-flex align-items-center"
+                    style="background: #faf7f2; border-radius: 6px; border: 1px solid #dacbbc;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
                         viewBox="0 0 12 12">
-                        <circle cx="6" cy="6" r="6" fill="#f3af3d" />
+                        <circle cx="6" cy="6" r="6" fill="#C27325" />
                         <path d="M7.667,3H4.333L3,5,6,9,9,5Z" fill="#fff" />
                     </svg>
-                    <small class="ml-2 fs-11 fw-500" style="color: #f3af3d;">
+                    <small class="ml-1.5 fs-11 fw-600" style="color: #685b4e;">
                         {{ translate('Club Point') }}: {{ $detailedProduct->earn_point }}
                     </small>
                 </div>
@@ -731,8 +725,8 @@
 
             <!-- Custom Description / Details -->
             @if ($active_offer->custom_text)
-            <div class="mt-2 text-warning fs-13 fw-600">
-                <i class="las la-tags mr-1"></i> {{ translate($active_offer->name) }}:
+            <div class="mt-1.5 text-muted fs-12 fw-500" style="color: #685b4e !important;">
+                <i class="las la-info-circle mr-1" style="color: #C27325;"></i> {{ translate($active_offer->name) }}:
                 {{ $active_offer->custom_text }}
             </div>
             @endif
@@ -769,29 +763,26 @@
             window.productOfferConfig = null;
         </script>
         @if (home_price($detailedProduct) != home_discounted_price($detailedProduct))
-        <div class="mb-3 row no-gutters">
+        <div class="mb-3 row no-gutters align-items-center">
             <div class="col-sm-2">
-                <div class="mt-1 text-secondary fs-15 fw-500" style="color: #333 !important;">
+                <div class="mt-1 text-secondary fs-15 fw-600" style="color: #685b4e !important;">
                     {{ translate('Price') }}
                 </div>
             </div>
             <div class="col-sm-10">
-                <div class="flex-wrap d-flex align-items-center yfgyhkj">
+                <div class="flex-wrap d-flex align-items-baseline" style="gap: 10px;">
                     <!-- Discount Price -->
-                    <strong class="fs-20 fw-600 text-primary">
+                    <strong class="fs-22 fw-700" style="color: #C27325;">
                         {{ home_discounted_price($detailedProduct) }}
                     </strong>
                     <!-- Home Price -->
-                    <del class="ml-2 fs-14 opacity-60" style="color:rgb(46, 46, 46);">
+                    <del class="ml-2 fs-14 opacity-70" style="color: #8f97ab; text-decoration: line-through;">
                         {{ home_price($detailedProduct) }}
                     </del>
                     @if (discount_in_percentage($detailedProduct) > 0)
                     <div class="px-2 py-1 ml-2"
-                        style="background: rgba(var(--primary-rgb), 0.1);
-                                        border-radius: 6px;
-                                        display: inline-flex;
-                                        align-items: center;">
-                        <span class="fs-13 fw-700" style="color: var(--primary);">
+                        style="background: #faf7f2; border: 1px solid #dacbbc; border-radius: 6px; display: inline-flex; align-items: center;">
+                        <span class="fs-12 fw-700" style="color: #C27325;">
                             -{{ discount_in_percentage($detailedProduct) }}%
                         </span>
                     </div>
@@ -799,8 +790,7 @@
                     <!-- Club Point -->
                     @if (addon_is_activated('club_point') && $detailedProduct->earn_point > 0)
                     <div class="px-3 py-1 ml-2 d-inline-flex align-items-center"
-                        style="background: #fff3e5;
-                                        border-radius: 6px;">
+                        style="background: #faf7f2; border: 1px solid #dacbbc; border-radius: 6px;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
                             viewBox="0 0 12 12">
                             <g id="Group_23922" data-name="Group 23922"
@@ -1046,6 +1036,7 @@
         </div>
 </div>
 
+@include('frontend.product_details.category_info_badge', ['position' => 'bottom'])
 
 <!-- Promote Link -->
 <div class="mt-3 d-table width-100">

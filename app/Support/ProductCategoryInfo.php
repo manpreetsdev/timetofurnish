@@ -31,7 +31,7 @@ class ProductCategoryInfo
         }, $decoded);
     }
 
-    public static function forProduct(Product $product): ?array
+    public static function forProduct(Product $product, string $position = 'top'): ?array
     {
         $badges = self::badges();
 
@@ -43,6 +43,15 @@ class ProductCategoryInfo
 
         foreach ($badges as $badge) {
             if (!self::isEnabled($badge['enabled'] ?? false)) {
+                continue;
+            }
+
+            $badgePosition = $badge['position'] ?? 'top';
+            if (!in_array($badgePosition, ['top', 'bottom'], true)) {
+                $badgePosition = 'top';
+            }
+
+            if ($badgePosition !== $position) {
                 continue;
             }
 
@@ -149,11 +158,17 @@ class ProductCategoryInfo
     {
         $type = $badge['type'] ?? 'text';
 
-        if (!in_array($type, ['text', 'image'], true)) {
+        if (!in_array($type, ['text', 'image', 'image_text'], true)) {
             $type = 'text';
         }
 
+        $position = $badge['position'] ?? 'top';
+        if (!in_array($position, ['top', 'bottom'], true)) {
+            $position = 'top';
+        }
+
         $normalized = [
+            'position' => $position,
             'type' => $type,
             'text' => trim((string) ($badge['text'] ?? '')),
             'image_id' => $badge['image_id'] ?? null,
@@ -165,6 +180,10 @@ class ProductCategoryInfo
         }
 
         if ($type === 'text' && trim(strip_tags($normalized['text'])) === '') {
+            return null;
+        }
+
+        if ($type === 'image_text' && empty($normalized['image_id']) && trim(strip_tags($normalized['text'])) === '') {
             return null;
         }
 
@@ -194,7 +213,16 @@ class ProductCategoryInfo
                 continue;
             }
 
-            $type = ($badge['type'] ?? 'text') === 'image' ? 'image' : 'text';
+            $type = $badge['type'] ?? 'text';
+            if (!in_array($type, ['text', 'image', 'image_text'], true)) {
+                $type = 'text';
+            }
+
+            $position = $badge['position'] ?? 'top';
+            if (!in_array($position, ['top', 'bottom'], true)) {
+                $position = 'top';
+            }
+
             $text = trim((string) ($badge['text'] ?? ''));
             $imageId = $badge['image_id'] ?? null;
 
@@ -206,9 +234,14 @@ class ProductCategoryInfo
                 continue;
             }
 
+            if ($type === 'image_text' && empty($imageId) && trim(strip_tags($text)) === '') {
+                continue;
+            }
+
             $sanitized[] = [
                 'category_ids' => $categoryIds,
                 'enabled' => self::isEnabled($badge['enabled'] ?? false),
+                'position' => $position,
                 'type' => $type,
                 'text' => $text,
                 'image_id' => $imageId,

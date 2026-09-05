@@ -1,9 +1,24 @@
 @extends('frontend.layouts.app')
+@php
+    $banner = [
+        'title' => 'Blogs',
+        'breadcrumb_label' => 'Blogs',
+        'background_image' => null,
+        'height' => 340,
+        'text_align' => 'center',
+        'overlay_color' => 'rgba(54, 38, 26, 0.42)',
+        'title_color' => '#ffffff',
+        'subtitle_color' => '#f8f0e7',
+        'title_font_family' => 'Playfair Display, serif',
+        'subtitle_font_family' => 'Poppins, sans-serif',
+        'subtitle' => null,
+    ];
+@endphp
 
 @section('content')
 
 <!-- Banner -->
-<section class="contact-banner blog-banner">
+{{--<section class="contact-banner blog-banner">
     <div class="contact-overlay">
         <div class="container">
             <div class="banner-content">
@@ -21,7 +36,10 @@
             </div>
         </div>
     </div>
-</section>
+</section>--}}
+@include('frontend.custom-pages.partials.banner', [
+    'banner' => $banner
+])
 <!-- Search -->
 <div class="blog-search-section">
     <div class="blog-search-content">

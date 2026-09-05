@@ -271,21 +271,24 @@
 </style>
 
 <style>
-    #viewSellerInfoBtn{
-        background: linear-gradient(90deg, #deb887 0%, #c59259 100%);
-        color: #212529 !important;
-        border: none;
+    #viewSellerInfoBtn {
+        background: #1a2744;
+        color: #ffffff !important;
+        border: 1px solid #1a2744;
         border-radius: 6px;
         font-weight: 600;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        transition: box-shadow .2s, background .2s;
-        padding: 6px 10px !important;
-
+        font-size: 13px;
+        box-shadow: 0 2px 6px rgba(26, 39, 68, 0.15);
+        transition: all .2s ease-in-out;
+        padding: 7px 14px !important;
+        margin: 0 !important;
+        line-height: 1.2 !important;
     }
-    #viewSellerInfoBtn:hover{
-        background: linear-gradient(90deg, #c59259 0%, #deb887 100%);
-        color: #212529 !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    #viewSellerInfoBtn:hover {
+        background: #b57a45;
+        border-color: #b57a45;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(181, 122, 69, 0.25);
     }
 </style>
    <section class="pt-0 mb-4">

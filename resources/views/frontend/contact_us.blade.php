@@ -3,6 +3,19 @@
 @php
 $seoTitle = seo_title($page->meta_title ?? null, translate('Contact Us') . ' | ' . get_setting('website_name'));
 $seoDescription = seo_description($page->meta_description ?? null, translate('Get in touch with us for support, inquiries, and feedback.'));
+$banner = [
+        'title' => 'Contact Us',
+        'breadcrumb_label' => 'Contact Us',
+        'background_image' => null,
+        'height' => 340,
+        'text_align' => 'center',
+        'overlay_color' => 'rgba(54, 38, 26, 0.42)',
+        'title_color' => '#ffffff',
+        'subtitle_color' => '#f8f0e7',
+        'title_font_family' => 'Playfair Display, serif',
+        'subtitle_font_family' => 'Poppins, sans-serif',
+        'subtitle' => null,
+    ];
 @endphp
 
 @section('meta_title'){{ $seoTitle }}@stop
@@ -41,7 +54,8 @@ $seoDescription = seo_description($page->meta_description ?? null, translate('Ge
 @endsection--}}
 
 @section('content')
-<section class="contact-banner">
+
+{{--<section class="contact-banner">
     <div class="contact-overlay">
         <div class="container">
             <div class="banner-content">
@@ -61,8 +75,12 @@ $seoDescription = seo_description($page->meta_description ?? null, translate('Ge
             </div>
         </div>
     </div>
-</section>
-
+</section>--}}
+ {{-- Global Banner --}}
+    @include('frontend.custom-pages.partials.banner', [
+        'banner' => $banner
+    ])
+ {{-- Contact Us Content --}}
 <section class="contact-section py-5">
     <div class="container">
         <div class="row g-5 align-items-start contactdetail">
@@ -472,5 +490,19 @@ $seoDescription = seo_description($page->meta_description ?? null, translate('Ge
             font-size: 22px;
         }
     }
+@media (max-width: 767px) {
+    .contact-banner {
+        height: 160px !important;
+        min-height: 80px !important;
+    }
+	.banner-content h1{
+		font-family: 'Playfair Display', serif !important;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 30px;
+        margin-bottom: 10px;
+	}
+}
+	
 </style>
 @endsection
