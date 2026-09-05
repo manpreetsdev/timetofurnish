@@ -120,8 +120,8 @@ class SeoLinkFixer
                         return $matches[0];
                     }
 
-                    $attr1 = preg_replace('/\s*rel=(["\']).*?\1/i', '', $matches[1]);
-                    $attr2 = preg_replace('/\s*rel=(["\']).*?\1/i', '', $matches[4]);
+                    $attr1 = $this->stripNofollow($matches[1]);
+                    $attr2 = $this->stripNofollow($matches[4]);
 
                     return '<a' . $attr1 . ' href="' . e($loginUrl) . '"' . $attr2 . '>';
                 }, $content);
@@ -135,11 +135,16 @@ class SeoLinkFixer
                     return $matches[0];
                 }
 
-                $attr1 = preg_replace('/\s*rel=(["\']).*?\1/i', '', $matches[1]);
-                $attr2 = preg_replace('/\s*rel=(["\']).*?\1/i', '', $matches[4]);
+                $attr1 = $this->stripNofollow($matches[1]);
+                $attr2 = $this->stripNofollow($matches[4]);
 
                 return '<a' . $attr1 . ' href=' . $matches[2] . $matches[3] . $matches[2] . $attr2 . '>';
             }, $content);
+
+            if (Str::contains($content, '<body') && !Str::contains($content, '<!--email_off-->')) {
+                $content = preg_replace('/(<body\b[^>]*>)/i', '$1<!--email_off-->', $content, 1);
+                $content = preg_replace('/(<\/body>)/i', '<!--/email_off-->$1', $content, 1);
+            }
 
             $response->setContent($content);
         }
@@ -147,10 +152,32 @@ class SeoLinkFixer
         return $response;
     }
 
+    private function stripNofollow(string $attributes): string
+    {
+        $attributes = preg_replace_callback('/\brel=(["\'])(.*?)\1/i', function ($m) {
+            $tokens = preg_split('/\s+/', trim($m[2]));
+            $filtered = array_filter($tokens, function ($t) {
+                return strtolower($t) !== 'nofollow';
+            });
+            if (empty($filtered)) {
+                return '';
+            }
+            return 'rel="' . implode(' ', $filtered) . '"';
+        }, $attributes);
+
+        $attributes = preg_replace('/\brel=nofollow\b/i', '', $attributes);
+
+        return $attributes;
+    }
+
     private function isInternalHref(string $href, string $requestHost): bool
     {
         if ($href === '' || Str::startsWith($href, ['#', 'mailto:', 'tel:', 'javascript:'])) {
             return false;
+        }
+
+        if (Str::contains($href, 'cdn-cgi')) {
+            return true;
         }
 
         $parsedHost = parse_url($href, PHP_URL_HOST);
@@ -163,3 +190,4 @@ class SeoLinkFixer
         return $parsedPath !== null && Str::startsWith($parsedPath, '/');
     }
 }
+

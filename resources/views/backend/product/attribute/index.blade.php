@@ -752,18 +752,36 @@
                                                     @endcan
                                                 </div>
                                                 <div class="attr-value-image-field" data-label="{{ translate('Image') }}">
-                                                    @if (!empty($value->image))
-                                                        <img class="attr-value-image" src="{{ my_asset($value->image) }}"
-                                                            alt="{{ $value->value }}">
-                                                    @else
-                                                        <span class="attr-value-image attr-value-image-empty">
-                                                            <i class="las la-image"></i>
-                                                        </span>
-                                                    @endif
                                                     @can('edit_product_attribute_value')
-                                                        <input type="file" class="form-control attr-value-image-input"
-                                                            accept="image/*" data-value-id="{{ $value->id }}">
-                                                        <span class="attr-image-save-note">{{ translate('Auto saves after choosing file') }}</span>
+                                                        <div class="input-group input-group-sm" data-toggle="aizuploader" data-type="image">
+                                                            <div class="input-group-prepend">
+                                                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse') }}</div>
+                                                            </div>
+                                                            <div class="form-control file-amount">{{ !empty($value->image) ? translate('1 File Selected') : translate('Choose File') }}</div>
+                                                            <input type="hidden" name="image" class="selected-files attr-value-image-input" value="{{ $value->image }}" data-value-id="{{ $value->id }}">
+                                                        </div>
+                                                        <div class="file-preview box sm">
+                                                            @if (!empty($value->image))
+                                                                <div class="d-flex justify-content-between align-items-center mt-2 file-preview-item" data-id="{{ $value->image }}">
+                                                                    <div class="align-items-center align-self-stretch d-flex justify-content-center thumb">
+                                                                        <img src="{{ is_numeric($value->image) ? uploaded_asset($value->image) : my_asset($value->image) }}" class="img-fit">
+                                                                    </div>
+                                                                    <div class="remove">
+                                                                        <button class="btn btn-sm btn-link remove-attachment" type="button">
+                                                                            <i class="la la-close"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    @else
+                                                        @if (!empty($value->image))
+                                                            <img class="attr-value-image" src="{{ is_numeric($value->image) ? uploaded_asset($value->image) : my_asset($value->image) }}" alt="{{ $value->value }}">
+                                                        @else
+                                                            <span class="attr-value-image attr-value-image-empty">
+                                                                <i class="las la-image"></i>
+                                                            </span>
+                                                        @endif
                                                     @endcan
                                                 </div>
                                                 @can('delete_product_attribute_value')
@@ -790,8 +808,14 @@
                                                     data-attribute-id="{{ $attribute->id }}">
                                             </div>
                                             <div data-label="{{ translate('Image') }}">
-                                                <input type="file" class="form-control attr-new-image-input"
-                                                    accept="image/*">
+                                                <div class="input-group input-group-sm" data-toggle="aizuploader" data-type="image">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse') }}</div>
+                                                    </div>
+                                                    <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                                    <input type="hidden" name="image" class="selected-files attr-new-image-input">
+                                                </div>
+                                                <div class="file-preview box sm"></div>
                                             </div>
                                             <div data-label="{{ translate('Add') }}">
                                                 <button type="button" class="btn btn-soft-primary btn-sm attr-add-value-btn"
@@ -864,15 +888,14 @@
                 var value = inputEl.val().trim();
                 if (!value) return;
                 var rowEl = inputEl.closest('.attr-add-value-row');
-                var imageInput = rowEl.find('.attr-new-image-input')[0];
+                var imageInput = rowEl.find('.attr-new-image-input');
+                var imageVal = imageInput.val() || '';
+
                 var formData = new FormData();
                 formData.append('attribute_id', attributeId);
                 formData.append('value', value);
+                formData.append('image', imageVal);
                 formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
-
-                if (imageInput && imageInput.files && imageInput.files[0]) {
-                    formData.append('image', imageInput.files[0]);
-                }
 
                 $.ajax({
                     type: 'POST',
@@ -886,6 +909,18 @@
                         var list = inputEl.closest('.attr-values-section').find('.attr-values-list');
                         list.find('.attr-value-empty').remove();
 
+                        var imagePreviewHtml = '';
+                        if (resp.image) {
+                            var imgSrc = resp.image_url;
+                            imagePreviewHtml =
+                                '<div class="d-flex justify-content-between align-items-center mt-2 file-preview-item" data-id="' + resp.image + '">' +
+                                    '<div class="align-items-center align-self-stretch d-flex justify-content-center thumb">' +
+                                        '<img src="' + $('<span>').text(imgSrc).html() + '" class="img-fit">' +
+                                    '</div>' +
+                                    '<div class="remove"><button class="btn btn-sm btn-link remove-attachment" type="button"><i class="la la-close"></i></button></div>' +
+                                '</div>';
+                        }
+
                         var row = $(
                             '<div class="attr-value-row" data-value-id="' + resp.id + '">' +
                             '<div data-label="{{ translate('Option Name') }}">' +
@@ -898,12 +933,19 @@
                             '@endcan' +
                             '</div>' +
                             '<div class="attr-value-image-field" data-label="{{ translate('Image') }}">' +
+                                '@can("edit_product_attribute_value")' +
+                                '<div class="input-group input-group-sm" data-toggle="aizuploader" data-type="image">' +
+                                    '<div class="input-group-prepend"><div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse') }}</div></div>' +
+                                    '<div class="form-control file-amount">' + (resp.image ? '1 {{ translate('File selected') }}' : '{{ translate('Choose File') }}') + '</div>' +
+                                    '<input type="hidden" name="image" class="selected-files attr-value-image-input" value="' + (resp.image || '') + '" data-value-id="' + resp.id + '">' +
+                                '</div>' +
+                                '<div class="file-preview box sm">' + imagePreviewHtml + '</div>' +
+                                '@else' +
                                 (resp.image_url ?
-                                    '<img class="attr-value-image" src="' + $('<span>').text(resp.image_url).html() + '" alt="' + $('<span>').text(resp.value).html() + '">' :
+                                    '<img class="attr-value-image" src="' + $('<span>').text(resp.image_url).html() + '" alt="">' :
                                     '<span class="attr-value-image attr-value-image-empty"><i class="las la-image"></i></span>'
                                 ) +
-                                '<div><input type="file" class="form-control attr-value-image-input" accept="image/*" data-value-id="' + resp.id + '">' +
-                                '<span class="attr-image-save-note">{{ translate('Auto saves after choosing file') }}</span></div>' +
+                                '@endcan' +
                             '</div>' +
                             '<div data-label="{{ translate('Remove') }}"><button type="button" class="btn-remove-value" title="{{ translate('Remove value') }}" data-value-id="' +
                                 resp.id + '"><i class="las la-times"></i></button></div>' +
@@ -911,7 +953,9 @@
                         );
                         list.append(row);
                         inputEl.val('');
-                        if (imageInput) imageInput.value = '';
+                        imageInput.val('');
+                        rowEl.find('.file-preview').html('');
+                        rowEl.find('.file-amount').html('{{ translate('Choose File') }}');
 
                         // Update count in header
                         var card = inputEl.closest('.attr-editor-card');
@@ -921,8 +965,6 @@
                     error: function(xhr) {
                         if (xhr.responseJSON && xhr.responseJSON.errors && xhr.responseJSON.errors.value) {
                             alert(xhr.responseJSON.errors.value[0]);
-                        } else if (xhr.responseJSON && xhr.responseJSON.errors && xhr.responseJSON.errors.image) {
-                            alert(xhr.responseJSON.errors.image[0]);
                         }
                     }
                 });
@@ -951,7 +993,6 @@
                             if (!resp.success) return;
                             input.val(resp.value);
                             input.siblings('.value-text').text(resp.value);
-                            // Optional: show a saved indicator, hide error notes
                         },
                         error: function(xhr) {
                             if (xhr.responseJSON && xhr.responseJSON.errors && xhr.responseJSON.errors.value) {
@@ -977,14 +1018,14 @@
                 }
             });
 
-            // ── Image update (AJAX) ────────────────────────────────
+            // ── Image update via AIZ Uploader (AJAX) ─────────────────
             $(document).on('change', '.attr-value-image-input', function() {
-                var input = this;
-                var valueId = $(input).data('value-id');
-                if (!input.files || !input.files[0]) return;
+                var input = $(this);
+                var valueId = input.data('value-id');
+                var imageVal = input.val() || '';
 
                 var formData = new FormData();
-                formData.append('image', input.files[0]);
+                formData.append('image', imageVal);
                 formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
                 $.ajax({
@@ -995,19 +1036,14 @@
                     processData: false,
                     success: function(resp) {
                         if (!resp.success) return;
-
-                        var row = $(input).closest('.attr-value-row');
-                        var imageHtml = '<img class="attr-value-image" src="' + $('<span>').text(resp.image_url).html() + '" alt="">';
-                        row.find('.attr-value-image').first().replaceWith(imageHtml);
-                        input.value = '';
-                    },
-                    error: function(xhr) {
-                        if (xhr.responseJSON && xhr.responseJSON.errors && xhr.responseJSON.errors.image) {
-                            alert(xhr.responseJSON.errors.image[0]);
-                        }
-                        input.value = '';
                     }
                 });
+            });
+
+            $(document).on('click', '[data-toggle="aizUploaderAddSelected"], #aiz-uploader-use-selected, .remove-attachment', function() {
+                setTimeout(function() {
+                    $('.attr-value-image-input').trigger('change');
+                }, 150);
             });
 
             // ── Remove attribute value (AJAX) ───────────────────────

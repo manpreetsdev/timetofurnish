@@ -194,11 +194,14 @@ $wrapper_class = 'container';
     @if(($section['type'] ?? '') == 'home_slider')
     <!-- Sliders -->
     @if($theme == 'metro')
-    <div class="home-banner-area">
+  <div class="home-banner-area">
         <div class="p-0">
             <div class="home-slider slider-full">
                 @if(!empty($slider_images) && is_array($slider_images))
-                <div class="aiz-carousel home_banner_img dots-inside-bottom mobile-img-auto-height" data-dots="true" data-autoplay="false" data-infinite="true">
+                <div class="aiz-carousel home_banner_img dots-inside-bottom mobile-slider-dots mobile-img-auto-height"
+     data-dots="true"
+     data-autoplay="false"
+     data-infinite="true">
                     @foreach ($slider_images as $key => $imgId)
                     @php
                     $slider_src = is_numeric($imgId) ? uploaded_asset($imgId) : (is_object($imgId) || is_array($imgId) ? (isset($imgId['file_name']) ? my_asset($imgId['file_name']) : '') : $imgId);
@@ -495,3 +498,69 @@ $wrapper_class = 'container';
 @endif
 @endif
 @endforeach
+		<style>
+		/* Desktop: original dots position */
+.mobile-slider-dots {
+    position: relative;
+}
+
+/* Mobile: move dots below banner */
+@media (max-width: 767px) {
+
+    .mobile-slider-dots {
+        padding-bottom: 40px !important;
+        overflow: visible !important;
+    }
+
+    .mobile-slider-dots .slick-dots {
+        position: absolute !important;
+        bottom: 10px !important;
+        left: 0 !important;
+        right: 0 !important;
+
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 99 !important;
+    }
+}
+		
+
+		@media (max-width: 767px) {
+
+ 		.aiz-carousel.dots-inside-bottom .slick-dots li.slick-active button ,.aiz-carousel.dots-inside-bottom .slick-dots li button{
+    background: #b2a5a5 !important;
+}
+
+}
+	</style>
+	<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const section = document.getElementById("wrapper_section_sec_todays_deal");
+
+    if (!section) return;
+
+    function removePadding() {
+        section.style.setProperty("padding-top", "0px", "important");
+    }
+
+    // Initial
+    removePadding();
+
+    // Watch for admin changing inline styles
+    const observer = new MutationObserver(function () {
+        removePadding();
+    });
+
+    observer.observe(section, {
+        attributes: true,
+        attributeFilter: ["style"]
+    });
+
+});
+</script>

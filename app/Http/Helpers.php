@@ -1074,26 +1074,11 @@ if (!function_exists('format_offer_badge')) {
             $text .= ' OFF';
         }
 
-        // Curated dynamic organic earth tones based on discount type similar to theme footer
-        if ($offer->discount_type == 'percentage') {
-            $bg = 'rgba(253, 248, 226, 0.95)';
-            $color = '#a1741e';
-            $shadow = 'rgba(161, 116, 30, 0.1)';
-        } elseif ($offer->discount_type == 'fixed') {
-            $bg = 'rgba(234, 243, 235, 0.95)';
-            $color = '#3e6d42';
-            $shadow = 'rgba(62, 109, 66, 0.1)';
-        } elseif ($offer->discount_type == 'badge_only') {
-            $bg = 'rgba(244, 239, 233, 0.95)';
-            $color = '#5d5449';
-            $shadow = 'rgba(93, 84, 73, 0.1)';
-        } else {
-            $bg = 'rgba(244, 239, 233, 0.95)';
-            $color = '#5d5449';
-            $shadow = 'rgba(93, 84, 73, 0.1)';
-        }
+        $bg = '#faf7f2';
+        $color = '#C27325';
+        $border = '1px solid #dacbbc';
 
-        return '<span class="badge badge-inline px-2.5 py-1 fw-700 fs-10 ml-2" style="background-color: ' . $bg . '; color: ' . $color . '; border-radius: 6px; letter-spacing: 0.5px; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; box-shadow: 0 2px 5px ' . $shadow . '; border: 1px solid rgba(0,0,0,0.03);">' . $text . '</span>';
+        return '<span class="badge badge-inline px-2.5 py-1 fw-700 fs-11 ml-2" style="background-color: ' . $bg . '; color: ' . $color . '; border: ' . $border . '; border-radius: 6px; letter-spacing: 0.4px; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;">' . $text . '</span>';
     }
 }
 
@@ -2206,13 +2191,13 @@ if (!function_exists('get_setting')) {
 }
 
 if (!function_exists('get_product_category_info_badge')) {
-    function get_product_category_info_badge($product)
+    function get_product_category_info_badge($product, $position = 'top')
     {
         if (!$product) {
             return null;
         }
 
-        return \App\Support\ProductCategoryInfo::forProduct($product);
+        return \App\Support\ProductCategoryInfo::forProduct($product, $position);
     }
 }
 
@@ -2229,7 +2214,7 @@ if (!function_exists('pci_badge_text_html')) {
             return nl2br(e($html));
         }
 
-        return strip_tags($html, '<p><br><strong><b><em><i><u><span><div>');
+        return strip_tags($html, '<p><br><strong><b><em><i><u><span><div><a>');
     }
 }
 

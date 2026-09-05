@@ -78,9 +78,9 @@
                name="addons[{{ $groupIndex }}][options][{{ $optIndex }}][existing_img]"
                value="{{ $img }}">
 
-        @if(!empty($img) && !is_numeric($img))
+        @if(!empty($img))
             <div class="mt-2 text-left addon-preview-thumb">
-                <img src="{{ asset($img) }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #e2dfd8;">
+                <img src="{{ is_numeric($img) ? uploaded_asset($img) : my_asset($img) }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #e2dfd8;">
             </div>
         @endif
 

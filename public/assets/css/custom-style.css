@@ -3483,9 +3483,10 @@ span.badge.badge-primary.badge-circle.position-absolute {
 }
 
 .modern-section-header .modern-section-title {
-    font-family: 'DM Serif Display', serif !important;
-    font-size: 28px !important;
-    font-weight: 400 !important;
+    font-family: 'Playfair Display', serif;
+    !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
     color: #1D1712 !important;
     margin-bottom: 6px !important;
     letter-spacing: 0px !important;
@@ -3767,7 +3768,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
     }
 
     div#wrapper_section_sec_todays_deal {
-        margin-top: 20px !important;
+        margin-top: 0px !important;
     }
 
     #wrapper_section_sec_reviews {
@@ -5096,6 +5097,154 @@ img.lazyload:not([data-src]):not([data-srcset]) {
 
 @media (max-width: 767px) {
     .custom-banner-description-text {
-        font-size: 12px !important;
+        font-size: 8px !important;
     }
 }
+
+#wrapper_section_sec_todays_deal {
+    padding-top: 0px !important;
+    margin-top: 0px !important;
+}
+
+@media (max-width: 767px) {
+
+    /* Featured Products */
+    #section_sec_featured .modern-section-title,
+    #section_sec_featured .modern-section-title span,
+
+    /* Today's Deals */
+    #section_sec_todays_deal .modern-section-title,
+    #section_sec_todays_deal .modern-section-title span,
+
+    /* Best Selling */
+    #section_sec_best_selling .modern-section-title,
+    #section_sec_best_selling .modern-section-title span,
+
+    /* Latest Products */
+    #section_sec_newest .modern-section-title,
+    #section_sec_newest .modern-section-title span {
+
+        font-family: 'Playfair Display', serif !important;
+        font-size: 26px !important;
+        line-height: 1.2 !important;
+        font-weight: 700 !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+
+/* Header Category Name - Single Line Ellipsis */
+/* ================================
+   MOBILE CATEGORY SLIDER DOTS
+================================ */
+
+@media (max-width: 767px) {
+
+    .category-nav-row .slick-dots {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+
+        position: relative !important;
+        bottom: auto !important;
+
+        width: 100% !important;
+        justify-content: center !important;
+        align-items: center !important;
+
+        margin: 8px 0 10px !important;
+        padding: 0 !important;
+
+        list-style: none !important;
+        gap: 6px !important;
+    }
+
+    .category-nav-row .slick-dots li {
+        width: auto !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .category-nav-row .slick-dots li button {
+        width: 7px !important;
+        height: 7px !important;
+
+        padding: 0 !important;
+        margin: 0 !important;
+
+        border: 0 !important;
+        border-radius: 50% !important;
+
+        font-size: 0 !important;
+        line-height: 0 !important;
+    }
+
+    .category-nav-row .slick-dots li button:before {
+        display: none !important;
+    }
+
+}
+
+@media (max-width: 767px) {
+    .modern-section-title {
+        font-size: 20px !important;
+
+
+
+    }
+
+    @media (max-width: 767px) {
+
+        #wrapper_section_sec_todays_deal h3.modern-section-title {
+            font-size: 25px !important;
+            line-height: 1.2 !important;
+            white-space: nowrap !important;
+        }
+
+        #wrapper_section_sec_todays_deal h3.modern-section-title span {
+            font-size: 22px !important;
+            line-height: 1.2 !important;
+        }
+
+    }
+
+    @media (max-width: 767px) {
+        #wrapper_section_sec_best_selling h3.modern-section-title {
+            font-size: 25px !important;
+            line-height: 1.2 !important;
+            white-space: nowrap !important;
+        }
+
+        #wrapper_section_sec_best_selling h3.modern-section-title span {
+            font-size: 22px !important;
+            line-height: 1.2 !important;
+        }
+    }
+
+    @media (max-width: 767px) {
+        #wrapper_section_sec_newest h3.modern-section-title {
+            font-size: 25px !important;
+            line-height: 1.2 !important;
+            white-space: nowrap !important;
+        }
+
+        #wrapper_section_sec_newest h3.modern-section-title span {
+            font-size: 22px !important;
+            line-height: 1.2 !important;
+        }
+    }
+
+    @media (max-width: 767px) {
+        #wrapper_section_sec_featured h3.modern-section-title {
+            font-size: 25px !important;
+            line-height: 1.2 !important;
+            white-space: nowrap !important;
+        }
+
+        #wrapper_section_sec_featured h3.modern-section-title span {
+            font-size: 22px !important;
+            line-height: 1.2 !important;
+        }
+    }

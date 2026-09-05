@@ -195,11 +195,23 @@
                 <div class="pci-content-box-title">{{ translate('Badge Content') }}</div>
 
                 <div class="form-group row">
+                    <label class="col-md-3 col-from-label">{{ translate('Badge Position') }}</label>
+                    <div class="col-md-9">
+                        <select class="form-control pci-badge-position" name="badges[__INDEX__][position]">
+                            <option value="top">{{ translate('Top (Next to Title)') }}</option>
+                            <option value="bottom">{{ translate('Bottom (Product Details - Klarna style)') }}</option>
+                        </select>
+                        <small class="text-muted">{{ translate('Choose where this badge appears on the product page.') }}</small>
+                    </div>
+                </div>
+
+                <div class="form-group row">
                     <label class="col-md-3 col-from-label">{{ translate('Display Type') }}</label>
                     <div class="col-md-9">
                         <select class="form-control pci-display-type" name="badges[__INDEX__][type]">
                             <option value="text">{{ translate('Text Line') }}</option>
-                            <option value="image">{{ translate('Image') }}</option>
+                            <option value="image">{{ translate('Image Only') }}</option>
+                            <option value="image_text">{{ translate('Image + Text Card') }}</option>
                         </select>
                     </div>
                 </div>
@@ -215,8 +227,8 @@
                                 rows="4"
                                 data-buttons='[["font", ["bold", "italic", "underline", "clear"]],["para", ["paragraph"]],["view", ["undo", "redo"]]]'
                                 data-min-height="120"
-                                placeholder="{{ translate('e.g. Fast Delivery') }}"></textarea>
-                            <small class="text-muted">{{ translate('Press Enter for a new line. Line breaks and spacing will show the same on the product page.') }}</small>
+                                placeholder="{{ translate('e.g. Secure payment in seconds') }}"></textarea>
+                            <small class="text-muted">{{ translate('Press Enter for a new line. Line breaks and HTML formatting will show on the product page.') }}</small>
                         </div>
                     </div>
                 </div>
@@ -396,8 +408,10 @@
 
         function toggleTypeFields(card) {
             const type = card.querySelector('.pci-display-type').value;
-            card.querySelector('.pci-field-text').classList.toggle('is-visible', type === 'text');
-            card.querySelector('.pci-field-image').classList.toggle('is-visible', type === 'image');
+            const showText = (type === 'text' || type === 'image_text');
+            const showImage = (type === 'image' || type === 'image_text');
+            card.querySelector('.pci-field-text').classList.toggle('is-visible', showText);
+            card.querySelector('.pci-field-image').classList.toggle('is-visible', showImage);
             if (activePreviewCard === card) {
                 updatePreview(card);
             }
@@ -405,36 +419,52 @@
 
         function buildBadgeHtml(card) {
             const type = card.querySelector('.pci-display-type').value;
+            const posSelect = card.querySelector('.pci-badge-position');
+            const position = posSelect ? posSelect.value : 'top';
             const enabled = card.querySelector('.pci-enabled').checked;
 
             if (!enabled) {
                 return '<span class="text-muted fs-13">{{ translate('Rule is disabled') }}</span>';
             }
 
+            const img = card.querySelector('.file-preview img');
+            const imgSrc = img ? img.src : '';
+            const width = card.querySelector('.pci-image-width').value || '70px';
+            const textarea = card.querySelector('.pci-text');
+            let text = textarea ? textarea.value : '';
+
+            if (position === 'bottom' || type === 'image_text') {
+                let inner = '';
+                if (imgSrc) {
+                    inner += '<div style="flex-shrink:0; margin-right:14px;"><img src="' + imgSrc + '" alt="" style="max-width:100%; width:' + width + '; max-height:88px; object-fit:contain;"></div>';
+                }
+                if (text) {
+                    inner += '<div style="font-size:13px; line-height:1.4; color:#1a2744; flex-grow:1;">' + text + '</div>';
+                } else if (!imgSrc) {
+                    inner = '<span class="text-muted fs-13">{{ translate('Enter image/text to preview') }}</span>';
+                }
+
+                return '<div style="padding:8px 0; display:flex; align-items:center; width:100%; margin-top:8px;">' + inner + '</div>';
+            }
+
             if (type === 'image') {
-                const img = card.querySelector('.file-preview img');
-                const width = card.querySelector('.pci-image-width').value || '120px';
-                if (img) {
-                    return '<img src="' + img.src + '" alt="" style="width:' + width + '; max-height:88px; object-fit:contain;">';
+                if (imgSrc) {
+                    return '<img src="' + imgSrc + '" alt="" style="width:' + width + '; max-height:88px; object-fit:contain;">';
                 }
                 return '<span class="text-muted fs-13">{{ translate('Upload an image to preview') }}</span>';
             }
 
-            // Use .value, do not trim (to exactly preserve all whitespace and line breaks)
-            const textarea = card.querySelector('.pci-text');
-            let text = textarea ? textarea.value : '';
             if (!text) {
                 return '<span class="text-muted fs-13">{{ translate('Enter text to preview') }}</span>';
             }
 
-            // Escape HTML to prevent XSS, display as plain text (pre-line in CSS will handle spaces/newlines)
             function escapeHtml(str) {
                 return str.replace(/[&<>"']/g, function (c) {
                     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
                 });
             }
 
-            return '<span class="pci-preview-badge-text">' + escapeHtml(text) + '</span>';
+            return '<span class="pci-preview-badge-text">' + (text.includes('<') ? text : escapeHtml(text)) + '</span>';
         }
 
         function updatePreview(card) {
@@ -465,6 +495,15 @@
                     updatePreview(activePreviewCard);
                 }
             });
+
+            const posSelect = card.querySelector('.pci-badge-position');
+            if (posSelect) {
+                posSelect.addEventListener('change', function () {
+                    if (activePreviewCard === card) {
+                        updatePreview(card);
+                    }
+                });
+            }
 
             card.querySelector('.pci-display-type').addEventListener('change', function () {
                 toggleTypeFields(card);
@@ -546,11 +585,15 @@
             if (data) {
                 setSelectedCategories(card, data.category_ids || (data.category_id ? [data.category_id] : []));
                 card.querySelector('.pci-enabled').checked = data.enabled === true || data.enabled === 1 || data.enabled === '1';
+                const posSelect = card.querySelector('.pci-badge-position');
+                if (posSelect) {
+                    posSelect.value = data.position || 'top';
+                }
                 card.querySelector('.pci-display-type').value = data.type || 'text';
                 // Here we SET EXACT value, as-is, including all spaces and line breaks
                 card.querySelector('.pci-text').value = data.text || '';
                 card.querySelector('.pci-image-id').value = data.image_id || '';
-                card.querySelector('.pci-image-width').value = data.image_width || '120px';
+                card.querySelector('.pci-image-width').value = data.image_width || (data.position === 'bottom' ? '70px' : '120px');
             }
 
             if (typeof AIZ !== 'undefined' && AIZ.uploader && AIZ.uploader.previewGenerate) {
@@ -578,7 +621,6 @@
             container.querySelectorAll('.pci-rule-card').forEach(function (card, idx) {
                 const selected = card.querySelectorAll('.pci-category-checkbox:checked').length;
                 const type = card.querySelector('.pci-display-type').value;
-                // Do not trim here, require at least one character, keep user spaces/lines
                 const text = card.querySelector('.pci-text').value;
                 const imageId = card.querySelector('.pci-image-id').value.trim();
 
@@ -591,6 +633,9 @@
                 } else if (type === 'image' && !imageId) {
                     valid = false;
                     message = '{{ translate('Please upload an image for image-type rules.') }}';
+                } else if (type === 'image_text' && !imageId && !text) {
+                    valid = false;
+                    message = '{{ translate('Please provide an image or text for Image + Text rules.') }}';
                 }
             });
 
