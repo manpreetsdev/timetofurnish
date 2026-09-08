@@ -272,9 +272,9 @@
 
 <style>
     #viewSellerInfoBtn {
-        background: #1a2744;
+        background: #685c4e;
         color: #ffffff !important;
-        border: 1px solid #1a2744;
+        border: 1px solid #685c4e;
         border-radius: 6px;
         font-weight: 600;
         font-size: 13px;
@@ -285,8 +285,8 @@
         line-height: 1.2 !important;
     }
     #viewSellerInfoBtn:hover {
-        background: #b57a45;
-        border-color: #b57a45;
+        background: #685c4e;
+        border-color: #685c4e;
         color: #ffffff !important;
         box-shadow: 0 4px 12px rgba(181, 122, 69, 0.25);
     }
