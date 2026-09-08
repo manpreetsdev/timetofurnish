@@ -371,16 +371,11 @@
             return 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($absolutePath));
         };
         $addonImageSrc = function ($addon) use ($assetPath) {
-            $image = $addon['image'] ?? ($addon['img'] ?? ($addon['image_url'] ?? ''));
-            if (empty($image)) {
-                return '';
+            $src = get_addon_image_src($addon);
+            if (empty($src) || str_starts_with($src, 'http://') || str_starts_with($src, 'https://') || str_starts_with($src, 'data:')) {
+                return $src;
             }
-
-            if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://') || str_starts_with($image, 'data:')) {
-                return $image;
-            }
-
-            return $assetPath(ltrim($image, '/'));
+            return $assetPath(ltrim($src, '/'));
         };
         $paymentType = strtolower((string) ($order->payment_type ?? ''));
         $paymentMethod =

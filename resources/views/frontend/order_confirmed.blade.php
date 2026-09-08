@@ -369,39 +369,7 @@
                         };
 
                         $addonImageSrc = function ($addon) {
-                            $image = $addon['image'] ?? ($addon['img'] ?? ($addon['image_url'] ?? ''));
-
-                            if (empty($image)) {
-                                static $globalAddonImageMap = null;
-                                if ($globalAddonImageMap === null) {
-                                    $globalAddonImageMap = \App\Models\ProductAddonGlobal::with('options')
-                                        ->get()
-                                        ->flatMap(function ($globalAddon) {
-                                            return $globalAddon->options
-                                                ->filter(function ($option) {
-                                                    return !empty($option->img);
-                                                })
-                                                ->mapWithKeys(function ($option) use ($globalAddon) {
-                                                    $key = strtolower(trim($globalAddon->name)) . '|' . strtolower(trim($option->option_name));
-
-                                                    return [$key => $option->img];
-                                                });
-                                        });
-                                }
-
-                                $fallbackKey = strtolower(trim($addon['addon_name'] ?? ($addon['key'] ?? ''))) . '|' . strtolower(trim($addon['name'] ?? ($addon['value'] ?? '')));
-                                $image = $globalAddonImageMap[$fallbackKey] ?? '';
-                            }
-
-                            if (empty($image)) {
-                                return '';
-                            }
-
-                            if (\Illuminate\Support\Str::startsWith($image, ['http://', 'https://', 'data:'])) {
-                                return $image;
-                            }
-
-                            return asset(ltrim($image, '/'));
+                            return get_addon_image_src($addon);
                         };
 
                         $paymentDetails = json_decode($first_order->payment_details ?? '');

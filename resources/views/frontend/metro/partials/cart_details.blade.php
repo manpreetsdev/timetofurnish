@@ -186,14 +186,7 @@
                                                     id="cart-addons-desktop-{{ $cartItem['id'] }}">
                                                     @foreach ($cartItem_addons as $addon)
                                                     @php
-                                                    $addonImage = $addon['image'] ?? ($addon['img'] ?? ($addon['image_url'] ?? ''));
-                                                    $addonImageSrc = $addonImage
-                                                    ? (\Illuminate\Support\Str::startsWith($addonImage, ['http://', 'https://', 'data:'])
-                                                    ? $addonImage
-                                                    : (str_starts_with(ltrim($addonImage, '/'), 'addon/') || str_starts_with(ltrim($addonImage, '/'), 'addons/')
-                                                        ? asset('public/' . ltrim($addonImage, '/'))
-                                                        : asset(ltrim($addonImage, '/'))))
-                                                    : '';
+                                                        $addonImageSrc = get_addon_image_src($addon);
                                                     @endphp
                                                     <div
                                                         class="d-flex justify-content-between align-items-center fs-12 text-secondary py-1 addon-row">
@@ -422,14 +415,7 @@
                                             id="cart-addons-mobile-{{ $cartItem['id'] }}">
                                             @foreach ($cartItem_addons as $addon)
                                             @php
-                                            $addonImage = $addon['image'] ?? ($addon['img'] ?? ($addon['image_url'] ?? ''));
-                                            $addonImageSrc = $addonImage
-                                            ? (\Illuminate\Support\Str::startsWith($addonImage, ['http://', 'https://', 'data:'])
-                                            ? $addonImage
-                                            : (str_starts_with(ltrim($addonImage, '/'), 'addon/') || str_starts_with(ltrim($addonImage, '/'), 'addons/')
-                                                ? asset('public/' . ltrim($addonImage, '/'))
-                                                : asset(ltrim($addonImage, '/'))))
-                                            : '';
+                                                $addonImageSrc = get_addon_image_src($addon);
                                             @endphp
                                             <div
                                                 class="d-flex justify-content-between align-items-center fs-12 text-secondary py-1 addon-row">

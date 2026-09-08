@@ -3180,7 +3180,7 @@ if (!function_exists('get_product_addon_option_details')) {
             $image = $globalAddonImageMap[$fallbackKey] ?? '';
         }
 
-        $imageUrl = $image ? my_asset($image) : '';
+        $imageUrl = $image ? (is_numeric($image) ? uploaded_asset($image) : my_asset($image)) : '';
         $formattedPrice = $price > 0 ? single_price($price) : '';
 
         return [
@@ -3193,6 +3193,33 @@ if (!function_exists('get_product_addon_option_details')) {
             'image_url' => $imageUrl,
             'label' => $formattedPrice !== '' ? ($option->option_name ?? '') . ' (+' . $formattedPrice . ')' : ($option->option_name ?? ''),
         ];
+    }
+}
+
+if (!function_exists('get_addon_image_src')) {
+    function get_addon_image_src($addonImage)
+    {
+        if (empty($addonImage)) {
+            return '';
+        }
+
+        if (is_array($addonImage)) {
+            $addonImage = $addonImage['image_url'] ?? ($addonImage['image'] ?? ($addonImage['img'] ?? ''));
+        }
+
+        if (empty($addonImage)) {
+            return '';
+        }
+
+        if (\Illuminate\Support\Str::startsWith($addonImage, ['http://', 'https://', 'data:'])) {
+            return $addonImage;
+        }
+
+        if (is_numeric($addonImage)) {
+            return uploaded_asset($addonImage);
+        }
+
+        return my_asset(ltrim($addonImage, '/'));
     }
 }
 

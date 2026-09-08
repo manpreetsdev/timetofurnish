@@ -64,15 +64,21 @@
 
     <div data-label="Image" class="image">
 
+        @php
+            $uploadId = is_numeric($img) ? $img : (\App\Models\Upload::where('file_name', $img)->value('id') ?? '');
+        @endphp
+
         <div class="input-group" data-toggle="aizuploader" data-type="image">
             <div class="input-group-prepend">
                 <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
             </div>
             <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-            <input type="hidden" name="addons[{{ $groupIndex }}][options][{{ $optIndex }}][img]" class="selected-files option-input" value="{{ is_numeric($img) ? $img : '' }}">
+            <input type="hidden" name="addons[{{ $groupIndex }}][options][{{ $optIndex }}][img]" class="selected-files option-input" value="{{ $uploadId }}">
         </div>
         <div class="file-preview box sm">
         </div>
+
+        <input type="file" name="addons[{{ $groupIndex }}][options][{{ $optIndex }}][img_file]" class="form-control form-control-sm mt-1 option-input" style="font-size: 11px;">
 
         <input type="hidden"
                name="addons[{{ $groupIndex }}][options][{{ $optIndex }}][existing_img]"

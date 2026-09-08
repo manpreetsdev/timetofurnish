@@ -111,14 +111,7 @@
                                             @foreach ($addons as $addon)
                                                 @if (is_array($addon))
                                                     @php
-                                                        $addonImage = $addon['image'] ?? ($addon['img'] ?? ($addon['image_url'] ?? ''));
-                                                        $addonImageSrc = $addonImage
-                                                            ? (\Illuminate\Support\Str::startsWith($addonImage, ['http://', 'https://', 'data:'])
-                                                                ? $addonImage
-                                                                : (str_starts_with(ltrim($addonImage, '/'), 'addon/') || str_starts_with(ltrim($addonImage, '/'), 'addons/')
-                                                                    ? asset('public/' . ltrim($addonImage, '/'))
-                                                                    : asset(ltrim($addonImage, '/'))))
-                                                            : '';
+                                                        $addonImageSrc = get_addon_image_src($addon);
                                                     @endphp
                                                     <div
                                                         class="d-flex justify-content-between align-items-start fs-12 text-black mb-1 addon-row">
