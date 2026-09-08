@@ -76,43 +76,73 @@ use App\Models\Category;
         overflow: hidden !important;
     }
 
-    /* category label: marquee animated sliding text */
+    /* category label: static on desktop, marquee only on overflowing mobile text */
     .banner-category.custom-banner-category .category_a {
         display: block !important;
         width: 100% !important;
         max-width: 100% !important;
         overflow: hidden !important;
-        white-space: nowrap !important;
         text-align: center !important;
         position: relative !important;
     }
 
     .banner-category.custom-banner-category .category_a span,
     .banner-category.custom-banner-category .custom-banner-description-text {
-        display: inline-block !important;
-        -webkit-line-clamp: unset !important;
-        -webkit-box-orient: unset !important;
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
         white-space: nowrap !important;
-        overflow: visible !important;
-        text-overflow: clip !important;
-        width: max-content !important;
-        max-width: none !important;
+        text-align: center !important;
         font-size: 12px;
         line-height: 1.3;
-        animation: customCategoryMarquee 6s ease-in-out infinite alternate !important;
-        will-change: transform;
+        animation: none !important;
+        transform: none !important;
     }
 
-    .banner-category.custom-banner-category .category_a:hover .custom-banner-description-text {
-        animation-play-state: paused !important;
-    }
-
-    @keyframes customCategoryMarquee {
-        0%, 20% {
-            transform: translateX(0%);
+    @media (max-width: 767px) {
+        .banner-category.custom-banner-category .category_a span,
+        .banner-category.custom-banner-category .custom-banner-description-text {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+            text-align: center !important;
+            font-size: 10px !important;
+            line-height: 14px !important;
+            transform: none !important;
+            animation: none !important;
         }
-        80%, 100% {
-            transform: translateX(-45%);
+
+        .banner-category.custom-banner-category .category_a span.has-marquee,
+        .banner-category.custom-banner-category .custom-banner-description-text.has-marquee {
+            display: inline-block !important;
+            width: max-content !important;
+            max-width: none !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            white-space: nowrap !important;
+            text-align: left !important;
+            font-size: 10px !important;
+            line-height: 14px !important;
+            animation: exactMobileMarquee 3.5s linear infinite alternate !important;
+            will-change: transform;
+        }
+
+        .banner-category.custom-banner-category .category_a:hover .custom-banner-description-text.has-marquee {
+            animation-play-state: paused !important;
+        }
+    }
+
+    @keyframes exactMobileMarquee {
+        0% {
+            transform: translateX(0px);
+        }
+        100% {
+            transform: translateX(var(--scroll-dist, 0px));
         }
     }
 
@@ -1316,5 +1346,53 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                 AIZ.plugins.bootstrapSelect('refresh');
             });
     }
+
+    function initCategoryMarquee() {
+        if (window.innerWidth > 767) {
+            $('.banner-category.custom-banner-category .custom-banner-description-text, .category_a span').removeClass('has-marquee');
+            return;
+        }
+        $('.banner-category.custom-banner-category .category_a').each(function() {
+            var $el = $(this);
+            var $text = $el.find('.custom-banner-description-text, span').first();
+            if (!$text.length) return;
+
+            var containerWidth = $el.width();
+            if (!containerWidth || containerWidth <= 0) return;
+
+            // Measure true unclipped text width using an off-screen clone
+            var $clone = $text.clone()
+                .css({
+                    'display': 'inline-block',
+                    'width': 'auto',
+                    'max-width': 'none',
+                    'white-space': 'nowrap',
+                    'visibility': 'hidden',
+                    'position': 'absolute',
+                    'left': '-9999px',
+                    'font-size': '10px'
+                })
+                .appendTo('body');
+
+            var textWidth = $clone[0].getBoundingClientRect().width;
+            $clone.remove();
+
+            if (textWidth > containerWidth + 2) {
+                var diff = Math.ceil(textWidth - containerWidth + 8);
+                $text[0].style.setProperty('--scroll-dist', '-' + diff + 'px');
+                $text.addClass('has-marquee');
+            } else {
+                $text.removeClass('has-marquee');
+                $text[0].style.removeProperty('--scroll-dist');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        initCategoryMarquee();
+        setTimeout(initCategoryMarquee, 400);
+        setTimeout(initCategoryMarquee, 1200);
+    });
+    $(window).on('resize orientationchange', initCategoryMarquee);
 </script>
 @endsection

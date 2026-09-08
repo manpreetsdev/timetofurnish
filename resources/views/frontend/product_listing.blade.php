@@ -73,7 +73,7 @@ if (request()->has('page') && request('page') > 1) {
                             </button>
                         </div>
 
-                        <div class="py-4">
+                        <div class="py-1">
                             <!-- Categories -->
                             <div class="mb-4 custom-filter-box custom-categories-box">
                                 <div class="fs-16 fw-700 pb-3 mb-3">
@@ -142,7 +142,7 @@ if (request()->has('page') && request('page') > 1) {
                                     </a>
                                 </div>
                                 <div class="collapse show" id="collapse_price">
-                                    <div class="pt-2 px-1 pb-3">
+                                    <div class="pt-2 px-1 pb-3" style="padding: 0px 8px !important;">
                                         @php
                                         $product_count = get_products_count();
                                         @endphp

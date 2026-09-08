@@ -79,7 +79,7 @@
         .carousel-box img {
             width: 100%;
             height: auto;
-            object-fit: contain;
+            object-fit: cover;
         }
 
         @media (max-width: 768px) {
@@ -101,7 +101,7 @@
         .carousel-box img {
             height: auto !important;
             width: 100%;
-            object-fit: contain;
+            object-fit: cover;
         }
 
         @media (max-width: 768px) {
@@ -136,7 +136,7 @@
         .carousel-box img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             /* 👈 fill karega nicely */
         }
     }
