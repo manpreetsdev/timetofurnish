@@ -145,7 +145,7 @@
         box-shadow: 0 0 16px 5px #7c7c7c1c;
         padding: 15px 10px !important;
         margin-bottom: 30px;
-        margin-top: 30px;
+        margin-top: 0px;
     }
 </style>
 <div class="sticky-top z-3 row gutters-10">

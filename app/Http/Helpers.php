@@ -3249,11 +3249,15 @@ if (!function_exists('get_user_cart')) {
     {
         $cart = [];
         if (auth()->user() != null) {
-            $cart = Cart::where('user_id', Auth::user()->id)->get();
+            $cart = Cart::whereHas('product', function($q) {
+                $q->isApprovedPublished();
+            })->where('user_id', Auth::user()->id)->get();
         } else {
             $temp_user_id = Session()->get('temp_user_id');
             if ($temp_user_id) {
-                $cart = Cart::where('temp_user_id', $temp_user_id)->get();
+                $cart = Cart::whereHas('product', function($q) {
+                    $q->isApprovedPublished();
+                })->where('temp_user_id', $temp_user_id)->get();
             }
         }
         return $cart;

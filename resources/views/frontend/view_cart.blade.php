@@ -71,7 +71,7 @@
 
                     @foreach($expired_carts as $expired)
                         @php $expired_product = $expired->product; @endphp
-                        @if($expired_product)
+                        @if($expired_product && $expired_product->published == 1 && $expired_product->approved == 1)
                         <div class="py-3 d-flex align-items-center border-top" style="gap:14px;">
                             <a href="{{ route('product', $expired_product->slug) }}" class="flex-shrink-0">
                                 <img src="{{ get_image($expired_product->thumbnail) }}"
