@@ -76,20 +76,44 @@ use App\Models\Category;
         overflow: hidden !important;
     }
 
-    /* category label: one line, ellipsis instead of cut mid-word */
+    /* category label: marquee animated sliding text */
     .banner-category.custom-banner-category .category_a {
-        display: block;
-        max-width: 100%;
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        white-space: nowrap !important;
+        text-align: center !important;
+        position: relative !important;
     }
 
     .banner-category.custom-banner-category .category_a span,
     .banner-category.custom-banner-category .custom-banner-description-text {
-        display: block;
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        display: inline-block !important;
+        -webkit-line-clamp: unset !important;
+        -webkit-box-orient: unset !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        width: max-content !important;
+        max-width: none !important;
         font-size: 12px;
+        line-height: 1.3;
+        animation: customCategoryMarquee 6s ease-in-out infinite alternate !important;
+        will-change: transform;
+    }
+
+    .banner-category.custom-banner-category .category_a:hover .custom-banner-description-text {
+        animation-play-state: paused !important;
+    }
+
+    @keyframes customCategoryMarquee {
+        0%, 20% {
+            transform: translateX(0%);
+        }
+        80%, 100% {
+            transform: translateX(-45%);
+        }
     }
 
     .search-input-box:hover .clear-search-icon,

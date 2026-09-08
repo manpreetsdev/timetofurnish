@@ -334,15 +334,16 @@ class ProductController extends Controller
 
                         $imagePath = null;
 
-                        // ✅ Check if new image is uploaded
-                        if ($request->hasFile("addons.$aIndex.options.$oIndex.img")) {
-
-                            $file = $request->file("addons.$aIndex.options.$oIndex.img");
-
+                        // ✅ Check if new image file is uploaded directly or via uploader
+                        if ($request->hasFile("addons.$aIndex.options.$oIndex.img_file")) {
+                            $file = $request->file("addons.$aIndex.options.$oIndex.img_file");
                             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-
                             $file->move(public_path('addon'), $filename);
-
+                            $imagePath = 'addon/' . $filename;
+                        } elseif ($request->hasFile("addons.$aIndex.options.$oIndex.img")) {
+                            $file = $request->file("addons.$aIndex.options.$oIndex.img");
+                            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                            $file->move(public_path('addon'), $filename);
                             $imagePath = 'addon/' . $filename;
                         } else {
                             $imgInput = $request->input("addons.$aIndex.options.$oIndex.img");
@@ -747,23 +748,16 @@ class ProductController extends Controller
                     | IMAGE UPLOAD
                     |--------------------------------------------------------------------------
                     */
-                        if ($request->hasFile("addons.$aIndex.options.$oIndex.img")) {
-
-                            $file = $request->file("addons.$aIndex.options.$oIndex.img");
-
+                        if ($request->hasFile("addons.$aIndex.options.$oIndex.img_file")) {
+                            $file = $request->file("addons.$aIndex.options.$oIndex.img_file");
                             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-
                             $file->move(public_path('addon'), $filename);
-
                             $imagePath = 'addon/' . $filename;
-
-                            // 👉 delete old image (from hidden or DB)
-                            $oldImage = $request->input("addons.$aIndex.options.$oIndex.existing_img")
-                                ?? ($existingOption->img ?? null);
-
-                            if ($oldImage && file_exists(public_path($oldImage))) {
-                                //unlink(public_path($oldImage));
-                            }
+                        } elseif ($request->hasFile("addons.$aIndex.options.$oIndex.img")) {
+                            $file = $request->file("addons.$aIndex.options.$oIndex.img");
+                            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                            $file->move(public_path('addon'), $filename);
+                            $imagePath = 'addon/' . $filename;
                         } else {
                             $imgInput = $request->input("addons.$aIndex.options.$oIndex.img");
                             if (!empty($imgInput)) {
