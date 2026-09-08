@@ -91,7 +91,7 @@ if (request()->has('page') && request('page') > 1) {
                                             <a class="filter-pill-item"
                                                 href="{{ route('products.category', $category->slug) }}">
                                                 <span class="category-name">{{ $category->getTranslation('name') }}</span>
-                                                <span class="category-count-badge">{{ count($category->products) }}</span>
+                                                <span class="category-count-badge">{{ filter_products($category->products())->count() }}</span>
                                             </a>
                                         </li>
                                         @endforeach
@@ -115,7 +115,7 @@ if (request()->has('page') && request('page') > 1) {
                                             <a class="filter-pill-item active-pill"
                                                 href="{{ route('products.category', $category->slug) }}">
                                                 <span class="category-name">{{ $category->getTranslation('name') }}</span>
-                                                <span class="category-count-badge">{{ count($category->products) }}</span>
+                                                <span class="category-count-badge">{{ filter_products($category->products())->count() }}</span>
                                             </a>
                                         </li>
                                         @foreach ($category->childrenCategories as $key => $immediate_children_category)
@@ -123,7 +123,7 @@ if (request()->has('page') && request('page') > 1) {
                                             <a class="filter-pill-item"
                                                 href="{{ route('products.category', $immediate_children_category->slug) }}">
                                                 <span class="category-name">{{ $immediate_children_category->getTranslation('name') }}</span>
-                                                <span class="category-count-badge">{{ count($immediate_children_category->products) }}</span>
+                                                <span class="category-count-badge">{{ filter_products($immediate_children_category->products())->count() }}</span>
                                             </a>
                                         </li>
                                         @endforeach
@@ -298,12 +298,20 @@ if (request()->has('page') && request('page') > 1) {
                         </div>
                     </div>
 
-                    {{-- Category "Coming Soon" banner: only when the category has no product --}}
-                    @if (isset($category_id) && $category->coming_soon_image && $category->products()->count() == 0)
+                    {{-- Category "Coming Soon" banner: only when the category has no published product --}}
+                    @if (isset($category_id) && filter_products($category->products())->count() == 0)
                     <div class="category-banner mb-4">
-                        <img
-                            src="{{ uploaded_asset($category->coming_soon_image) }}"
-                            alt="{{ $category->getTranslation('name') }} {{ translate('Coming Soon') }}">
+                        @if ($category->coming_soon_image && uploaded_asset($category->coming_soon_image))
+                            <img
+                                src="{{ uploaded_asset($category->coming_soon_image) }}"
+                                alt="{{ $category->getTranslation('name') }} {{ translate('Coming Soon') }}"
+                                class="img-fluid rounded"
+                                style="max-height: 450px; width: 100%; object-fit: cover; border-radius: 12px;">
+                        @else
+                            <div class="text-center py-5 bg-white rounded shadow-sm border">
+                                <h3 class="fw-700 text-dark mb-0">{{ translate('Coming Soon') }}</h3>
+                            </div>
+                        @endif
                     </div>
                     @endif
 

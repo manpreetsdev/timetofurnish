@@ -547,7 +547,16 @@ $banner = [
                     @else
 
                     <div class="coming-soon-box">
-                        <h3>Coming Soon</h3>
+                        @if (!empty($category->coming_soon_image) && uploaded_asset($category->coming_soon_image))
+                            <div class="w-100 text-center py-2">
+                                <img src="{{ uploaded_asset($category->coming_soon_image) }}"
+                                     alt="{{ $category->getTranslation('name') }} {{ translate('Coming Soon') }}"
+                                     class="img-fluid rounded"
+                                     style="max-height: 350px; width: 100%; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                            </div>
+                        @else
+                            <h3>{{ translate('Coming Soon') }}</h3>
+                        @endif
                     </div>
 
                     @endif
