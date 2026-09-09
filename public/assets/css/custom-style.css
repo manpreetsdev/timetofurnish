@@ -620,7 +620,7 @@
 }
 
 .banner-category.custom-banner-category .slick-track {
-    margin: 0 !important;
+    align-items: flex-start;
 }
 
 .custom-header-class {
@@ -973,15 +973,19 @@ a {
 }
 
 span.badge.badge-primary.badge-circle.position-absolute {
-
     color: #fff !important;
-    border-radius: 50px;
     background: #685c4e !important;
     border-radius: 50px !important;
-    height: 20px;
-    display: flex !important;
-    width: 20px !important;
-    min-height: 20px !important;
+    min-width: 16px !important;
+    height: 16px !important;
+    padding: 0 4px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    line-height: 16px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
 }
 
 @media screen and (max-width: 576px) {
@@ -1795,7 +1799,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
 }
 
 .banner-category ul li {
-    transition: all 0.5s ease-out;
+    transition: color 0.3s ease, opacity 0.3s ease;
     text-align: center;
 }
 
@@ -1954,7 +1958,7 @@ span.badge.badge-primary.badge-circle.position-absolute {
     }
 
     .banner-category ul li {
-        transition: all 0.5s ease-out;
+        transition: color 0.3s ease, opacity 0.3s ease;
     }
 }
 
@@ -5482,6 +5486,31 @@ img.lazyload:not([data-src]):not([data-srcset]) {
 .category-nav-row .slick-list,
 .home-mobile-product-carousel .slick-list,
 .product-gallery-thumb .slick-list {
-    touch-action: manipulation !important;
+    touch-action: pan-y !important;
     -webkit-overflow-scrolling: touch !important;
+}
+
+.category-nav-row .slick-list {
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.category-nav-row img,
+.banner-category.custom-banner-category img {
+    pointer-events: none !important;
+    -webkit-user-drag: none !important;
+    -khtml-user-drag: none !important;
+    -moz-user-drag: none !important;
+    -o-user-drag: none !important;
+    user-drag: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+}
+
+.category-nav-row a,
+.category-nav-row span {
+    -webkit-user-drag: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -webkit-touch-callout: none !important;
 }

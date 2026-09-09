@@ -72,11 +72,9 @@
                                 transform="translate(0 -0.001)" fill="#91919c" />
                         </g>
                     </svg>
-                    @if ($count > 0)
                     <span
-                        class="badge badge-sm badge-dot badge-circle badge-primary position-absolute absolute-top-right"
-                        style="right: 5px;top: -2px;"></span>
-                    @endif
+                        class="badge badge-sm badge-circle badge-primary position-absolute absolute-top-right cart-count-badge {{ $count == 0 ? 'd-none' : '' }}"
+                        style="right: -4px; top: -6px;">{{ $count }}</span>
                 </span>
                 <span class="d-block mt-1 fs-10 fw-600 text-reset {{ areActiveRoutes(['cart'], 'text-primary') }}">
                     {{ translate('Cart') }}
@@ -87,7 +85,9 @@
 
         <!-- Notifications -->
         <div class="col">
-
+            @php
+            $unreadNotificationsCount = Auth::check() ? count(Auth::user()->unreadNotifications) : 0;
+            @endphp
             <a href="{{ route('all-notifications') }}"
                 class="text-secondary d-block text-center pb-2 pt-3 {{ areActiveRoutes(['all-notifications'], 'svg-active') }}">
 
@@ -104,18 +104,13 @@
 
                     </svg>
 
-
-                    @if (Auth::check() && count(Auth::user()->unreadNotifications) > 0)
-
+                    @if ($unreadNotificationsCount > 0)
                     <span
-                        class="badge badge-sm badge-dot badge-circle badge-primary position-absolute absolute-top-right"
-                        style="right: 5px; top: -2px;">
-                    </span>
-
+                        class="badge badge-sm badge-circle badge-primary position-absolute absolute-top-right"
+                        style="right: -4px; top: -6px;">{{ $unreadNotificationsCount }}</span>
                     @endif
 
                 </span>
-
 
                 <span class="d-block mt-1 fs-10 fw-600 text-reset {{ areActiveRoutes(['all-notifications'], 'text-primary') }}">
                     {{ translate('Notifications') }}

@@ -56,24 +56,28 @@ use App\Models\Category;
 
     @media (max-width: 767.98px) {
         .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized)>li {
-            width: 25%;
+            width: 22.22%;
         }
+    }
 
-        /* 4 */
+    @media (max-width: 575.98px) {
+        .banner-category.custom-banner-category .category-nav-row:not(.slick-initialized)>li {
+            width: 26.31%;
+        }
     }
 
     /* POST-INIT tidy: track from the left, viewport = container width */
     .banner-category.custom-banner-category .slick-track {
         display: flex;
         align-items: flex-start;
-        justify-content: flex-start !important;
-        margin-left: 0 !important;
+        touch-action: pan-y pinch-zoom !important;
     }
 
     .banner-category.custom-banner-category .slick-list {
         width: 100% !important;
         margin: 0 !important;
         overflow: hidden !important;
+        touch-action: pan-y pinch-zoom !important;
     }
 
     /* category label: static on desktop, marquee only on overflowing mobile text */
@@ -680,7 +684,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                              guard shows the right number of items per breakpoint on first
                              paint so there is no "1 item then snap" flash on reload --}}
                         <ul class="aiz-carousel category-nav-row arrow-none" data-items="9" data-xl-items="9"
-                            data-lg-items="9" data-md-items="6" data-sm-items="5" data-xs-items="4"
+                            data-lg-items="9" data-md-items="6" data-sm-items="4.5" data-xs-items="3.8"
                             data-arrows="false" data-dots="false" data-infinite="false" data-scroll-by-page="false"
                             style="list-style: none !important; padding: 0 !important; margin: 0 !important;">
                             @foreach ($featured_categories as $key => $category)
@@ -691,13 +695,13 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                                 <li
                                     style="position: relative !important; padding: 6px !important; text-align: center !important;">
                                     <a href="{{ route('products.category', $category->slug) }}"
-                                        style="display: block !important;">
+                                        style="display: block !important;" draggable="false">
                                         <img src="{{ isset($category->coverImage->file_name) ? my_asset($category->coverImage->file_name) : static_asset('assets/img/placeholder.jpg') }}"
                                             alt="{{ $category_name }}" class="img-fluid"
-                                            style="max-width: 45px; max-height: 45px; width: auto; height: auto; margin: 0 auto; display: block;">
+                                            style="max-width: 45px; max-height: 45px; width: auto; height: auto; margin: 0 auto; display: block; pointer-events: none; -webkit-user-drag: none;" draggable="false">
                                     </a>
                                     <a href="{{ route('products.category', $category->slug) }}"
-                                        class="category_a">
+                                        class="category_a" draggable="false">
                                         <span class="custom-banner-description-text">{{ $category_name }}</span>
                                     </a>
                                 </li>
