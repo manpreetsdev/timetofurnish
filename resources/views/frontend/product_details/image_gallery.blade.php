@@ -1,11 +1,15 @@
 <style>
     div#imageGalleryCol,
-    .product-gallery,
+    .product-gallery {
+        touch-action: pan-y !important;
+    }
+
     .product-gallery-thumb,
     .product-gallery-thumb .slick-list,
     .product-gallery-thumb .slick-track,
     .product-gallery-thumb .carousel-box {
-        touch-action: pan-y !important;
+        touch-action: manipulation !important;
+        -webkit-overflow-scrolling: touch;
     }
 
     .product-gallery-thumb .carousel-box img {
@@ -169,15 +173,20 @@
         object-fit: cover !important;
         border-radius: 6px !important;
         border: 2px solid #e2e8f0 !important;
-        transition: all 0.2s ease !important;
+        box-shadow: none !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
     }
 
-    .product-gallery-thumb .slick-current .carousel-box img,
-    .product-gallery-thumb .carousel-box.active img,
-    .product-gallery-thumb .carousel-box:hover img {
+    .product-gallery-thumb .slick-slide.slick-current .carousel-box img,
+    .product-gallery-thumb .carousel-box.active img {
         border-color: #685b4e !important;
         box-shadow: 0 0 0 2px #685b4e !important;
         opacity: 1 !important;
+    }
+
+    .product-gallery-thumb .slick-slide:not(.slick-current) .carousel-box:not(.active) img {
+        border-color: #e2e8f0 !important;
+        box-shadow: none !important;
     }
 </style>
 
@@ -270,7 +279,7 @@
     <div class="col-12 mt-3">
         <div class="aiz-carousel product-gallery-thumb arrow-none"
             data-items='7' data-xl-items='7' data-lg-items='6' data-md-items='5' data-sm-items='4' data-xs-items='4'
-            data-nav-for='.product-gallery' data-focus-select='true' data-arrows='false' data-autoplay='false' data-infinite='false' data-vertical='false'
+            data-focus-select='true' data-arrows='false' data-autoplay='false' data-infinite='false' data-vertical='false'
             data-auto-height='false'>
 
             @if (empty($gallery_images))
@@ -301,32 +310,43 @@
 
         var $gallery = $('.product-gallery');
         var $thumbs  = $('.product-gallery-thumb');
+        var isSyncing = false;
 
         function syncThumbs(targetIndex) {
-            if (typeof targetIndex === 'undefined' || targetIndex < 0) return;
+            if (isSyncing || typeof targetIndex === 'undefined' || targetIndex < 0) return;
+            isSyncing = true;
 
-            if ($thumbs.hasClass('slick-initialized')) {
-                $thumbs.slick('slickGoTo', targetIndex);
-            }
-
-            $thumbs.find('.carousel-box').removeClass('active');
+            // Remove active and slick-current from ALL thumbnail slides first
             $thumbs.find('.slick-slide').removeClass('slick-current');
+            $thumbs.find('.carousel-box').removeClass('active');
 
             var $targetThumbSlide = $thumbs.find('.slick-slide[data-slick-index="' + targetIndex + '"]');
             if ($targetThumbSlide.length) {
                 $targetThumbSlide.addClass('slick-current');
                 $targetThumbSlide.find('.carousel-box').addClass('active');
+            } else {
+                var $targetBox = $thumbs.find('.carousel-box').eq(targetIndex);
+                $targetBox.addClass('active');
+                $targetBox.closest('.slick-slide').addClass('slick-current');
             }
+
+            if ($thumbs.hasClass('slick-initialized')) {
+                $thumbs.slick('slickGoTo', targetIndex, true);
+            }
+
+            isSyncing = false;
         }
 
         // Sync main gallery slide changes to thumbnail slider position & active highlight
-        $gallery.on('beforeChange afterChange', function(event, slick, currentSlide, nextSlide) {
-            var targetIndex = (typeof nextSlide !== 'undefined') ? nextSlide : currentSlide;
-            syncThumbs(targetIndex);
+        $gallery.on('afterChange', function(event, slick, currentSlide) {
+            if (isSyncing) return;
+            syncThumbs(currentSlide);
         });
 
         // Click or tap any thumbnail -> change main gallery slide & scroll thumbnail track
-        $(document).on('click touchstart', '.product-gallery-thumb .carousel-box, .product-gallery-thumb .slick-slide', function(e) {
+        $(document).on('click', '.product-gallery-thumb .carousel-box, .product-gallery-thumb .slick-slide', function(e) {
+            if (isSyncing) return;
+
             var $slide = $(this).closest('.slick-slide');
             var index = $slide.data('slick-index');
 

@@ -1,35 +1,51 @@
 @extends('frontend.layouts.app')
 
-@section('meta_title'){{ $detailedProduct->meta_title }}@stop
+@php
+    $productName = ucfirst($detailedProduct->getTranslation('name'));
+    $categoryName = $detailedProduct->category ? $detailedProduct->category->getTranslation('name') : translate('Digital Product');
+    $brandName = $detailedProduct->brand ? $detailedProduct->brand->name : get_setting('website_name');
+    $priceText = single_price($detailedProduct->unit_price);
 
-@section('meta_description'){{ $detailedProduct->meta_description }}@stop
+    $titleFallback = $productName . ($detailedProduct->category ? ' - ' . $categoryName : '') . ' | ' . get_setting('website_name');
+    $seoTitle = seo_title($detailedProduct->meta_title, $titleFallback);
 
-@section('meta_keywords'){{ $detailedProduct->tags }}@stop
+    $descFallback = "Download " . $productName . " in " . $categoryName . " at " . get_setting('website_name') . ". Available now for " . $priceText . ".";
+    $seoDescription = seo_description($detailedProduct->meta_description ?: $detailedProduct->getTranslation('description'), $descFallback);
+    $metaImage = uploaded_asset($detailedProduct->meta_img) ?: uploaded_asset($detailedProduct->thumbnail_img);
+@endphp
+
+@section('meta_title'){{ $seoTitle }}@stop
+
+@section('meta_description'){{ $seoDescription }}@stop
+
+@section('canonical_url'){{ route('product', $detailedProduct->slug) }}@stop
+
+@section('meta_keywords'){{ $detailedProduct->tags ?: ($productName . ', ' . $categoryName) }}@stop
 
 @section('meta')
     <!-- Schema.org markup for Google+ -->
-    <meta itemprop="name" content="{{ $detailedProduct->meta_title }}">
-    <meta itemprop="description" content="{{ $detailedProduct->meta_description }}">
-    <meta itemprop="image" content="{{ uploaded_asset($detailedProduct->meta_img) }}">
+    <meta itemprop="name" content="{{ $seoTitle }}">
+    <meta itemprop="description" content="{{ $seoDescription }}">
+    <meta itemprop="image" content="{{ $metaImage }}">
 
     <!-- Twitter Card data -->
     <meta name="twitter:card" content="product">
     <meta name="twitter:site" content="@publisher_handle">
-    <meta name="twitter:title" content="{{ $detailedProduct->meta_title }}">
-    <meta name="twitter:description" content="{{ $detailedProduct->meta_description }}">
+    <meta name="twitter:title" content="{{ $seoTitle }}">
+    <meta name="twitter:description" content="{{ $seoDescription }}">
     <meta name="twitter:creator" content="@author_handle">
-    <meta name="twitter:image" content="{{ uploaded_asset($detailedProduct->meta_img) }}">
-    <meta name="twitter:data1" content="{{ single_price($detailedProduct->unit_price) }}">
+    <meta name="twitter:image" content="{{ $metaImage }}">
+    <meta name="twitter:data1" content="{{ $priceText }}">
     <meta name="twitter:label1" content="Price">
 
     <!-- Open Graph data -->
-    <meta property="og:title" content="{{ $detailedProduct->meta_title }}" />
+    <meta property="og:title" content="{{ $seoTitle }}" />
     <meta property="og:type" content="product" />
     <meta property="og:url" content="{{ route('product', $detailedProduct->slug) }}" />
-    <meta property="og:image" content="{{ uploaded_asset($detailedProduct->meta_img) }}" />
-    <meta property="og:description" content="{{ $detailedProduct->meta_description }}" />
+    <meta property="og:image" content="{{ $metaImage }}" />
+    <meta property="og:description" content="{{ $seoDescription }}" />
     <meta property="og:site_name" content="{{ get_setting('meta_title') }}" />
-    <meta property="og:price:amount" content="{{ single_price($detailedProduct->unit_price) }}" />
+    <meta property="og:price:amount" content="{{ $priceText }}" />
 @endsection
 
 @section('content')

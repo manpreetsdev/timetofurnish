@@ -5468,3 +5468,16 @@ img.lazyload:not([data-src]):not([data-srcset]) {
         transform: translateX(var(--scroll-dist, 0px));
     }
 }
+
+/* Smooth Touch Scrolling for Mobile Carousels & Category Nav */
+.aiz-carousel,
+.category-nav-row,
+.home-mobile-product-carousel,
+.product-gallery-thumb,
+.aiz-carousel .slick-list,
+.category-nav-row .slick-list,
+.home-mobile-product-carousel .slick-list,
+.product-gallery-thumb .slick-list {
+    touch-action: manipulation !important;
+    -webkit-overflow-scrolling: touch !important;
+}

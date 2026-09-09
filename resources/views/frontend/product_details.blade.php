@@ -1,13 +1,26 @@
 @extends('frontend.layouts.app')
 
 @php
-    $seoTitle = seo_title(
-        $detailedProduct->meta_title,
-        ucfirst($detailedProduct->getTranslation('name')) . ' | ' . get_setting('website_name')
-    );
+    $productName = ucfirst($detailedProduct->getTranslation('name'));
+    $categoryName = $detailedProduct->category ? $detailedProduct->category->getTranslation('name') : translate('Furniture');
+    $brandName = $detailedProduct->brand ? $detailedProduct->brand->name : get_setting('website_name');
+    $priceText = single_price(home_discounted_base_price($detailedProduct, false));
+
+    // Dynamic unique SEO title fallback
+    $titleFallback = $productName;
+    if ($detailedProduct->category) {
+        $titleFallback .= ' - ' . $categoryName;
+    }
+    $titleFallback .= ' | ' . get_setting('website_name');
+
+    $seoTitle = seo_title($detailedProduct->meta_title, $titleFallback);
+
+    // Dynamic unique SEO description fallback (avoids duplicate site meta descriptions)
+    $descFallback = "Shop " . $productName . " in " . $categoryName . " from " . $brandName . " at " . get_setting('website_name') . ". High-quality furniture, competitive price (" . $priceText . "), and fast UK delivery.";
+
     $seoDescription = seo_description(
-        $detailedProduct->meta_description,
-        $detailedProduct->getTranslation('description')
+        $detailedProduct->meta_description ?: $detailedProduct->getTranslation('description'),
+        $descFallback
     );
 @endphp
 
@@ -17,7 +30,7 @@
 
 @section('canonical_url'){{ route('product', $detailedProduct->slug) }}@stop
 
-@section('meta_keywords'){{ $detailedProduct->tags }}@stop
+@section('meta_keywords'){{ $detailedProduct->tags ?: ($productName . ', ' . $categoryName . ', ' . $brandName . ', buy online') }}@stop
 
 @section('meta')
     @php
@@ -46,6 +59,88 @@
         if ($qty > 0) {
             $availability = 'in stock';
         }
+
+        // Collect all unique gallery image URLs for schema
+        $allProductImages = [];
+        if (!empty($merchantImage)) {
+            $allProductImages[] = $merchantImage;
+        }
+        if (!empty($detailedProduct->photos)) {
+            foreach (explode(',', $detailedProduct->photos) as $photoId) {
+                if (!empty(trim($photoId))) {
+                    $url = uploaded_asset(trim($photoId));
+                    if ($url && !in_array($url, $allProductImages)) {
+                        $allProductImages[] = $url;
+                    }
+                }
+            }
+        }
+
+        // Ratings / Reviews data for rich schema
+        $reviewCount = $detailedProduct->reviews ? $detailedProduct->reviews->count() : 0;
+        $ratingVal = $detailedProduct->rating > 0 ? (float) $detailedProduct->rating : 0;
+
+        $schemaPayload = [
+            '@context' => 'https://schema.org/',
+            '@type' => 'Product',
+            'name' => $seoTitle,
+            'description' => $seoDescription,
+            'image' => $allProductImages,
+            'sku' => $detailedProduct->slug,
+            'mpn' => $detailedProduct->slug,
+            'category' => $categoryName,
+            'brand' => [
+                '@type' => 'Brand',
+                'name' => $brandName,
+            ],
+            'offers' => [
+                '@type' => 'Offer',
+                'url' => route('product', $detailedProduct->slug),
+                'priceCurrency' => $merchantCurrency,
+                'price' => $merchantPrice,
+                'availability' => $availability === 'in stock' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+                'itemCondition' => 'https://schema.org/NewCondition',
+                'seller' => [
+                    '@type' => 'Organization',
+                    'name' => get_setting('website_name'),
+                ],
+            ],
+        ];
+
+        if ($reviewCount > 0 && $ratingVal > 0) {
+            $schemaPayload['aggregateRating'] = [
+                '@type' => 'AggregateRating',
+                'ratingValue' => number_format($ratingVal, 1, '.', ''),
+                'reviewCount' => (string) $reviewCount,
+                'bestRating' => '5',
+                'worstRating' => '1',
+            ];
+        }
+
+        $breadcrumbSchema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => array_values(array_filter([
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => translate('Home'),
+                    'item' => route('home'),
+                ],
+                $detailedProduct->category ? [
+                    '@type' => 'ListItem',
+                    'position' => 2,
+                    'name' => $categoryName,
+                    'item' => route('products.category', $detailedProduct->category->slug),
+                ] : null,
+                [
+                    '@type' => 'ListItem',
+                    'position' => $detailedProduct->category ? 3 : 2,
+                    'name' => $productName,
+                    'item' => route('product', $detailedProduct->slug),
+                ],
+            ])),
+        ];
     @endphp
     <!-- Schema.org markup for Google+ -->
     <meta itemprop="name" content="{{ $seoTitle }}">
@@ -70,35 +165,18 @@
     <meta property="og:description" content="{{ $seoDescription }}" />
     <meta property="og:site_name" content="{{ get_setting('meta_title') }}" />
     <meta property="og:price:amount" content="{{ $merchantPrice }}" />
-    <meta property="product:brand" content="{{ $detailedProduct->brand ? $detailedProduct->brand->name : env('APP_NAME') }}">
+    <meta property="product:brand" content="{{ $brandName }}">
     <meta property="product:availability" content="{{ $availability }}">
     <meta property="product:condition" content="new">
     <meta property="product:price:amount" content="{{ $merchantPrice }}">
     <meta property="product:retailer_item_id" content="{{ $detailedProduct->slug }}">
-    <meta property="product:price:currency"
-        content="{{ $merchantCurrency }}" />
+    <meta property="product:price:currency" content="{{ $merchantCurrency }}" />
     <meta property="fb:app_id" content="{{ env('FACEBOOK_PIXEL_ID') }}">
     <script type="application/ld+json">
-        {!! json_encode([
-            '@context' => 'https://schema.org/',
-            '@type' => 'Product',
-            'name' => $seoTitle,
-            'description' => $seoDescription,
-            'image' => [$merchantImage],
-            'sku' => $detailedProduct->slug,
-            'brand' => [
-                '@type' => 'Brand',
-                'name' => $detailedProduct->brand ? $detailedProduct->brand->name : env('APP_NAME'),
-            ],
-            'offers' => [
-                '@type' => 'Offer',
-                'url' => route('product', $detailedProduct->slug),
-                'priceCurrency' => $merchantCurrency,
-                'price' => $merchantPrice,
-                'availability' => $availability === 'in stock' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-                'itemCondition' => 'https://schema.org/NewCondition',
-            ],
-        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+        {!! json_encode($schemaPayload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    </script>
+    <script type="application/ld+json">
+        {!! json_encode($breadcrumbSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
     </script>
 @endsection
 
