@@ -1520,6 +1520,9 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                     asNavFor: asNavFor,
                     focusOnSelect: focusOnSelect,
                     adaptiveHeight: adaptiveHeight,
+                    swipe: true,
+                    touchMove: true,
+                    swipeToSlide: true,
                     slidesToScroll: scrollByPage ? slidesPerView : 1,
                     prevArrow:
                         '<button type="button" class="slick-prev"><i class="las la-angle-left"></i></button>',
@@ -1547,7 +1550,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                         {
                             breakpoint: 992,
                             settings: {
-                                arrows: false,
+                                arrows: slidesArrows,
                                 dots: slidesDots,
                                 slidesToShow: slidesPerViewMd,
                                 slidesToScroll: scrollByPage ? slidesPerViewMd : 1,
@@ -1558,7 +1561,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                         {
                             breakpoint: 768,
                             settings: {
-                                arrows: false,
+                                arrows: slidesArrows,
                                 dots: slidesDots,
                                 slidesToShow: slidesPerViewSm,
                                 slidesToScroll: scrollByPage ? slidesPerViewSm : 1,
@@ -1569,7 +1572,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                         {
                             breakpoint: 576,
                             settings: {
-                                arrows: false,
+                                arrows: slidesArrows,
                                 dots: slidesDots,
                                 slidesToShow: slidesPerViewXs,
                                 slidesToScroll: scrollByPage ? slidesPerViewXs : 1,

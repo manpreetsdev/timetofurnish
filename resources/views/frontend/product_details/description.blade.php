@@ -1,34 +1,60 @@
+@php
+    $descriptionRaw = $detailedProduct->getTranslation('description');
+    $cleanDesc = trim(str_replace(['&nbsp;', "\xc2\xa0"], '', strip_tags($descriptionRaw, '<img><iframe><video>')));
+    $hasDescription = !empty($cleanDesc);
+
+    $specificationRaw = $detailedProduct->specification;
+    $cleanSpec = trim(str_replace(['&nbsp;', "\xc2\xa0"], '', strip_tags($specificationRaw, '<img><iframe><video>')));
+    $hasSpecification = !empty($cleanSpec);
+
+    $hasVideo = !empty($detailedProduct->video_link);
+    $hasPdf = !empty($detailedProduct->pdf);
+
+    $activeTab = 'reviews';
+    if ($hasDescription) {
+        $activeTab = 'description';
+    } elseif ($hasSpecification) {
+        $activeTab = 'specification';
+    } elseif ($hasVideo) {
+        $activeTab = 'video';
+    } elseif ($hasPdf) {
+        $activeTab = 'pdf';
+    }
+@endphp
+
 <div class="mb-5 product-desc-tabs redesigned-product-tabs enhanced-tabs">
     <!-- Tabs Navigation -->
     <ul class="nav redesigned-tab-nav enhanced-tab-nav" role="tablist">
-        <li>
-            <a href="#tab_default_1" data-toggle="tab" class="redesigned-tab-link enhanced-tab-link active" role="tab">
-                {{ translate('Description') }}
-            </a>
-        </li>
-        @if (!empty($detailedProduct->specification))
+        @if ($hasDescription)
             <li>
-                <a href="#tab_default_4" data-toggle="tab" class="redesigned-tab-link enhanced-tab-link" role="tab">
+                <a href="#tab_default_1" data-toggle="tab" class="redesigned-tab-link enhanced-tab-link {{ $activeTab == 'description' ? 'active' : '' }}" role="tab">
+                    {{ translate('Description') }}
+                </a>
+            </li>
+        @endif
+        @if ($hasSpecification)
+            <li>
+                <a href="#tab_default_4" data-toggle="tab" class="redesigned-tab-link enhanced-tab-link {{ $activeTab == 'specification' ? 'active' : '' }}" role="tab">
                     {{ translate('Specifications') }}
                 </a>
             </li>
         @endif
-        @if (!empty($detailedProduct->video_link))
+        @if ($hasVideo)
             <li>
-                <a href="#tab_default_2" data-toggle="tab" class="redesigned-tab-link enhanced-tab-link" role="tab">
+                <a href="#tab_default_2" data-toggle="tab" class="redesigned-tab-link enhanced-tab-link {{ $activeTab == 'video' ? 'active' : '' }}" role="tab">
                     {{ translate('Video') }}
                 </a>
             </li>
         @endif
-        @if (!empty($detailedProduct->pdf))
+        @if ($hasPdf)
             <li>
-                <a href="#tab_default_3" data-toggle="tab" class="redesigned-tab-link enhanced-tab-link" role="tab">
+                <a href="#tab_default_3" data-toggle="tab" class="redesigned-tab-link enhanced-tab-link {{ $activeTab == 'pdf' ? 'active' : '' }}" role="tab">
                     {{ translate('Downloads') }}
                 </a>
             </li>
         @endif
         <li>
-            <a href="#tab_default_5" data-toggle="tab" class="redesigned-tab-link enhanced-tab-link" role="tab">
+            <a href="#tab_default_5" data-toggle="tab" class="redesigned-tab-link enhanced-tab-link {{ $activeTab == 'reviews' ? 'active' : '' }}" role="tab">
                 {{ translate('Reviews & Ratings') }}
             </a>
         </li>
@@ -38,27 +64,29 @@
     <div class="tab-content redesigned-tab-content enhanced-tab-content">
 
         <!-- Description -->
-        <div class="tab-pane fade show active" id="tab_default_1" role="tabpanel">
-            <div class="enhanced-editor-wrap">
+        @if ($hasDescription)
+            <div class="tab-pane fade {{ $activeTab == 'description' ? 'show active' : '' }}" id="tab_default_1" role="tabpanel">
+                <div class="enhanced-editor-wrap">
 
-                <div class="readmore-wrapper">
-                    <div class="overflow-hidden text-left mw-100 aiz-editor-data description readmore-content">
-                        {!! $detailedProduct->getTranslation('description') !!}
+                    <div class="readmore-wrapper">
+                        <div class="overflow-hidden text-left mw-100 aiz-editor-data description readmore-content">
+                            {!! $detailedProduct->getTranslation('description') !!}
+                        </div>
+                        <div class="readmore-btn-wrap">
+                            <span class="readmore-ellipsis">...</span>
+                            <button type="button" class="readmore-btn readmore-btn-link border-0 bg-transparent p-0">
+                                {{ translate('Read More') }}
+                            </button>
+                        </div>
                     </div>
-                    <div class="readmore-btn-wrap">
-                        <span class="readmore-ellipsis">...</span>
-                        <button type="button" class="readmore-btn readmore-btn-link border-0 bg-transparent p-0">
-                            {{ translate('Read More') }}
-                        </button>
-                    </div>
+
                 </div>
-
             </div>
-        </div>
+        @endif
 
         <!-- Specification -->
-        @if (!empty($detailedProduct->specification))
-            <div class="tab-pane fade" id="tab_default_4" role="tabpanel">
+        @if ($hasSpecification)
+            <div class="tab-pane fade {{ $activeTab == 'specification' ? 'show active' : '' }}" id="tab_default_4" role="tabpanel">
                 <div class="enhanced-editor-wrap">
                     <div class="readmore-wrapper">
                         <div class="overflow-hidden text-left mw-100 aiz-editor-data specification readmore-content">
@@ -76,8 +104,8 @@
         @endif
 
         <!-- Video -->
-        @if (!empty($detailedProduct->video_link))
-            <div class="tab-pane fade" id="tab_default_2" role="tabpanel">
+        @if ($hasVideo)
+            <div class="tab-pane fade {{ $activeTab == 'video' ? 'show active' : '' }}" id="tab_default_2" role="tabpanel">
                 <div class="d-flex justify-content-center align-items-center"
                     style="min-height:250px; background:#f5f8fa;">
                     <div class="embed-responsive embed-responsive-16by9" style="max-width:640px;width:100%;">
@@ -102,8 +130,8 @@
         @endif
 
         <!-- PDF -->
-        @if (!empty($detailedProduct->pdf))
-            <div class="tab-pane fade" id="tab_default_3" role="tabpanel">
+        @if ($hasPdf)
+            <div class="tab-pane fade {{ $activeTab == 'pdf' ? 'show active' : '' }}" id="tab_default_3" role="tabpanel">
                 <div class="py-4 text-center">
                     <a href="{{ uploaded_asset($detailedProduct->pdf) }}"
                         class="btn btn-outline-primary btn-lg enhanced-download-btn">
@@ -114,7 +142,7 @@
         @endif
 
         <!-- Review Tab Pane -->
-        <div class="tab-pane fade" id="tab_default_5" role="tabpanel">
+        <div class="tab-pane fade {{ $activeTab == 'reviews' ? 'show active' : '' }}" id="tab_default_5" role="tabpanel">
             <div class="enhanced-editor-wrap review-pane-wrap">
                 @include('frontend.product_details.review_section')
             </div>

@@ -199,7 +199,7 @@ $wrapper_class = 'container';
             <div class="home-slider slider-full">
                 @if(!empty($slider_images) && is_array($slider_images))
                 <div class="aiz-carousel home_banner_img dots-inside-bottom mobile-slider-dots mobile-img-auto-height"
-     data-dots="true"
+     data-dots="true" data-arrows="false" 
      data-autoplay="false"
      data-infinite="true">
                     @foreach ($slider_images as $key => $imgId)
@@ -275,8 +275,8 @@ $wrapper_class = 'container';
                 <div class="aiz-carousel gutters-5 overflow-hidden arrow-inactive-none arrow-dark arrow-x-15"
                     data-items="{{ $banner_count }}" data-xxl-items="{{ $banner_count }}"
                     data-xl-items="{{ $banner_count }}" data-lg-items="{{ $data_md }}"
-                    data-md-items="{{ $data_md }}" data-sm-items="1" data-xs-items="1" data-arrows="true"
-                    data-dots="false" data-infinite="true">
+                    data-md-items="{{ $data_md }}" data-sm-items="1" data-xs-items="1" data-arrows="false"
+                    data-dots="true" data-infinite="true">
                     @foreach ($banner_images as $key => $imgId)
                     <div class="carousel-box overflow-hidden hov-scale-img">
                         <a href="{{ $banner_links[$key] ?? '#' }}" class="d-block text-reset overflow-hidden">

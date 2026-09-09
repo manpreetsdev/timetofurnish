@@ -2657,14 +2657,18 @@ if (!function_exists('get_products_count')) {
 if (!function_exists('get_product_min_unit_price')) {
     function get_product_min_unit_price($user_id = null)
     {
-        $product_query = Product::query();
-        if ($user_id) {
-            $product_query = $product_query->where('user_id', $user_id);
-        }
-        return $product_query
-            ->isApprovedPublished()
-            ->selectRaw('MIN(' . product_listing_price_expression() . ') as min_price')
-            ->value('min_price');
+        $cacheKey = 'product_min_unit_price_' . ($user_id ?? 'all');
+        return Cache::remember($cacheKey, 3600, function () use ($user_id) {
+            $product_query = Product::query();
+            if ($user_id) {
+                $product_query = $product_query->where('user_id', $user_id);
+            }
+            $val = $product_query
+                ->isApprovedPublished()
+                ->selectRaw('MIN(' . product_listing_price_expression() . ') as min_price')
+                ->value('min_price');
+            return $val !== null ? (float)$val : 0;
+        });
     }
 }
 
@@ -2672,14 +2676,31 @@ if (!function_exists('get_product_min_unit_price')) {
 if (!function_exists('get_product_max_unit_price')) {
     function get_product_max_unit_price($user_id = null)
     {
-        $product_query = Product::query();
-        if ($user_id) {
-            $product_query = $product_query->where('user_id', $user_id);
-        }
-        return $product_query
-            ->isApprovedPublished()
-            ->selectRaw('MAX(' . product_listing_price_expression() . ') as max_price')
-            ->value('max_price');
+        $cacheKey = 'product_max_unit_price_' . ($user_id ?? 'all');
+        return Cache::remember($cacheKey, 3600, function () use ($user_id) {
+            $product_query = Product::query();
+            if ($user_id) {
+                $product_query = $product_query->where('user_id', $user_id);
+            }
+            $val = $product_query
+                ->isApprovedPublished()
+                ->selectRaw('MAX(' . product_listing_price_expression() . ') as max_price')
+                ->value('max_price');
+            return $val !== null ? (float)$val : 0;
+        });
+    }
+}
+
+if (!function_exists('get_category_product_count')) {
+    function get_category_product_count($category_id)
+    {
+        return Cache::remember('category_product_count_' . $category_id, 1800, function () use ($category_id) {
+            $category = Category::find($category_id);
+            if (!$category) {
+                return 0;
+            }
+            return filter_products($category->products())->count();
+        });
     }
 }
 
