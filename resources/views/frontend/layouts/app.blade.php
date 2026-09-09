@@ -945,6 +945,11 @@
 
         function updateNavCart(view, count) {
             $('.cart-count').html(count);
+            if (parseInt(count) > 0) {
+                $('.cart-count-badge').removeClass('d-none').html(count);
+            } else {
+                $('.cart-count-badge').addClass('d-none').html(0);
+            }
             $('#cart_items').html(view);
         }
 
