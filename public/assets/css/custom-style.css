@@ -353,6 +353,45 @@
     color: #685b4e !important;
 }
 
+/* Custom Sort Select Styles */
+.custom-sort-select,
+.product-listing-page .custom-sort-select {
+    height: 42px !important;
+    min-height: 42px !important;
+    line-height: 1.5 !important;
+    border-radius: 6px !important;
+    border: 1px solid #eadfce !important;
+    background-color: #ffffff !important;
+    color: #39322a !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 8px 36px 8px 14px !important;
+    box-shadow: 0 2px 6px rgba(104, 91, 78, 0.06) !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23685b4e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    background-size: 16px 16px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.custom-sort-select:hover,
+.custom-sort-select:focus {
+    border-color: #685b4e !important;
+    outline: none !important;
+    box-shadow: 0 4px 12px rgba(104, 91, 78, 0.12) !important;
+}
+
+.custom-sort-select option {
+    background-color: #ffffff !important;
+    color: #39322a !important;
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+}
+
 @media (min-width: 768px) {
     .product-listing-page .product-listing-grid-wrap {
         padding-left: 8px !important;
@@ -365,8 +404,6 @@
         box-shadow: 0 8px 24px rgba(104, 91, 78, 0.05) !important;
     }
 }
-
-
 
 @media (max-width: 767.98px) {
     .product-listing-page {
@@ -405,13 +442,28 @@
         flex: 0 0 auto !important;
     }
 
-    .product-listing-page .bootstrap-select .dropdown-toggle {
-        min-height: 52px !important;
-        border-radius: 10px !important;
-        border-width: 2px !important;
-        padding: 11px 18px !important;
-        font-size: 14px !important;
-        background: #ffffff !important;
+    .product-listing-page .sort-by-wrapper {
+        width: auto !important;
+        max-width: 160px !important;
+        flex: 1 1 auto !important;
+    }
+
+    .product-listing-page .btn-filter {
+        min-height: 40px !important;
+        height: 40px !important;
+        padding: 8px 16px !important;
+        font-size: 13px !important;
+        border-radius: 6px !important;
+    }
+
+    .product-listing-page .custom-sort-select {
+        min-height: 40px !important;
+        height: 40px !important;
+        border-radius: 6px !important;
+        border-width: 1px !important;
+        padding: 8px 30px 8px 12px !important;
+        font-size: 13px !important;
+        background-color: #ffffff !important;
     }
 
     .product-listing-page .product-listing-grid-wrap {
@@ -3582,6 +3634,8 @@ ul.dropdown-menu.inner.show {
 .aiz-carousel.slick-initialized .slick-track {
     display: flex !important;
     align-items: stretch !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
 }
 
 .home_banner_111 .slick-track {
@@ -3855,12 +3909,19 @@ ul.dropdown-menu.inner.show {
         overflow: hidden !important;
     }
 
-    .home-mobile-product-carousel .slick-track,
+    .home-mobile-product-carousel .slick-track {
+        display: flex !important;
+        align-items: stretch !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
+    }
+
     .home-mobile-product-carousel .slick-slide,
     .home-mobile-product-carousel .slick-slide>div,
     .home-mobile-product-carousel .carousel-box {
         display: flex !important;
         align-items: stretch !important;
+        justify-content: flex-start !important;
     }
 
     .home-mobile-product-carousel .carousel-box {
@@ -5276,20 +5337,20 @@ img.lazyload:not([data-src]):not([data-srcset]) {
     }
 
     .product-addons .addon-block h5 {
-        font-size: 13px !important;
+        font-size: 16px !important;
     }
 
     .product-addons h5.mb-2 {
-        font-size: 13px !important;
+        font-size: 16px !important;
     }
 
     #option-choice-form h5.mb-2 {
-        font-size: 13px !important;
+        font-size: 16px !important;
 
     }
 
     .modern-section-header .modern-section-subtitle {
-        font-size: 13px !important;
+        font-size: 16px !important;
 
     }
 }

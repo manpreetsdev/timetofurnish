@@ -13627,9 +13627,7 @@ ul.apps a:hover i {
     fill: var(--primary) !important;
 }
 
-.aiz-carousel.product-gallery-thumb .slick-track {
-    transform: translate3d(0, 0, 0) !important;
-}
+/* .aiz-carousel.product-gallery-thumb .slick-track transform override removed to allow slick sliding */
 
 [dir="rtl"] .mr-4 {
     margin-right: inherit !important;

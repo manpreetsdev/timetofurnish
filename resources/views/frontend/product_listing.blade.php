@@ -145,6 +145,8 @@ if (request()->has('page') && request('page') > 1) {
                                     <div class="pt-2 px-1 pb-3" style="padding: 0px 8px !important;">
                                         @php
                                         $product_count = get_products_count();
+                                        $coll_min = product_collection_min_listing_price($products);
+                                        $coll_max = product_collection_max_listing_price($products);
                                         @endphp
                                         <div class="aiz-range-slider">
                                             <div id="input-slider-range"
@@ -156,8 +158,8 @@ if (request()->has('page') && request('page') > 1) {
                                                 <div class="col-6">
                                                     <span class="range-slider-value value-low fs-14 fw-600 opacity-70"
                                                         @if (isset($min_price)) data-range-value-low="{{ $min_price }}"
-                                                        @elseif(product_collection_min_listing_price($products)> 0)
-                                                        data-range-value-low="{{ product_collection_min_listing_price($products) }}"
+                                                        @elseif($coll_min > 0)
+                                                        data-range-value-low="{{ $coll_min }}"
                                                         @else
                                                         data-range-value-low="0" @endif
                                                         id="input-slider-range-value-low"></span>
@@ -165,8 +167,8 @@ if (request()->has('page') && request('page') > 1) {
                                                 <div class="col-6 text-right">
                                                     <span class="range-slider-value value-high fs-14 fw-600 opacity-70"
                                                         @if (isset($max_price)) data-range-value-high="{{ $max_price }}"
-                                                        @elseif(product_collection_max_listing_price($products)> 0)
-                                                        data-range-value-high="{{ product_collection_max_listing_price($products) }}"
+                                                        @elseif($coll_max > 0)
+                                                        data-range-value-high="{{ $coll_max }}"
                                                         @else
                                                         data-range-value-high="0" @endif
                                                         id="input-slider-range-value-high"></span>
@@ -270,9 +272,8 @@ if (request()->has('page') && request('page') > 1) {
                                     <i class="las la-sliders-h"></i>
                                     <span>{{ translate('Filters') }}</span>
                                 </button>
-                                <div class="w-md-200px w-170px">
-                                    <select class="form-control form-control-sm aiz-selectpicker rounded-0" name="sort_by"
-                                        onchange="filter()">
+                                <div class="w-md-200px w-170px sort-by-wrapper">
+                                    <select class="form-control custom-sort-select" name="sort_by" onchange="filter()">
                                         <option value="">{{ translate('Sort by') }}</option>
                                         <option value="newest"
                                             @isset($sort_by) @if ($sort_by=='newest' ) selected @endif @endisset>
@@ -299,7 +300,7 @@ if (request()->has('page') && request('page') > 1) {
                     </div>
 
                     {{-- Category "Coming Soon" banner: only when the category has no published product --}}
-                    @if (isset($category_id) && filter_products($category->products())->count() == 0)
+                    @if (isset($category_id) && get_category_product_count($category->id) == 0)
                     <div class="category-banner mb-4">
                         @if ($category->coming_soon_image && uploaded_asset($category->coming_soon_image))
                             <img

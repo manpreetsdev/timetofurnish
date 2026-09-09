@@ -170,9 +170,17 @@
                 .full-image-review-box:hover img {
                     transform: scale(1.03);
                 }
+                .homepage-reviews-slider,
+                .homepage-reviews-slider .slick-list,
+                .homepage-reviews-slider .slick-track,
+                .homepage-reviews-slider .carousel-box {
+                    touch-action: pan-y !important;
+                }
+
                 .homepage-reviews-slider .slick-slide {
                     padding: 15px 15px;
                 }
+
                 .homepage-reviews-slider .slick-list {
                     margin: 0 -15px;
                 }
@@ -344,8 +352,8 @@
                      data-xl-items="3"
                      data-lg-items="2"
                      data-md-items="2"
-                     data-sm-items="2"
-                     data-xs-items="2"
+                     data-sm-items="1"
+                     data-xs-items="1"
                      data-arrows="true"
                      data-dots="true"
                      data-autoplay="true"
@@ -374,9 +382,9 @@
                 <div class="d-block d-lg-none">
                     <div class="aiz-carousel homepage-reviews-slider arrow-inactive-none"
                          data-items="2"
-                         data-md-items="1.5"
-                         data-sm-items="1.5"
-                         data-xs-items="1.5"
+                         data-md-items="2"
+                         data-sm-items="1"
+                         data-xs-items="1"
                          data-arrows="true"
                          data-dots="true"
                          data-autoplay="true"
