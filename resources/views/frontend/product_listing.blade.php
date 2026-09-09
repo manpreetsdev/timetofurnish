@@ -306,10 +306,10 @@ if (request()->has('page') && request('page') > 1) {
                                 src="{{ uploaded_asset($category->coming_soon_image) }}"
                                 alt="{{ $category->getTranslation('name') }} {{ translate('Coming Soon') }}"
                                 class="img-fluid rounded"
-                                style="max-height: 450px; width: 100%; object-fit: cover; border-radius: 12px;">
+                                style="max-height: 450px; width: fit-content !important; object-fit: cover; border-radius: 12px;">
                         @else
-                            <div class="text-center py-5 bg-white rounded shadow-sm border">
-                                <h3 class="fw-700 text-dark mb-0">{{ translate('Coming Soon') }}</h3>
+                            <div class="text-center  py-5 bg-white">
+                                <h3 class="fw-700 fs-33 text-dark mb-0">{{ translate('Coming Soon') }}</h3>
                             </div>
                         @endif
                     </div>

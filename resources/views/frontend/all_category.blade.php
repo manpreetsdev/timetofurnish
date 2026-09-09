@@ -552,7 +552,7 @@ $banner = [
                                 <img src="{{ uploaded_asset($category->coming_soon_image) }}"
                                      alt="{{ $category->getTranslation('name') }} {{ translate('Coming Soon') }}"
                                      class="img-fluid rounded"
-                                     style="max-height: 350px; width: 100%; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                                     style="max-height: 350px; width: fit-content !important; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                             </div>
                         @else
                             <h3>{{ translate('Coming Soon') }}</h3>
