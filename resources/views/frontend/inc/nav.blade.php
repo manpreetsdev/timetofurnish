@@ -681,7 +681,7 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                              paint so there is no "1 item then snap" flash on reload --}}
                         <ul class="aiz-carousel category-nav-row arrow-none" data-items="9" data-xl-items="9"
                             data-lg-items="9" data-md-items="6" data-sm-items="5" data-xs-items="4"
-                            data-arrows="false" data-dots="false" data-infinite="true" data-scroll-by-page="false"
+                            data-arrows="false" data-dots="false" data-infinite="false" data-scroll-by-page="false"
                             style="list-style: none !important; padding: 0 !important; margin: 0 !important;">
                             @foreach ($featured_categories as $key => $category)
                             @if ($key < 10)
