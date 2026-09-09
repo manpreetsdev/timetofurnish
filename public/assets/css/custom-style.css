@@ -5457,6 +5457,10 @@ img.lazyload:not([data-src]):not([data-srcset]) {
     .banner-category.custom-banner-category li {
         overflow: hidden !important;
     }
+
+    .section-padding.home_Section.banner_Sections_home ul.slick-dots {
+        padding-top: 10px !important;
+    }
 }
 
 @keyframes exactMobileMarquee {
