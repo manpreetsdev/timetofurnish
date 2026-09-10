@@ -22,11 +22,11 @@
 
             <!-- Custom Glassmorphism Testimonial Style (Warm Light Theme) -->
             <style>
-                .aiz-carousel .slick-prev{
+                .homepage-reviews-slider .slick-prev{
                     left:-60px;
                 }
                 
-                .aiz-carousel .slick-next{
+                .homepage-reviews-slider .slick-next{
                     right:-60px;
                 }
                 .homepage-reviews-section {
@@ -175,6 +175,19 @@
                 .homepage-reviews-slider .slick-track,
                 .homepage-reviews-slider .carousel-box {
                     touch-action: pan-y !important;
+                }
+
+                .homepage-reviews-section .homepage-reviews-slider {
+                    max-width: 1200px;
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+
+                /* Override the shared left alignment only for homepage reviews. */
+                .homepage-reviews-section .homepage-reviews-slider.slick-initialized .slick-track {
+                    margin-left: auto !important;
+                    margin-right: auto !important;
+                    gap: 0;
                 }
 
                 .homepage-reviews-slider .slick-slide {
@@ -342,18 +355,93 @@
         line-height: 16px !important;
     }
 }
+                /* Stretch review cards together without affecting other carousels. */
+                .homepage-reviews-section .homepage-reviews-slider .slick-track {
+                    display: flex !important;
+                    align-items: stretch !important;
+                }
+                .homepage-reviews-section .homepage-reviews-slider .slick-slide {
+                    height: auto !important;
+                    display: flex !important;
+                }
+                .homepage-reviews-section .homepage-reviews-slider .slick-slide > div,
+                .homepage-reviews-section .homepage-reviews-slider .carousel-box {
+                    display: flex;
+                    width: 100%;
+                    min-width: 0;
+                }
+                .homepage-reviews-section .homepage-reviews-slider .review-card,
+                .homepage-reviews-section .homepage-reviews-slider .full-image-review-box {
+                    width: 100%;
+                    min-width: 0;
+                    flex: 1;
+                }
+
+                @media (max-width: 767.98px) {
+                    .homepage-reviews-section .home_review_container {
+                        padding-left: 16px !important;
+                        padding-right: 16px !important;
+                    }
+                    .homepage-reviews-section .homepage-reviews-slider .slick-list {
+                        margin: 0 -6px;
+                    }
+                    .homepage-reviews-section .homepage-reviews-slider .slick-slide {
+                        /* The shared mobile carousel rule removes padding with !important. */
+                        padding: 7px 6px !important;
+                    }
+                    .homepage-reviews-section .review-card {
+                        padding: 12px 10px;
+                    }
+                    .homepage-reviews-section .review-profile-header {
+                        flex-wrap: wrap;
+                        gap: 5px;
+                        margin-bottom: 10px !important;
+                    }
+                    .homepage-reviews-section .reviewer-avatar {
+                        width: 28px !important;
+                        height: 28px !important;
+                        margin-right: 6px !important;
+                        flex-shrink: 0;
+                    }
+                    .homepage-reviews-section .reviewer-name {
+                        font-size: 11px !important;
+                    }
+                    .homepage-reviews-section .review-relative-date {
+                        font-size: 8px !important;
+                        width: 100%;
+                    }
+                    .homepage-reviews-section .review-rating,
+                    .homepage-reviews-section .review-rating i {
+                        font-size: 10px !important;
+                    }
+                    .homepage-reviews-section .review-content {
+                        font-size: 11px !important;
+                    }
+                    .homepage-reviews-section .review-read-more-btn {
+                        font-size: 10px !important;
+                    }
+                    .homepage-reviews-section .purchased-text,
+                    .homepage-reviews-section .category-badge,
+                    .homepage-reviews-section .helpful-votes {
+                        font-size: 8px !important;
+                    }
+                    .homepage-reviews-section .review-card-divider {
+                        margin-top: auto;
+                        padding-top: 8px;
+                    }
+                }
             </style>
 
             @if ($desktop_slider == 1)
                 <!-- Slider Mode for Desktop & Mobile -->
                 <div class="aiz-carousel homepage-reviews-slider arrow-inactive-none"
-                     data-items="3"
-                     data-xxl-items="3"
-                     data-xl-items="3"
+                     data-items="2"
+                     data-xxl-items="2"
+                     data-xl-items="2"
                      data-lg-items="2"
                      data-md-items="2"
-                     data-sm-items="1"
-                     data-xs-items="1"
+                     data-sm-items="2"
+                     data-xs-items="2"
                      data-arrows="true"
                      data-dots="true"
                      data-autoplay="true"
@@ -383,8 +471,8 @@
                     <div class="aiz-carousel homepage-reviews-slider arrow-inactive-none"
                          data-items="2"
                          data-md-items="2"
-                         data-sm-items="1"
-                         data-xs-items="1"
+                         data-sm-items="2"
+                         data-xs-items="2"
                          data-arrows="true"
                          data-dots="true"
                          data-autoplay="true"

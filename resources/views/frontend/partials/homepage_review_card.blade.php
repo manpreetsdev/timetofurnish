@@ -40,7 +40,7 @@
 
         <div>
             <!-- User Profile Header -->
-            <div class="d-flex align-items-center justify-content-between mb-3 ">
+            <div class="review-profile-header d-flex align-items-center justify-content-between mb-3">
                 <div class="d-flex align-items-center">
                     <img class="reviewer-avatar lazyload mr-3"
                          src="{{ static_asset('assets/img/avatar-place.png') }}"

@@ -301,7 +301,7 @@ if (request()->has('page') && request('page') > 1) {
 
                     {{-- Category "Coming Soon" banner: only when the category has no published product --}}
                     @if (isset($category_id) && get_category_product_count($category->id) == 0)
-                    <div class="category-banner mb-4">
+                    <div class="category-banner mb-0">
                         @if ($category->coming_soon_image && uploaded_asset($category->coming_soon_image))
                             <img
                                 src="{{ uploaded_asset($category->coming_soon_image) }}"
@@ -309,7 +309,7 @@ if (request()->has('page') && request('page') > 1) {
                                 class="img-fluid rounded"
                                 style="max-height: 450px; width: fit-content !important; object-fit: cover; border-radius: 12px;">
                         @else
-                            <div class="text-center  py-5 bg-white">
+                            <div class="text-center  py-5 ">
                                 <h3 class="fw-700 fs-33 text-dark mb-0">{{ translate('Coming Soon') }}</h3>
                             </div>
                         @endif
@@ -318,6 +318,7 @@ if (request()->has('page') && request('page') > 1) {
 
 
                     <!-- Products -->
+                     @if(count($products) > 0)
                     <div class="px-3 product-listing-grid-wrap">
                         <div
                             class="row gutters-16 row-cols-xxl-4 row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-2 product-listing-grid">
@@ -336,6 +337,7 @@ if (request()->has('page') && request('page') > 1) {
                     <div class="aiz-pagination mt-4">
                         {{ $products->appends(request()->input())->links() }}
                     </div>
+                    @endif
                 </div>
             </div>
         </form>

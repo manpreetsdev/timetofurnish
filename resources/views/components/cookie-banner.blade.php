@@ -4,10 +4,15 @@
 
 @if (empty($prefs))
 <style>
+  @media only screen and (max-width:767px){
+    #cookie-banner {
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+  }
   /* --- COOKIE BANNER STATIC STYLE --- */
   #cookie-banner {
     position: fixed;
-    bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: 0;
     width: 100%;
     background: #000;
     color: #fff;
