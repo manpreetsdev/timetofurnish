@@ -1050,11 +1050,30 @@
 
         // Enforce single selection per addon group
 
+        var productStockPending = false;
+        var productStockRequest = 0;
+
+        function syncProductQuantity() {
+            var $input = $('#quantity');
+            if (!$input.length) return;
+            var min = parseInt($input.attr('min'), 10) || 1;
+            var max = parseInt($input.attr('max'), 10);
+            if (!Number.isFinite(max)) return;
+            var value = parseInt($input.val(), 10);
+            value = Math.min(max, Math.max(min, Number.isFinite(value) ? value : min));
+            $input.val(value);
+            $('.btn-quantity[data-type="minus"]').prop('disabled', productStockPending || value <= min);
+            $('.btn-quantity[data-type="plus"]').prop('disabled', productStockPending || value >= max);
+        }
+
         function getVariantPrice() {
 
             let qty = parseInt($("#quantity").val()) || 1;
 
-            if (qty <= 0) return;
+            var requestId = ++productStockRequest;
+            productStockPending = true;
+            $('.btn-quantity').prop('disabled', true);
+            if (typeof checkEnableDisableButtons === 'function') checkEnableDisableButtons();
 
             $.ajax({
                 type: "POST",
@@ -1062,6 +1081,21 @@
                 data: $('#option-choice-form').serializeArray(),
 
                 success: function(data) {
+                    if (requestId !== productStockRequest) return;
+                    productStockPending = false;
+                    if (Number(data.digital) === 0) {
+                        $('#quantity').attr('max', Math.max(0, parseInt(data.max_limit, 10) || 0));
+                        $('#qty1').val(data.max_limit);
+                        syncProductQuantity();
+                        var correctedQty = Number($('#quantity').val());
+                        if (correctedQty > 0 && correctedQty !== qty) {
+                            getVariantPrice();
+                            return;
+                        }
+                        qty = correctedQty;
+                    }
+                    if (typeof checkEnableDisableButtons === 'function') checkEnableDisableButtons();
+
 
                     /*
                     Backend already returns variant price
@@ -1157,7 +1191,7 @@
                         base_price = original_actual + selected_attributes_price;
                     } else {
                         if (base_price > 0) {
-                            base_price = base_price / qty;
+                            base_price = base_price / (qty || 1);
                         }
                     }
 
@@ -1426,7 +1460,7 @@
             @endif
             let qty = parseInt($("#quantity").val());
             let qty1 = parseInt($("#qty1").val());
-            if (qty > qty1) {
+            if (productStockPending || !Number.isInteger(qty) || qty < (parseInt($('#quantity').attr('min'), 10) || 1) || qty > qty1) {
                 AIZ.plugins.notify('warning', "{{ translate('Please Check Quantity.') }}");
                 return false;
             }
@@ -1459,7 +1493,7 @@
             @endif
             let qty = parseInt($("#quantity").val());
             let qty1 = parseInt($("#qty1").val());
-            if (qty > qty1) {
+            if (productStockPending || !Number.isInteger(qty) || qty < (parseInt($('#quantity').attr('min'), 10) || 1) || qty > qty1) {
                 AIZ.plugins.notify('warning', "{{ translate('Please Check Quantity.') }}");
                 return false;
             }

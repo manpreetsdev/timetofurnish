@@ -198,6 +198,17 @@ class CartController extends Controller
             }
         }
 
+        // Validate both new additions and accumulated quantities against selected stock.
+        if ($product->digital == 0 && $product->auction_product == 0
+            && $quantity > cart_available_qty(['variation' => $str], $product)) {
+            return array(
+                'status' => 0,
+                'cart_count' => count($carts),
+                'modal_view' => view('frontend.' . get_setting('homepage_select') . '.partials.outOfStockCart')->render(),
+                'nav_cart_view' => view('frontend.' . get_setting('homepage_select') . '.partials.cart')->render(),
+            );
+        }
+
         // Full base price for ALL selected variant attributes (after discount).
         // Uses the exact combined stock row when present, otherwise sums every
         // individual attribute stock row — same logic as the product page's
