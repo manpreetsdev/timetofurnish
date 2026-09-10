@@ -465,26 +465,18 @@
                 </div>
                 <div class="col-sm-10">
                     <div class="py-1 product-quantity d-flex align-items-center">
-                        <div class="mr-4 border rounded d-flex align-items-center"
-                            style="width: 140px; overflow: hidden; background: #f5f5f5;">
-                            <button
-                                class="border-0 btn btn-icon btn-quantity d-flex align-items-center justify-content-center"
-                                type="button" data-type="minus" data-field="quantity"
-                                style="min-width:40px; min-height:40px; border-radius: 0; background: #f0eeea; color: #979797;"
-                                disabled>
-                                <span style="font-size: 22px; line-height: 1;">−</span>
+                        <div class="modern-qty-selector mr-4">
+                            <button class="qty-btn btn-quantity" type="button" data-type="minus"
+                                data-field="quantity" aria-label="{{ translate('Decrease quantity') }}" disabled>
+                                <i class="las la-minus"></i>
                             </button>
-                            <input type="number" name="quantity" id="quantity"
-                                class="px-0 py-0 text-center border-0 form-control flex-grow-1 bg-divider quantity-input"
-                                style="width:60px;height:40px;box-shadow:none;background: #ded3c3; font-size: 22px; color: #888; font-weight: 500; border-radius: 0;"
+                            <input type="number" name="quantity" id="quantity" class="qty-input quantity-input"
                                 value="{{ isset($cartItem) ? max($cartItem->quantity, $detailedProduct->min_qty) : $detailedProduct->min_qty }}"
-                                min="{{ $detailedProduct->min_qty }}" max="10" placeholder="1" lang="en"
-                                autocomplete="off" onblur="change_qty()">
-                            <button
-                                class="border-0 btn btn-icon btn-quantity d-flex align-items-center justify-content-center"
-                                type="button" data-type="plus" data-field="quantity"
-                                style="min-width:40px; min-height:40px; border-radius: 0; background: #f0eeea; color: #979797;">
-                                <span style="font-size: 22px; line-height: 1;">+</span>
+                                min="{{ $detailedProduct->min_qty }}" max="{{ $detailedProduct->min_qty }}" step="1"
+                                aria-label="{{ translate('Quantity') }}" autocomplete="off">
+                            <button class="qty-btn btn-quantity" type="button" data-type="plus"
+                                data-field="quantity" aria-label="{{ translate('Increase quantity') }}" disabled>
+                                <i class="las la-plus"></i>
                             </button>
                         </div>
                         @php
@@ -1097,6 +1089,10 @@
             let $buyButtons = $('.buy-now');
             let $wishlistButtons = $('.wishlist-btn');
 
+            if ($('#quantity').length && (productStockPending || Number($('#quantity').attr('max')) < Number($('#quantity').attr('min')))) {
+                isEligible = false;
+            }
+
             if (isEligible) {
                 $basketButtons.prop('disabled', false).removeClass('btn-disabled-custom');
                 $buyButtons.prop('disabled', false).removeClass('btn-disabled-custom');
@@ -1281,7 +1277,8 @@
                 if (!$input.length) return;
                 var val = parseInt($input.val()) || 1;
                 var min = parseInt($input.attr('min')) || 1;
-                var max = parseInt($input.attr('max')) || 10;
+                var max = parseInt($input.attr('max'), 10);
+                if (!Number.isFinite(max)) max = min;
                 
                 var $minusBtn = $('.btn-quantity[data-type="minus"]');
                 var $plusBtn = $('.btn-quantity[data-type="plus"]');
@@ -1298,7 +1295,8 @@
                 if (!$input.length) return;
                 var currentVal = parseInt($input.val());
                 var min = parseInt($input.attr('min')) || 1;
-                var max = parseInt($input.attr('max')) || 10;
+                var max = parseInt($input.attr('max'), 10);
+                if (!Number.isFinite(max)) max = min;
                 
                 if (!isNaN(currentVal)) {
                     if (type === 'minus') {
@@ -1317,6 +1315,7 @@
 
             // Qty change
             $(document).on('keyup change', '#quantity', function() {
+                syncProductQuantity();
                 updateQtyButtonStates();
                 getVariantPrice();
             });

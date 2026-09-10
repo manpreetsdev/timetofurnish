@@ -228,6 +228,8 @@
                                     cart_product_price($cart, $product, false, false);
                                     $price = $base_price + $calculated_addon_price;
                                     $qty = $cart['quantity'];
+                                    $available_qty = cart_available_qty($cart, $product);
+                                    $minimum_qty = max(1, (int) $product->min_qty);
                                     $row_total = $price * $qty;
                                     $seller_subtotal += $row_total;
 
@@ -433,23 +435,23 @@
                                                     <span class="fs-12 text-secondary mb-2 text-uppercase fw-600" style="letter-spacing: 0.5px;">{{ translate('Quantity') }}</span>
                                                     @if ($product->auction_product == 0)
                                                     <div class="quantity-group" style="max-width:110px;">
-                                                        <div class="d-flex flex-wrap input-group input-group-sm">
-                                                            <button class="btn btn-outline-secondary border-0 px-2 rounded-left"
+                                                        <div class="modern-qty-selector">
+                                                            <button class="qty-btn" aria-label="{{ translate('Decrease quantity') }}"
                                                                 type="button" data-type="minus"
                                                                 onclick="handleCartQuantity(this, {{ $cart->id }}, 'minus')"
-                                                                @if ($qty <=1) disabled @endif>
+                                                                @if ($qty <= $minimum_qty || $available_qty < $minimum_qty) disabled @endif>
                                                                 <i class="las la-minus"></i>
                                                             </button>
                                                             <input type="number" name="quantity[{{ $cart->id }}]"
-                                                                class="form-control text-center fw-bold fs-15 border-0 p-0 cart-qty-input"
+                                                                class="qty-input cart-qty-input"
                                                                 value="{{ $qty }}"
-                                                                min="{{ $product->min_qty ?? 1 }}"
-                                                                max="{{ $product->stocks->first()->qty ?? 9999 }}"
+                                                                min="{{ $minimum_qty }}" step="1"
+                                                                max="{{ $available_qty }}"
                                                                 onchange="updateQuantity({{ $cart->id }}, this)">
-                                                            <button class="btn btn-outline-secondary border-0 px-2 rounded-right"
+                                                            <button class="qty-btn" aria-label="{{ translate('Increase quantity') }}"
                                                                 type="button" data-type="plus"
                                                                 onclick="handleCartQuantity(this, {{ $cart->id }}, 'plus')"
-                                                                @if ($qty>= ($product->stocks->first()->qty ?? 9999)) disabled @endif>
+                                                                @if ($qty >= $available_qty) disabled @endif>
                                                                 <i class="las la-plus"></i>
                                                             </button>
                                                         </div>
@@ -667,23 +669,23 @@
                                                 <span class="d-block text-secondary fs-11 mb-1">{{ translate('Quantity') }}</span>
                                                 @if ($product->auction_product == 0)
                                                 <div class="quantity-group" style="max-width:110px;">
-                                                    <div class="d-flex flex-wrap input-group input-group-sm">
-                                                        <button class="btn btn-outline-secondary border-0 px-2 rounded-left"
+                                                    <div class="modern-qty-selector">
+                                                        <button class="qty-btn" aria-label="{{ translate('Decrease quantity') }}"
                                                             type="button" data-type="minus"
                                                             onclick="handleCartQuantity(this, {{ $cart->id }}, 'minus')"
-                                                            @if ($qty <=1) disabled @endif>
+                                                            @if ($qty <= $minimum_qty || $available_qty < $minimum_qty) disabled @endif>
                                                             <i class="las la-minus"></i>
                                                         </button>
                                                         <input type="number" name="quantity[{{ $cart->id }}]"
-                                                            class="form-control text-center fw-bold fs-14 border-0 p-0 cart-qty-input-mobile"
+                                                            class="qty-input cart-qty-input-mobile"
                                                             value="{{ $qty }}"
-                                                            min="{{ $product->min_qty ?? 1 }}"
-                                                            max="{{ $product->stocks->first()->qty ?? 9999 }}"
+                                                            min="{{ $minimum_qty }}" step="1"
+                                                            max="{{ $available_qty }}"
                                                             onchange="updateQuantity({{ $cart->id }}, this)">
-                                                        <button class="btn btn-outline-secondary border-0 px-2 rounded-right"
+                                                        <button class="qty-btn" aria-label="{{ translate('Increase quantity') }}"
                                                             type="button" data-type="plus"
                                                             onclick="handleCartQuantity(this, {{ $cart->id }}, 'plus')"
-                                                            @if ($qty>= ($product->stocks->first()->qty ?? 9999)) disabled @endif>
+                                                            @if ($qty >= $available_qty) disabled @endif>
                                                             <i class="las la-plus"></i>
                                                         </button>
                                                     </div>
@@ -934,49 +936,6 @@
 
     input:checked+.custom-service-pill .text-dark {
         color: #b57a45 !important;
-    }
-
-    .quantity-group .btn {
-        border: 1px solid #e2d2c0 !important;
-        background: #faf8f5;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .quantity-group .btn:hover:not([disabled]) {
-        background: #b57a45;
-        color: #fff !important;
-        border-color: #b57a45 !important;
-    }
-
-    .quantity-group .btn:hover:not([disabled]) i {
-        color: #fff !important;
-    }
-
-    .quantity-group .cart-qty-input {
-        border: 1px solid #e2d2c0 !important;
-        border-left: none !important;
-        border-right: none !important;
-        height: 32px;
-        max-width: 36px;
-        background: #faf8f5;
-        box-shadow: none !important;
-    }
-
-    .quantity-group .cart-qty-input-mobile {
-        border: 1px solid #e2d2c0 !important;
-        border-left: none !important;
-        border-right: none !important;
-        height: 28px;
-        max-width: 32px;
-        background: #faf8f5;
-        box-shadow: none !important;
-    }
-
-    .quantity-group .input-group {
-        flex-wrap: nowrap !important;
     }
 
     .gap-1 {
@@ -1254,6 +1213,8 @@
         }
     }
 
+    var deliveryQuantityPending = false;
+
     function handleCartQuantity(btn, cartId, type) {
         let group = btn.closest('.quantity-group');
         if (!group) return;
@@ -1261,7 +1222,8 @@
         if (!inp) return;
         let qty = parseInt(inp.value, 10);
         let min = parseInt(inp.min, 10) || 1;
-        let max = parseInt(inp.max, 10) || 1;
+        let max = parseInt(inp.max, 10);
+        if (deliveryQuantityPending || !Number.isFinite(max) || max < min) return;
 
         if (type === 'plus' && qty < max) {
             qty += 1;
@@ -1276,12 +1238,23 @@
     }
 
     function updateQuantity(key, element) {
+        if (deliveryQuantityPending) return;
+        const min = parseInt(element.min, 10) || 1;
+        const max = parseInt(element.max, 10);
+        if (!Number.isFinite(max) || max < min) return;
+        const requested = parseInt(element.value, 10);
+        element.value = Math.min(max, Math.max(min, Number.isFinite(requested) ? requested : min));
+        deliveryQuantityPending = true;
+        $('.quantity-group .qty-btn, .quantity-group input').prop('disabled', true);
         $.post('{{ route('cart.updateQuantity') }}', {
                 _token: AIZ.data.csrf,
                 id: key,
                 quantity: element.value
             },
             function(data) {
+                location.reload();
+            }).fail(function() {
+                // Reload authoritative quantities and restore controls after a failed update.
                 location.reload();
             });
     }
