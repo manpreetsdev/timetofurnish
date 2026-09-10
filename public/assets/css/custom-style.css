@@ -4909,6 +4909,7 @@ li.slick-active {
 
 .category-banner {
     width: 100%;
+    background: #fceee3;
     height: 500px;
     margin-top: 20px;
     overflow: hidden;
@@ -5513,18 +5514,4 @@ img.lazyload:not([data-src]):not([data-srcset]) {
     user-select: none !important;
     -webkit-user-select: none !important;
     -webkit-touch-callout: none !important;
-}
-/* Keep product editor text consistent with homepage subtitles on every device. */
-.redesigned-product-tabs .enhanced-editor-wrap .aiz-editor-data:is(.description, .specification),
-.redesigned-product-tabs .enhanced-editor-wrap .aiz-editor-data:is(.description, .specification) * {
-    font-size: 18px !important;
-    line-height: 1.6 !important;
-}
-
-@media (max-width: 767px) {
-    .redesigned-product-tabs .enhanced-editor-wrap .aiz-editor-data:is(.description, .specification),
-    .redesigned-product-tabs .enhanced-editor-wrap .aiz-editor-data:is(.description, .specification) * {
-        font-size: 16px !important;
-        line-height: 1.6 !important;
-    }
 }

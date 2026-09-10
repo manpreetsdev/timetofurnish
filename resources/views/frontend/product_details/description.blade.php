@@ -292,6 +292,27 @@
         }
     }
 
+    /* One responsive text size for every element supplied by the product editor. */
+    .enhanced-editor-wrap .aiz-editor-data.description,
+    .enhanced-editor-wrap .aiz-editor-data.specification {
+        --product-editor-font-size: 18px;
+    }
+
+    .enhanced-editor-wrap .aiz-editor-data.description,
+    .enhanced-editor-wrap .aiz-editor-data.description *,
+    .enhanced-editor-wrap .aiz-editor-data.specification,
+    .enhanced-editor-wrap .aiz-editor-data.specification * {
+        font-size: var(--product-editor-font-size) !important;
+        line-height: 1.6 !important;
+    }
+
+    @media (max-width: 767px) {
+        .enhanced-editor-wrap .aiz-editor-data.description,
+        .enhanced-editor-wrap .aiz-editor-data.specification {
+            --product-editor-font-size: 16px;
+        }
+    }
+
     /* Description & Specification styles */
     .description,
     .specification {
@@ -368,6 +389,15 @@
 </style>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Override inline editor sizes (including !important and font shorthands)
+        // before Read More saves/restores the HTML. The CSS variable responds to resizing.
+        document.querySelectorAll('.enhanced-editor-wrap .aiz-editor-data.description, .enhanced-editor-wrap .aiz-editor-data.specification').forEach(function(content) {
+            [content, ...content.querySelectorAll('*')].forEach(function(element) {
+                element.style.setProperty('font-size', 'var(--product-editor-font-size)', 'important');
+                element.style.setProperty('line-height', '1.6', 'important');
+            });
+        });
+
         // Recursive function to append toggle element into the very last child of a container
         function appendInlineToggle(container, element) {
             let lastChild = container.lastElementChild;
