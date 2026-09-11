@@ -2909,8 +2909,42 @@ if (!function_exists('get_single_category')) {
 if (!function_exists('get_level_zero_categories')) {
     function get_level_zero_categories()
     {
-        $categories_query = Category::query()->with(['coverImage', 'catIcon']);
-        return $categories_query->where('level', 0)->orderBy('order_level', 'desc')->get();
+        return \Illuminate\Support\Facades\Cache::remember('level_zero_categories', 3600, function () {
+            $categories_query = Category::query()->with(['coverImage', 'catIcon']);
+            return $categories_query->where('level', 0)->orderBy('order_level', 'desc')->get();
+        });
+    }
+}
+
+// Get product counts per category (matches filter_products() conditions), cached
+if (!function_exists('get_category_product_counts')) {
+    function get_category_product_counts()
+    {
+        return Cache::remember('category_product_counts', 1800, function () {
+            $query = \Illuminate\Support\Facades\DB::table('product_categories')
+                ->join('products', 'products.id', '=', 'product_categories.product_id')
+                ->where('products.published', 1)
+                ->where('products.auction_product', 0)
+                ->where('products.approved', 1);
+
+            if (!addon_is_activated('wholesale')) {
+                $query->where('products.wholesale_product', 0);
+            }
+
+            if (get_setting('vendor_system_activation') == 1) {
+                $verified_sellers = verified_sellers_id();
+                $query->where(function ($q) use ($verified_sellers) {
+                    $q->where('products.added_by', 'admin')
+                        ->orWhereIn('products.user_id', $verified_sellers);
+                });
+            } else {
+                $query->where('products.added_by', 'admin');
+            }
+
+            return $query->select('product_categories.category_id', \Illuminate\Support\Facades\DB::raw('count(*) as cnt'))
+                ->groupBy('product_categories.category_id')
+                ->pluck('cnt', 'category_id');
+        });
     }
 }
 
@@ -3784,7 +3818,7 @@ if (!function_exists('sync_cart_prices')) {
     function sync_cart_prices($carts)
     {
         foreach ($carts as $cart) {
-            $product = \App\Models\Product::find($cart->product_id);
+            $product = $cart->relationLoaded('product') ? $cart->product : \App\Models\Product::find($cart->product_id);
             if (!$product) continue;
 
             $cartItem_addons = !empty($cart->addons) ? json_decode($cart->addons, true) : [];

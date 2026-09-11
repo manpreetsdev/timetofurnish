@@ -1,5 +1,5 @@
 <div class="modal-body px-4 py-5 c-scrollbar-light">
-    <div class="row">
+    <div class="row align-items-start">
         <!-- Product Image gallery -->
         <div class="col-lg-6">
             <div class="row gutters-10 flex-row-reverse">

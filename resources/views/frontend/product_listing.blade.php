@@ -91,7 +91,7 @@ if (request()->has('page') && request('page') > 1) {
                                             <a class="filter-pill-item"
                                                 href="{{ route('products.category', $category->slug) }}">
                                                 <span class="category-name">{{ $category->getTranslation('name') }}</span>
-                                                <span class="category-count-badge">{{ filter_products($category->products())->count() }}</span>
+                                                <span class="category-count-badge">{{ $category_counts[$category->id] ?? 0 }}</span>
                                             </a>
                                         </li>
                                         @endforeach
@@ -115,7 +115,7 @@ if (request()->has('page') && request('page') > 1) {
                                             <a class="filter-pill-item active-pill"
                                                 href="{{ route('products.category', $category->slug) }}">
                                                 <span class="category-name">{{ $category->getTranslation('name') }}</span>
-                                                <span class="category-count-badge">{{ filter_products($category->products())->count() }}</span>
+                                                <span class="category-count-badge">{{ $category_counts[$category->id] ?? 0 }}</span>
                                             </a>
                                         </li>
                                         @foreach ($category->childrenCategories as $key => $immediate_children_category)
@@ -123,7 +123,7 @@ if (request()->has('page') && request('page') > 1) {
                                             <a class="filter-pill-item"
                                                 href="{{ route('products.category', $immediate_children_category->slug) }}">
                                                 <span class="category-name">{{ $immediate_children_category->getTranslation('name') }}</span>
-                                                <span class="category-count-badge">{{ filter_products($immediate_children_category->products())->count() }}</span>
+                                                <span class="category-count-badge">{{ $category_counts[$immediate_children_category->id] ?? 0 }}</span>
                                             </a>
                                         </li>
                                         @endforeach

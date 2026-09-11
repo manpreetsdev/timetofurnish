@@ -22,9 +22,10 @@ class SearchController extends Controller
         $min_price = $request->min_price;
         $max_price = $request->max_price;
         $seller_id = $request->seller_id;
-        $attributes = Attribute::all();
+        $attributes = \Illuminate\Support\Facades\Cache::remember('all_attributes', 3600, fn () => Attribute::all());
         $selected_attribute_values = array();
-        $colors = Color::all();
+        $colors = \Illuminate\Support\Facades\Cache::remember('all_colors', 3600, fn () => Color::all());
+        $category_counts = get_category_product_counts();
         $selected_color = null;
         $category = [];
         $categories = [];
@@ -136,7 +137,7 @@ class SearchController extends Controller
 
         $products = filter_products($products)->with(['taxes', 'stocks', 'thumbnail'])->paginate(24)->appends(request()->query());
 
-        return view('frontend.product_listing', compact('products', 'query', 'category', 'categories', 'category_id', 'brand_id', 'sort_by', 'seller_id', 'min_price', 'max_price', 'attributes', 'selected_attribute_values', 'colors', 'selected_color'));
+        return view('frontend.product_listing', compact('products', 'query', 'category', 'categories', 'category_id', 'brand_id', 'sort_by', 'seller_id', 'min_price', 'max_price', 'attributes', 'selected_attribute_values', 'colors', 'selected_color', 'category_counts'));
     }
 
     public function listing(Request $request)
