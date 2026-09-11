@@ -1,123 +1,109 @@
 <form class="form-default" role="form" action="{{ route('addresses.update', $address_data->id) }}" method="POST">
     @csrf
-    <div class="p-3">
-        <!-- Address -->
-        <div class="row">
-            <div class="col-md-2">
-                <label>{{ translate(' What's your residential  address')}}</label>
-            </div>
-            <div class="col-md-10">
-                <textarea class="form-control mb-3 rounded-0" placeholder="{{ translate('Your Address')}}" rows="2" name="address" required>{{ $address_data->address }}</textarea>
-            </div>
+    <div class="row">
+        <!-- Flat / Building -->
+        <div class="col-md-6 mb-3">
+            <label class="address-form-label">
+                {{ translate('Flat / Building Number or Name') }} <span class="req">*</span>
+            </label>
+            <input type="text" class="form-control address-form-control" placeholder="{{ translate('e.g. Flat 4B, Victoria House') }}" name="flat" value="{{ $address_data->flat }}" required>
         </div>
 
+        <!-- Street -->
+        <div class="col-md-6 mb-3">
+            <label class="address-form-label">
+                {{ translate('Street Address') }} <span class="req">*</span>
+            </label>
+            <input type="text" class="form-control address-form-control" placeholder="{{ translate('e.g. 12 High Street') }}" name="street" value="{{ $address_data->street }}" required>
+        </div>
+    </div>
+
+    <!-- Full Address -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <label class="address-form-label">
+                {{ translate('Full Address Details') }} <span class="req">*</span>
+            </label>
+            <textarea class="form-control address-form-control" rows="2" placeholder="{{ translate('Full address summary') }}" name="address" required>{{ $address_data->address }}</textarea>
+        </div>
+    </div>
+
+    <div class="row">
         <!-- Country -->
-        <div class="row">
-            <div class="col-md-2">
-                <label>{{ translate('Country')}}</label>
-            </div>
-            <div class="col-md-10">
-                <div class="mb-3">
-                    <select class="form-control aiz-selectpicker rounded-0" data-live-search="true" data-placeholder="{{ translate('Select your country')}}" name="country_id" id="edit_country" required>
-                        <option value="">{{ translate('Select your country') }}</option>
-                        @foreach (get_active_countries() as $key => $country)
-                        <option value="{{ $country->id }}" @if($address_data->country_id == $country->id) selected @endif>
-                            {{ $country->name }}
-                        </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
+        <div class="col-md-6 mb-3">
+            <label class="address-form-label">
+                {{ translate('Country') }} <span class="req">*</span>
+            </label>
+            <select class="form-control address-form-control address-select-native" name="country_id" id="edit_country" required>
+                <option value="">{{ translate('Select your country') }}</option>
+                @foreach (get_active_countries() as $country)
+                    <option value="{{ $country->id }}" @if($address_data->country_id == $country->id) selected @endif>
+                        {{ $country->name }}
+                    </option>
+                @endforeach
+            </select>
         </div>
 
-        <!-- State -->
-        <div class="row">
-            <div class="col-md-2">
-                <label>{{ translate('State')}}</label>
-            </div>
-            <div class="col-md-10">
-                <select class="form-control mb-3 aiz-selectpicker rounded-0" name="state_id" id="edit_state"  data-live-search="true" required>
-                    @foreach ($states as $key => $state)
-                        <option value="{{ $state->id }}" @if($address_data->state_id == $state->id) selected @endif>
-                            {{ $state->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+        <!-- Town or City -->
+        <div class="col-md-6 mb-3">
+            <label class="address-form-label">
+                {{ translate('Town or City') }} <span class="req">*</span>
+            </label>
+            <input type="text" class="form-control address-form-control" placeholder="{{ translate('e.g. London') }}" name="city_id" value="{{ $address_data->city_id }}" required>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Post Code -->
+        <div class="col-md-6 mb-3">
+            <label class="address-form-label">
+                {{ translate('Postcode / Postal Code') }} <span class="req">*</span>
+            </label>
+            <input type="text" class="form-control address-form-control" placeholder="{{ translate('e.g. SW1A 1AA') }}" name="postal_code" value="{{ $address_data->postal_code }}" required>
         </div>
 
-        <!-- City -->
-        <div class="row">
-            <div class="col-md-2">
-                <label>{{ translate('City')}}</label>
-            </div>
-            <div class="col-md-10">
-                <select class="form-control mb-3 aiz-selectpicker rounded-0" data-live-search="true" name="city_id" required>
-                    @foreach ($cities as $key => $city)
-                        <option value="{{ $city->id }}" @if($address_data->city_id == $city->id) selected @endif>
-                            {{ $city->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+        <!-- Mobile Phone -->
+        <div class="col-md-6 mb-3">
+            <label class="address-form-label">
+                {{ translate('Mobile Phone Number') }} <span class="req">*</span>
+            </label>
+            <input type="text" class="form-control address-form-control" inputmode="numeric" maxlength="15" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="phone" value="{{ $address_data->phone }}" required>
         </div>
-        
-        @if (get_setting('google_map') == 1)
-            <!-- Google Map -->
-            <div class="row mt-3 mb-3">
-                <input id="edit_searchInput" class="controls" type="text" placeholder="Enter a location">
-                <div id="edit_map"></div>
-                <ul id="geoData">
-                    <li style="display: none;">Full Address: <span id="location"></span></li>
-                    <li style="display: none;">Post Code: <span id="postal_code"></span></li>
-                    <li style="display: none;">Country: <span id="country"></span></li>
-                    <li style="display: none;">Latitude: <span id="lat"></span></li>
-                    <li style="display: none;">Longitude: <span id="lon"></span></li>
+    </div>
+
+    <div class="row">
+        <!-- Landline Number -->
+        <div class="col-md-12 mb-3">
+            <label class="address-form-label">
+                {{ translate('Landline Number (Optional)') }}
+            </label>
+            <input type="text" class="form-control address-form-control" inputmode="numeric" maxlength="15" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="landline_no" value="{{ $address_data->landline_no }}">
+        </div>
+    </div>
+
+    @if (get_setting('google_map') == 1)
+        <!-- Google Map Integration -->
+        <div class="row mt-2 mb-3">
+            <div class="col-12">
+                <input id="edit_searchInput" class="controls form-control address-form-control mb-2" type="text" placeholder="{{ translate('Search location on map') }}">
+                <div id="edit_map" style="height: 220px; border-radius: 8px;"></div>
+                <ul id="geoData" style="display:none;">
+                    <li>Full Address: <span id="location"></span></li>
+                    <li>Post Code: <span id="postal_code"></span></li>
+                    <li>Country: <span id="country"></span></li>
+                    <li>Latitude: <span id="lat"></span></li>
+                    <li>Longitude: <span id="lon"></span></li>
                 </ul>
             </div>
-            <!-- Longitude -->
-            <div class="row">
-                <div class="col-md-2" id="">
-                    <label for="exampleInputuname">{{ translate('Longitude')}}</label>
-                </div>
-                <div class="col-md-10" id="">
-                    <input type="text" class="form-control mb-3 rounded-0" id="edit_longitude" name="longitude" value="{{ $address_data->longitude }}" readonly="">
-                </div>
-            </div>
-            <!-- Latitude -->
-            <div class="row">
-                <div class="col-md-2" id="">
-                    <label for="exampleInputuname">{{ translate('Latitude')}}</label>
-                </div>
-                <div class="col-md-10" id="">
-                    <input type="text" class="form-control mb-3 rounded-0" id="edit_latitude" name="latitude" value="{{ $address_data->latitude }}" readonly="">
-                </div>
-            </div>
-        @endif
-
-        <!-- Post Code -->
-        <div class="row">
-            <div class="col-md-2">
-                <label>{{ translate('Post code')}}</label>
-            </div>
-            <div class="col-md-10">
-                <input type="text" class="form-control mb-3 rounded-0" placeholder="{{ translate('Your Post Code')}}" value="{{ $address_data->postal_code }}" name="postal_code" value="" required>
-            </div>
         </div>
+        <input type="hidden" id="edit_longitude" name="longitude" value="{{ $address_data->longitude }}">
+        <input type="hidden" id="edit_latitude" name="latitude" value="{{ $address_data->latitude }}">
+    @endif
 
-        <!-- Phone -->
-        <div class="row">
-            <div class="col-md-2">
-                <label>{{ translate('Phone')}}</label>
-            </div>
-            <div class="col-md-10">
-                <input type="text" class="form-control mb-3 rounded-0" placeholder=" value="{{ $address_data->phone }}" name="phone" value="" required>
-            </div>
-        </div>
-
-        <!-- Save button -->
-        <div class="form-group text-right">
-            <button type="submit" class="btn btn-primary rounded-0 w-150px">{{translate('Save')}}</button>
-        </div>
+    <!-- Submit Button -->
+    <div class="form-group mb-0 text-right mt-3">
+        <button type="submit" class="btn address-save-btn">
+            {{ translate('Update Address') }}
+        </button>
     </div>
 </form>

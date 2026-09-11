@@ -459,125 +459,6 @@ $wishlists = get_user_wishlist();
 </div>
 
 
-<!-- =========================
-     WISHLIST
-========================= -->
-<div class="dashboard-main-card wishlist-dashboard-card">
-
-    <div class="dashboard-card-header">
-
-        <div>
-            <span class="card-small-title">
-                YOUR FAVORITES
-            </span>
-
-            <h3>
-                My Wishlist
-            </h3>
-        </div>
-
-        <a href="{{ route('wishlists.index') }}"
-            class="dashboard-view-all">
-            View All
-            <i class="las la-arrow-right"></i>
-        </a>
-
-    </div>
-
-
-    @if(count($wishlists) > 0)
-
-    <div class="dashboard-wishlist-grid">
-
-        @foreach($wishlists->take(4) as $wishlist)
-
-        @if($wishlist->product != null)
-
-        <div class="dashboard-product-card">
-
-            <div class="dashboard-product-image">
-
-                <a href="{{ route('product', $wishlist->product->slug) }}">
-
-                    <img src="{{ uploaded_asset($wishlist->product->thumbnail_img) }}"
-                        alt="{{ $wishlist->product->getTranslation('name') }}">
-
-                </a>
-
-
-                <button type="button"
-                    class="wishlist-remove-btn"
-                    onclick="removeFromWishlist({{ $wishlist->id }})">
-
-                    <i class="las la-trash"></i>
-
-                </button>
-
-            </div>
-
-
-            <div class="dashboard-product-content">
-
-                <h5>
-
-                    <a href="{{ route('product', $wishlist->product->slug) }}">
-
-                        {{ $wishlist->product->getTranslation('name') }}
-
-                    </a>
-
-                </h5>
-
-
-                <div class="dashboard-product-bottom">
-
-                    <span>
-                        {{ home_discounted_base_price($wishlist->product) }}
-                    </span>
-
-                    @if(home_base_price($wishlist->product) != home_discounted_base_price($wishlist->product))
-
-                    <del>
-                        {{ home_base_price($wishlist->product) }}
-                    </del>
-
-                    @endif
-
-                </div>
-
-            </div>
-
-        </div>
-
-        @endif
-
-        @endforeach
-
-    </div>
-
-    @else
-
-    <div class="dashboard-wishlist-empty">
-
-        <i class="lar la-heart"></i>
-
-        <h5>
-            Your wishlist is empty
-        </h5>
-
-        <p>
-            Save your favourite furniture products here.
-        </p>
-
-        <a href="{{ route('home') }}">
-            Explore Products
-        </a>
-
-    </div>
-
-    @endif
-
-</div>
 
 @endsection
 
@@ -595,6 +476,75 @@ $wishlists = get_user_wishlist();
 @endsection
 
 @section('script')
+<script type="text/javascript">
+    function removeFromWishlist(id) {
+        var $item = $('#wishlist_' + id);
+        var $grid = $item.parent();
+
+        if ($item.length) {
+            $item.css({
+                'transition': 'all 0.25s ease-out',
+                'opacity': '0',
+                'transform': 'scale(0.85)'
+            });
+
+            setTimeout(function() {
+                $item.slideUp(200, function() {
+                    $item.remove();
+                    showWishlistEmptyState();
+                });
+            }, 200);
+        }
+
+        var $badge = $('#wishlist .badge');
+        if ($badge.length) {
+            var currentCount = parseInt($badge.text().trim()) || 0;
+            if (currentCount > 1) {
+                $badge.text(currentCount - 1);
+            } else {
+                $badge.remove();
+            }
+        }
+
+        $.post(
+            '{{ route('wishlists.remove') }}',
+            {
+                _token: '{{ csrf_token() }}',
+                id: id
+            },
+            function(data) {
+                if (data) {
+                    $('#wishlist').html(data);
+                }
+                AIZ.plugins.notify(
+                    'success',
+                    '{{ translate("Item has been removed from wishlist") }}'
+                );
+            }
+        ).fail(function() {
+            if ($item.length) {
+                $('#wishlist-empty-state').remove();
+                $grid.append($item.show().css({'opacity': '1', 'transform': 'none'}));
+            }
+            AIZ.plugins.notify(
+                'danger',
+                '{{ translate("Something went wrong, please try again") }}'
+            );
+        });
+    }
+
+    function showWishlistEmptyState() {
+        if ($('.wishlist-modern-card').length || $('#wishlist-empty-state').length || $('#wishlist-empty-container').length) return;
+
+        $('.wishlist-grid-row').after(
+            '<div id="wishlist-empty-state" class="text-center py-5 w-100">' +
+                '<i class="lar la-heart fs-48 opacity-40"></i>' +
+                '<h5 class="mt-3">{{ translate("Your wishlist is empty") }}</h5>' +
+                '<p class="text-muted">{{ translate("Save your favourite furniture products here.") }}</p>' +
+            '</div>'
+        );
+    }
+</script>
 @if (get_setting('google_map') == 1)
 @include('frontend.'.get_setting('homepage_select').'.partials.google_map')
 @endif

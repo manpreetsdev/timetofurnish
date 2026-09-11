@@ -66,11 +66,13 @@ class CartController extends Controller
 
                 Session::forget('temp_user_id');
             }
-            $carts = Cart::whereHas('product', function($q) {
-                $q->isApprovedPublished();
-            })->where('user_id', $user_id)->get();
+            $carts = Cart::with(['product.thumbnail', 'product.stocks', 'product.taxes'])
+                ->whereHas('product', function($q) {
+                    $q->isApprovedPublished();
+                })->where('user_id', $user_id)->get();
 
             $expired_carts = Cart::expiredReservations()
+                ->with(['product.thumbnail', 'product.stocks', 'product.taxes'])
                 ->whereHas('product', function($q) {
                     $q->isApprovedPublished();
                 })
@@ -80,13 +82,15 @@ class CartController extends Controller
         } else {
             $temp_user_id = $request->session()->get('temp_user_id');
             $carts = ($temp_user_id != null)
-                ? Cart::whereHas('product', function($q) {
+                ? Cart::with(['product.thumbnail', 'product.stocks', 'product.taxes'])
+                    ->whereHas('product', function($q) {
                     $q->isApprovedPublished();
                 })->where('temp_user_id', $temp_user_id)->get()
                 : collect();
 
             if ($temp_user_id != null) {
                 $expired_carts = Cart::expiredReservations()
+                    ->with(['product.thumbnail', 'product.stocks', 'product.taxes'])
                     ->whereHas('product', function($q) {
                         $q->isApprovedPublished();
                     })
@@ -102,13 +106,13 @@ class CartController extends Controller
 
     public function showCartModal(Request $request)
     {
-        $product = Product::find($request->id);
+        $product = Product::with(['thumbnail', 'stocks', 'taxes'])->find($request->id);
         return view('frontend.' . get_setting('homepage_select') . '.partials.addToCart', compact('product'));
     }
 
     public function showCartModalAuction(Request $request)
     {
-        $product = Product::find($request->id);
+        $product = Product::with(['thumbnail', 'stocks', 'taxes'])->find($request->id);
         return view('auction.frontend.addToCartAuction', compact('product'));
     }
 
@@ -117,7 +121,7 @@ class CartController extends Controller
         // dd($request->all());
         $carts = Cart::where('user_id', auth()->user()->id)->get();
         $check_auction_in_cart = CartUtility::check_auction_in_cart($carts);
-        $product = Product::find($request->id);
+        $product = Product::with(['thumbnail', 'stocks', 'taxes'])->find($request->id);
         $carts = array();
 
         if ($check_auction_in_cart && $product->auction_product == 0) {

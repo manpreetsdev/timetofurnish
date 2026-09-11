@@ -59,12 +59,13 @@ class WishlistController extends Controller
 
     public function remove(Request $request)
     {
-        $wishlist = Wishlist::findOrFail($request->id);
-        if($wishlist!=null){
-            if(Wishlist::destroy($request->id)){
-                return view('frontend.'.get_setting('homepage_select').'.partials.wishlist');
-            }
-        }
+        $wishlist = Wishlist::where('id', $request->id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $wishlist->delete();
+
+        return view('frontend.'.get_setting('homepage_select').'.partials.wishlist');
     }
 
     /**
