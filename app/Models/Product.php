@@ -18,6 +18,11 @@ class Product extends Model
         $product_translations = $this->product_translations->where('lang', $lang)->first();
         return $product_translations != null ? $product_translations->$field : $this->$field;
     }
+    public function keywords()
+    {
+        return $this->hasMany(ProductKeyword::class);
+    }
+
     public function checkoutServices()
     {
         return $this->belongsToMany(

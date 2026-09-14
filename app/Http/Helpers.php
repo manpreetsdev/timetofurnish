@@ -2812,6 +2812,108 @@ if (!function_exists('get_home_page_classified_products')) {
     }
 }
 
+// Generate SEO keyword candidates for a product (primary + secondary), without any external SEO tool.
+// Strips internal model codes / bundle filler from the product name, keeps recognised
+// descriptive/material/style words, and pairs them with the leaf category name.
+if (!function_exists('generate_seo_keyword_candidates')) {
+    function generate_seo_keyword_candidates($product)
+    {
+        $descriptiveWhitelist = [
+            'fabric', 'luxury', 'premium', 'modern', 'contemporary', 'velvet', 'leather',
+            'linen', 'boucle', 'bouclé', 'chenille', 'corner', 'l-shaped', 'u-shaped',
+            'recliner', 'reclining', 'storage', 'ottoman', 'king', 'queen', 'double',
+            'single', 'super king', 'wooden', 'wood', 'upholstered', 'tufted',
+            'chesterfield', 'sleeper', 'armchair', 'footstool', 'adjustable', 'standing',
+            'sliding', 'hinged', 'mirrored', 'glass', 'marble', 'rustic', 'industrial',
+            'minimalist', 'scandi', 'scandinavian', 'compact', 'extendable', 'folding',
+            'convertible', 'rattan', 'oak', 'walnut', 'grey', 'black', 'white', 'beige',
+            'small', 'large', 'family', 'sofa bed',
+        ];
+
+        $stopwords = [
+            'with', 'optional', 'only', 'not', 'included', 'available', 'table', 'and',
+            'for', 'the', 'a', 'an', 'of', 'in', 'to', 'coffee', 'set',
+        ];
+
+        $name = strtolower($product->getTranslation('name') ?: $product->name);
+        $name = preg_replace('/\([^)]*\)/', ' ', $name); // drop parenthetical bundle notes
+        $name = preg_replace('/[^a-z0-9\s\-]/', ' ', $name);
+
+        $tokens = preg_split('/\s+/', trim($name));
+        $tokens = array_filter($tokens, function ($token) {
+            if ($token === '') {
+                return false;
+            }
+            // drop internal model codes: "ttf...", or alnum tokens mixing letters+digits (e.g. sultana2628, ttf286)
+            if (preg_match('/^ttf/i', $token)) {
+                return false;
+            }
+            if (preg_match('/^[a-z]+\d+$/i', $token) || preg_match('/^\d+$/', $token)) {
+                return false;
+            }
+            return true;
+        });
+        $tokens = array_values(array_diff($tokens, $stopwords));
+
+        // The "core noun" is what the product actually IS (sofa, bed, wardrobe...) — taken
+        // straight from the product name, same as a human would read it, rather than the
+        // taxonomy (a product here can be tagged under many sibling categories at once).
+        $coreNouns = [
+            'sofa' => 'sofa', 'sofas' => 'sofa', 'bed' => 'bed', 'beds' => 'bed',
+            'wardrobe' => 'wardrobe', 'wardrobes' => 'wardrobe', 'table' => 'table',
+            'tables' => 'table', 'chair' => 'chair', 'chairs' => 'chair', 'rug' => 'rug',
+            'rugs' => 'rug', 'desk' => 'desk', 'desks' => 'desk', 'cabinet' => 'cabinet',
+            'cabinets' => 'cabinet', 'bookcase' => 'bookcase', 'bookcases' => 'bookcase',
+            'sideboard' => 'sideboard', 'sideboards' => 'sideboard', 'footstool' => 'footstool',
+            'footstools' => 'footstool', 'mattress' => 'mattress', 'mattresses' => 'mattress',
+            'armchair' => 'armchair', 'armchairs' => 'armchair', 'bookshelf' => 'bookshelf',
+            'dresser' => 'dressing table', 'nightstand' => 'bedside table',
+        ];
+
+        $categoryCore = null;
+        foreach ($tokens as $token) {
+            if (isset($coreNouns[$token])) {
+                $categoryCore = $coreNouns[$token];
+                break;
+            }
+        }
+
+        if ($categoryCore === null) {
+            $category = $product->main_category ?: ($product->category_id ? Category::find($product->category_id) : null);
+            $categoryName = $category ? strtolower($category->getTranslation('name')) : 'furniture';
+            $categoryTokens = array_values(array_diff(preg_split('/[\s&]+/', trim($categoryName)), ['and', '']));
+            $firstWord = $categoryTokens[0] ?? 'furniture';
+            $categoryCore = trim(preg_replace('/s$/', '', $firstWord));
+        }
+
+        $categoryWords = preg_split('/\s+/', trim($categoryCore));
+
+        $descriptive = [];
+        foreach ($tokens as $token) {
+            if (in_array($token, $descriptiveWhitelist) && !in_array($token, $categoryWords)) {
+                $descriptive[] = $token;
+            }
+        }
+        $descriptive = array_slice(array_unique($descriptive), 0, 3);
+
+        $primary = trim(implode(' ', array_merge($descriptive, [$categoryCore])));
+        $primary = preg_replace('/\s+/', ' ', $primary);
+
+        $secondary = array_unique(array_filter([
+            trim($categoryCore . 's'),
+            trim('modern ' . $categoryCore),
+            trim('premium ' . $categoryCore),
+            count($descriptive) > 1 ? trim($descriptive[0] . ' ' . $descriptive[1] . ' ' . $categoryCore . 's') : trim($categoryCore . 's for living room'),
+        ]));
+        $secondary = array_values(array_diff($secondary, [$primary]));
+
+        return [
+            'primary' => $primary,
+            'secondary' => $secondary,
+        ];
+    }
+}
+
 // Get related product
 if (!function_exists('get_related_products')) {
     function get_related_products($product)
