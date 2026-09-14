@@ -2816,8 +2816,10 @@ if (!function_exists('get_home_page_classified_products')) {
 if (!function_exists('get_related_products')) {
     function get_related_products($product)
     {
-        $product_query = Product::query();
-        return filter_products($product_query->where('id', '!=', $product->id)->where('category_id', $product->category_id))->limit(10)->get();
+        return Cache::remember('related_products_' . $product->id, 3600, function () use ($product) {
+            $product_query = Product::with(['thumbnail', 'stocks', 'taxes']);
+            return filter_products($product_query->where('id', '!=', $product->id)->where('category_id', $product->category_id))->limit(10)->get();
+        });
     }
 }
 
@@ -3304,13 +3306,13 @@ if (!function_exists('get_user_cart')) {
     {
         $cart = [];
         if (auth()->user() != null) {
-            $cart = Cart::whereHas('product', function($q) {
+            $cart = Cart::with(['product.thumbnail', 'product.stocks'])->whereHas('product', function($q) {
                 $q->isApprovedPublished();
             })->where('user_id', Auth::user()->id)->get();
         } else {
             $temp_user_id = Session()->get('temp_user_id');
             if ($temp_user_id) {
-                $cart = Cart::whereHas('product', function($q) {
+                $cart = Cart::with(['product.thumbnail', 'product.stocks'])->whereHas('product', function($q) {
                     $q->isApprovedPublished();
                 })->where('temp_user_id', $temp_user_id)->get();
             }

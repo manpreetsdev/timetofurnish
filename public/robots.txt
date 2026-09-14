@@ -21,3 +21,5 @@ Disallow: /conversations
 Disallow: /shops
 Disallow: /seller
 Disallow: /deliveryboy
+
+Sitemap: https://timetofurnish.com/sitemap.xml

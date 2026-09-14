@@ -34,6 +34,57 @@
 <meta property="og:image" content="{{ uploaded_asset($blog->meta_img) }}" />
 <meta property="og:description" content="{{ $seoDescription }}" />
 <meta property="og:site_name" content="{{ env('APP_NAME') }}" />
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": {!! json_encode($seoTitle) !!},
+    "description": {!! json_encode($seoDescription) !!},
+    "image": {!! json_encode(uploaded_asset($blog->meta_img)) !!},
+    "datePublished": {!! json_encode($blog->created_at ? $blog->created_at->toIso8601String() : null) !!},
+    "dateModified": {!! json_encode($blog->updated_at ? $blog->updated_at->toIso8601String() : null) !!},
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": {!! json_encode(url('blog/' . $blog->slug)) !!}
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": {!! json_encode(get_setting('website_name')) !!},
+        "logo": {
+            "@type": "ImageObject",
+            "url": {!! json_encode(uploaded_asset(get_setting('logo'))) !!}
+        }
+    }
+}
+</script>
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": {!! json_encode(url('/')) !!}
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Blogs",
+            "item": {!! json_encode(route('blog')) !!}
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": {!! json_encode($blog->title) !!},
+            "item": {!! json_encode(url('blog/' . $blog->slug)) !!}
+        }
+    ]
+}
+</script>
 @endsection
 
 @section('content')
