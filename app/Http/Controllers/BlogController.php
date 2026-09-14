@@ -197,14 +197,20 @@ class BlogController extends Controller
         
         $blogs = $blogs->where('status', 1)->orderBy('created_at', 'desc')->paginate(12);
 
-        $recent_blogs = Blog::where('status', 1)->orderBy('created_at', 'desc')->limit(9)->get();
+        $recent_blogs = $this->get_recent_blogs();
 
         return view("frontend.blog.listing", compact('blogs', 'selected_categories', 'search', 'recent_blogs'));
     }
-    
+
     public function blog_details($slug) {
         $blog = Blog::where('slug', $slug)->first();
-        $recent_blogs = Blog::where('status', 1)->orderBy('created_at', 'desc')->limit(9)->get();
+        $recent_blogs = $this->get_recent_blogs();
         return view("frontend.blog.details", compact('blog', 'recent_blogs'));
+    }
+
+    private function get_recent_blogs() {
+        return \Illuminate\Support\Facades\Cache::remember('recent_blogs', 3600, function () {
+            return Blog::where('status', 1)->orderBy('created_at', 'desc')->limit(9)->get();
+        });
     }
 }

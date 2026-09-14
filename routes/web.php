@@ -358,6 +358,22 @@ Route::get('/sitemap.xml', function () {
             }
         });
 
+    // 5. Blogs
+    \App\Models\Blog::select('slug', 'updated_at')
+        ->where('status', 1)
+        ->chunk(300, function ($blogs) use ($xml) {
+            foreach ($blogs as $blog) {
+                $xml->startElement('url');
+                $xml->writeElement('loc', url('blog/' . $blog->slug));
+                if ($blog->updated_at) {
+                    $xml->writeElement('lastmod', $blog->updated_at->toAtomString());
+                }
+                $xml->writeElement('changefreq', 'weekly');
+                $xml->writeElement('priority', '0.6');
+                $xml->endElement();
+            }
+        });
+
     $xml->endElement();
     $xml->endDocument();
 

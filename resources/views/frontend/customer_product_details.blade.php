@@ -13,15 +13,15 @@
 
 @section('meta')
     <!-- Schema.org markup for Google+ -->
-    <meta itemprop="name" content="{{ $customer_product->meta_title }}">
-    <meta itemprop="description" content="{{ $customer_product->meta_description }}">
+    <meta itemprop="name" content="{{ $seoTitle }}">
+    <meta itemprop="description" content="{{ $seoDescription }}">
     <meta itemprop="image" content="{{ uploaded_asset($customer_product->meta_img) }}">
 
     <!-- Twitter Card data -->
     <meta name="twitter:card" content="product">
     <meta name="twitter:site" content="@publisher_handle">
-    <meta name="twitter:title" content="{{ $customer_product->meta_title }}">
-    <meta name="twitter:description" content="{{ $customer_product->meta_description }}">
+    <meta name="twitter:title" content="{{ $seoTitle }}">
+    <meta name="twitter:description" content="{{ $seoDescription }}">
     <meta name="twitter:creator"
         content="@author_handle">
     <meta name="twitter:image" content="{{ uploaded_asset($customer_product->meta_img) }}">
@@ -29,12 +29,12 @@
     <meta name="twitter:label1" content="Price">
 
     <!-- Open Graph data -->
-    <meta property="og:title" content="{{ $customer_product->meta_title }}" />
+    <meta property="og:title" content="{{ $seoTitle }}" />
     <meta property="og:type" content="product" />
     <meta property="og:url" content="{{ route('customer.product', $customer_product->slug) }}" />
     <meta property="og:image" content="{{ uploaded_asset($customer_product->meta_img) }}" />
-    <meta property="og:description" content="{{ $customer_product->meta_description }}" />
-    <meta property="og:site_name" content="{{ get_setting('meta_title') }}" />
+    <meta property="og:description" content="{{ $seoDescription }}" />
+    <meta property="og:site_name" content="{{ get_setting('website_name') }}" />
     <meta property="og:price:amount" content="{{ single_price($customer_product->unit_price) }}" />
 @endsection
 

@@ -3,7 +3,7 @@
     $carts = get_user_cart();
     if (count($carts) > 0) {
         foreach ($carts as $key => $cartItem) {
-            $product = get_single_product($cartItem['product_id']);
+            $product = $cartItem->relationLoaded('product') ? $cartItem->product : get_single_product($cartItem['product_id']);
             $item_total = cart_product_price($cartItem, $product, false) * $cartItem['quantity'];
 
             if (!empty($cartItem['addons'])) {
@@ -51,7 +51,7 @@
         <ul class="list-group list-group-flush cart-products-list">
             @foreach ($carts as $key => $cartItem)
                 @php
-                    $product = get_single_product($cartItem['product_id']);
+                    $product = $cartItem->relationLoaded('product') ? $cartItem->product : get_single_product($cartItem['product_id']);
                     $product_price = cart_product_price($cartItem, $product, false);
                     $has_addons = !empty($cartItem['addons']);
                     $addons = $has_addons ? json_decode($cartItem['addons'], true) : [];

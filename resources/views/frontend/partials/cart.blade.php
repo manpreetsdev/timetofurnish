@@ -3,7 +3,7 @@
     $carts = get_user_cart();
     if(count($carts) > 0) {
         foreach ($carts as $key => $cartItem) {
-            $product = get_single_product($cartItem['product_id']);
+            $product = $cartItem->relationLoaded('product') ? $cartItem->product : get_single_product($cartItem['product_id']);
             $total = $total + cart_product_price($cartItem, $product, false) * $cartItem['quantity'];
         }
     }
@@ -35,7 +35,7 @@
         <ul class="h-360px overflow-auto c-scrollbar-light list-group list-group-flush mx-1">
             @foreach ($carts as $key => $cartItem)
                 @php
-                    $product = get_single_product($cartItem['product_id']);
+                    $product = $cartItem->relationLoaded('product') ? $cartItem->product : get_single_product($cartItem['product_id']);
                 @endphp
                 @if ($product != null)
                     <li class="list-group-item border-0 hov-scale-img">

@@ -1,5 +1,45 @@
 @extends('frontend.layouts.app')
 @php
+    $is_filtered = $search || !empty($selected_categories);
+    $current_page = $blogs->currentPage();
+    $blog_seo_title = $current_page > 1
+        ? translate('Blogs') . ' - ' . translate('Page') . ' ' . $current_page . ' | ' . get_setting('website_name')
+        : translate('Blogs') . ' | ' . get_setting('website_name');
+    $blog_seo_description = seo_description(null, translate('Read the latest articles, guides and news from') . ' ' . get_setting('website_name') . '.');
+    $blog_canonical_base = route('blog');
+    $blog_canonical_url = $current_page > 1 ? $blog_canonical_base . '?page=' . $current_page : $blog_canonical_base;
+@endphp
+
+@section('meta_title'){{ $blog_seo_title }}@stop
+
+@section('meta_description'){{ $blog_seo_description }}@stop
+
+@section('canonical_url'){{ $blog_canonical_url }}@stop
+
+@section('meta')
+@if ($is_filtered)
+<meta name="robots" content="noindex, follow">
+@endif
+
+<meta property="og:title" content="{{ $blog_seo_title }}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ $blog_canonical_url }}" />
+<meta property="og:description" content="{{ $blog_seo_description }}" />
+<meta property="og:site_name" content="{{ get_setting('website_name') }}" />
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{{ $blog_seo_title }}">
+<meta name="twitter:description" content="{{ $blog_seo_description }}">
+
+@if (!$is_filtered && $blogs->previousPageUrl())
+<link rel="prev" href="{{ $blog_canonical_base . ($current_page - 1 > 1 ? '?page=' . ($current_page - 1) : '') }}">
+@endif
+@if (!$is_filtered && $blogs->hasMorePages())
+<link rel="next" href="{{ $blog_canonical_base . '?page=' . ($current_page + 1) }}">
+@endif
+@endsection
+
+@php
     $banner = [
         'title' => 'Blogs',
         'breadcrumb_label' => 'Blogs',
