@@ -30,7 +30,7 @@
 
 @section('canonical_url'){{ route('product', $detailedProduct->slug) }}@stop
 
-@section('meta_keywords'){{ $detailedProduct->tags ?: ($productName . ', ' . $categoryName . ', ' . $brandName . ', buy online') }}@stop
+@section('meta_keywords'){{ product_meta_keywords($detailedProduct) }}@stop
 
 @section('meta')
     @php
