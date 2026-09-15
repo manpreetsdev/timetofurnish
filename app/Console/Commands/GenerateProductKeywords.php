@@ -47,17 +47,26 @@ class GenerateProductKeywords extends Command
 
                 ProductKeyword::updateOrCreate(
                     ['product_id' => $product->id, 'keyword' => $candidates['primary']],
-                    ['is_primary' => true, 'intent' => 'commercial', 'status' => 'pending']
+                    ['is_primary' => true, 'type' => 'primary', 'intent' => 'commercial', 'status' => 'pending']
                 );
 
-                foreach ($candidates['secondary'] as $secondary) {
-                    if ($secondary === '') {
-                        continue;
+                $typedGroups = [
+                    'secondary' => $candidates['secondary'] ?? [],
+                    'long_tail' => $candidates['long_tail'] ?? [],
+                    'material' => $candidates['material'] ?? [],
+                    'colour' => $candidates['colour'] ?? [],
+                ];
+
+                foreach ($typedGroups as $type => $keywords) {
+                    foreach ($keywords as $keyword) {
+                        if ($keyword === '') {
+                            continue;
+                        }
+                        ProductKeyword::updateOrCreate(
+                            ['product_id' => $product->id, 'keyword' => $keyword],
+                            ['is_primary' => false, 'type' => $type, 'intent' => 'commercial', 'status' => 'pending']
+                        );
                     }
-                    ProductKeyword::updateOrCreate(
-                        ['product_id' => $product->id, 'keyword' => $secondary],
-                        ['is_primary' => false, 'intent' => 'commercial', 'status' => 'pending']
-                    );
                 }
 
                 if ($applyToTags) {

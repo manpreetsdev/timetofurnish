@@ -2907,10 +2907,58 @@ if (!function_exists('generate_seo_keyword_candidates')) {
         ]));
         $secondary = array_values(array_diff($secondary, [$primary]));
 
+        // Long-tail: UK-intent and size/comfort qualified variants of the primary keyword.
+        $longTail = array_unique(array_filter([
+            trim($primary . ' uk'),
+            trim('large ' . $primary . ' uk'),
+            trim('comfortable ' . $primary),
+        ]));
+        $longTail = array_values(array_diff($longTail, [$primary]));
+
+        // Material/colour: pull out descriptive tokens that specifically denote material or colour.
+        $materialWords = ['fabric', 'velvet', 'leather', 'linen', 'boucle', 'bouclé', 'chenille', 'wooden', 'wood', 'rattan', 'oak', 'walnut', 'marble', 'glass'];
+        $colourWords = ['grey', 'black', 'white', 'beige'];
+
+        $material = array_values(array_unique(array_filter($descriptive, fn ($w) => in_array($w, $materialWords))));
+        $colour = array_values(array_unique(array_filter($descriptive, fn ($w) => in_array($w, $colourWords))));
+
+        $material = array_map(fn ($w) => trim($w . ' ' . $categoryCore), $material);
+        $colour = array_map(fn ($w) => trim($w . ' ' . $categoryCore), $colour);
+
         return [
             'primary' => $primary,
             'secondary' => $secondary,
+            'long_tail' => $longTail,
+            'material' => $material,
+            'colour' => $colour,
         ];
+    }
+}
+
+if (!function_exists('product_meta_keywords')) {
+    /**
+     * Build the <meta name="keywords"> content from structured product_keywords rows
+     * (verified rows preferred, falling back to pending ones), instead of dumping the
+     * full product title / brand / "buy online" filler into the tag.
+     */
+    function product_meta_keywords($product, $limit = 8)
+    {
+        $rows = $product->keywords()
+            ->orderByRaw("status = 'verified' desc")
+            ->orderByRaw("type = 'primary' desc")
+            ->limit($limit)
+            ->pluck('keyword');
+
+        if ($rows->isEmpty()) {
+            $candidates = generate_seo_keyword_candidates($product);
+            $rows = collect(array_merge(
+                [$candidates['primary']],
+                $candidates['secondary'],
+                $candidates['long_tail'] ?? [],
+            ))->filter()->unique()->values();
+        }
+
+        return $rows->filter()->unique(fn ($k) => strtolower($k))->take($limit)->implode(', ');
     }
 }
 
