@@ -65,7 +65,7 @@
                                             </div> -->
                                             <!-- Add to cart -->
                                             <div class="p-4">
-                                                <button type="button" class="btn btn-block btn-dark rounded-0 fs-13 fw-700 has-transition opacity-80 hov-opacity-100" onclick="showAddToCartModal({{ $item }})">
+                                                <button type="button" class="btn btn-block btn-dark rounded-0 fs-13 fw-700 has-transition opacity-80 hov-opacity-100" onclick="window.location.href='{{ route('product', get_single_product($item)->slug) }}'">
                                                     {{ translate('Add to Basket')}}
                                                 </button>
                                             </div>

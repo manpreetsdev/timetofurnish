@@ -118,11 +118,19 @@ class CartController extends Controller
 
     public function addToCart(Request $request)
     {
-        // dd($request->all());
-        $carts = Cart::where('user_id', auth()->user()->id)->get();
+        if (!auth()->check() || auth()->user()->user_type !== 'customer') {
+            return response()->json(['status' => 0, 'message' => translate('Please login as a customer to add products to the cart.')], 403);
+        }
+
+        $userId = auth()->id();
+        $carts = Cart::where('user_id', $userId)->get();
         $check_auction_in_cart = CartUtility::check_auction_in_cart($carts);
         $product = Product::with(['thumbnail', 'stocks', 'taxes'])->find($request->id);
         $carts = array();
+
+        if (!$product) {
+            return response()->json(['status' => 0, 'message' => translate('Product not found.')], 404);
+        }
 
         if ($check_auction_in_cart && $product->auction_product == 0) {
             return array(
@@ -149,14 +157,10 @@ class CartController extends Controller
 
         $product_stock = $product->stocks->where('variant', $str)->first();
 
-        // Units of this exact variant currently held by OTHER shoppers' active
-        // 1-hour reservations. They must not be sellable to this viewer.
-        $reserved_by_others = \App\Models\Cart::reservedQuantityByOthers($product->id, $str);
-
         $is_update = false;
         if ($request->has('cart_item_id') && !empty($request->cart_item_id)) {
             $cart = Cart::withExpiredReservations()->find($request->cart_item_id);
-            if ($cart && $cart->user_id == auth()->user()->id) {
+            if ($cart && $cart->user_id == $userId && $cart->product_id == $product->id) {
                 $cart->variation = $str;
                 $is_update = true;
             }
@@ -165,44 +169,20 @@ class CartController extends Controller
         if (!$is_update) {
             $cart = Cart::firstOrNew([
                 'variation' => $str,
-                'user_id' => auth()->user()->id,
+                'user_id' => $userId,
                 'product_id' => $request['id']
             ]);
         }
 
-        if ($is_update) {
-            if ($product_stock && ($product_stock->qty - $reserved_by_others) < $request['quantity']) {
-                return array(
-                    'status' => 0,
-                    'cart_count' => count($carts),
-                    'modal_view' => view('frontend.' . get_setting('homepage_select') . '.partials.outOfStockCart')->render(),
-                    'nav_cart_view' => view('frontend.' . get_setting('homepage_select') . '.partials.cart')->render(),
-                );
-            }
-            $quantity = $request['quantity'];
-        } else {
-            if ($cart->exists && $product->digital == 0) {
-                if ($product->auction_product == 1 && ($cart->product_id == $product->id)) {
-                    return array(
-                        'status' => 0,
-                        'cart_count' => count($carts),
-                        'modal_view' => view('frontend.' . get_setting('homepage_select') . '.partials.auctionProductAlredayAddedCart')->render(),
-                        'nav_cart_view' => view('frontend.' . get_setting('homepage_select') . '.partials.cart')->render(),
-                    );
-                }
-                if ($product_stock && ($product_stock->qty - $reserved_by_others) < $cart->quantity + $request['quantity']) {
-                    return array(
-                        'status' => 0,
-                        'cart_count' => count($carts),
-                        'modal_view' => view('frontend.' . get_setting('homepage_select') . '.partials.outOfStockCart')->render(),
-                        'nav_cart_view' => view('frontend.' . get_setting('homepage_select') . '.partials.cart')->render(),
-                    );
-                }
-                $quantity = $cart->quantity + $request['quantity'];
-            }
-        }
+        // A product page represents the customer's current intended setup.
+        // Re-submitting the same product/variant replaces its quantity and
+        // selected add-ons; it never silently adds the amount a second time.
+        // This makes repeated clicks predictable and prevents false
+        // out-of-stock errors such as 7 + 7 being tested against stock of 10.
+        $cart_was_updated = $cart->exists;
+        $quantity = (int) $request['quantity'];
 
-        // Validate both new additions and accumulated quantities against selected stock.
+        // Validate the desired final quantity against the exact selected stock.
         if ($product->digital == 0 && $product->auction_product == 0
             && $quantity > cart_available_qty(['variation' => $str], $product)) {
             return array(
@@ -248,12 +228,16 @@ class CartController extends Controller
                     if (!$option) continue;
 
                     $optionDetails = get_product_addon_option_details($option);
+                    $resolvedAddonPrice = (float) ($optionDetails['price'] ?? $option->price ?? 0);
 
                     $addons[] = [
                         'addon_id'   => $addon->id,
                         'addon_name' => $addon->name,          // "Assembly Required"
                         'name'       => $option->option_name,  // "Yes"
-                        'price'      => (float) $option->price,
+                        // Persist the same resolved value used to render the
+                        // product option. This keeps Fabric and every other
+                        // add-on price identical in product, cart and modal.
+                        'price'      => $resolvedAddonPrice,
                         'image'      => $optionDetails['image'] ?? '',
                     ];
                 }
@@ -284,11 +268,11 @@ class CartController extends Controller
 
 
         Session::forget('edit_cart_item_id');
-        $carts = Cart::where('user_id', auth()->user()->id)->get();
+        $carts = Cart::where('user_id', $userId)->get();
         return array(
             'status' => 1,
             'cart_count' => count($carts),
-            'modal_view' => view('frontend.' . get_setting('homepage_select') . '.partials.addedToCart', compact('product', 'cart'))->render(),
+            'modal_view' => view('frontend.' . get_setting('homepage_select') . '.partials.addedToCart', compact('product', 'cart', 'cart_was_updated'))->render(),
             'nav_cart_view' => view('frontend.' . get_setting('homepage_select') . '.partials.cart')->render(),
         );
     }
@@ -297,7 +281,13 @@ class CartController extends Controller
     public function removeFromCart(Request $request)
     {
         // include expired-reservation lines so their "Remove" button works
-        Cart::withExpiredReservations()->whereKey($request->id)->delete();
+        $cartToRemove = Cart::withExpiredReservations()->whereKey($request->id);
+        if (auth()->check()) {
+            $cartToRemove->where('user_id', auth()->id());
+        } else {
+            $cartToRemove->where('temp_user_id', $request->session()->get('temp_user_id'));
+        }
+        $cartToRemove->delete();
         if (auth()->user() != null) {
             $user_id = Auth::user()->id;
             $carts = Cart::whereHas('product', function($q) {
@@ -323,6 +313,10 @@ class CartController extends Controller
     public function updateQuantity(Request $request)
     {
         $cartItem = Cart::findOrFail($request->id);
+
+        if (!auth()->check() || $cartItem->user_id !== auth()->id()) {
+            abort(403);
+        }
 
         if ($cartItem['id'] == $request->id) {
             $product = Product::find($cartItem['product_id']);

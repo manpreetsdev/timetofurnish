@@ -989,7 +989,7 @@
             <div class="mb-2 d-flex w-49 product-action-button-col">
                 <button type="button"
                     class="btn add-to-cart btn-disabled-custom fw-600 w-100 transition-all duration-300 product-detail-action-btn is-outline"
-                    style="background: #fff; border: 1.5px solid #242121; color: #242121 !important; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); height: 50px;"
+                    style="border-radius: 6px; height: 50px;"
                     disabled
                     @if (Auth::check()) onclick="validatedAddToCart()" @else onclick="showLoginModal()" @endif>
                     <i class="las la-shopping-bag"></i> {{ translate('Add to Basket') }}
