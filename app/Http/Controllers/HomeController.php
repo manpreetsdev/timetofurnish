@@ -533,13 +533,11 @@ class HomeController extends Controller
         $tax = 0;
         $max_limit = 0;
 
-        $cart_qty = 0;
-        if ($request->has('cart_item_id') && !empty($request->cart_item_id)) {
-            $cartItem = \App\Models\Cart::find($request->cart_item_id);
-            if ($cartItem) {
-                $cart_qty = $cartItem->quantity;
-            }
-        }
+        // Stock quantities are inventory quantities, not quantities remaining
+        // after this shopper's cart line.  Their own active reservation is
+        // already excluded below, so adding the cart quantity here inflated
+        // the number shown while editing and let the UI disagree with cart
+        // validation.
 
         /*
     --------------------------------------
@@ -595,8 +593,8 @@ class HomeController extends Controller
 
         if ($product_stock) {
             $price = $product_stock->price;
-            $quantity = $product_stock->qty + $cart_qty;
-            $max_limit = $product_stock->qty + $cart_qty;
+            $quantity = $product_stock->qty;
+            $max_limit = $product_stock->qty;
             $has_stocks = true;
 
             /*
@@ -626,21 +624,13 @@ class HomeController extends Controller
                 }
             }
             if ($has_stocks) {
-                $quantity += $cart_qty;
                 $max_limit = $quantity;
             }
         }
 
-        if (!$has_stocks && $cart_qty > 0) {
-            $price = $product->unit_price;
-            $quantity = $cart_qty;
-            $max_limit = $cart_qty;
-            $has_stocks = true;
-        }
-
         // Inventory hold: units another shopper is holding via an active
-        // 1-hour reservation are not available to this viewer. ($cart_qty is
-        // this viewer's own line, already added back above.)
+        // 1-hour reservation are not available to this viewer. This shopper's
+        // own reservation is excluded by reservedQuantityByOthers().
         if ($product->digital != 1 && $product->auction_product != 1) {
             $reserved_by_others = \App\Models\Cart::reservedQuantityByOthers($product->id, $str);
             if ($reserved_by_others > 0) {

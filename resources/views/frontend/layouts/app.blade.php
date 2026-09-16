@@ -732,6 +732,139 @@
     <x-cookie-banner />
 
     <style>
+        /* Unified storefront button system. These rules are intentionally in
+           the shared frontend layout after page content, so checkout, product
+           pages and AJAX modal content use the same stable controls. */
+        :root {
+            --ttf-button-fill: #5f4d3e;
+            --ttf-button-text: #ffffff;
+        }
+        body .btn.btn-primary,
+        body .btn.borderbtn,
+        body .btn.custom_checkout_button_design.filled,
+        body .added-to-cart-modal .btn-primary {
+            background-color: var(--ttf-button-fill) !important;
+            border: 1px solid var(--ttf-button-fill) !important;
+            color: var(--ttf-button-text) !important;
+        }
+        body .btn.btn-outline-primary,
+        body .btn.custom_checkout_button_design.unfilled,
+        body .added-to-cart-modal .btn-outline-primary {
+            background-color: #ffffff !important;
+            border: 1px solid var(--ttf-button-fill) !important;
+            color: var(--ttf-button-fill) !important;
+        }
+        body .btn.btn-primary:hover,
+        body .btn.btn-primary:focus,
+        body .btn.btn-primary:active,
+        body .btn.borderbtn:hover,
+        body .btn.borderbtn:focus,
+        body .btn.borderbtn:active,
+        body .btn.custom_checkout_button_design.filled:hover,
+        body .btn.custom_checkout_button_design.filled:focus,
+        body .btn.custom_checkout_button_design.filled:active,
+        body .added-to-cart-modal .btn-primary:hover,
+        body .added-to-cart-modal .btn-primary:focus,
+        body .added-to-cart-modal .btn-primary:active {
+            background-color: #ffffff !important;
+            border-color: var(--ttf-button-fill) !important;
+            color: var(--ttf-button-fill) !important;
+        }
+        body .btn.btn-outline-primary:hover,
+        body .btn.btn-outline-primary:focus,
+        body .btn.btn-outline-primary:active,
+        body .btn.custom_checkout_button_design.unfilled:hover,
+        body .btn.custom_checkout_button_design.unfilled:focus,
+        body .btn.custom_checkout_button_design.unfilled:active,
+        body .added-to-cart-modal .btn-outline-primary:hover,
+        body .added-to-cart-modal .btn-outline-primary:focus,
+        body .added-to-cart-modal .btn-outline-primary:active {
+            background-color: var(--ttf-button-fill) !important;
+            border-color: var(--ttf-button-fill) !important;
+            color: var(--ttf-button-text) !important;
+        }
+        body .btn.btn-primary,
+        body .btn.btn-outline-primary,
+        body .btn.borderbtn,
+        body .btn.custom_checkout_button_design,
+        body .added-to-cart-modal .btn {
+            box-shadow: none !important;
+            outline: 0 !important;
+            transform: none !important;
+            transition: background-color .18s ease, border-color .18s ease, color .18s ease !important;
+        }
+        @media (max-width: 575.98px) {
+            body .added-to-cart-modal .row > [class*="col-"] { padding-left: 3px; padding-right: 3px; }
+            body .added-to-cart-modal .btn { min-height: 44px; font-size: 13px; padding-left: .5rem; padding-right: .5rem; }
+        }
+
+        .added-to-cart-modal {
+            max-height: calc(100vh - 3rem);
+            padding: 1.75rem !important;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .added-to-cart-scroll {
+            flex: 1 1 auto;
+            min-height: 0;
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
+            padding: 0 .25rem 1rem 0;
+        }
+        .added-to-cart-footer {
+            flex: 0 0 auto;
+            margin: 0 -1.75rem -1.75rem;
+            padding: 1rem 1.75rem 1.75rem;
+            background: #ffffff;
+            border-top: 1px solid #eee7df;
+            box-shadow: 0 -8px 16px rgba(55, 43, 33, .04);
+        }
+        .added-to-cart-success {
+            padding-bottom: 1.1rem;
+            border-bottom: 1px solid #eee7df;
+        }
+        .added-to-cart-icon {
+            width: 38px;
+            height: 38px;
+            margin: 0 auto .45rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(104, 91, 78, .12);
+            color: var(--primary, #685b4e);
+            font-size: 22px;
+        }
+        .added-to-cart-title {
+            margin: .45rem 0 0;
+            color: var(--primary, #685b4e);
+            font-size: 1.5rem;
+            line-height: 1.25;
+        }
+        .added-to-cart-summary { padding: 1rem; margin: 1rem 0; background: #faf8f5; border: 1px solid #eee7df; border-radius: 8px; }
+        .added-to-cart-summary img { width: 76px; height: 76px; object-fit: cover; }
+        .added-to-cart-quantity { color: var(--primary, #685b4e); }
+        .added-to-cart-addons {
+            padding: .85rem;
+            background: rgba(104, 91, 78, .035);
+            border: 1px solid rgba(104, 91, 78, .18);
+            border-radius: 8px;
+        }
+        .added-to-cart-addon-count { color: #877d72; font-size: 11px; font-weight: 600; }
+        .added-to-cart-addon-grid { display: grid; gap: .5rem; }
+        .added-to-cart-addon-chip { min-width: 0; display: flex; align-items: center; gap: .55rem; padding: .5rem; background: #fff; border: 1px solid rgba(104, 91, 78, .1); border-radius: 6px; }
+        .added-to-cart-addon-chip img, .added-to-cart-addon-fallback { flex: 0 0 36px; width: 36px; height: 36px; border-radius: 5px; object-fit: cover; border: 1px solid #e7ded5; }
+        .added-to-cart-addon-fallback { display: inline-flex; align-items: center; justify-content: center; color: #8f8376; background: #f2ede7; }
+        .added-to-cart-addon-price { flex: 0 0 auto; color: var(--primary, #685b4e); font-size: 12px; font-weight: 700; }
+        .added-to-cart-note { color: #777; font-size: 12px; line-height: 1.45; padding-top: .9rem; }
+        @media (max-width: 575.98px) {
+            .added-to-cart-modal { max-height: calc(100vh - 1.5rem); padding: 1.25rem !important; }
+            .added-to-cart-scroll { max-height: calc(100vh - 195px); }
+            .added-to-cart-footer { margin: 0 -1.25rem -1.25rem; padding: .75rem 1.25rem 1.25rem; }
+            .added-to-cart-title { font-size: 1.25rem; }
+            .added-to-cart-summary .media-body { margin-top: 0 !important; }
+        }
         @media only screen and (max-width: 991px) {
 
             body,
@@ -1466,31 +1599,59 @@
         });
 
         function addToCart() {
+            @if (!Auth::check())
+            showLoginModal();
+            return false;
+            @endif
             @if (Auth::check() && Auth::user()->user_type != 'customer')
             AIZ.plugins.notify('warning', "{{ translate('Please Login as a customer to add products to the Cart.') }}");
             return false;
             @endif
             let qty = parseInt($("#quantity").val());
             let qty1 = parseInt($("#qty1").val());
-            if (productStockPending || !Number.isInteger(qty) || qty < (parseInt($('#quantity').attr('min'), 10) || 1) || qty > qty1) {
+            if (productStockPending) {
+                AIZ.plugins.notify('warning', "{{ translate('Checking availability. Please wait.') }}");
+                return false;
+            }
+            if (!Number.isInteger(qty) || !Number.isInteger(qty1) || qty < (parseInt($('#quantity').attr('min'), 10) || 1)) {
                 AIZ.plugins.notify('warning', "{{ translate('Please Check Quantity.') }}");
                 return false;
             }
+            if (qty1 < 1) {
+                AIZ.plugins.notify('warning', "{{ translate('This item is out of stock.') }}");
+                return false;
+            }
+            if (qty > qty1) {
+                AIZ.plugins.notify('warning', "{{ translate('Only') }} " + qty1 + " {{ translate('items are available for this selection.') }}");
+                return false;
+            }
             if (checkAddToCartValidity()) {
-                $('#addToCart').modal();
-                $('.c-preloader').show();
+                // Do not open the large loading modal first. Showing the final
+                // content only after it arrives prevents the visible size jump.
+                var $cartActions = $('.add-to-cart, .buy-now');
+                $cartActions.prop('disabled', true).addClass('disabled');
                 $.ajax({
                     type: "POST",
                     url: '{{ route('cart.addToCart') }}',
                     data: $('#option-choice-form').serializeArray(),
                     success: function(data) {
-                        $('#addToCart-modal-body').html(null);
+                        // The preloader belongs to the old selector modal.
+                        // Always hide it before displaying the confirmation.
                         $('.c-preloader').hide();
+                        $('#addToCart-modal-body').html(null);
                         $('#modal-size').removeClass('modal-lg');
                         $('#addToCart-modal-body').html(data.modal_view);
+                        $('#addToCart').data('refresh-product-stock', Number(data.status) === 1);
+                        $('#addToCart').modal('show');
                         AIZ.extra.plusMinus();
                         AIZ.plugins.slickCarousel();
                         updateNavCart(data.nav_cart_view, data.cart_count);
+                    },
+                    error: function() {
+                        AIZ.plugins.notify('danger', "{{ translate('Unable to update the basket. Please try again.') }}");
+                    },
+                    complete: function() {
+                        $cartActions.prop('disabled', false).removeClass('disabled');
                     }
                 });
             } else {
@@ -1498,15 +1659,42 @@
             }
         }
 
+        // Once the confirmation is closed, fetch the remaining addable stock
+        // for the selected variant. This keeps the quantity control and the
+        // next add request in sync with the cart line just created.
+        $('#addToCart').on('hidden.bs.modal', function() {
+            if (!$(this).data('refresh-product-stock')) return;
+            $(this).removeData('refresh-product-stock');
+            if (typeof getVariantPrice === 'function' && $('#option-choice-form').length) {
+                getVariantPrice();
+            }
+        });
+
         function buyNow() {
+            @if (!Auth::check())
+            showLoginModal();
+            return false;
+            @endif
             @if (Auth::check() && Auth::user()->user_type != 'customer')
             AIZ.plugins.notify('warning', "{{ translate('Please Login as a customer to add products to the Cart.') }}");
             return false;
             @endif
             let qty = parseInt($("#quantity").val());
             let qty1 = parseInt($("#qty1").val());
-            if (productStockPending || !Number.isInteger(qty) || qty < (parseInt($('#quantity').attr('min'), 10) || 1) || qty > qty1) {
+            if (productStockPending) {
+                AIZ.plugins.notify('warning', "{{ translate('Checking availability. Please wait.') }}");
+                return false;
+            }
+            if (!Number.isInteger(qty) || !Number.isInteger(qty1) || qty < (parseInt($('#quantity').attr('min'), 10) || 1)) {
                 AIZ.plugins.notify('warning', "{{ translate('Please Check Quantity.') }}");
+                return false;
+            }
+            if (qty1 < 1) {
+                AIZ.plugins.notify('warning', "{{ translate('This item is out of stock.') }}");
+                return false;
+            }
+            if (qty > qty1) {
+                AIZ.plugins.notify('warning', "{{ translate('Only') }} " + qty1 + " {{ translate('items are available for this selection.') }}");
                 return false;
             }
             if (checkAddToCartValidity()) {

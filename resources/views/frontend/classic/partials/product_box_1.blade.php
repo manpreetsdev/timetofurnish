@@ -127,7 +127,7 @@
                         <!-- Add to Basket (Sleek Cart Icon) -->
                         <button type="button"
                             class="modern-action-btn cart-btn @if (in_array($product->id, $cart_added)) active @endif"
-                            @if (Auth::check()) onclick="showAddToCartModal({{ $product->id }})" @else onclick="showLoginModal()" @endif
+                            onclick="window.location.href='{{ $product_url }}'"
                             data-toggle="tooltip" title="{{ translate('Add to Basket') }}" aria-label="{{ translate('Add to Basket') }}" data-placement="top">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

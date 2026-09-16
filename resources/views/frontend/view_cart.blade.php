@@ -72,15 +72,15 @@
                     @foreach($expired_carts as $expired)
                         @php $expired_product = $expired->product; @endphp
                         @if($expired_product && $expired_product->published == 1 && $expired_product->approved == 1)
-                        <div class="py-3 d-flex align-items-center border-top" style="gap:14px;">
+                        <div class="recently-cart-item py-3 d-flex flex-wrap align-items-md-center border-top" data-cart-id="{{ $expired->id }}" style="gap:14px;">
                             <a href="{{ route('product', $expired_product->slug) }}" class="flex-shrink-0">
                                 <img src="{{ get_image($expired_product->thumbnail) }}"
                                      onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';"
                                      alt="{{ $expired_product->getTranslation('name') }}"
                                      style="width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid #e4dcd2;">
                             </a>
-                            <div class="flex-grow-1 min-w-0">
-                                <a href="{{ route('product', $expired_product->slug) }}" class="d-block fs-14 fw-600 text-dark text-truncate">
+                            <div class="recently-cart-product flex-grow-1 min-w-0">
+                                <a href="{{ route('product', $expired_product->slug) }}" class="d-block fs-14 fw-600 text-dark recently-cart-name">
                                     {{ $expired_product->getTranslation('name') }}
                                     @if($expired->variation) <span class="text-secondary fw-400">({{ $expired->variation }})</span>@endif
                                 </a>
@@ -88,9 +88,9 @@
                                     <i class="las la-clock"></i> {{ translate('Reservation expired') }} &middot; {{ translate('Quantity') }}: 0
                                 </div>
                             </div>
-                            <div class="flex-shrink-0 d-flex align-items-center" style="gap:8px;">
+                            <div class="recently-cart-actions flex-shrink-0 d-flex align-items-center" style="gap:8px;">
                                 <a href="{{ route('product', $expired_product->slug) }}" class="btn btn-sm btn-outline-primary">{{ translate('View Product') }}</a>
-                                <button type="button" class="btn btn-sm btn-light" onclick="removeFromCart({{ $expired->id }})" aria-label="{{ translate('Remove') }}">
+                                <button type="button" class="btn btn-sm btn-light recently-cart-remove" onclick="removeRecentlyCartItem({{ $expired->id }}, this)" aria-label="{{ translate('Remove') }}">
                                     <i class="las la-trash"></i>
                                 </button>
                             </div>
@@ -102,6 +102,16 @@
         </div>
     </section>
     @endif
+
+    <style>
+        @media (max-width: 767.98px) {
+            #recently-in-cart .recently-cart-item { align-items: flex-start; gap: 12px; }
+            #recently-in-cart .recently-cart-product { flex: 1 1 calc(100% - 76px); }
+            #recently-in-cart .recently-cart-name { white-space: normal; overflow-wrap: anywhere; line-height: 1.35; }
+            #recently-in-cart .recently-cart-actions { width: 100%; }
+            #recently-in-cart .recently-cart-actions .btn-outline-primary { flex: 1; }
+        }
+    </style>
 
 @endsection
 
@@ -156,6 +166,31 @@
             }, function(data) {
                 updateNavCart(data.nav_cart_view, data.cart_count);
                 $('#cart-summary').html(data.cart_view);
+            });
+        }
+
+        function removeRecentlyCartItem(cartId, button) {
+            var $button = $(button);
+            var $item = $('#recently-in-cart .recently-cart-item[data-cart-id="' + cartId + '"]');
+            $button.prop('disabled', true);
+
+            $.post('{{ route('cart.removeFromCart') }}', {
+                _token: AIZ.data.csrf,
+                id: cartId
+            }).done(function(data) {
+                updateNavCart(data.nav_cart_view, data.cart_count);
+                $('#cart-summary').html(data.cart_view);
+
+                $item.fadeOut(180, function() {
+                    $(this).remove();
+                    if (!$('#recently-in-cart .recently-cart-item').length) {
+                        $('#recently-in-cart').fadeOut(180, function() { $(this).remove(); });
+                    }
+                });
+                AIZ.plugins.notify('success', "{{ translate('Item has been removed from recently viewed cart items.') }}");
+            }).fail(function() {
+                $button.prop('disabled', false);
+                AIZ.plugins.notify('danger', "{{ translate('Unable to remove this item. Please try again.') }}");
             });
         }
 

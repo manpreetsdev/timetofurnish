@@ -675,24 +675,45 @@
     gap: 8px !important;
     box-shadow: none !important;
     opacity: 1 !important;
+    outline: 0 !important;
+    transform: none !important;
+    transition: background-color .18s ease, color .18s ease, opacity .18s ease !important;
 }
 
 .product-detail-action-btn.is-outline {
     background: #ffffff;
-    border: 2px solid #8f8f8f;
-    color: #858585;
+    border: 2px solid #5f4d3e !important;
+    color: #5f4d3e !important;
 }
 
 .product-detail-action-btn.is-filled {
-    background: #e8e2dd;
-    border: 2px solid #c8beb7;
-    color: #858585;
+    background: #5f4d3e;
+    border: 2px solid #5f4d3e !important;
+    color: #ffffff !important;
 }
 
 .product-detail-action-btn:hover,
-.product-detail-action-btn:focus {
-    color: #685c4e !important;
-    border-color: #685c4e !important;
+.product-detail-action-btn:focus,
+.product-detail-action-btn:active {
+    outline: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.product-detail-action-btn.is-outline:hover,
+.product-detail-action-btn.is-outline:focus,
+.product-detail-action-btn.is-outline:active {
+    background: #5f4d3e !important;
+    color: #ffffff !important;
+    border-color: #5f4d3e !important;
+}
+
+.product-detail-action-btn.is-filled:hover,
+.product-detail-action-btn.is-filled:focus,
+.product-detail-action-btn.is-filled:active {
+    background: #ffffff !important;
+    color: #5f4d3e !important;
+    border-color: #5f4d3e !important;
 }
 
 @media (max-width: 575.98px) {
@@ -705,6 +726,18 @@
         font-size: 14px !important;
         padding-left: 8px !important;
         padding-right: 8px !important;
+    }
+}
+
+/* Keep labels readable on very narrow phones instead of squeezing or moving
+   the two product actions during interaction. */
+@media (max-width: 374.98px) {
+    .product-action-buttons {
+        flex-wrap: wrap !important;
+    }
+
+    .product-action-buttons .product-action-button-col {
+        flex-basis: 100% !important;
     }
 }
 
