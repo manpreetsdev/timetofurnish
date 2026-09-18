@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\BusinessSetting;
 use Illuminate\Support\Str;
 
-
 class PageController extends Controller
 {
-    public function __construct() {
+    public function __construct()
+    {
         // Staff Permission Check
         $this->middleware(['permission:add_website_page'])->only(['create', 'store', 'import']);
         $this->middleware(['permission:edit_website_page'])->only(['edit', 'update', 'export']);
@@ -28,7 +28,6 @@ class PageController extends Controller
      */
     public function index()
     {
-
     }
 
     /**
@@ -38,89 +37,165 @@ class PageController extends Controller
      */
     public function create()
     {
-        $pageBuilderData = CustomPageTemplate::defaultPayload();
+        $pageBuilderData   = CustomPageTemplate::defaultPayload();
         $fontFamilyOptions = CustomPageTemplate::fontFamilyOptions();
 
         return view('backend.website_settings.pages.create', compact('pageBuilderData', 'fontFamilyOptions'));
     }
-// public function submit_delivery_partner(Request $request)
-// {
-//     // Validate the form
-//     $data = $request->validate([
-//         'company_name'      => 'required|string|max:255',
-//         'email'             => 'required|email',
-//         'contact_number'    => 'required|string|max:20',
-//         'area_coverage'     => 'required|string',
-//         'services_provided' => 'required|string',
-//     ]);
 
-//     // Send email to admin
-//     Mail::send([], [], function($message) use ($data) {
-//         $message->to('admin@example.com') // replace with your admin email
-//                 ->subject('New Delivery Partner Request')
-//                 ->setBody(
-//                     "Company Name: {$data['company_name']}\n".
-//                     "Email: {$data['email']}\n".
-//                     "Contact Number: {$data['contact_number']}\n".
-//                     "Area of Coverage: {$data['area_coverage']}\n".
-//                     "Services Provided: {$data['services_provided']}",
-//                     'text/plain'
-//                 );
-//     });
-    
+    /**
+     * Handle Delivery Partner submission.
+     */
+    public function submitDeliveryPartner(Request $request)
+    {
+        $request->validate([
+            'company_name'      => 'required|string|max:255',
+            'email'             => 'required|email|max:255',
+            'contact_number'    => 'required|string|max:30',
+            'area_coverage'     => 'required|string',
+            'services_provided' => 'required|string',
+        ]);
 
-//     // Flash success message
-//     flash(translate('Your request has been submitted successfully'))->success();
-//     return redirect()->back();
-// }
-   public function submitDeliveryPartner(Request $request)
-{
-    $request->validate([
-        'company_name'      => 'required|string|max:255',
-        'email'             => 'required|email',
-        'contact_number'    => 'required',
-        'area_coverage'     => 'required',
-        'services_provided' => 'required',
-    ]);
+        $mailData = [
+            'company_name'      => $request->company_name,
+            'email'             => $request->email,
+            'contact_number'    => $request->contact_number,
+            'area_coverage'     => $request->area_coverage,
+            'services_provided' => $request->services_provided,
+        ];
 
-    
-    $mailData = [
-        'company_name'      => $request->company_name,
-        'email'             => $request->email,
-        'contact_number'    => $request->contact_number,
-        'area_coverage'     => $request->area_coverage,
-        'services_provided' => $request->services_provided,
-    ];
-    
-    try {
-        Mail::send('emails.delivery-partner', $mailData, function ($message) {
-            $message->to(env('MAIL_FROM_ADDRESS'))
-                    ->subject('New Delivery Partner Request');
-        });
-        return back()->with('success', 'Thanks for applying! We have received your details.');
+        try {
+            $recipient   = env('CONTACT_ADMIN_EMAIL', 'askus@timetofurnish.com');
+            $fromAddress = env('MAIL_FROM_ADDRESS', 'timetofurnish@gmail.com');
+            $fromName    = env('MAIL_FROM_NAME', 'Time to Furnish');
 
-    } catch (\Exception $e) {
-        return back()->with('error', 'Email failed to send. ' . $e->getMessage());
+            Mail::send('emails.delivery-partner', $mailData, function ($message) use ($recipient, $fromAddress, $fromName) {
+                $message->from($fromAddress, $fromName)
+                        ->to($recipient)
+                        ->subject('New Delivery Partner Request');
+            });
+
+            return back()->with('success', translate('Thanks for applying! We have received your details.'));
+        } catch (\Exception $e) {
+            \Log::error('Delivery partner email error: ' . $e->getMessage());
+            return back()->with('error', translate('Email failed to send: ') . $e->getMessage());
+        }
     }
-}
-public function DeliveryPartner()
-{
-    return view('frontend.become_delivery_partner');
-}
 
-   /**
-     * Store a newly created resource in storage.
+    public function DeliveryPartner()
+    {
+        return view('frontend.become_delivery_partner');
+    }
+
+    /**
+     * Store a newly created contact form request and notify Admin & Customer.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function submit_contact(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name'  => 'required|string|max:255',
+            'email'      => 'required|email|max:255',
+            'phone'      => 'required|string|max:20',
+            'message'    => 'required|string',
+        ]);
+
+        try {
+            $data = [
+                'first_name' => $request->first_name,
+                'last_name'  => $request->last_name,
+                'email'      => $request->email,
+                'phone'      => $request->phone,
+                'message1'   => $request->message,
+            ];
+
+            // Primary target Admin email
+            $adminEmail = env('CONTACT_ADMIN_EMAIL', 'manpreetsdev@gmail.com');
+            if (empty($adminEmail)) {
+                $adminEmail = 'manpreetsdev@gmail.com';
+            }
+
+            $fromAddress = env('MAIL_FROM_ADDRESS', 'timetofurnish@gmail.com');
+            $fromName    = env('MAIL_FROM_NAME', 'Time to Furnish');
+            $fullName    = trim($data['first_name'] . ' ' . $data['last_name']);
+
+            /*
+            |--------------------------------------------------------------------------
+            | ADMIN EMAIL NOTIFICATION
+            |--------------------------------------------------------------------------
+            */
+            Mail::send(
+                'emails.contact_us',
+                [
+                    'first_name' => $data['first_name'],
+                    'last_name'  => $data['last_name'],
+                    'email'      => $data['email'],
+                    'phone'      => $data['phone'],
+                    'message1'   => $data['message1'],
+                    'type'       => 'admin',
+                ],
+                function ($message) use ($request, $adminEmail, $fullName, $fromAddress, $fromName) {
+                    $message->from($fromAddress, $fromName)
+                        ->to($adminEmail)
+                        ->replyTo($request->email, $fullName)
+                        ->subject('New Contact Us Inquiry - ' . $fullName);
+                }
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | CUSTOMER EMAIL CONFIRMATION
+            |--------------------------------------------------------------------------
+            */
+            Mail::send(
+                'emails.contact_us',
+                [
+                    'first_name' => $data['first_name'],
+                    'last_name'  => $data['last_name'],
+                    'email'      => $data['email'],
+                    'phone'      => $data['phone'],
+                    'message1'   => $data['message1'],
+                    'type'       => 'customer',
+                ],
+                function ($message) use ($request, $fromAddress, $fromName) {
+                    $message->from($fromAddress, $fromName)
+                        ->to($request->email)
+                        ->subject('Thank You for Contacting Time To Furnish');
+                }
+            );
+
+            return back()->with(
+                'success',
+                translate('Thank you for contacting us. We will respond as soon as possible.')
+            );
+
+        } catch (\Throwable $e) {
+            \Log::error('Contact form email failed', [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+            ]);
+
+            return back()->with(
+                'error',
+                translate('Email Error: ') . $e->getMessage()
+            );
+        }
+    }
+
     public function store(Request $request)
     {
         $page = new Page;
         $page->title = $request->title;
         $content = $this->buildPageContentPayload($request);
-        if (Page::where('slug', preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug)))->first() == null) {
-            $page->slug             = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug));
+
+        $slugCandidate = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug));
+
+        if (Page::where('slug', $slugCandidate)->first() == null) {
+            $page->slug             = $slugCandidate;
             $page->type             = "custom_page";
             $page->content          = $content;
             $page->meta_title       = $request->meta_title;
@@ -141,107 +216,44 @@ public function DeliveryPartner()
         flash(translate('Slug has been used already'))->warning();
         return back();
     }
-    
-    
-    
-     public function submit_contact(Request $request) {
-       $request->validate([
-            'name'      => 'required|string|max:255',
-            'email'             => 'required|email',
-            'phone'    => 'required', 
-        ]);
-    
-        
-        $mailData = [
-            'name'      => $request->name,
-            'email'             => $request->email,
-            'phone'    => $request->phone,
-            'message1'     => $request->message, 
-        ];
-        
-        try {
-            Mail::send('emails.contact_us', $mailData, function ($message) {
-                $message->to(env('MAIL_FROM_ADDRESS'))
-                        ->subject('Wants to Contact you');
-            });
-            return back()->with('success', 'Thank you for contacting us. We will respond as soon as possible');
-    
-        } catch (\Exception $e) {
-            return back()->with('error', 'Email failed to send. ' . $e->getMessage());
-        }
-    }
 
-    //contact us page
+    // Contact us page view
     public function contact_us()
     {
         return view('frontend.contact_us');
     }
-    
-    
+
+    // Career page view
     public function career()
-{
-    return view('frontend.career');
-}
-
-
- 
-public function career_submit(Request $request)
-{
-    $request->validate([
-        'name' => 'required',
-        'email' => 'required|email',
-        'phone' => 'required',
-        'role' => 'required',
-        'cv' => 'required|mimes:pdf,doc,docx|max:2048'
-    ]);
-
-    if ($request->hasFile('cv')) {
-        $file = $request->file('cv');
-        $filename = time().'_'.$file->getClientOriginalName();
-        $file->move(public_path('uploads/cv'), $filename);
+    {
+        return view('frontend.career');
     }
 
-    return back()->with('success','Application submitted successfully');
-}
-    
-    
-//     public function submit_contact(Request $request)
-// {
-//     // Validate input
-//     $request->validate([
-//         'name'    => 'required|string|max:255',
-//         'email'   => 'required|email',
-//         'phone'   => 'nullable|string|max:20',
-//         'message' => 'required|string',
-//     ]);
+    // Career form submission
+    public function career_submit(Request $request)
+    {
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:30',
+            'role'  => 'required|string|max:255',
+            'cv'    => 'required|mimes:pdf,doc,docx|max:2048'
+        ]);
 
-//     // Example: You can save to DB or send email
-//     // Mail::to('admin@example.com')->send(new ContactFormMail($request->all()));
-    // Mail::to(env('MAIL_FROM_ADDRESS'))->send(new \App\Mail\ContactMail($request->all()));
+        if ($request->hasFile('cv')) {
+            $file = $request->file('cv');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/cv'), $filename);
+        }
 
+        return back()->with('success', translate('Application submitted successfully'));
+    }
 
-//     flash(translate('Your message has been sent successfully'))->success();
-//     return redirect()->back();
-// }
+    public function become_delivery_partner()
+    {
+        return view('frontend.become_delivery_partner');
+    }
 
-// public function submit_contact(Request $request)
-// {
-//     $request->validate([
-//         'name'    => 'required',
-//         'email'   => 'required|email',
-//         'message' => 'required'
-//     ]);
-
-//     // Send Email
-//     Mail::to(('arorashivani74577@gmail.com'))->send(new \App\Mail\ContactMail($request->all()));
-
-//     return back()->with('success', 'Your message has been sent successfully!');
-// }
-
-public function become_delivery_partner()
-{
-    return view('frontend.become_delivery_partner');
-}
     /**
      * Display the specified resource.
      *
@@ -250,21 +262,21 @@ public function become_delivery_partner()
      */
     public function show($id)
     {
-        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
+     * @param  Request $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-   public function edit(Request $request, $id)
-   {
+    public function edit(Request $request, $id)
+    {
         $lang = $request->lang;
         $page_name = $request->page;
         $page = Page::where('slug', $id)->first();
-        if($page != null){
+        if ($page != null) {
             $pageBuilderData = CustomPageTemplate::fromContent(
                 $page->getTranslation('content', $lang),
                 $page->getTranslation('title', $lang)
@@ -272,9 +284,9 @@ public function become_delivery_partner()
             $fontFamilyOptions = CustomPageTemplate::fontFamilyOptions();
 
             if ($page_name == 'home') {
-                return view('backend.website_settings.pages.'.get_setting('homepage_select').'.home_page_edit', compact('page','lang'));
+                return view('backend.website_settings.pages.' . get_setting('homepage_select') . '.home_page_edit', compact('page', 'lang'));
             }
-            return view('backend.website_settings.pages.edit', compact('page','lang', 'pageBuilderData', 'fontFamilyOptions'));
+            return view('backend.website_settings.pages.edit', compact('page', 'lang', 'pageBuilderData', 'fontFamilyOptions'));
         }
         abort(404);
     }
@@ -291,23 +303,25 @@ public function become_delivery_partner()
         // Retrieve the page by slug (as routes pass slug as $id)
         $page = Page::findOrFail($id);
         $content = $this->buildPageContentPayload($request);
+        $slugCandidate = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug));
+
         // Ensure slug uniqueness excluding current page ID
-        if (Page::where('id','!=', $page->id)
-                ->where('slug', preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug)))
-                ->first() == null) {
-            if($request->slug){
-              $page->slug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug));
+        if (Page::where('id', '!=', $page->id)->where('slug', $slugCandidate)->first() == null) {
+            if ($request->slug) {
+                $page->slug = $slugCandidate;
             }
-            if($request->lang == env("DEFAULT_LANGUAGE")){
-              $page->title          = $request->title;
-              $page->content        = $content;
+            if ($request->lang == env("DEFAULT_LANGUAGE")) {
+                $page->title   = $request->title;
+                $page->content = $content;
             }
             $page->meta_title       = $request->meta_title;
             $page->meta_description = $request->meta_description;
             $page->keywords         = $request->keywords;
             $page->meta_image       = $request->meta_image;
             $page->save();
+
             \Artisan::call('cache:clear');
+
             $page_translation           = PageTranslation::firstOrNew(['lang' => $request->lang, 'page_id' => $page->id]);
             $page_translation->title    = $request->title;
             $page_translation->content  = $content;
@@ -317,9 +331,8 @@ public function become_delivery_partner()
             return redirect()->route('custom-pages.edit', ['id' => $page->slug, 'lang' => $request->lang]);
         }
 
-      flash(translate('Slug has been used already'))->warning();
-      return back();
-
+        flash(translate('Slug has been used already'))->warning();
+        return back();
     }
 
     /**
@@ -331,20 +344,20 @@ public function become_delivery_partner()
     public function export($id)
     {
         $page = Page::findOrFail($id);
-        
+
         $data = [
-            'title' => $page->title,
-            'slug' => $page->slug,
-            'type' => $page->type,
-            'content' => $page->content,
-            'meta_title' => $page->meta_title,
+            'title'            => $page->title,
+            'slug'             => $page->slug,
+            'type'             => $page->type,
+            'content'          => $page->content,
+            'meta_title'       => $page->meta_title,
             'meta_description' => $page->meta_description,
-            'keywords' => $page->keywords,
-            'meta_image' => $page->meta_image,
-            'translations' => $page->page_translations->map(function ($translation) {
+            'keywords'         => $page->keywords,
+            'meta_image'       => $page->meta_image,
+            'translations'     => $page->page_translations->map(function ($translation) {
                 return [
-                    'lang' => $translation->lang,
-                    'title' => $translation->title,
+                    'lang'    => $translation->lang,
+                    'title'   => $translation->title,
                     'content' => $translation->content,
                 ];
             })->toArray(),
@@ -354,7 +367,7 @@ public function become_delivery_partner()
         $fileName = 'custom-page-' . $page->slug . '-' . date('Y-m-d') . '.json';
 
         return response($json, 200, [
-            'Content-Type' => 'application/json',
+            'Content-Type'        => 'application/json',
             'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
         ]);
     }
@@ -387,16 +400,16 @@ public function become_delivery_partner()
             $page->title = $data['title'];
             $page->slug = $slug;
             $page->type = $data['type'] ?? 'custom_page';
-            
+
             $content = $data['content'];
             if (is_array($content)) {
                 $content = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             }
-            $page->content = $content;
-            $page->meta_title = $data['meta_title'] ?? null;
+            $page->content          = $content;
+            $page->meta_title       = $data['meta_title'] ?? null;
             $page->meta_description = $data['meta_description'] ?? null;
-            $page->keywords = $data['keywords'] ?? null;
-            $page->meta_image = $data['meta_image'] ?? null;
+            $page->keywords         = $data['keywords'] ?? null;
+            $page->meta_image       = $data['meta_image'] ?? null;
             $page->save();
 
             // Handle translations
@@ -404,10 +417,10 @@ public function become_delivery_partner()
                 foreach ($data['translations'] as $translationData) {
                     $translation = PageTranslation::firstOrNew([
                         'page_id' => $page->id,
-                        'lang' => $translationData['lang']
+                        'lang'    => $translationData['lang']
                     ]);
                     $translation->title = $translationData['title'];
-                    
+
                     $transContent = $translationData['content'];
                     if (is_array($transContent)) {
                         $transContent = json_encode($transContent, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
@@ -419,9 +432,9 @@ public function become_delivery_partner()
                 // Save default translation
                 $translation = PageTranslation::firstOrNew([
                     'page_id' => $page->id,
-                    'lang' => env('DEFAULT_LANGUAGE', 'en')
+                    'lang'    => env('DEFAULT_LANGUAGE', 'en')
                 ]);
-                $translation->title = $page->title;
+                $translation->title   = $page->title;
                 $translation->content = $content;
                 $translation->save();
             }
@@ -440,20 +453,22 @@ public function become_delivery_partner()
         $page = Page::findOrFail($id);
         $page->page_translations()->delete();
 
-        if(Page::destroy($id)){
+        if (Page::destroy($id)) {
             flash(translate('Page has been deleted successfully'))->success();
             return redirect()->back();
         }
         return back();
     }
 
-    public function show_custom_page($slug){
+    public function show_custom_page($slug)
+    {
         $page = Page::where('slug', $slug)->first();
-        if($page != null){
+        if ($page != null) {
             return view('frontend.custom_page', compact('page'));
         }
         abort(404);
     }
+
     public function meet_the_team()
     {
         if (get_setting('team_members_page_status', 0) != 1) {
@@ -470,9 +485,11 @@ public function become_delivery_partner()
 
         return view('frontend.meet_the_team', compact('team_members'));
     }
-    public function mobile_custom_page($slug){
+
+    public function mobile_custom_page($slug)
+    {
         $page = Page::where('slug', $slug)->first();
-        if($page != null){
+        if ($page != null) {
             return view('frontend.m_custom_page', compact('page'));
         }
         abort(404);
@@ -481,16 +498,16 @@ public function become_delivery_partner()
     protected function buildPageContentPayload(Request $request): string
     {
         $payload = [
-            'page_builder' => true,
-            'template' => CustomPageTemplate::TEMPLATE_STORY,
-            'banner' => $request->input('builder.banner', []),
-            'styles' => $request->input('builder.styles', []),
-            'classic_html' => '',
-            'classic_blocks' => [],
-            'policy_intro' => '',
-            'policy_html' => '',
+            'page_builder'    => true,
+            'template'        => CustomPageTemplate::TEMPLATE_STORY,
+            'banner'          => $request->input('builder.banner', []),
+            'styles'          => $request->input('builder.styles', []),
+            'classic_html'    => '',
+            'classic_blocks'  => [],
+            'policy_intro'    => '',
+            'policy_html'     => '',
             'policy_sections' => [],
-            'sections' => $request->input('builder.sections', []),
+            'sections'        => $request->input('builder.sections', []),
         ];
 
         return CustomPageTemplate::encode($payload, $request->title);
@@ -499,8 +516,8 @@ public function become_delivery_partner()
     public function updateSlug(Request $request)
     {
         $request->validate([
-            'id' => 'required|integer|exists:pages,id',
-            'slug' => 'required|string',
+            'id'    => 'required|integer|exists:pages,id',
+            'slug'  => 'required|string',
             'title' => 'required|string|max:255',
         ]);
 
@@ -516,7 +533,7 @@ public function become_delivery_partner()
         }
 
         $page->slug = $newSlug;
-        
+
         $locale = app()->getLocale();
         if ($locale == env('DEFAULT_LANGUAGE', 'en')) {
             $page->title = $request->title;
@@ -524,7 +541,7 @@ public function become_delivery_partner()
         $page->save();
 
         $page_translation = PageTranslation::firstOrNew([
-            'lang' => $locale,
+            'lang'    => $locale,
             'page_id' => $page->id
         ]);
         $page_translation->title = $request->title;
@@ -534,8 +551,8 @@ public function become_delivery_partner()
 
         return response()->json([
             'success' => true,
-            'slug' => $newSlug,
-            'title' => $request->title,
+            'slug'    => $newSlug,
+            'title'   => $request->title,
             'message' => translate('Page updated successfully.')
         ]);
     }

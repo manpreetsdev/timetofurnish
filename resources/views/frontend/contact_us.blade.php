@@ -162,8 +162,28 @@ $banner = [
                     <p class="mb-4">
                         Tell us how we can help, and we'll respond soon.
                     </p>
+							@if(session('success'))
+								<div class="alert alert-success mb-4">
+									{{ session('success') }}
+								</div>
+							@endif
 
-                    <form action="{{ route('contact_us.submit') }}" method="POST">
+							@if(session('error'))
+								<div class="alert alert-danger mb-4">
+									{{ session('error') }}
+								</div>
+							@endif
+
+							@if($errors->any())
+								<div class="alert alert-danger mb-4">
+									<ul class="mb-0">
+										@foreach($errors->all() as $error)
+											<li>{{ $error }}</li>
+										@endforeach
+									</ul>
+								</div>
+							@endif
+												<form action="{{ route('contact_us.submit') }}" method="POST">
                         @csrf
 
                         <div class="row">
