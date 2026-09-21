@@ -650,6 +650,14 @@
         box-shadow: 0 0 0 4px rgba(104, 91, 78, 0.12) !important;
     }
 
+    .bootstrap-select.seller-select {
+        height: auto !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
     .seller-select,
     .bootstrap-select > .dropdown-toggle {
         height: 52px !important;
@@ -658,7 +666,25 @@
         background: #fff !important;
         color: #3D3429 !important;
         box-shadow: none !important;
-        
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 0 18px !important;
+    }
+
+    .bootstrap-select.seller-select .dropdown-toggle .filter-option,
+    .bootstrap-select.seller-select .dropdown-toggle .filter-option-inner {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+    }
+
+    .bootstrap-select.seller-select .dropdown-menu {
+        border-radius: 15px !important;
+        border: 1px solid #E4D8CD !important;
+        box-shadow: 0 10px 25px rgba(61, 52, 41, 0.12) !important;
+        background: #fff !important;
+        padding: 6px 0 !important;
     }
 
     .seller-eye-btn {
