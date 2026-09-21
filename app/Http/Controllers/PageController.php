@@ -113,9 +113,9 @@ class PageController extends Controller
             ];
 
             // Primary target Admin email
-            $adminEmail = env('CONTACT_ADMIN_EMAIL', 'manpreetsdev@gmail.com');
+            $adminEmail = env('CONTACT_ADMIN_EMAIL', 'askus@timetofurnish.com');
             if (empty($adminEmail)) {
-                $adminEmail = 'manpreetsdev@gmail.com';
+                $adminEmail = 'askus@timetofurnish.com';
             }
 
             $fromAddress = env('MAIL_FROM_ADDRESS', 'timetofurnish@gmail.com');
