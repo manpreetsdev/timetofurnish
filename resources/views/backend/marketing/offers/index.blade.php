@@ -9,6 +9,10 @@
         border: 1px solid #e5dec9 !important;
         border-radius: 16px !important;
         box-shadow: 0 8px 30px rgba(104, 91, 78, 0.04) !important;
+        overflow: visible !important;
+    }
+    .table-responsive {
+        overflow: visible !important;
     }
     .theme-card-header {
         border-bottom: 1px solid #e5dec9 !important;

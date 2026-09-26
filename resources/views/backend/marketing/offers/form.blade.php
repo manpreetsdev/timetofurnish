@@ -11,6 +11,7 @@
         border-radius: 16px !important;
         box-shadow: 0 8px 30px rgba(104, 91, 78, 0.04) !important;
         transition: all 0.3s ease;
+        overflow: visible !important;
     }
     .theme-card:hover {
         box-shadow: 0 12px 40px rgba(104, 91, 78, 0.08) !important;
@@ -34,6 +35,7 @@
     }
     .theme-card-body {
         padding: 1.5rem !important;
+        overflow: visible !important;
     }
     .theme-form-label {
         color: #554a3f !important;
@@ -85,6 +87,7 @@
         border: 1px solid #e5dec9 !important;
         box-shadow: 0 10px 30px rgba(104, 91, 78, 0.1) !important;
         padding: 8px !important;
+        z-index: 1060 !important;
     }
     .dropdown-menu .dropdown-item {
         border-radius: 8px !important;
@@ -114,10 +117,11 @@
 </style>
 
 <input type="hidden" name="timezone_offset" class="timezone-offset-field" value="0">
+<input type="hidden" name="template_style" value="style_1">
 
-<div class="row">
+<div class="row" style="overflow: visible !important;">
     <!-- Main Info Column -->
-    <div class="col-lg-7">
+    <div class="col-lg-7" style="overflow: visible !important;">
         <div class="card theme-card mb-4">
             <div class="card-header theme-card-header">
                 <h6 class="card-title mb-0 theme-card-title"><i class="las la-tags mr-2"></i>{{ translate('Offer Details') }}</h6>
@@ -131,7 +135,7 @@
                 @endphp
                 <div class="form-group mb-4">
                     <label class="form-label theme-form-label" for="offer_name_select">{{ translate('Offer / Deal Name') }} <span class="text-danger">*</span></label>
-                    <select id="offer_name_select" class="form-control aiz-selectpicker rounded-lg border-gray-300">
+                    <select id="offer_name_select" class="form-control aiz-selectpicker rounded-lg border-gray-300" data-container="body">
                         @foreach($options as $key => $val)
                             <option value="{{ $key }}" @if(!$is_custom && $current_name == $key) selected @endif>{{ translate($val) }}</option>
                         @endforeach
@@ -164,7 +168,7 @@
                 <!-- Products list -->
                 <div class="form-group mb-0">
                     <label class="form-label theme-form-label">{{ translate('Choose Products') }}</label>
-                    <select name="products[]" id="products" class="form-control aiz-selectpicker rounded-lg border-gray-300" multiple required data-placeholder="{{ translate('Select Products') }}" data-live-search="true" data-selected-text-format="count" data-actions-box="true">
+                    <select name="products[]" id="products" class="form-control aiz-selectpicker rounded-lg border-gray-300" multiple required data-placeholder="{{ translate('Select Products') }}" data-live-search="true" data-selected-text-format="count" data-actions-box="true" data-container="body">
                         @foreach($products as $product)
                             @php
                                 $is_selected = isset($offer) && $offer->products->contains($product->id);
@@ -181,7 +185,7 @@
     </div>
 
     <!-- Pricing & Validity Column -->
-    <div class="col-lg-5">
+    <div class="col-lg-5" style="overflow: visible !important;">
         <div class="card theme-card mb-4">
             <div class="card-header theme-card-header">
                 <h6 class="card-title mb-0 theme-card-title"><i class="las la-calculator mr-2"></i>{{ translate('Pricing & Discount') }}</h6>
@@ -190,7 +194,7 @@
                 <!-- Discount Type -->
                 <div class="form-group mb-4">
                     <label class="form-label theme-form-label" for="discount_type">{{ translate('Discount Type') }} <span class="text-danger">*</span></label>
-                    <select name="discount_type" id="discount_type" class="form-control aiz-selectpicker rounded-lg border-gray-300" required>
+                    <select name="discount_type" id="discount_type" class="form-control aiz-selectpicker rounded-lg border-gray-300" required data-container="body">
                         <option value="percentage" @if(isset($offer) && $offer->discount_type == 'percentage') selected @endif>{{ translate('Percentage Discount (e.g. 50% off)') }}</option>
                         <option value="fixed" @if(isset($offer) && $offer->discount_type == 'fixed') selected @endif>{{ translate('Fixed Amount Discount (e.g. £100 off)') }}</option>
                         <option value="badge_only" @if(isset($offer) && $offer->discount_type == 'badge_only') selected @endif>{{ translate('Badge Only (No display pricing changes)') }}</option>
@@ -235,25 +239,6 @@
                     <label class="form-label theme-form-label" for="priority">{{ translate('Priority') }}</label>
                     <input type="number" min="0" placeholder="{{ translate('0') }}" id="priority" name="priority" class="form-control rounded-lg" value="{{ isset($offer) ? $offer->priority : 0 }}">
                     <span class="fs-11 text-muted-theme mt-1 d-block">{{ translate('Higher priority wins if a product has multiple active offers.') }}</span>
-                </div>
-
-                <!-- Homepage Template Style Selection -->
-                <div class="form-group mb-4 pt-3 border-theme-top" id="template_style_wrapper">
-                    <label class="form-label theme-form-label" for="template_style">{{ translate('Homepage Template Style') }}</label>
-                    <select name="template_style" id="template_style" class="form-control aiz-selectpicker rounded-lg border-gray-300" required>
-                        <option value="style_1" @if(isset($offer) && $offer->template_style == 'style_1') selected @endif>{{ translate('Style 1: Premium Glassmorphism') }}</option>
-                        <option value="style_2" @if(isset($offer) && $offer->template_style == 'style_2') selected @endif>{{ translate('Style 2: Dark Warm Split') }}</option>
-                        <option value="style_3" @if(isset($offer) && $offer->template_style == 'style_3') selected @endif>{{ translate('Style 3: Minimalist Outline Frame') }}</option>
-                    </select>
-                    <span class="fs-11 text-muted-theme mt-1 d-block">{{ translate('Select the display layout style for the homepage.') }}</span>
-                </div>
-
-                <!-- Template Preview Container -->
-                <div class="form-group mb-4" id="template_preview_wrapper">
-                    <label class="form-label theme-form-label">{{ translate('Template Style Live Preview') }}</label>
-                    <div id="template_preview_container" class="p-0 border rounded-lg bg-white position-relative" style="min-height: 150px; border-color: #e5dec9 !important; transition: all 0.3s ease;">
-                        <!-- Scaled visual preview mockup -->
-                    </div>
                 </div>
 
                 <!-- Show on Homepage (Admin Only) -->
@@ -372,116 +357,6 @@
         $(document).on('change changed.bs.select', '#discount_type', function() {
             syncDiscountType();
         });
-
-        function updateTemplatePreview() {
-            var style = $('#template_style').val();
-            var container = $('#template_preview_container');
-            if (!container.length) return;
-            var html = '';
-            
-            if (style === 'style_1') {
-                html = `
-                    <div class="p-3 rounded" style="background: linear-gradient(135deg, #fdfbf7 0%, #f7f0e3 50%, #eadfc9 100%); border: 1px solid #e2d7c0; min-height: 150px;">
-                        <div class="row align-items-center" style="margin:0;">
-                            <div class="col-7 pl-0 pr-1">
-                                <div style="width: 55px; height: 12px; background: #685b4e; border-radius: 3px; margin-bottom: 6px;"></div>
-                                <div style="width: 90%; height: 16px; background: #3e3327; border-radius: 3px; margin-bottom: 6px;"></div>
-                                <div style="width: 70%; height: 8px; background: #8c8276; border-radius: 2px; margin-bottom: 12px;"></div>
-                                <div class="d-flex mb-2" style="gap: 4px;">
-                                    <div style="width: 16px; height: 16px; background: #fff; border: 1px solid rgba(226,156,9,0.25); border-radius: 4px;"></div>
-                                    <div style="width: 16px; height: 16px; background: #fff; border: 1px solid rgba(226,156,9,0.25); border-radius: 4px;"></div>
-                                    <div style="width: 16px; height: 16px; background: #fff; border: 1px solid rgba(226,156,9,0.25); border-radius: 4px;"></div>
-                                </div>
-                                <div style="width: 60px; height: 18px; background: #685b4e; border-radius: 9px;"></div>
-                            </div>
-                            <div class="col-5 pl-0 pr-0 d-flex" style="gap: 4px;">
-                                <div class="p-1 rounded bg-white text-center" style="border: 1px solid rgba(226,215,192,0.5); width: 50%;">
-                                    <div style="height: 45px; background: #f5f5f5; border-radius: 4px; margin-bottom: 4px;"></div>
-                                    <div style="width: 80%; height: 5px; background: #ddd; border-radius: 2px; margin: 0 auto 3px;"></div>
-                                    <div style="width: 50%; height: 5px; background: #685b4e; border-radius: 2px; margin: 0 auto;"></div>
-                                </div>
-                                <div class="p-1 rounded bg-white text-center" style="border: 1px solid rgba(226,215,192,0.5); width: 50%;">
-                                    <div style="height: 45px; background: #f5f5f5; border-radius: 4px; margin-bottom: 4px;"></div>
-                                    <div style="width: 80%; height: 5px; background: #ddd; border-radius: 2px; margin: 0 auto 3px;"></div>
-                                    <div style="width: 50%; height: 5px; background: #685b4e; border-radius: 2px; margin: 0 auto;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (style === 'style_2') {
-                html = `
-                    <div class="rounded overflow-hidden d-flex" style="background: #fbfaf7; border: 1px solid #e2d7c0; min-height: 150px;">
-                        <div class="p-3 d-flex flex-column justify-content-center text-white" style="background: linear-gradient(135deg, #51463a 0%, #685b4e 100%); width: 45%;">
-                            <div style="width: 35px; height: 10px; background: rgba(255,255,255,0.4); border-radius: 3px; margin-bottom: 6px;"></div>
-                            <div style="width: 90%; height: 16px; background: #ffffff; border-radius: 3px; margin-bottom: 6px;"></div>
-                            <div style="width: 70%; height: 8px; background: rgba(255,255,255,0.6); border-radius: 2px; margin-bottom: 10px;"></div>
-                            <div class="d-flex mb-2" style="gap: 4px;">
-                                <div style="width: 14px; height: 14px; background: rgba(255,255,255,0.25); border-radius: 50%;"></div>
-                                <div style="width: 14px; height: 14px; background: rgba(255,255,255,0.25); border-radius: 50%;"></div>
-                                <div style="width: 14px; height: 14px; background: rgba(255,255,255,0.25); border-radius: 50%;"></div>
-                            </div>
-                            <div style="width: 55px; height: 16px; background: #ffffff; border-radius: 8px;"></div>
-                        </div>
-                        <div class="p-2 d-flex align-items-center justify-content-around" style="width: 55%; background: #fbfaf7; gap: 4px;">
-                            <div class="p-1 rounded bg-white text-center shadow-sm" style="border: 1px solid rgba(226,215,192,0.3); width: 48%;">
-                                <div style="height: 45px; background: #f5f5f5; border-radius: 4px; margin-bottom: 4px;"></div>
-                                <div style="width: 80%; height: 5px; background: #ddd; border-radius: 2px; margin: 0 auto 3px;"></div>
-                                <div style="width: 50%; height: 5px; background: #685b4e; border-radius: 2px; margin: 0 auto;"></div>
-                            </div>
-                            <div class="p-1 rounded bg-white text-center shadow-sm" style="border: 1px solid rgba(226,215,192,0.3); width: 48%;">
-                                <div style="height: 45px; background: #f5f5f5; border-radius: 4px; margin-bottom: 4px;"></div>
-                                <div style="width: 80%; height: 5px; background: #ddd; border-radius: 2px; margin: 0 auto 3px;"></div>
-                                <div style="width: 50%; height: 5px; background: #685b4e; border-radius: 2px; margin: 0 auto;"></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (style === 'style_3') {
-                html = `
-                    <div class="p-3 rounded" style="background: #fafaf8; border: 3px double #685b4e; min-height: 150px;">
-                        <div class="text-center mb-2" style="border-bottom: 1px solid rgba(104,91,78,0.2); padding-bottom: 6px;">
-                            <div style="width: 60px; height: 10px; background: #685b4e; border-radius: 3px; margin: 0 auto 4px;"></div>
-                            <div style="width: 130px; height: 14px; background: #3e3327; border-radius: 2px; margin: 0 auto 4px;"></div>
-                            <div style="font-size: 9px; color: #685b4e; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">ENDS IN: 02D : 14H : 32M</div>
-                        </div>
-                        <div class="d-flex justify-content-center align-items-center" style="gap: 8px;">
-                            <div class="p-1 rounded bg-white text-center" style="border: 1px solid #eee; width: 35%;">
-                                <div style="height: 40px; background: #f8f8f8; border-radius: 2px; margin-bottom: 3px;"></div>
-                                <div style="width: 80%; height: 4px; background: #eee; border-radius: 1px; margin: 0 auto 2px;"></div>
-                                <div style="width: 40%; height: 4px; background: #3e3327; border-radius: 1px; margin: 0 auto;"></div>
-                            </div>
-                            <div class="p-1 rounded bg-white text-center" style="border: 1px solid #eee; width: 35%;">
-                                <div style="height: 40px; background: #f8f8f8; border-radius: 2px; margin-bottom: 3px;"></div>
-                                <div style="width: 80%; height: 4px; background: #eee; border-radius: 1px; margin: 0 auto 2px;"></div>
-                                <div style="width: 40%; height: 4px; background: #3e3327; border-radius: 1px; margin: 0 auto;"></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            container.html(html);
-        }
-
-        $(document).on('change changed.bs.select', '#template_style', updateTemplatePreview);
-        updateTemplatePreview();
-
-        function toggleTemplateStyleVisibility() {
-            var showOnHomeCheckbox = $('input[name="show_on_home"]');
-            if (showOnHomeCheckbox.length > 0) {
-                if (showOnHomeCheckbox.is(':checked')) {
-                    $('#template_style_wrapper').slideDown();
-                    $('#template_preview_wrapper').slideDown();
-                } else {
-                    $('#template_style_wrapper').slideUp();
-                    $('#template_preview_wrapper').slideUp();
-                }
-            }
-        }
-
-        $(document).on('change', 'input[name="show_on_home"]', toggleTemplateStyleVisibility);
-        toggleTemplateStyleVisibility();
     }
 
     initJQueryHandlers();

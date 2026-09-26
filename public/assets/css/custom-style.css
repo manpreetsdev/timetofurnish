@@ -525,7 +525,7 @@
         padding-top: 6px !important;
         gap: 5px !important;
         align-items: center !important;
-        flex-direction: column !important;
+        flex-direction: row !important;
     }
 
     .product-listing-page .modern-price-wrap,
@@ -998,6 +998,8 @@ a {
 
     .modern-card-bottom-row {
         align-items: center !important;
+        min-height: auto !important;
+
     }
 
     .offer-inner-carousel .slick-list.draggable {
@@ -2597,11 +2599,11 @@ span.badge.badge-primary.badge-circle.position-absolute {
 }
 
 /* Premium Sort By Options Dropdown Panel */
-.bootstrap-select:not(.show) > .dropdown-menu:not(.show) {
+.bootstrap-select:not(.show)>.dropdown-menu:not(.show) {
     display: none !important;
 }
 
-.bootstrap-select.show > .dropdown-menu,
+.bootstrap-select.show>.dropdown-menu,
 .bootstrap-select .dropdown-menu.show {
     display: flex !important;
     flex-direction: column !important;
@@ -3013,7 +3015,7 @@ ul.dropdown-menu.inner.show {
     align-items: end !important;
     justify-content: center !important;
     width: 100% !important;
-    min-height: 38px !important;
+    min-height: 38px;
     gap: 8px !important;
 }
 
@@ -3933,7 +3935,6 @@ ul.dropdown-menu.inner.show {
     .home-mobile-product-section .modern-section-subtitle {
         font-size: 10.5px !important;
         line-height: 1.4 !important;
-        max-width: 185px !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
     }
@@ -4038,7 +4039,8 @@ ul.dropdown-menu.inner.show {
         padding-top: 6px !important;
         gap: 5px !important;
         padding: 0px;
-        flex-direction: column !important;
+        flex-direction: row !important;
+        align-items: center !important;
     }
 
     .home-mobile-product-carousel .modern-price-wrap,
@@ -4046,7 +4048,7 @@ ul.dropdown-menu.inner.show {
     .home-mobile-product-carousel .modern-price-wrap span {
         font-size: 9.6px !important;
         line-height: 1.35 !important;
-        flex: auto;
+        flex: 90%;
         text-align: left !important;
     }
 
@@ -4066,6 +4068,7 @@ ul.dropdown-menu.inner.show {
     .home-mobile-product-carousel .modern-card-actions-bottom {
         gap: 0px !important;
         flex-direction: row;
+        flex: 10% !important;
     }
 
     .home-mobile-product-carousel .modern-card-actions-bottom .modern-action-btn,
@@ -4505,6 +4508,7 @@ img[style*="float: right"] {
         padding-top: 6px !important;
         gap: 5px !important;
         padding: 0px;
+        align-items: flex-start !important;
     }
 
     .product-listing-page .modern-price-wrap,
@@ -4526,7 +4530,8 @@ img[style*="float: right"] {
     }
 
     .product-listing-page .modern-card-actions-bottom {
-        flex-wrap: wrap !important;
+        flex: 10%;
+        flex-direction: row !important;
     }
 
     .modern-card-actions-bottom .modern-action-btn,
@@ -5112,13 +5117,7 @@ li.slick-active {
     z-index: 5;
 }
 
-.aiz-carousel.dots-inside-bottom .slick-dots li button {
-    background: rgba(255, 255, 255, 0.55) !important;
-}
 
-.aiz-carousel.dots-inside-bottom .slick-dots li.slick-active button {
-    background: #ffffff !important;
-}
 
 /* =====================================================================
    LAZYLOAD – stop the "wrong default image, then the real one" flash.
@@ -5575,4 +5574,11 @@ img.lazyload:not([data-src]):not([data-srcset]) {
     user-select: none !important;
     -webkit-user-select: none !important;
     -webkit-touch-callout: none !important;
+}
+
+.coming-soon-box img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
 }

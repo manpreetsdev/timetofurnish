@@ -1,26 +1,33 @@
 @extends('frontend.layouts.app')
+@php
+    $banner = [
+        'title' => 'Delivery Partner',
+        'breadcrumb_label' => 'Delivery Partner',
+        'background_image' => null,
+        'height' => 340,
+        'text_align' => 'center',
+        'overlay_color' => 'rgba(54, 38, 26, 0.42)',
+        'title_color' => '#ffffff',
+        'subtitle_color' => '#f8f0e7',
+        'title_font_family' => 'Playfair Display, serif',
+        'subtitle_font_family' => 'Poppins, sans-serif',
+        'subtitle' => null,
+    ];
+@endphp
 
 @section('content')
+
+{{-- Banner --}}
+@include('frontend.custom-pages.partials.banner', [
+    'banner' => $banner
+])
 
 <section class="delivery-partner-page">
 
     <div class="container">
 
         <!-- Page Heading -->
-        <div class="delivery-page-heading text-center">
-            <h1>Become Our Delivery Partner</h1>
-
-            <ul class="breadcrumb bg-transparent p-0 m-0 justify-content-center">
-                <li class="breadcrumb-item has-transition opacity-50 hov-opacity-100">
-                    <a class="text-reset" href="{{ route('home') }}">
-                        {{ translate('Home') }}
-                    </a>
-                </li>
-                <li class="text-dark fw-600 breadcrumb-item">
-                    Become Our Delivery Partner
-                </li>
-            </ul>
-        </div>
+       
 
         <div class="row justify-content-center">
             <div class="col-xl-6 col-lg-7 col-md-9 col-sm-11">

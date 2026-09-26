@@ -1,12 +1,5 @@
-<div class="aiz-user-sidenav-wrap position-relative z-1 rounded-0">
-    <div class="aiz-user-sidenav overflow-auto c-scrollbar-light px-4 pb-4">
-        <!-- Close button -->
-        <div class="d-xl-none">
-            <button class="btn btn-sm p-2 " data-toggle="class-toggle" data-backdrop="static"
-                data-target=".aiz-mobile-side-nav" data-same=".mobile-side-nav-thumb">
-                <i class="las la-times la-2x"></i>
-            </button>
-        </div>
+<div class="aiz-user-sidenav-wrap position-relative z-1">
+    <div class="aiz-user-sidenav overflow-auto c-scrollbar-light">
         @php
         $user = auth()->user();
         $user_avatar = null;
@@ -16,27 +9,38 @@
         }
         @endphp
 
-        <!-- Customer info -->
-        <div class="p-4 text-center mb-4 border-bottom position-relative">
+        <!-- Customer info (Modern Minimalist White Row) -->
+        <div class="user-profile-header-card border-bottom p-3 mb-2 position-relative d-flex align-items-center">
             <!-- Image -->
-            <span class="avatar avatar-md mb-3">
+            <span class="avatar mr-3 flex-shrink-0 position-relative" style="width: 50px; height: 50px;">
                 @if ($user->avatar_original != null)
-                <img src="{{ $user_avatar }}"
+                <img src="{{ $user_avatar }}" class="rounded-circle w-100 h-100" style="object-fit: cover; border: 2px solid var(--ttf-button-fill, #5f4d3e);"
                     onerror="this.onerror=null;this.src='{{ static_asset('assets/img/avatar-place.png') }}';">
                 @else
-                <img src="{{ static_asset('assets/img/avatar-place.png') }}" class="image rounded-circle"
+                <img src="{{ static_asset('assets/img/avatar-place.png') }}" class="image rounded-circle w-100 h-100" style="object-fit: cover; border: 2px solid var(--ttf-button-fill, #5f4d3e);"
                     onerror="this.onerror=null;this.src='{{ static_asset('assets/img/avatar-place.png') }}';">
                 @endif
             </span>
-            <!-- Name -->
-            <h4 class="h5 fs-14 mb-1 fw-700 text-dark">{{ $user->name }}</h4>
-            <!-- Phone -->
-            @if ($user->phone != null)
-            <div class="text-truncate opacity-60 fs-12">{{ $user->phone }}</div>
-            <!-- Email -->
-            @else
-            <div class="text-truncate opacity-60 fs-12">{{ $user->email }}</div>
-            @endif
+
+            <!-- Name & Email -->
+            <div class="flex-grow-1 minw-0 pr-4">
+                <h4 class="fs-15 mb-1 fw-700 text-dark text-truncate" style="color: #0f172a !important; line-height: 1.2;">{{ $user->name }}</h4>
+                @if ($user->phone != null)
+                <div class="text-truncate fs-12 text-secondary fw-500">{{ $user->phone }}</div>
+                @else
+                <div class="text-truncate fs-12 text-secondary fw-500">{{ $user->email }}</div>
+                @endif
+            </div>
+
+            <!-- Mobile Close button -->
+            <div class="d-xl-none position-absolute" style="top: 14px; right: 12px; z-index: 5;">
+                <button class="btn btn-sm btn-icon text-secondary p-0 border-0 d-flex align-items-center justify-content-center" 
+                    data-toggle="class-toggle" data-backdrop="static"
+                    data-target=".aiz-mobile-side-nav" data-same=".mobile-side-nav-thumb" aria-label="Close"
+                    style="background: #f1f5f9; border-radius: 50%; width: 32px; height: 32px;">
+                    <i class="las la-times fs-18 text-secondary"></i>
+                </button>
+            </div>
         </div>
 
         <!-- Menus -->
@@ -379,148 +383,74 @@
     </div>
 </div>
 <style>
-    .btn:hover {
-        background: #dacbbc;
-        border: none !important;
-        color: black;
-    }
-
     /* ==========================================================================
-   SIDEBAR REDESIGN CSS (Matching Image 1)
-   ========================================================================== */
+       MODERN MINIMALIST USER SIDEBAR DESIGN (Option 1)
+       ========================================================================== */
 
-    /* Main Container */
+    /* Desktop Sidebar Wrapper */
     .aiz-user-sidenav-wrap {
         background: #ffffff !important;
-        border-radius: 20px !important;
-        border: 1px solid #f0eae1 !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
-        padding: 20px 16px !important;
-        max-width: 280px;
+        border-radius: 16px !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        width: 100% !important;
+        max-width: 315px;
     }
 
     .aiz-user-sidenav {
         padding: 0 !important;
     }
 
-    /* --------------------------------------------------------------------------
-   1. Profile Section Card
-   -------------------------------------------------------------------------- */
-    .aiz-user-sidenav .text-center {
+    /* Modern Minimalist Profile Header Row */
+    .user-profile-header-card {
         position: relative !important;
-        background: linear-gradient(180deg, #fdfbf8 0%, #faf4ee 100%) !important;
-        border: 1px solid #f2e8dc !important;
-        border-radius: 20px !important;
-        padding: 28px 16px 22px !important;
-        margin-bottom: 24px !important;
-        box-shadow: none !important;
-        transform: none !important;
-    }
-
-    /* Remove decorative pseudoelements */
-    .aiz-user-sidenav .text-center::before,
-    .aiz-user-sidenav .text-center::after {
-        display: none !important;
-    }
-
-    /* Profile Avatar */
-    .aiz-user-sidenav .avatar {
-        width: 84px !important;
-        height: 84px !important;
-        margin: 0 auto 12px auto !important;
-        display: block !important;
-        position: relative !important;
-    }
-
-    .aiz-user-sidenav .avatar img {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
-        border-radius: 50% !important;
-        padding: 0 !important;
         background: #ffffff !important;
-        border: 3px solid #ffffff !important;
-        box-shadow: 0 4px 14px rgba(139, 94, 60, 0.12) !important;
-        transform: none !important;
-        transition: transform 0.25s ease !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        border-radius: 0 !important;
+        padding: 16px 16px !important;
+        margin: 0 0 12px 0 !important;
+        box-shadow: none !important;
+        color: #0f172a !important;
     }
 
-    .aiz-user-sidenav .avatar img:hover {
-        transform: scale(1.04) !important;
-    }
-
-    /* Online status dot hide/adjust */
-    .aiz-user-sidenav .avatar::after {
-        display: none !important;
-    }
-
-    /* User Name */
-    .aiz-user-sidenav h4 {
-        margin-top: 8px !important;
-        margin-bottom: 2px !important;
-        font-size: 16px !important;
+    .user-profile-header-card h4 {
+        color: #0f172a !important;
+        font-size: 15px !important;
         font-weight: 700 !important;
-        color: #2c221e !important;
-        letter-spacing: -0.2px !important;
     }
 
-    /* User Email / Phone */
-    .aiz-user-sidenav .opacity-60 {
-        color: #8c7e75 !important;
-        font-size: 12px !important;
-        font-weight: 500 !important;
-        opacity: 1 !important;
-        line-height: 1.4 !important;
-    }
-
-    /* Optional Premium Badge Styling */
-    .profile-badge {
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 6px !important;
-        margin-top: 12px !important;
-        padding: 5px 14px !important;
-        border-radius: 20px !important;
-        background: #f3e6d8 !important;
-        color: #9e5e38 !important;
-        font-weight: 600 !important;
-        font-size: 12px !important;
-    }
-
-    /* --------------------------------------------------------------------------
-   2. Navigation Links
-   -------------------------------------------------------------------------- */
+    /* Navigation Menu Padding & Structure */
     .sidemnenu {
-        padding: 0 !important;
+        padding: 0 14px 24px 14px !important;
     }
 
     .aiz-side-nav-list {
         border-bottom: none !important;
-        margin-bottom: 20px !important;
+        margin-bottom: 12px !important;
         padding-bottom: 0 !important;
         list-style: none !important;
         padding-left: 0 !important;
     }
 
     .aiz-side-nav-item {
-        margin-bottom: 6px !important;
+        margin-bottom: 3px !important;
     }
 
     .aiz-side-nav-link {
         display: flex !important;
         align-items: center !important;
-        padding: 11px 16px !important;
-        border-radius: 12px !important;
-        color: #4a3e38 !important;
+        padding: 10px 14px !important;
+        border-radius: 10px !important;
+        color: #334155 !important;
         font-size: 14px !important;
-        font-weight: 600 !important;
+        font-weight: 500 !important;
         text-decoration: none !important;
         transition: all 0.2s ease-in-out !important;
         background: transparent !important;
     }
 
-    /* Icon Styles */
     .aiz-side-nav-link svg {
         width: 18px !important;
         height: 18px !important;
@@ -531,7 +461,8 @@
     .aiz-side-nav-link svg path,
     .aiz-side-nav-link svg g,
     .aiz-side-nav-link svg rect {
-        fill: #7d6e65 !important;
+        fill: #64748b !important;
+        transition: fill 0.2s ease-in-out !important;
     }
 
     .aiz-side-nav-text {
@@ -540,27 +471,24 @@
         color: inherit !important;
     }
 
-    /* --------------------------------------------------------------------------
-   3. Hover & Active States
-   -------------------------------------------------------------------------- */
-
     /* Inactive Link Hover */
     .aiz-side-nav-link:not(.active):not([aria-expanded="true"]):hover {
-        background: #faf7f2 !important;
-        color: #685b4e !important;
+        background: rgba(95, 77, 62, 0.06) !important;
+        color: var(--ttf-button-fill, #5f4d3e) !important;
     }
 
     .aiz-side-nav-link:not(.active):not([aria-expanded="true"]):hover svg path,
     .aiz-side-nav-link:not(.active):not([aria-expanded="true"]):hover svg g,
     .aiz-side-nav-link:not(.active):not([aria-expanded="true"]):hover svg rect {
-        fill: #685b4e !important;
+        fill: var(--ttf-button-fill, #5f4d3e) !important;
     }
 
     /* Active Link State */
     .aiz-side-nav-link.active {
-        background: #685b4e !important;
+        background: var(--ttf-button-fill, #5f4d3e) !important;
         color: #ffffff !important;
-        box-shadow: 0 6px 16px rgba(104, 91, 78, 0.25) !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 12px rgba(95, 77, 62, 0.2) !important;
     }
 
     .aiz-side-nav-link.active svg path,
@@ -573,21 +501,18 @@
         color: #ffffff !important;
     }
 
-    /* --------------------------------------------------------------------------
-   4. Badges (New / Counter)
-   -------------------------------------------------------------------------- */
+    /* Badges */
     .aiz-side-nav-link .badge {
         margin-left: auto !important;
         font-weight: 700 !important;
         font-size: 11px !important;
-        padding: 3px 10px !important;
+        padding: 3px 9px !important;
         border-radius: 12px !important;
-        letter-spacing: 0.2px !important;
     }
 
     .aiz-side-nav-link .badge-success {
-        background-color: #dcfce7 !important;
-        color: #16a34a !important;
+        background-color: var(--ttf-button-fill, #5f4d3e) !important;
+        color: #ffffff !important;
     }
 
     .aiz-side-nav-link.active .badge-success {
@@ -595,9 +520,7 @@
         color: #ffffff !important;
     }
 
-    /* --------------------------------------------------------------------------
-   5. Sign Out Button
-   -------------------------------------------------------------------------- */
+    /* Sign Out Button */
     .sidemnenu a[href*="logout"],
     .sidemnenu .btn-primary {
         display: flex !important;
@@ -605,24 +528,54 @@
         justify-content: center !important;
         gap: 8px !important;
         width: 100% !important;
-        height: 46px !important;
-        background: #685b4e !important;
+        height: 44px !important;
+        background: var(--ttf-button-fill, #5f4d3e) !important;
         border: none !important;
         color: #ffffff !important;
         font-size: 14px !important;
-        font-weight: 700 !important;
-        border-radius: 9px !important;
-        box-shadow: 0 4px 14px rgba(104, 91, 78, 0.2) !important;
+        font-weight: 600 !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 12px rgba(95, 77, 62, 0.18) !important;
         transition: all 0.2s ease-in-out !important;
-        margin-top: 10px !important;
+        margin-top: 16px !important;
         text-decoration: none !important;
     }
 
     .sidemnenu a[href*="logout"]:hover,
     .sidemnenu .btn-primary:hover {
-        background: #54493e !important;
+        opacity: 0.92 !important;
+        background: var(--ttf-button-fill, #5f4d3e) !important;
         color: #ffffff !important;
-        box-shadow: 0 6px 18px rgba(104, 91, 78, 0.3) !important;
-        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 16px rgba(95, 77, 62, 0.25) !important;
+    }
+
+    /* Mobile Drawer Full Responsive Overrides */
+    @media (max-width: 1199.98px) {
+        .aiz-mobile-side-nav.collapse-sidebar-wrap .collapse-sidebar {
+            width: 300px !important;
+            max-width: 85vw !important;
+            height: 100vh !important;
+            background: #ffffff !important;
+            box-shadow: 6px 0 30px rgba(0, 0, 0, 0.12) !important;
+            border: none !important;
+        }
+
+        .aiz-mobile-side-nav .aiz-user-sidenav-wrap {
+            border-radius: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            height: 100% !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            background: #ffffff !important;
+        }
+
+        .aiz-mobile-side-nav .user-profile-header-card {
+            border-radius: 0 !important;
+            margin-bottom: 8px !important;
+        }
     }
 </style>
