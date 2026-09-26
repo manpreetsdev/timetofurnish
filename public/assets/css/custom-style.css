@@ -5115,7 +5115,7 @@ li.slick-active {
 }
 
 .aiz-carousel.dots-inside-bottom .slick-dots {
-    bottom: 15px !important;
+    bottom: 25px !important;
     top: auto !important;
     position: absolute !important;
     left: 50% !important;
