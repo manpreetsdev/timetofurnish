@@ -2733,6 +2733,14 @@ ul.dropdown-menu.inner.show {
     overflow: visible !important;
 }
 
+.aiz-carousel .slick-list,
+.home-mobile-product-carousel .slick-list {
+    padding-top: 6px !important;
+    padding-bottom: 14px !important;
+    margin-top: -6px !important;
+    margin-bottom: -14px !important;
+}
+
 .hov-shadow-out:has(> .modern-product-card):hover,
 .hov-animate-outline:has(> .modern-product-card):hover,
 .custom-profuct-image-style:has(> .modern-product-card):hover {

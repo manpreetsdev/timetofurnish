@@ -202,34 +202,65 @@
         </div>
     </section>
 
+    <style>
+        .aiz-carousel .slick-list,
+        .home-mobile-product-carousel .slick-list {
+            padding-top: 6px !important;
+            padding-bottom: 14px !important;
+            margin-top: -6px !important;
+            margin-bottom: -14px !important;
+        }
+
+        .aiz-carousel .slick-slide,
+        .aiz-carousel .slick-slide:focus,
+        .aiz-carousel .slick-slide *:focus,
+        .carousel-box:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .home-mobile-product-carousel .carousel-box {
+            padding-left: 5px !important;
+            padding-right: 5px !important;
+        }
+    </style>
+
     @if (!isset($type))
         @php
             $feature_products = \App\Models\Product::where('user_id', $shop->user->id)->where('published', 1)->where('approved', 1)->where('seller_featured', 1)->with(['thumbnail', 'stocks', 'taxes'])->latest()->get();
         @endphp
         @if (count($feature_products) > 0)
             <!-- Featured Products -->
-            <section class="mt-3 mb-3" id="section_featured">
+            <section class="mb-4 mt-3 home-mobile-product-section home_Section" id="section_featured">
                 <div class="container">
-                <!-- Top Section -->
-                <div class="d-flex mb-4 align-items-baseline justify-content-between">
-                        <!-- Title -->
-                        <h3 class="fs-16 fs-md-20 fw-700 mb-3 mb-sm-0">
-                            <span class="">{{ translate('Featured Products') }}</span>
-                        </h3>
-                        <!-- Links -->
-                        <div class="d-flex">
-                            <a type="button" class="arrow-prev slide-arrow text-secondary mr-2" onclick="clickToSlide('slick-prev','section_featured')"><i class="las la-angle-left fs-20 fw-600"></i></a>
-                            <a type="button" class="arrow-next slide-arrow text-secondary ml-2" onclick="clickToSlide('slick-next','section_featured')"><i class="las la-angle-right fs-20 fw-600"></i></a>
-                        </div>
-                    </div>
-                    <!-- Products Section -->
-                    <div class="px-sm-3">
-                        <div class="aiz-carousel sm-gutters-16 arrow-none" data-items="6" data-xl-items="5" data-lg-items="4"  data-md-items="3" data-sm-items="2" data-xs-items="2" data-arrows='true' data-autoplay='true' data-infinute="true">
-                            @foreach ($feature_products as $key => $product)
-                            <div class="carousel-box px-3 position-relative has-transition hov-animate-outline border-right border-top border-bottom @if($key == 0) border-left @endif">
-                                @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
+                    <div class="modern-section-bordered-wrap">
+                        <!-- Section Header -->
+                        <div class="modern-section-header home-section-heading-with-arrows mb-4 d-flex justify-content-between align-items-center">
+                            <div class="home-section-heading-copy">
+                                <h3 class="modern-section-title">
+                                    {{ translate('Featured') }} <span style="color: #C27325;">{{ translate('Products') }}</span>
+                                </h3>
                             </div>
-                            @endforeach
+                            <div class="home-section-arrow-group @if (count($feature_products) <= 4) home-arrows-desktop-disabled @endif @if (count($feature_products) <= 2) home-arrows-mobile-disabled @endif">
+                                <span class="home-section-arrows-only">
+                                    <button type="button" class="home-section-arrow is-prev" aria-label="{{ translate('Previous') }}" onclick="homeSectionSlide('prev','section_featured')">
+                                        <i class="las la-angle-left"></i>
+                                    </button>
+                                    <button type="button" class="home-section-arrow is-next" aria-label="{{ translate('Next') }}" onclick="homeSectionSlide('next','section_featured')">
+                                        <i class="las la-angle-right"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- Products Section -->
+                        <div class="px-sm-3">
+                            <div class="aiz-carousel sm-gutters-16 arrow-none home-mobile-product-carousel" data-items="4" data-xxl-items="4" data-xl-items="4" data-lg-items="4" data-md-items="3" data-sm-items="2" data-xs-items="2" data-arrows="true" data-dots="false" data-infinite="false" data-autoplay="false">
+                                @foreach ($feature_products as $key => $product)
+                                <div class="carousel-box px-0 position-relative">
+                                    @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
+                                </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -256,28 +287,40 @@
             $coupons = get_coupons($shop->user->id);
         @endphp
         @if (count($coupons)>0)
-            <section class="mt-3 mb-3" id="section_coupons">
+            <section class="mb-4 mt-3 home-mobile-product-section home_Section" id="section_coupons">
                 <div class="container">
-                <!-- Top Section -->
-                <div class="d-flex mb-4 align-items-baseline justify-content-between">
-                        <!-- Title -->
-                        <h3 class="fs-16 fs-md-20 fw-700 mb-3 mb-sm-0">
-                            <span class="pb-3">{{ translate('Coupons') }}</span>
-                        </h3>
-                        <!-- Links -->
-                        <div class="d-flex">
-                            <a type="button" class="arrow-prev slide-arrow link-disable text-secondary mr-2" onclick="clickToSlide('slick-prev','section_coupons')"><i class="las la-angle-left fs-20 fw-600"></i></a>
-                            <a class="text-blue fs-12 fw-700 hov-text-primary" href="{{ route('shop.visit.type', ['slug'=>$shop->slug, 'type'=>'cupons']) }}">{{ translate('View All') }}</a>
-                            <a type="button" class="arrow-next slide-arrow text-secondary ml-2" onclick="clickToSlide('slick-next','section_coupons')"><i class="las la-angle-right fs-20 fw-600"></i></a>
-                        </div>
-                    </div>
-                    <!-- Coupons Section -->
-                    <div class="aiz-carousel sm-gutters-16 arrow-none" data-items="3" data-lg-items="2" data-sm-items="1" data-arrows='true' data-infinite='false'>
-                        @foreach ($coupons->take(10) as $key => $coupon)
-                            <div class="carousel-box">
-                                @include('frontend.'.get_setting('homepage_select').'.partials.coupon_box',['coupon' => $coupon])
+                    <div class="modern-section-bordered-wrap">
+                        <!-- Top Section -->
+                        <div class="modern-section-header home-section-heading-with-arrows mb-4 d-flex justify-content-between align-items-center">
+                            <!-- Title -->
+                            <div class="home-section-heading-copy">
+                                <h3 class="modern-section-title">
+                                    {{ translate('Shop') }} <span style="color: #C27325;">{{ translate('Coupons') }}</span>
+                                </h3>
                             </div>
-                        @endforeach
+                            <!-- Links -->
+                            <div class="home-section-arrow-group d-flex align-items-center">
+                                <a class="modern-view-all-link mr-3" href="{{ route('shop.visit.type', ['slug'=>$shop->slug, 'type'=>'cupons']) }}">{{ translate('View All') }} &rarr;</a>
+                                <span class="home-section-arrows-only">
+                                    <button type="button" class="home-section-arrow is-prev" aria-label="{{ translate('Previous') }}" onclick="homeSectionSlide('prev','section_coupons')">
+                                        <i class="las la-angle-left"></i>
+                                    </button>
+                                    <button type="button" class="home-section-arrow is-next" aria-label="{{ translate('Next') }}" onclick="homeSectionSlide('next','section_coupons')">
+                                        <i class="las la-angle-right"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- Coupons Section -->
+                        <div class="px-sm-3">
+                            <div class="aiz-carousel sm-gutters-16 arrow-none home-mobile-product-carousel" data-items="3" data-lg-items="2" data-sm-items="1" data-arrows="true" data-dots="false" data-infinite="false">
+                                @foreach ($coupons->take(10) as $key => $coupon)
+                                    <div class="carousel-box px-0 position-relative">
+                                        @include('frontend.'.get_setting('homepage_select').'.partials.coupon_box',['coupon' => $coupon])
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -315,57 +358,51 @@
 
     @endif
 
-    <section class="mb-3 mt-3" id="section_types">
+    <section class="mb-4 mt-3 home-mobile-product-section home_Section" id="section_types">
         <div class="container">
-            <!-- Top Section -->
-            <div class="d-flex mb-4 align-items-baseline justify-content-between">
-                <!-- Title -->
-                <h3 class="fs-16 fs-md-20 fw-700 mb-3 mb-sm-0">
-                    <span class="pb-3">
-                        @if (!isset($type))
-                            {{ translate('New Arrival Products')}}
-                        @elseif ($type == 'top-selling')
-                            {{ translate('Top Selling')}}
-                        @elseif ($type == 'cupons')
-                            {{ translate('All Cupons')}}
-                        @endif
-                    </span>
-                </h3>
+            <div class="modern-section-bordered-wrap">
+                <!-- Top Section -->
+                <div class="modern-section-header home-section-heading-with-arrows mb-4 d-flex justify-content-between align-items-center">
+                    <!-- Title -->
+                    <div class="home-section-heading-copy">
+                        <h3 class="modern-section-title">
+                            @if (!isset($type))
+                                {{ translate('New Arrival') }} <span style="color: #C27325;">{{ translate('Products') }}</span>
+                            @elseif ($type == 'top-selling')
+                                {{ translate('Top') }} <span style="color: #C27325;">{{ translate('Selling') }}</span>
+                            @elseif ($type == 'cupons')
+                                {{ translate('All') }} <span style="color: #C27325;">{{ translate('Coupons') }}</span>
+                            @endif
+                        </h3>
+                    </div>
+                </div>
+
+                @php
+                    if (!isset($type)){
+                        $products = get_seller_products($shop->user->id);
+                    }
+                    elseif ($type == 'top-selling'){
+                        $products = get_shop_best_selling_products($shop->user->id);
+                    }
+                    elseif ($type == 'cupons'){
+                        $coupons = get_coupons($shop->user->id , 24);
+                    }
+                @endphp
+
                 @if (!isset($type))
-                    <!-- Links -->
-                    <div class="d-flex">
-                        <a type="button" class="arrow-prev slide-arrow link-disable text-secondary mr-2" onclick="clickToSlide('slick-prev','section_types')"><i class="las la-angle-left fs-20 fw-600"></i></a>
-                        <a type="button" class="arrow-next slide-arrow text-secondary ml-2" onclick="clickToSlide('slick-next','section_types')"><i class="las la-angle-right fs-20 fw-600"></i></a>
+                    <!-- New Arrival Products Section -->
+                    <div class="px-sm-3">
+                        <div class="row gutters-10 row-cols-xxl-4 row-cols-xl-4 row-cols-lg-4 row-cols-md-3 row-cols-2">
+                            @foreach ($products as $key => $product)
+                                <div class="col mb-4 d-flex align-items-stretch">
+                                    @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
-                @endif
-            </div>
-
-            @php
-                if (!isset($type)){
-                    $products = get_seller_products($shop->user->id);
-                }
-                elseif ($type == 'top-selling'){
-                    $products = get_shop_best_selling_products($shop->user->id);
-                }
-                elseif ($type == 'cupons'){
-                    $coupons = get_coupons($shop->user->id , 24);
-                }
-            @endphp
-
-            @if (!isset($type))
-                <!-- New Arrival Products Section (Grid with Pagination for fast loading) -->
-                <div class="px-3">
-                    <div class="row gutters-16 row-cols-xxl-4 row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-2">
-                        @foreach ($products as $key => $product)
-                            <div class="col mb-4 d-flex align-items-stretch">
-                                @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
-                            </div>
-                        @endforeach
+                    <div class="aiz-pagination mt-4 mb-4">
+                        {{ $products->links() }}
                     </div>
-                </div>
-                <div class="aiz-pagination mt-4 mb-4">
-                    {{ $products->links() }}
-                </div>
 
                 @if ($shop->banner_full_width_2)
                     <!-- Banner full width 2 -->
@@ -612,7 +649,7 @@
 
                             <!-- Products -->
                             <div class="px-3">
-                                <div class="row gutters-16 row-cols-xxl-4 row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-2">
+                                <div class="row gutters-10 row-cols-xxl-4 row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-2">
                                     @foreach ($products as $key => $product)
                                         <div class="col mb-4 d-flex align-items-stretch">
                                             @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
@@ -629,7 +666,7 @@
             @else
                 <!-- Top Selling Products Section -->
                 <div class="px-3">
-                    <div class="row gutters-16 row-cols-xxl-6 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-2">
+                    <div class="row gutters-10 row-cols-xxl-4 row-cols-xl-4 row-cols-lg-4 row-cols-md-3 row-cols-2">
                         @foreach ($products as $key => $product)
                             <div class="col mb-4 d-flex align-items-stretch">
                                 @include('frontend.' . (get_setting('homepage_select') ?: 'metro') . '.partials.product_box_1', ['product' => $product])
@@ -641,6 +678,7 @@
                     {{ $products->links() }}
                 </div>
             @endif
+            </div>
         </div>
     </section>
 
