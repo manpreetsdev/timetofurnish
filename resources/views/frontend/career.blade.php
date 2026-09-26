@@ -1,7 +1,25 @@
 @extends('frontend.layouts.app')
+@php
+$banner = [
+'title' => 'Career',
+'breadcrumb_label' => 'Career',
+'background_image' => null,
+'height' => 340,
+'text_align' => 'center',
+'overlay_color' => 'rgba(54, 38, 26, 0.42)',
+'title_color' => '#ffffff',
+'subtitle_color' => '#f8f0e7',
+'title_font_family' => 'Playfair Display, serif',
+'subtitle_font_family' => 'Poppins, sans-serif',
+'subtitle' => null,
+];
+@endphp
 
 @section('content')
-
+{{-- Career Banner --}}
+@include('frontend.custom-pages.partials.banner', [
+'banner' => $banner
+])
 <!-- Career Form Section -->
 <section class="career-section">
     <div class="container">

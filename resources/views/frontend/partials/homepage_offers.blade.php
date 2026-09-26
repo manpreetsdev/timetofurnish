@@ -1,1602 +1,855 @@
 @php
-    $home_offers = \App\Models\Offer::homeSection()->with('products')->get();
+$home_offers = \App\Models\Offer::homeSection()->with('products')->get();
 @endphp
 @if ($home_offers->count() > 0)
-    <style>
-        .premium-offer-section {
-            background: linear-gradient(135deg, #fdfbf7 0%, #f7f0e3 50%, #eadfc9 100%) !important;
-            border: 1px solid rgba(226, 215, 192, 0.5) !important;
-            outline: 5px solid rgba(226, 215, 192, 0.18);
-            outline-offset: -1px;
-            border-radius: 36px;
-            box-shadow: 0 25px 60px -25px rgba(103, 93, 76, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.7);
-            min-height: 300px;
-            position: relative;
-            overflow: hidden;
+<style>
+    /* Habitat-Style Light Clean Offer Banner */
+    .habitat-offer-wrapper {
+        margin-top: 32px !important;
+        margin-bottom: 40px !important;
+    }
+
+    .habitat-offer-card {
+        background-color: #f4f3f0 !important;
+        border-radius: 20px !important;
+        overflow: hidden !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+        border: 1px solid #eae6df !important;
+    }
+
+    .habitat-left-content {
+        padding: 40px 36px !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .habitat-eyebrow-pill {
+        background-color: #5f4d3e !important;
+        color: #ffffff !important;
+        font-size: 11px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 5px 14px !important;
+        border-radius: 4px !important;
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+    }
+
+    .habitat-badge-pill {
+        background-color: #ffffff !important;
+        color: #5f4d3e !important;
+        border: 1px solid #dcd4c8 !important;
+        font-size: 11px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 5px 12px !important;
+        border-radius: 4px !important;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .habitat-offer-title {
+        color: #1d1712 !important;
+        font-family: 'Playfair Display', Georgia, serif !important;
+        font-size: clamp(26px, 2.8vw, 40px) !important;
+        font-weight: 700 !important;
+        line-height: 1.2 !important;
+        letter-spacing: -0.4px;
+        margin-top: 14px;
+        margin-bottom: 12px !important;
+    }
+
+    .habitat-offer-desc {
+        color: #4a4642 !important;
+        font-size: 15px !important;
+        line-height: 1.6 !important;
+        margin-bottom: 24px !important;
+        max-width: 460px;
+    }
+
+    /* Habitat Countdown Timer */
+    .habitat-timer-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 28px !important;
+    }
+
+    .habitat-timer-wrap .timer-card {
+        background: #ffffff !important;
+        border: 1px solid #e2dcd3 !important;
+        border-radius: 8px !important;
+        width: 54px;
+        height: 56px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .habitat-timer-wrap .timer-num {
+        font-size: 19px;
+        font-weight: 800;
+        color: #5f4d3e;
+        line-height: 1;
+    }
+
+    .habitat-timer-wrap .timer-txt {
+        font-size: 8px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #8a7e72;
+        letter-spacing: 0.6px;
+        margin-top: 3px;
+    }
+
+    .habitat-timer-wrap .timer-divider {
+        font-size: 19px;
+        font-weight: 700;
+        color: #aaa197;
+        line-height: 56px;
+    }
+
+    /* Habitat Style Clean CTA Button */
+    .habitat-cta-btn {
+        background-color: #5f4d3e !important;
+        border: 2px solid #5f4d3e !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        padding: 12px 30px !important;
+        border-radius: 6px !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.25s ease !important;
+        text-decoration: none !important;
+        width: fit-content;
+    }
+
+    .habitat-cta-btn:hover {
+        background-color: #4a3c30 !important;
+        border-color: #4a3c30 !important;
+        color: #ffffff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(95, 77, 62, 0.25) !important;
+    }
+
+    /* Right Column Padded Frame */
+    .habitat-right-column-wrap {
+        padding: 24px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .habitat-spotlight-card {
+        background: #ffffff !important;
+        border-radius: 16px !important;
+        border: 1px solid #eae4da !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05) !important;
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+    }
+
+    /* Multi-Image Grid Layout Inside Card */
+    .habitat-grid-container {
+        display: flex;
+        gap: 12px;
+        padding: 16px;
+        background: #ffffff;
+    }
+
+    .habitat-main-tile {
+        flex: 1 1 70%;
+        position: relative;
+        height: 310px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #faf8f5;
+        border: 1px solid #eee8df;
+    }
+
+    .habitat-main-tile.full-width-tile {
+        flex: 1 1 100%;
+    }
+
+    .habitat-spotlight-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover !important;
+        display: block;
+        transition: transform 0.35s ease, opacity 0.2s ease;
+    }
+
+    .habitat-main-tile:hover .habitat-spotlight-img {
+        transform: scale(1.03);
+    }
+
+    .habitat-gallery-side-grid {
+        flex: 0 0 28%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        justify-content: space-between;
+    }
+
+    .habitat-gallery-thumb-tile {
+        height: 93px;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #faf8f5;
+        border: 2px solid #e8e2d8;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        position: relative;
+    }
+
+    .habitat-gallery-thumb-tile:hover,
+    .habitat-gallery-thumb-tile.active {
+        border-color: #5f4d3e !important;
+        box-shadow: 0 4px 12px rgba(95, 77, 62, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .habitat-gallery-thumb-tile img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover !important;
+    }
+
+    /* +N More Overlay on Last Gallery Thumbnail */
+    .habitat-more-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(45, 36, 28, 0.78) !important;
+        backdrop-filter: blur(2px) !important;
+        -webkit-backdrop-filter: blur(2px) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: #ffffff !important;
+        border-radius: 8px !important;
+        transition: all 0.25s ease !important;
+        z-index: 5 !important;
+        text-decoration: none !important;
+    }
+
+    .habitat-gallery-thumb-tile:hover .habitat-more-overlay {
+        background: rgba(95, 77, 62, 0.92) !important;
+    }
+
+    .habitat-more-overlay .more-num {
+        font-size: 17px !important;
+        font-weight: 800 !important;
+        line-height: 1 !important;
+        color: #ffffff !important;
+    }
+
+    .habitat-more-overlay .more-txt {
+        font-size: 9px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.6px !important;
+        margin-top: 3px !important;
+        color: #f3ece4 !important;
+    }
+
+    /* Image Overlays Inside Main Tile */
+    .habitat-img-badge {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        z-index: 10;
+        background-color: #5f4d3e !important;
+        color: #ffffff !important;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 5px 12px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        box-shadow: 0 4px 12px rgba(95, 77, 62, 0.25);
+    }
+
+    .habitat-img-wishlist {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        z-index: 10;
+        background: #ffffff;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #eee8df;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        color: #5f4d3e;
+        transition: all 0.2s ease;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    .habitat-img-wishlist:hover {
+        transform: scale(1.1);
+        background: #5f4d3e;
+        color: #ffffff;
+    }
+
+    /* Bottom Product Details & Action Bar */
+    .habitat-spotlight-info-bar {
+        background: #ffffff;
+        border-top: 1px solid #f0eae1;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        z-index: 10;
+    }
+
+    .habitat-product-info {
+        max-width: 65%;
+    }
+
+    .habitat-product-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1d1712;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        text-decoration: none !important;
+    }
+
+    .habitat-product-name:hover {
+        color: #5f4d3e;
+    }
+
+    .habitat-price-current {
+        font-size: 16px;
+        font-weight: 800;
+        color: #5f4d3e;
+    }
+
+    .habitat-price-old {
+        font-size: 12px;
+        text-decoration: line-through;
+        color: #9e958c;
+        margin-left: 6px;
+    }
+
+    .habitat-add-btn {
+        background-color: #5f4d3e !important;
+        color: #ffffff !important;
+        font-size: 12px !important;
+        font-weight: 800 !important;
+        padding: 9px 20px !important;
+        border-radius: 30px !important;
+        border: none !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.25s ease !important;
+        text-decoration: none !important;
+        box-shadow: 0 4px 12px rgba(95, 77, 62, 0.2);
+    }
+
+    .habitat-add-btn:hover {
+        background-color: #4a3c30 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(95, 77, 62, 0.3);
+    }
+
+    /* Base Slider Controls Styling */
+    .habitat-products-slider {
+        position: relative;
+    }
+
+    .habitat-products-slider .slick-prev,
+    .habitat-products-slider .slick-next {
+        position: absolute !important;
+        top: 45% !important;
+        transform: translateY(-50%) !important;
+        z-index: 30 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: #ffffff !important;
+        border: 1px solid #e0d8ce !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14) !important;
+        color: #5f4d3e !important;
+        width: 36px !important;
+        height: 36px !important;
+        transition: all 0.25s ease !important;
+        border-radius: 50% !important;
+    }
+
+    .habitat-products-slider .slick-prev:hover,
+    .habitat-products-slider .slick-next:hover {
+        background: #5f4d3e !important;
+        color: #ffffff !important;
+        border-color: #5f4d3e !important;
+    }
+
+    .habitat-products-slider .slick-prev {
+        left: 10px !important;
+    }
+
+    .habitat-products-slider .slick-next {
+        right: 10px !important;
+    }
+
+    /* Desktop vs Mobile Responsive Controls: Desktop = Arrows ONLY, Mobile = Dots ONLY */
+    @media (min-width: 768px) {
+        .habitat-products-slider .slick-dots {
+            display: none !important;
         }
 
-        .premium-offer-card {
-            border: 1px solid rgba(255, 255, 255, 0.8) !important;
-            border-radius: 28px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(253, 250, 245, 0.85) 100%) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 15px 35px -10px rgba(103, 93, 76, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-            overflow: hidden;
-            padding: 0 !important;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
-        }
-
-        .premium-offer-card:hover {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(253, 250, 245, 0.95) 100%) !important;
-            border-color: var(--soft-primary) !important;
-            box-shadow: 0 30px 50px -15px rgba(103, 93, 76, 0.18), 0 0 0 2px var(--soft-primary) !important;
-        }
-
-        .premium-offer-card:hover img {
-            transform: scale(1.05) !important;
-        }
-
-        .text-truncate-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Slick carousel custom arrows & dots style */
-        .offer-carousel .slick-prev,
-        .offer-carousel .slick-next {
-            position: absolute !important;
-            top: 50% !important;
-            transform: translateY(-50%) !important;
-            z-index: 99 !important;
+        .habitat-products-slider .slick-prev,
+        .habitat-products-slider .slick-next {
             display: flex !important;
-            align-items: center !important;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+
+        .habitat-products-slider .slick-prev,
+        .habitat-products-slider .slick-next {
+            display: none !important;
+        }
+
+        .habitat-products-slider .slick-dots {
+            display: flex !important;
+            position: relative !important;
+            bottom: auto !important;
+            margin:2px 0 14px 0 !important;
             justify-content: center !important;
-            background: #ffffff !important;
-            border: 1px solid rgba(226, 215, 192, 0.5) !important;
-            box-shadow: 0 8px 20px -5px rgba(103, 93, 76, 0.1) !important;
-            color: #0f172a !important;
-            width: 46px !important;
-            height: 46px !important;
-            transition: all 0.3s ease !important;
-            border-radius: 50% !important;
+            align-items: center !important;
+            gap: 6px !important;
+            padding: 0 !important;
+            z-index: 25 !important;
+            list-style: none !important;
         }
 
-        .offer-carousel .slick-prev:hover,
-        .offer-carousel .slick-next:hover {
-            background: var(--primary) !important;
-            color: #ffffff !important;
-            border-color: var(--primary) !important;
-            box-shadow: 0 12px 25px var(--soft-primary) !important;
-        }
-
-        .offer-carousel .slick-prev {
-            left: -23px !important;
-        }
-
-        .offer-carousel .slick-next {
-            right: -23px !important;
-        }
-
-        /* Equal height slides styles */
-        .offer-carousel .slick-track {
-            display: flex !important;
-            align-items: stretch !important;
-        }
-
-        .offer-carousel .slick-slide {
-            height: auto !important;
-            display: flex !important;
-        }
-
-        .offer-carousel .slick-slide>div {
-            display: flex !important;
-            flex: 1 1 auto !important;
-            width: 100% !important;
-        }
-
-        .offer-carousel .carousel-box {
-            display: flex !important;
-            flex: 1 1 auto !important;
-            width: 100% !important;
-        }
-
-        .offer-carousel .premium-offer-section {
-            flex: 1 1 auto !important;
-            align-self: stretch !important;
-        }
-
-        .offer-carousel .slick-dots {
-            bottom: -32px !important;
-        }
-
-        .offer-carousel .slick-dots li,
-        .offer-inner-carousel .slick-dots li {
-            width: auto !important;
-        }
-
-        .offer-carousel .slick-dots li button {
-            background: rgba(103, 93, 76, 0.3) !important;
-            opacity: 1 !important;
-            width: 8px !important;
-            height: 8px !important;
-            border-radius: 50% !important;
-            transition: all 0.3s ease !important;
-        }
-
-        .offer-carousel .slick-dots li.slick-active button {
-            background: var(--primary) !important;
-            width: 24px !important;
-            border-radius: 6px !important;
-        }
-
-        @keyframes pulse-theme {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        .premium-countdown-timer .seconds {
-            color: var(--primary) !important;
-            display: inline-block;
-            animation: pulse-theme 1s infinite ease-in-out;
-        }
-
-        .offer-copy-layout {
-            display: flex !important;
-            flex-direction: column !important;
-            width: 100%;
-        }
-
-        @media (max-width: 991.98px) {
-
-            /* Style 1 Grid layout */
-            .premium-offer-section:not(.offer-style-2):not(.offer-style-3) .offer-copy-layout {
-                display: grid !important;
-                grid-template-columns: 1fr auto !important;
-                grid-template-rows: auto auto !important;
-                gap: 12px !important;
-                width: 100% !important;
-            }
-
-            .premium-offer-section:not(.offer-style-2):not(.offer-style-3) .offer-badges-container {
-                grid-column: 1 !important;
-                grid-row: 1 !important;
-                margin-bottom: 0 !important;
-                display: flex !important;
-                flex-direction: row !important;
-                flex-wrap: wrap !important;
-                align-items: center !important;
-                gap: 8px !important;
-            }
-
-            .premium-offer-section:not(.offer-style-2):not(.offer-style-3) .offer-copy-btn {
-                grid-column: 2 !important;
-                grid-row: 1 !important;
-                margin-top: 0 !important;
-                align-self: center !important;
-            }
-
-            .premium-offer-section:not(.offer-style-2):not(.offer-style-3) .offer-copy-btn .btn {
-                width: auto !important;
-                white-space: nowrap !important;
-                padding: 8px 12px !important;
-                font-size: 11px !important;
-            }
-
-            .premium-offer-section:not(.offer-style-2):not(.offer-style-3) .offer-title-desc-timer {
-                grid-column: 1 / span 2 !important;
-                grid-row: 2 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: flex-start !important;
-                width: 100% !important;
-            }
-
-            /* Style 2 split layout fallback */
-            .premium-offer-section.offer-style-2 .offer-copy-layout {
-                flex-direction: row !important;
-                justify-content: space-between !important;
-                align-items: flex-start !important;
-            }
-
-            .premium-offer-section.offer-style-2 .offer-copy-info {
-                flex: 1 1 auto !important;
-                min-width: 0 !important;
-                padding-right: 8px !important;
-            }
-
-            .premium-offer-section.offer-style-2 .offer-copy-btn {
-                flex: 0 0 auto !important;
-                margin-top: 6px !important;
-            }
-
-            .premium-offer-section.offer-style-2 .offer-copy-btn .btn {
-                width: auto !important;
-                white-space: nowrap !important;
-                padding: 8px 12px !important;
-                font-size: 11px !important;
-            }
-        }
-
-        @media (max-width: 767.98px) {
-            .home-offers-wrap {
-                margin-top: 18px !important;
-                margin-bottom: 26px !important;
-                overflow: visible !important;
-                margin-top: 50px !important;
-            }
-
-            .home-offers-wrap .container {
-                padding-left: 20px !important;
-                padding-right: 20px !important;
-            }
-
-            .premium-offer-section {
-                border-radius: 20px !important;
-                min-height: 0 !important;
-                padding: 18px 12px 34px !important;
-                outline-width: 3px;
-                box-shadow: 0 18px 42px -24px rgba(103, 93, 76, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.75) !important;
-            }
-
-            .premium-offer-card:hover {
-                transform: none !important;
-            }
-
-            .offer-copy-panel {
-                order: 1;
-                margin-bottom: 18px !important;
-                text-align: left !important;
-                padding-left: 6px !important;
-                padding-right: 6px !important;
-            }
-
-            /* Slick arrows custom layout on mobile */
-            .offer-carousel .slick-prev,
-            .offer-carousel .slick-next {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                width: 38px !important;
-                height: 38px !important;
-                font-size: 16px !important;
-            }
-
-            .offer-carousel .slick-prev {
-                left: 4px !important;
-            }
-
-            .offer-carousel .slick-next {
-                right: 4px !important;
-            }
-
-            .offer-products-panel {
-                order: 2;
-                padding-left: 6px !important;
-                padding-right: 6px !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                flex: 0 0 100% !important;
-                overflow: visible !important;
-            }
-
-            .offer-copy-panel h2 {
-                font-size: 25px !important;
-                line-height: 1.2 !important;
-                letter-spacing: 0 !important;
-                margin-bottom: 9px !important;
-            }
-
-            .offer-copy-panel p {
-                font-size: 14px !important;
-                line-height: 1.45 !important;
-                max-width: none !important;
-                margin-bottom: 16px !important;
-            }
-
-            .offer-copy-panel .fw-800.text-uppercase {
-                font-size: 11px !important;
-                padding: 9px 13px !important;
-                letter-spacing: 0 !important;
-            }
-
-            .premium-countdown-timer {
-                gap: 4px !important;
-                margin-bottom: 12px !important;
-                max-width: 100% !important;
-                flex-wrap: nowrap !important;
-            }
-
-            .premium-countdown-timer>div:not(.fs-16) {
-                width: 36px !important;
-                height: 42px !important;
-                border-radius: 6px !important;
-            }
-
-            .premium-countdown-timer .days,
-            .premium-countdown-timer .hours,
-            .premium-countdown-timer .minutes,
-            .premium-countdown-timer .seconds {
-                font-size: 13px !important;
-            }
-
-            .premium-countdown-timer .fs-9 {
-                font-size: 7px !important;
-            }
-
-            .premium-countdown-timer .fs-16 {
-                font-size: 9px !important;
-                line-height: 42px !important;
-            }
-
-            .offer-copy-panel .btn {
-                padding: 8px 12px !important;
-                font-size: 11px !important;
-                line-height: 1.2 !important;
-                min-height: 34px !important;
-                gap: 6px !important;
-            }
-
-            .premium-offer-section .btn,
-            .offer-dark-panel .btn,
-            .premium-offer-section.offer-style-3 .btn {
-                padding: 8px 12px !important;
-                font-size: 11px !important;
-                line-height: 1.2 !important;
-                min-height: 34px !important;
-            }
-
-            .offer-inner-carousel {
-                margin-left: 0 !important;
-                margin-right: 0 !important;
-            }
-
-            .offer-inner-carousel .slick-list {
-                margin-left: 0 !important;
-                margin-right: 0 !important;
-                overflow: hidden !important;
-                width: 100% !important;
-                padding: 0 !important;
-            }
-
-            .offer-inner-carousel .slick-track {
-                padding-top: 0 !important;
-            }
-
-            .offer-inner-carousel .slick-track,
-            .offer-inner-carousel .slick-slide,
-            .offer-inner-carousel .slick-slide>div,
-            .offer-inner-carousel .carousel-box {
-                display: flex !important;
-                align-items: stretch !important;
-            }
-
-            .offer-inner-carousel .carousel-box {
-                padding-left: 6px !important;
-                padding-right: 6px !important;
-                height: auto !important;
-                width: 100% !important;
-                max-width: 100% !important;
-            }
-
-            .offer-inner-carousel .modern-product-card {
-                border-radius: 10px !important;
-                padding: 7px !important;
-                height: 100% !important;
-                min-height: 180px !important;
-                justify-content: space-between !important;
-                min-width: 0 !important;
-                box-shadow: 0 7px 20px rgba(104, 91, 78, 0.07) !important;
-            }
-
-            .offer-inner-carousel .modern-product-img-wrap {
-                height: 98px !important;
-                border-radius: 10px !important;
-            }
-
-            .offer-inner-carousel .modern-product-card>div:last-child {
-                padding: 7px 2px 2px !important;
-                flex-grow: 1 !important;
-                justify-content: space-between !important;
-            }
-
-            .offer-inner-carousel .modern-product-title {
-                min-height: 0 !important;
-                margin-bottom: 8px !important;
-            }
-
-            .offer-inner-carousel .modern-product-title a {
-                display: block !important;
-                font-size: 11px !important;
-                line-height: 1.3 !important;
-                overflow: hidden !important;
-                text-overflow: ellipsis !important;
-                white-space: nowrap !important;
-                -webkit-line-clamp: unset !important;
-                -webkit-box-orient: initial !important;
-            }
-
-            .offer-inner-carousel .modern-card-bottom-row {
-                padding-top: 6px !important;
-                margin-top: 0px !important;
-                min-height: 28px !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                gap: 5px !important;
-            }
-
-            .offer-inner-carousel .modern-price-wrap,
-            .offer-inner-carousel .modern-price-wrap .text-primary,
-            .offer-inner-carousel .modern-price-wrap span {
-                font-size: 9.5px !important;
-                line-height: 1.35 !important;
-                min-width: 0 !important;
-            }
-
-            .offer-inner-carousel .modern-price-wrap {
-                width: auto !important;
-                flex: 1 1 auto !important;
-                justify-content: flex-start !important;
-                text-align: left !important;
-            }
-
-            .offer-inner-carousel .modern-price-wrap del {
-                font-size: 9px !important;
-                width: 100%;
-            }
-
-            .offer-inner-carousel .modern-card-actions-bottom {
-                width: auto !important;
-                flex: 0 0 13% !important;
-                flex-direction: column;
-                gap: 0 !important;
-            }
-
-            .offer-inner-carousel .modern-card-actions-bottom .modern-action-btn {
-                width: 18px !important;
-                height: 18px !important;
-            }
-
-            .offer-inner-carousel .modern-action-btn svg {
-                width: 14px !important;
-                height: 14px !important;
-            }
-
-            .offer-single-product-carousel .slick-track {
-                justify-content: center !important;
-                margin-left: auto !important;
-                margin-right: auto !important;
-                transform: none !important;
-            }
-
-            .offer-inner-carousel .modern-discount-tag,
-            .offer-inner-carousel .modern-wholesale-tag {
-                font-size: 8px !important;
-                padding: 4px 7px !important;
-                margin-left: 6px !important;
-                margin-top: 6px !important;
-            }
-
-            .offer-carousel .slick-dots {
-                bottom: -25px !important;
-            }
-
-            .offer-inner-carousel .slick-dots {
-                bottom: -22px !important;
-            }
-
-            .offer-carousel .slick-dots,
-            .offer-inner-carousel .slick-dots {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                gap: 6px !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                z-index: 10 !important;
-                pointer-events: auto !important;
-            }
-
-            .offer-carousel .slick-dots li,
-            .offer-inner-carousel .slick-dots li {
-                width: auto !important;
-                height: 8px !important;
-                margin: 0 !important;
-                position: relative !important;
-                z-index: 10 !important;
-                pointer-events: auto !important;
-            }
-
-            .offer-carousel .slick-dots li button,
-            .offer-inner-carousel .slick-dots li button {
-                width: 7px !important;
-                height: 7px !important;
-                padding: 0 !important;
-                border-radius: 999px !important;
-                background: #d7c8b5 !important;
-                opacity: 1 !important;
-                transition: width 0.25s ease, background-color 0.25s ease !important;
-                position: relative !important;
-                pointer-events: auto !important;
-                cursor: pointer !important;
-            }
-
-            .offer-carousel .slick-dots li button::after,
-            .offer-inner-carousel .slick-dots li button::after {
-                content: "" !important;
-                position: absolute !important;
-                top: 50% !important;
-                left: 50% !important;
-                transform: translate(-50%, -50%) !important;
-                width: 24px !important;
-                height: 24px !important;
-                background: transparent !important;
-                display: block !important;
-                z-index: 12 !important;
-                pointer-events: auto !important;
-            }
-
-            .offer-carousel .slick-dots li.slick-active button,
-            .offer-inner-carousel .slick-dots li.slick-active button {
-                width: 24px !important;
-                background: #685b4e !important;
-                box-shadow: 0 4px 10px rgba(104, 91, 78, 0.24) !important;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .premium-countdown-timer {
-                gap: 3px !important;
-            }
-
-            .premium-countdown-timer>div:not(.fs-16) {
-                width: 32px !important;
-                height: 38px !important;
-                border-radius: 6px !important;
-            }
-
-            .premium-countdown-timer .days,
-            .premium-countdown-timer .hours,
-            .premium-countdown-timer .minutes,
-            .premium-countdown-timer .seconds {
-                font-size: 12px !important;
-            }
-
-            .premium-countdown-timer .fs-9 {
-                font-size: 6px !important;
-            }
-
-            .premium-countdown-timer .fs-16 {
-                font-size: 8px !important;
-                line-height: 38px !important;
-            }
-        }
-
-        /* Style 2 Styles */
-        .premium-offer-section.offer-style-2 {
-            background: linear-gradient(135deg, #fcfbf9 0%, #f6eee0 100%) !important;
-            border: 1px solid rgba(226, 215, 192, 0.5) !important;
-            border-radius: 32px !important;
-            box-shadow: 0 25px 60px -25px rgba(103, 93, 76, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
-            min-height: auto !important;
-        }
-
-        .offer-dark-panel {
-            background: linear-gradient(135deg, #51463a 0%, #685b4e 100%) !important;
-            border-radius: 24px !important;
-            box-shadow: 0 15px 35px rgba(81, 70, 58, 0.25) !important;
-            border: 1px solid rgba(255, 255, 255, 0.15) !important;
-        }
-
-        /* Style 3 Styles */
-        .premium-offer-section.offer-style-3 {
-            background: #fafaf8 !important;
-            border: 4px double #685b4e !important;
-            border-radius: 20px !important;
-            box-shadow: 0 20px 45px -20px rgba(103, 93, 76, 0.1) !important;
-            min-height: auto !important;
-        }
-
-        .premium-offer-section.offer-style-3 .offer-inner-carousel .modern-product-card {
-            border: 1px solid #f0ebe2 !important;
-            box-shadow: 0 8px 24px rgba(104, 91, 78, 0.04) !important;
-        }
-
-        .premium-offer-section.offer-style-3 .offer-inner-carousel .modern-product-card:hover {
-            box-shadow: 0 15px 35px rgba(104, 91, 78, 0.1) !important;
-            border-color: #685b4e !important;
-        }
-
-        @media (max-width: 767.98px) {
-            .offer-dark-panel {
-                padding: 1.5rem !important;
-                min-height: auto !important;
-                margin-bottom: 24px !important;
-            }
-
-            .premium-offer-section.offer-style-3 {
-                padding: 24px 16px !important;
-            }
-        }
-
-        /* Theme-only premium redesign */
-        .home-offers-wrap {
-            --primary: #685b4e;
-            --hov-primary: #4f4238;
-            --soft-primary: rgba(104, 91, 78, 0.12);
-            --secondary-base: #d8c8b7;
-            --soft-secondary-base: #f4eee8;
-            --soft-light: #fffdf9;
-            --soft-dark: rgba(104, 91, 78, 0.1);
-            --dark: #4f4238;
-            --secondary: #8c8177;
-            --white: #ffffff;
-            margin-top: 64px !important;
-            margin-bottom: 56px !important;
-        }
-
-        .home-offers-wrap .container {
-            max-width: 1320px;
-        }
-
-        .home-offers-wrap .premium-offer-section,
-        .home-offers-wrap .premium-offer-section.offer-style-2,
-        .home-offers-wrap .premium-offer-section.offer-style-3 {
-            background:
-                linear-gradient(135deg, var(--soft-primary) 0%, var(--soft-light) 48%, var(--soft-secondary-base) 100%) !important;
-            border: 1px solid var(--soft-primary) !important;
-            outline: 1px solid var(--soft-secondary-base) !important;
-            outline-offset: -8px;
-            border-radius: 28px !important;
-            box-shadow: 0 24px 70px var(--soft-dark) !important;
-            padding: 32px !important;
-            isolation: isolate;
-        }
-
-        .home-offers-wrap .premium-offer-section::before {
-            content: "";
-            position: absolute;
-            inset: 12px;
-            border: 1px solid var(--soft-secondary-base);
-            border-radius: 22px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .home-offers-wrap .premium-offer-section::after {
-            content: "";
-            position: absolute;
-            width: 42%;
-            height: 100%;
-            top: 0;
-            right: 0;
-            background: linear-gradient(135deg, transparent 0%, var(--soft-primary) 100%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .home-offers-wrap .offer-dark-panel {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--hov-primary) 100%) !important;
-            border: 1px solid var(--soft-secondary-base) !important;
-            border-radius: 22px !important;
-            box-shadow: 0 22px 48px var(--soft-primary) !important;
-        }
-
-        .home-offers-wrap .offer-copy-panel,
-        .home-offers-wrap .offer-products-panel,
-        .home-offers-wrap .offer-dark-panel,
-        .home-offers-wrap .premium-offer-section>.z-1,
-        .home-offers-wrap .premium-offer-section>.col-12 {
-            position: relative;
-            z-index: 1;
-        }
-
-        .home-offers-wrap .offer-copy-panel h2,
-        .home-offers-wrap .premium-offer-section.offer-style-3 h2,
-        .home-offers-wrap .offer-dark-panel h2 {
-            color: var(--dark) !important;
-            font-size: clamp(24px, 3vw, 42px) !important;
-            line-height: 1.08 !important;
-            letter-spacing: 0 !important;
-            margin-bottom: 14px !important;
-        }
-
-        .home-offers-wrap .offer-dark-panel h2,
-        .home-offers-wrap .offer-dark-panel p,
-        .home-offers-wrap .offer-dark-panel span {
-            color: var(--white) !important;
-        }
-
-        .home-offers-wrap .offer-copy-panel p,
-        .home-offers-wrap .premium-offer-section.offer-style-3 p {
-            color: var(--secondary) !important;
-            font-size: 15px !important;
-            line-height: 1.65 !important;
-            max-width: 480px !important;
-            margin-bottom: 20px !important;
-        }
-
-        .home-offers-wrap .offer-kicker,
-        .home-offers-wrap .offer-badge {
-            display: inline-flex;
-            align-items: center;
-            min-height: 32px;
-            padding: 8px 13px !important;
-            border-radius: 999px !important;
-            font-size: 10px !important;
-            font-weight: 800 !important;
-            text-transform: uppercase;
-            letter-spacing: 0 !important;
+        .habitat-products-slider .slick-dots li {
+            margin: 0 !important;
+            padding: 0 !important;
             line-height: 1 !important;
         }
 
-        .home-offers-wrap .offer-kicker {
-            background: var(--primary) !important;
-            border: 1px solid var(--primary) !important;
-            color: var(--white) !important;
-            box-shadow: 0 10px 24px var(--soft-primary) !important;
-        }
-
-        .home-offers-wrap .offer-badge {
-            background: var(--soft-secondary-base) !important;
-            border: 1px solid var(--secondary-base) !important;
-            color: var(--dark) !important;
-        }
-
-        .home-offers-wrap .offer-dark-panel .offer-kicker,
-        .home-offers-wrap .offer-dark-panel .offer-badge {
-            background: var(--soft-primary) !important;
-            border-color: var(--soft-secondary-base) !important;
-            color: var(--white) !important;
-            box-shadow: none !important;
-        }
-
-        .home-offers-wrap .premium-countdown-timer {
-            gap: 8px !important;
-            flex-wrap: wrap !important;
-        }
-
-        .home-offers-wrap .premium-countdown-timer>div:not(.fs-16),
-        .home-offers-wrap .premium-countdown-timer>span.days,
-        .home-offers-wrap .premium-countdown-timer>span.hours,
-        .home-offers-wrap .premium-countdown-timer>span.minutes,
-        .home-offers-wrap .premium-countdown-timer>span.seconds {
-            background: var(--white) !important;
-            border: 1px solid var(--soft-primary) !important;
-            border-radius: 12px !important;
-            box-shadow: 0 8px 20px var(--soft-primary) !important;
-            color: var(--dark) !important;
-        }
-
-        .home-offers-wrap .offer-dark-panel .premium-countdown-timer>div:not(.fs-16) {
-            background: var(--soft-primary) !important;
-            border-color: var(--soft-secondary-base) !important;
-            box-shadow: none !important;
-        }
-
-        .home-offers-wrap .premium-countdown-timer .days,
-        .home-offers-wrap .premium-countdown-timer .hours,
-        .home-offers-wrap .premium-countdown-timer .minutes,
-        .home-offers-wrap .premium-countdown-timer .seconds {
-            color: var(--primary) !important;
-        }
-
-        .home-offers-wrap .offer-dark-panel .premium-countdown-timer .days,
-        .home-offers-wrap .offer-dark-panel .premium-countdown-timer .hours,
-        .home-offers-wrap .offer-dark-panel .premium-countdown-timer .minutes,
-        .home-offers-wrap .offer-dark-panel .premium-countdown-timer .seconds {
-            color: var(--white) !important;
-        }
-
-        .home-offers-wrap .offer-copy-btn .btn,
-        .home-offers-wrap .premium-offer-section.offer-style-3 .btn {
-            background: var(--primary) !important;
-            border: 1px solid var(--primary) !important;
-            color: var(--white) !important;
-            border-radius: 999px !important;
-            min-height: 42px !important;
-            padding: 10px 18px !important;
-            box-shadow: 0 14px 28px var(--soft-primary) !important;
-        }
-
-        .home-offers-wrap .offer-copy-btn .btn:hover,
-        .home-offers-wrap .premium-offer-section.offer-style-3 .btn:hover {
-            background: var(--hov-primary) !important;
-            border-color: var(--hov-primary) !important;
-        }
-
-        .home-offers-wrap .offer-inner-carousel .carousel-box {
-            padding: 8px !important;
-        }
-
-        .home-offers-wrap .offer-inner-carousel .modern-product-card {
-            height: 100% !important;
-            border: 1px solid var(--soft-primary) !important;
-            border-radius: 18px !important;
-            box-shadow: 0 12px 30px var(--soft-primary) !important;
-            background: var(--white) !important;
-        }
-
-        .home-offers-wrap .offer-inner-carousel .modern-product-card:hover {
-            border-color: var(--primary) !important;
-            box-shadow: 0 20px 42px var(--soft-primary) !important;
-        }
-
-        .home-offers-wrap .offer-carousel .slick-prev,
-        .home-offers-wrap .offer-carousel .slick-next {
-            background: var(--white) !important;
-            border-color: var(--soft-primary) !important;
-            color: var(--primary) !important;
-            box-shadow: 0 14px 30px var(--soft-primary) !important;
-        }
-
-        .home-offers-wrap .offer-carousel .slick-prev:hover,
-        .home-offers-wrap .offer-carousel .slick-next:hover {
-            background: var(--primary) !important;
-            border-color: var(--primary) !important;
-            color: var(--white) !important;
-        }
-
-        .home-offers-wrap .offer-carousel .slick-dots li button,
-        .home-offers-wrap .offer-inner-carousel .slick-dots li button {
-            background: var(--soft-primary) !important;
-        }
-
-        .home-offers-wrap .offer-carousel .slick-dots li.slick-active button,
-        .home-offers-wrap .offer-inner-carousel .slick-dots li.slick-active button {
-            background: var(--primary) !important;
-        }
-
-        .home-offers-wrap .offer-decor {
-            background: radial-gradient(circle, var(--soft-primary) 0%, transparent 72%) !important;
-        }
-
-        @media (max-width: 991.98px) {
-            .home-offers-wrap {
-                margin-top: 42px !important;
-                margin-bottom: 42px !important;
-            }
-
-            .home-offers-wrap .premium-offer-section,
-            .home-offers-wrap .premium-offer-section.offer-style-2,
-            .home-offers-wrap .premium-offer-section.offer-style-3 {
-                padding: 24px !important;
-                border-radius: 22px !important;
-            }
-
-            .home-offers-wrap .offer-dark-panel {
-                min-height: auto !important;
-            }
-
-            .home-offers-wrap .offer-products-panel {
-                padding-left: 0 !important;
-                padding-right: 0 !important;
-            }
-        }
-
-        @media (max-width: 767.98px) {
-            .home-offers-wrap {
-                margin-top: 30px !important;
-                margin-bottom: 34px !important;
-            }
-
-            .home-offers-wrap .container {
-                padding-left: 12px !important;
-                padding-right: 12px !important;
-            }
-
-            .home-offers-wrap .premium-offer-section,
-            .home-offers-wrap .premium-offer-section.offer-style-2,
-            .home-offers-wrap .premium-offer-section.offer-style-3 {
-                padding: 16px 12px 28px !important;
-                border-radius: 18px !important;
-                outline-offset: -5px;
-            }
-
-            .home-offers-wrap .premium-offer-section::before {
-                inset: 7px;
-                border-radius: 14px;
-            }
-
-            .home-offers-wrap .premium-offer-section::after {
-                width: 100%;
-                height: 42%;
-                top: auto;
-                bottom: 0;
-            }
-
-            .home-offers-wrap .offer-copy-panel {
-                margin-bottom: 18px !important;
-                padding-left: 6px !important;
-                padding-right: 6px !important;
-            }
-
-            .home-offers-wrap .offer-copy-layout,
-            .home-offers-wrap .premium-offer-section:not(.offer-style-2):not(.offer-style-3) .offer-copy-layout,
-            .home-offers-wrap .premium-offer-section.offer-style-2 .offer-copy-layout {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 12px !important;
-            }
-
-            .home-offers-wrap .offer-badges-container {
-                gap: 6px !important;
-                margin-bottom: 2px !important;
-            }
-
-            .home-offers-wrap .offer-copy-panel h2,
-            .home-offers-wrap .premium-offer-section.offer-style-3 h2,
-            .home-offers-wrap .offer-dark-panel h2 {
-                font-size: 24px !important;
-                line-height: 1.14 !important;
-                margin-bottom: 8px !important;
-            }
-
-            .home-offers-wrap .offer-copy-panel p,
-            .home-offers-wrap .premium-offer-section.offer-style-3 p {
-                font-size: 13px !important;
-                line-height: 1.5 !important;
-                margin-bottom: 12px !important;
-            }
-
-            .home-offers-wrap .offer-copy-btn,
-            .home-offers-wrap .premium-offer-section:not(.offer-style-2):not(.offer-style-3) .offer-copy-btn,
-            .home-offers-wrap .premium-offer-section.offer-style-2 .offer-copy-btn {
-                align-self: stretch !important;
-                margin-top: 0 !important;
-            }
-
-            .home-offers-wrap .offer-copy-btn .btn,
-            .home-offers-wrap .premium-offer-section.offer-style-3 .btn {
-                width: 100% !important;
-                min-height: 40px !important;
-            }
-
-            .home-offers-wrap .premium-countdown-timer {
-                gap: 5px !important;
-                margin-bottom: 12px !important;
-            }
-
-            .home-offers-wrap .premium-countdown-timer>div:not(.fs-16) {
-                width: 39px !important;
-                height: 44px !important;
-            }
-
-            .home-offers-wrap .offer-inner-carousel .carousel-box {
-                padding-left: 5px !important;
-                padding-right: 5px !important;
-            }
-
-            .home-offers-wrap .offer-inner-carousel .modern-product-card {
-                border-radius: 10px !important;
-                min-height: 188px !important;
-            }
-        }
-
-        /* Final mobile polish using the site theme palette */
-        .home-offers-wrap .premium-offer-section,
-        .home-offers-wrap .premium-offer-section.offer-style-2,
-        .home-offers-wrap .premium-offer-section.offer-style-3 {
-            background: linear-gradient(135deg, #fffdf9 0%, #f4eee8 100%) !important;
-            border: 1.5px solid #d8c8b7 !important;
-            outline: 0 !important;
-            box-shadow: 0 18px 44px rgba(104, 91, 78, 0.1) !important;
-        }
-
-        .home-offers-wrap .premium-offer-section::before,
-        .home-offers-wrap .premium-offer-section::after {
-            content: none !important;
-        }
-
-        .home-offers-wrap .offer-copy-panel h2,
-        .home-offers-wrap .premium-offer-section.offer-style-3 h2,
-        .home-offers-wrap .offer-dark-panel h2 {
-            color: #4f4238 !important;
-            letter-spacing: 0 !important;
-        }
-
-        .home-offers-wrap .offer-copy-panel p,
-        .home-offers-wrap .premium-offer-section.offer-style-3 p,
-        .home-offers-wrap .offer-dark-panel p {
-            color: #8c8177 !important;
-        }
-
-        .home-offers-wrap .offer-kicker,
-        .home-offers-wrap .offer-dark-panel .offer-kicker {
-            background: #685b4e !important;
-            border-color: #685b4e !important;
-            color: #ffffff !important;
-            box-shadow: 0 10px 22px rgba(104, 91, 78, 0.14) !important;
-        }
-
-        .home-offers-wrap .offer-badge,
-        .home-offers-wrap .offer-dark-panel .offer-badge {
-            background: #ffffff !important;
-            border-color: #d8c8b7 !important;
-            color: #685b4e !important;
-        }
-
-        .home-offers-wrap .offer-copy-btn .btn,
-        .home-offers-wrap .premium-offer-section.offer-style-3 .btn {
-            background: #685b4e !important;
-            border-color: #685b4e !important;
-            color: #ffffff !important;
-            box-shadow: 0 12px 24px rgba(104, 91, 78, 0.16) !important;
-        }
-
-        .home-offers-wrap .premium-countdown-timer>div:not(.fs-16) {
-            background: #ffffff !important;
-            border: 1px solid #d8c8b7 !important;
-            box-shadow: 0 8px 18px rgba(104, 91, 78, 0.07) !important;
-        }
-
-        .home-offers-wrap .premium-countdown-timer .days,
-        .home-offers-wrap .premium-countdown-timer .hours,
-        .home-offers-wrap .premium-countdown-timer .minutes,
-        .home-offers-wrap .premium-countdown-timer .seconds {
-            color: #4f4238 !important;
-        }
-
-        .home-offers-wrap .premium-countdown-timer .fs-9,
-        .home-offers-wrap .premium-countdown-timer .text-muted,
-        .home-offers-wrap .premium-countdown-timer .text-white-50 {
-            color: #8c8177 !important;
-            opacity: 1 !important;
-        }
-
-        .home-offers-wrap .offer-products-panel,
-        .home-offers-wrap .offer-inner-carousel,
-        .home-offers-wrap .offer-inner-carousel .slick-list,
-        .home-offers-wrap .offer-inner-carousel .slick-track,
-        .home-offers-wrap .offer-inner-carousel .slick-slide,
-        .home-offers-wrap .offer-inner-carousel .slick-slide>div,
-        .home-offers-wrap .offer-inner-carousel .carousel-box {
-            background: transparent !important;
-            background-color: transparent !important;
-            box-shadow: none !important;
-        }
-
-        .home-offers-wrap .offer-inner-carousel {
+        .habitat-products-slider .slick-dots li button {
+            width: 8px !important;
+            height: 8px !important;
             padding: 0 !important;
+            border-radius: 50% !important;
+            background: #d4c8bc !important;
+            border: none !important;
+            font-size: 0 !important;
+            transition: all 0.3s ease !important;
         }
 
-        .home-offers-wrap .offer-inner-carousel .slick-list {
-            margin-bottom: 0 !important;
+        .habitat-products-slider .slick-dots li.slick-active button {
+            width: 8px !important;
+            border-radius: 10px !important;
+            background: #5f4d3e !important;
+        }
+    }
+
+    @media (max-width: 991.98px) {
+        .habitat-left-content {
+            padding: 30px 24px !important;
         }
 
-        .home-offers-wrap .offer-inner-carousel .modern-product-card {
-            background: #ffffff !important;
+        .habitat-right-column-wrap {
+            padding: 16px !important;
         }
 
-        @media (max-width: 767.98px) {
-
-            .home-offers-wrap .premium-offer-section,
-            .home-offers-wrap .premium-offer-section.offer-style-2,
-            .home-offers-wrap .premium-offer-section.offer-style-3 {
-                padding: 18px 12px 28px !important;
-                border-radius: 18px !important;
-            }
-
-            .home-offers-wrap .offer-copy-panel,
-            .home-offers-wrap .offer-dark-panel {
-                padding-left: 6px !important;
-                padding-right: 6px !important;
-                margin-bottom: 16px !important;
-                background: transparent !important;
-                border: 0 !important;
-                box-shadow: none !important;
-            }
-
-            .home-offers-wrap .offer-copy-panel h2,
-            .home-offers-wrap .premium-offer-section.offer-style-3 h2,
-            .home-offers-wrap .offer-dark-panel h2 {
-                font-size: 25px !important;
-                line-height: 1.16 !important;
-            }
-
-            .home-offers-wrap .offer-copy-btn .btn,
-            .home-offers-wrap .premium-offer-section.offer-style-3 .btn {
-                width: 100% !important;
-                justify-content: center !important;
-            }
-
-            .home-offers-wrap .offer-products-panel {
-                padding-left: 0 !important;
-                padding-right: 0 !important;
-                margin-top: 4px !important;
-            }
-
-            .home-offers-wrap .offer-inner-carousel .carousel-box {
-                padding-left: 4px !important;
-                padding-right: 4px !important;
-            }
+        .habitat-main-tile {
+            height: 260px;
         }
-    </style>
-    <section class="mb-4 mt-5 home-offers-wrap">
-        <div class="container">
-            <div class="offer-carousel gutters-16" data-items="1" data-arrows="true" data-dots="false" data-autoplay="false"
-                data-infinite="true">
-                @foreach ($home_offers as $offer)
-                    @php
-                        $style = $offer->template_style ?? 'style_1';
-                        $offerProductCount = $offer->products->count();
-                        $offerProductCarouselClass = $offerProductCount === 1 ? ' offer-single-product-carousel' : '';
-                    @endphp
-                    <div class="carousel-box">
-                        @if ($style === 'style_2')
-                            <!-- Render Style 2: Dark Warm Split -->
-                            <div
-                                class="premium-offer-section offer-style-2 p-4 d-flex flex-wrap align-items-center position-relative overflow-hidden">
-                                <!-- Decorative background soft blurs (Warm luxury ambient glows) -->
-                                <div class="position-absolute"
-                                    style="top: -40px; right: -20px; width: 280px; height: 280px; background: radial-gradient(circle, var(--soft-primary) 0%, transparent 70%); filter: blur(40px); border-radius: 50%; pointer-events: none; z-index: 0;">
-                                </div>
 
-                                <!-- Left content (Dark container block) -->
-                                <div class="col-lg-5 col-12 mb-4 mb-lg-0 z-1 text-left offer-dark-panel p-4 p-md-5 d-flex flex-column justify-content-between"
-                                    style="min-height: 380px;">
-                                    <div
-                                        class="offer-copy-layout d-flex flex-column w-100 h-100 justify-content-between">
-                                        <div class="offer-copy-info">
-                                            <div class="d-flex flex-wrap align-items-center mb-3" style="gap: 8px;">
-                                                <span
-                                                    class="fs-10 fw-800 text-uppercase tracking-wider px-3 text-white offer-kicker"
-                                                    style="padding: 8px 14px !important; border-radius: 30px; letter-spacing: 1px;">
-                                                    {{ translate($offer->name) }}
-                                                </span>
-                                                @if ($offer->badge_text)
-                                                    @php
-                                                        $badge_txt = $offer->badge_text;
-                                                        if (
-                                                            is_numeric($badge_txt) ||
-                                                            (str_ends_with($badge_txt, '%') &&
-                                                                !str_contains(strtolower($badge_txt), 'off'))
-                                                        ) {
-                                                            $badge_txt .= ' OFF';
-                                                        }
-                                                    @endphp
-                                                    <span
-                                                        class="fs-10 fw-800 text-uppercase tracking-wider px-2.5 py-1 offer-badge"
-                                                        style="padding: 8px 12px !important; border-radius: 6px;">
-                                                        {{ $badge_txt }}
-                                                    </span>
-                                                @endif
-                                            </div>
-                                            <h2 class="fs-28 fs-md-36 fw-800 leading-tight mb-3 text-white"
-                                                style="font-family: 'Outfit', sans-serif; letter-spacing: -0.8px;">
-                                                {{ translate($offer->name) }}
-                                            </h2>
-                                            @if ($offer->custom_text)
-                                                <p class="fs-14 fs-md-15 mb-4"
-                                                    style="line-height: 1.6; font-weight: 400; max-width: none;">
-                                                    {{ $offer->custom_text }}
-                                                </p>
-                                            @endif
-                                            <!-- Premium countdown timer -->
-                                            @if ($offer->ends_at)
-                                                <div class="premium-countdown-timer d-flex align-items-center mb-4"
-                                                    data-end-date="{{ $offer->ends_at->format('Y/m/d H:i:s') }}"
-                                                    style="gap: 8px;">
-                                                    <div class="d-flex flex-column align-items-center justify-content-center"
-                                                        style="width: 52px; height: 56px; border-radius: 12px !important;">
-                                                        <span class="days fs-18 fw-800 text-white"
-                                                            style="font-family: 'Outfit', sans-serif; line-height: 1.2;">00</span>
-                                                        <span class="fs-9 fw-600 text-white-50 text-uppercase"
-                                                            style="letter-spacing: 0.5px; font-size: 8px !important; opacity:0.75;">Days</span>
-                                                    </div>
-                                                    <div class="fs-16 fw-700 text-white"
-                                                        style="opacity: 0.4; line-height: 56px;">:</div>
-                                                    <div class="d-flex flex-column align-items-center justify-content-center"
-                                                        style="width: 52px; height: 56px; border-radius: 12px !important;">
-                                                        <span class="hours fs-18 fw-800 text-white"
-                                                            style="font-family: 'Outfit', sans-serif; line-height: 1.2;">00</span>
-                                                        <span class="fs-9 fw-600 text-white-50 text-uppercase"
-                                                            style="letter-spacing: 0.5px; font-size: 8px !important; opacity:0.75;">Hours</span>
-                                                    </div>
-                                                    <div class="fs-16 fw-700 text-white"
-                                                        style="opacity: 0.4; line-height: 56px;">:</div>
-                                                    <div class="d-flex flex-column align-items-center justify-content-center"
-                                                        style="width: 52px; height: 56px; border-radius: 12px !important;">
-                                                        <span class="minutes fs-18 fw-800 text-white"
-                                                            style="font-family: 'Outfit', sans-serif; line-height: 1.2;">00</span>
-                                                        <span class="fs-9 fw-600 text-white-50 text-uppercase"
-                                                            style="letter-spacing: 0.5px; font-size: 8px !important; opacity:0.75;">Mins</span>
-                                                    </div>
-                                                    <div class="fs-16 fw-700 text-white"
-                                                        style="opacity: 0.4; line-height: 56px;">:</div>
-                                                    <div class="d-flex flex-column align-items-center justify-content-center"
-                                                        style="width: 52px; height: 56px; border-radius: 12px !important;">
-                                                        <span class="seconds fs-18 fw-800 text-white"
-                                                            style="font-family: 'Outfit', sans-serif; line-height: 1.2;">00</span>
-                                                        <span class="fs-9 fw-600 text-white-50 text-uppercase"
-                                                            style="letter-spacing: 0.5px; font-size: 8px !important; opacity:0.75;">Secs</span>
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        </div>
+        .habitat-gallery-thumb-tile {
+            height: 77px;
+        }
+    }
 
-                                        @if ($offer->products->count() > 0)
-                                            <div class="offer-copy-btn">
-                                                <a href="{{ route('product', $offer->products->first()->slug) }}"
-                                                    class="btn px-4 py-2.5 text-primary fw-700 fs-13 d-inline-flex align-items-center justify-content-center w-100"
-                                                    style="border-radius: 30px; transition: all 0.3s ease; gap: 8px;">
-                                                    <span>{{ translate('Shop Now') }}</span>
-                                                    <i class="las la-arrow-right"></i>
-                                                </a>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
+    @media (max-width: 575.98px) {
+        .habitat-left-content {
+            padding: 24px 18px !important;
+        }
 
-                                <!-- Right products grid using premium carousel and unified template -->
-                                <div class="col-lg-7 col-12 z-1 offer-products-panel pl-lg-4">
-                                    <div class="aiz-carousel sm-gutters-16 offer-inner-carousel arrow-none{{ $offerProductCarouselClass }}"
-                                        data-items="2" data-xl-items="2" data-lg-items="2" data-md-items="2"
-                                        data-sm-items="2" data-xs-items="2" data-arrows="false"
-                                        data-dots="{{ $offerProductCount > 3 ? 'true' : 'false' }}"
-                                        data-infinite="false" data-autoplay="false">
-                                        @foreach ($offer->products as $product)
-                                            <div class="carousel-box p-1">
-                                                @include(
-                                                    'frontend.' .
-                                                        get_setting('homepage_select') .
-                                                        '.partials.product_box_1',
-                                                    ['product' => $product]
-                                                )
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        @elseif($style === 'style_3')
-                            <!-- Render Style 3: Minimalist Outline Frame -->
-                            <div
-                                class="premium-offer-section offer-style-3 p-4 p-md-5 d-flex flex-column align-items-center position-relative overflow-hidden">
+        .habitat-right-column-wrap {
+            padding: 10px !important;
+        }
 
-                                <!-- Top Centered Header -->
-                                <div class="col-12 text-center mb-4 z-1">
-                                    <div class="d-flex justify-content-center align-items-center mb-2"
-                                        style="gap: 8px;">
-                                        <span class="fs-10 fw-800 text-uppercase tracking-wider px-3 offer-kicker"
-                                            style="padding: 6px 12px !important; border-radius: 4px; letter-spacing: 1px;">
-                                            {{ translate($offer->name) }}
-                                        </span>
-                                        @if ($offer->badge_text)
-                                            @php
-                                                $badge_txt = $offer->badge_text;
-                                                if (
-                                                    is_numeric($badge_txt) ||
-                                                    (str_ends_with($badge_txt, '%') &&
-                                                        !str_contains(strtolower($badge_txt), 'off'))
-                                                ) {
-                                                    $badge_txt .= ' OFF';
-                                                }
-                                            @endphp
-                                            <span
-                                                class="fs-10 fw-800 text-uppercase tracking-wider px-2 py-1 offer-badge"
-                                                style="padding: 6px 10px !important; border-radius: 4px;">
-                                                {{ $badge_txt }}
-                                            </span>
-                                        @endif
-                                    </div>
+        .habitat-spotlight-card {
+            height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            margin-bottom: 24px !important;
+        }
 
-                                    <h2 class="fs-28 fs-md-36 fw-800 leading-tight mb-2"
-                                        style="font-family: 'Playfair Display', 'Outfit', serif; letter-spacing: -0.5px;">
-                                        {{ translate($offer->name) }}
-                                    </h2>
+        .habitat-cta-btn {
+            width: 100% !important;
+        }
 
-                                    @if ($offer->custom_text)
-                                        <p class="fs-14 fs-md-15 mb-4 mx-auto"
-                                            style="max-width: 600px; line-height: 1.6; font-style: italic;">
-                                            &ldquo;{{ $offer->custom_text }}&rdquo;
-                                        </p>
-                                    @endif
+        .habitat-grid-container {
+            flex-direction: column;
+            padding: 10px;
+            gap: 8px;
+        }
 
-                                    <!-- Minimal Centered Countdown -->
-                                    @if ($offer->ends_at)
-                                        <div class="premium-countdown-timer d-inline-flex align-items-center justify-content-center py-2 px-4 mb-2"
-                                            data-end-date="{{ $offer->ends_at->format('Y/m/d H:i:s') }}"
-                                            style="gap: 12px; border-top: 1px solid var(--soft-primary); border-bottom: 1px solid var(--soft-primary); font-family: 'Outfit', sans-serif;">
-                                            <span class="text-uppercase fs-10 fw-700 tracking-wider text-muted-theme"
-                                                style="letter-spacing: 1px;">Ends In:</span>
-                                            <span class="days fs-14 fw-800 text-dark">00</span><span
-                                                class="fs-10 text-muted-theme"
-                                                style="margin-left:-6px; font-weight:700;">D</span>
-                                            <span class="hours fs-14 fw-800 text-dark">00</span><span
-                                                class="fs-10 text-muted-theme"
-                                                style="margin-left:-6px; font-weight:700;">H</span>
-                                            <span class="minutes fs-14 fw-800 text-dark">00</span><span
-                                                class="fs-10 text-muted-theme"
-                                                style="margin-left:-6px; font-weight:700;">M</span>
-                                            <span class="seconds fs-14 fw-800 text-primary">00</span><span
-                                                class="fs-10 text-muted-theme"
-                                                style="margin-left:-6px; font-weight:700;">S</span>
-                                        </div>
-                                    @endif
-                                </div>
+        .habitat-main-tile {
+            flex: 0 0 auto !important;
+            height: 175px !important;
+        }
 
-                                <!-- Bottom Products Row -->
-                                <div class="col-12 z-1 offer-products-panel">
-                                    <div class="aiz-carousel sm-gutters-16 offer-inner-carousel arrow-none{{ $offerProductCarouselClass }}"
-                                        data-items="3" data-xl-items="3" data-lg-items="3" data-md-items="2"
-                                        data-sm-items="2" data-xs-items="2" data-arrows="false"
-                                        data-dots="{{ $offerProductCount > 3 ? 'true' : 'false' }}"
-                                        data-infinite="false" data-autoplay="false">
-                                        @foreach ($offer->products as $product)
-                                            <div class="carousel-box p-1">
-                                                @include(
-                                                    'frontend.' .
-                                                        get_setting('homepage_select') .
-                                                        '.partials.product_box_1',
-                                                    ['product' => $product]
-                                                )
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
+        .habitat-main-tile.full-width-tile {
+            height: 240px !important;
+        }
 
-                                @if ($offer->products->count() > 0)
-                                    <div class="text-center mt-4 z-1 w-100">
-                                        <a href="{{ route('product', $offer->products->first()->slug) }}"
-                                            class="btn px-5 py-2.5 text-primary fw-700 fs-13 d-inline-flex align-items-center"
-                                            style="border-radius: 4px; transition: all 0.3s ease; gap: 8px;">
-                                            <span>{{ translate('Discover Collection') }}</span>
-                                            <i class="las la-arrow-right"></i>
-                                        </a>
-                                    </div>
+        .habitat-gallery-side-grid {
+            flex: 0 0 auto !important;
+            flex-direction: row;
+            gap: 6px;
+        }
+
+        .habitat-gallery-thumb-tile {
+            flex: 1 1 33.33%;
+            height: 60px !important;
+        }
+
+        .habitat-spotlight-info-bar {
+            padding: 10px 12px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .habitat-product-info {
+            max-width: 100%;
+        }
+
+        .habitat-add-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Clean Overlay Dots Floating Inside Card Bottom on Mobile */
+        .habitat-products-slider .slick-dots {
+            display: flex !important;
+          
+        }
+    }
+</style>
+
+<section class="habitat-offer-wrapper">
+    <div class="container">
+        <div class="aiz-carousel" data-items="1" data-arrows="false" data-dots="false" data-autoplay="false" data-infinite="true">
+            @foreach ($home_offers as $offer)
+            <div class="carousel-box">
+                <div class="habitat-offer-card w-100">
+                    <div class="row no-gutters align-items-center">
+
+                        <!-- Left Column: Offer Details & Countdown (Habitat Style) -->
+                        <div class="col-lg-5 col-md-6 col-12 habitat-left-content">
+                            <div class="d-flex flex-wrap align-items-center mb-2" style="gap: 8px;">
+                                <span class="habitat-eyebrow-pill">
+                                    {{ translate($offer->name) }}
+                                </span>
+                                @if ($offer->badge_text)
+                                @php
+                                $badge_txt = $offer->badge_text;
+                                if (is_numeric($badge_txt) || (str_ends_with($badge_txt, '%') && !str_contains(strtolower($badge_txt), 'off'))) {
+                                $badge_txt .= ' OFF';
+                                }
+                                @endphp
+                                <span class="habitat-badge-pill">
+                                    {{ $badge_txt }}
+                                </span>
                                 @endif
                             </div>
-                        @else
-                            <!-- Render Style 1: Premium Glassmorphism (Default) -->
-                            <div
-                                class="premium-offer-section p-4 p-md-5 d-flex flex-wrap align-items-center position-relative overflow-hidden">
 
-                                <!-- Decorative background soft blurs (Warm luxury ambient glows) -->
-                                {{-- <div class="position-absolute"
-                                    style="top: -40px; right: -20px; width: 280px; height: 280px; background: radial-gradient(circle, var(--soft-primary) 0%, transparent 70%); filter: blur(40px); border-radius: 50%; pointer-events: none; z-index: 0;">
+                            <h2 class="habitat-offer-title">
+                                {{ translate($offer->name) }}
+                            </h2>
+
+                            @if ($offer->custom_text)
+                            <p class="habitat-offer-desc">
+                                {{ $offer->custom_text }}
+                            </p>
+                            @endif
+
+                            @if ($offer->ends_at)
+                            <div class="habitat-timer-wrap" data-end-date="{{ $offer->ends_at->format('Y/m/d H:i:s') }}">
+                                <div class="timer-card">
+                                    <span class="days timer-num">00</span>
+                                    <span class="timer-txt">{{ translate('Days') }}</span>
                                 </div>
-                                <div class="position-absolute"
-                                    style="bottom: -50px; left: 5%; width: 320px; height: 320px; background: radial-gradient(circle, var(--soft-primary) 0%, transparent 70%); filter: blur(50px); border-radius: 50%; pointer-events: none; z-index: 0;">
+                                <span class="timer-divider">:</span>
+                                <div class="timer-card">
+                                    <span class="hours timer-num">00</span>
+                                    <span class="timer-txt">{{ translate('Hours') }}</span>
                                 </div>
-                                <div class="position-absolute"
-                                    style="top: 20%; right: 30%; width: 220px; height: 220px; background: radial-gradient(circle, var(--soft-secondary-base) 0%, transparent 70%); filter: blur(40px); border-radius: 50%; pointer-events: none; z-index: 0;">
-                                </div> --}}
-
-                                <!-- Left content -->
-                                <div class="col-lg-4 col-12 mb-4 mb-lg-0 z-1 text-left offer-copy-panel">
-                                    <div class="offer-copy-layout d-flex flex-column">
-                                        <!-- Badges -->
-                                        <div class="offer-badges-container d-flex flex-wrap align-items-center mb-3"
-                                            style="gap: 8px;">
-                                            <span
-                                                class="fs-10 fw-800 text-uppercase tracking-wider px-3 text-white offer-kicker"
-                                                style="padding: 10px !important;border-radius: 30px; letter-spacing: 1px; ">
-                                                {{ translate($offer->name) }}
-                                            </span>
-                                            @if ($offer->badge_text)
-                                                @php
-                                                    $badge_txt = $offer->badge_text;
-                                                    if (
-                                                        is_numeric($badge_txt) ||
-                                                        (str_ends_with($badge_txt, '%') &&
-                                                            !str_contains(strtolower($badge_txt), 'off'))
-                                                    ) {
-                                                        $badge_txt .= ' OFF';
-                                                    }
-                                                @endphp
-                                                <span
-                                                    class="fs-10 fw-800 text-uppercase tracking-wider px-2.5 py-1 offer-badge"
-                                                    style="padding:10px;border-radius: 6px;">
-                                                    {{ $badge_txt }}
-                                                </span>
-                                            @endif
-                                        </div>
-
-                                        <!-- Title, Desc & Timer -->
-                                        <div class="offer-title-desc-timer">
-                                            <h2 class="fs-28 fs-md-36 fw-800 leading-tight mb-2"
-                                                style="font-family: 'Outfit', sans-serif; letter-spacing: -0.8px;">
-                                                {{ translate($offer->name) }}
-                                            </h2>
-                                            @if ($offer->custom_text)
-                                                <p class="fs-14 fs-md-15 mb-4"
-                                                    style="max-width: 420px; line-height: 1.6; font-weight: 450;">
-                                                    {{ $offer->custom_text }}
-                                                </p>
-                                            @endif
-
-                                            <!-- Premium countdown timer -->
-                                            @if ($offer->ends_at)
-                                                <div class="premium-countdown-timer d-flex align-items-center mb-4"
-                                                    data-end-date="{{ $offer->ends_at->format('Y/m/d H:i:s') }}"
-                                                    style="gap: 8px;">
-                                                    <div class="d-flex flex-column align-items-center justify-content-center"
-                                                        style="width: 54px; height: 58px; border-radius: 12px !important; ">
-                                                        <span class="days fs-18 fw-800 text-dark"
-                                                            style="font-family: 'Outfit', sans-serif; line-height: 1.2;">00</span>
-                                                        <span class="fs-9 fw-600 text-muted text-uppercase"
-                                                            style="letter-spacing: 0.5px; font-size: 8px !important;">Days</span>
-                                                    </div>
-                                                    <div class="fs-16 fw-700"
-                                                        style="color: var(--primary) !important; line-height: 58px;">:
-                                                    </div>
-                                                    <div class="d-flex flex-column align-items-center justify-content-center"
-                                                        style="width: 54px; height: 58px; border-radius: 12px !important; ">
-                                                        <span class="hours fs-18 fw-800 text-dark"
-                                                            style="font-family: 'Outfit', sans-serif; line-height: 1.2;">00</span>
-                                                        <span class="fs-9 fw-600 text-muted text-uppercase"
-                                                            style="letter-spacing: 0.5px; font-size: 8px !important;">Hours</span>
-                                                    </div>
-                                                    <div class="fs-16 fw-700"
-                                                        style="color: var(--primary) !important; line-height: 58px;">:
-                                                    </div>
-                                                    <div class="d-flex flex-column align-items-center justify-content-center"
-                                                        style="width: 54px; height: 58px; border-radius: 12px !important; ">
-                                                        <span class="minutes fs-18 fw-800 text-dark"
-                                                            style="font-family: 'Outfit', sans-serif; line-height: 1.2;">00</span>
-                                                        <span class="fs-9 fw-600 text-muted text-uppercase"
-                                                            style="letter-spacing: 0.5px; font-size: 8px !important;">Mins</span>
-                                                    </div>
-                                                    <div class="fs-16 fw-700"
-                                                        style="color: var(--primary) !important; line-height: 58px;">:
-                                                    </div>
-                                                    <div class="d-flex flex-column align-items-center justify-content-center"
-                                                        style="width: 54px; height: 58px; border-radius: 12px !important; ">
-                                                        <span class="seconds fs-18 fw-800"
-                                                            style="font-family: 'Outfit', sans-serif; line-height: 1.2;">00</span>
-                                                        <span class="fs-9 fw-600 text-muted text-uppercase"
-                                                            style="letter-spacing: 0.5px; font-size: 8px !important;">Secs</span>
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        </div>
-
-                                        @if ($offer->products->count() > 0)
-                                            <div class="offer-copy-btn">
-                                                <a href="{{ route('product', $offer->products->first()->slug) }}"
-                                                    class="btn px-4 py-2.5 text-white fw-700 fs-13 d-inline-flex align-items-center"
-                                                    style="border-radius: 30px; transition: all 0.3s ease; gap: 8px;">
-                                                    <span>{{ translate('Shop Now') }}</span>
-                                                    <i class="las la-arrow-right"></i>
-                                                </a>
-                                            </div>
-                                        @endif
-                                    </div>
+                                <span class="timer-divider">:</span>
+                                <div class="timer-card">
+                                    <span class="minutes timer-num">00</span>
+                                    <span class="timer-txt">{{ translate('Mins') }}</span>
                                 </div>
-
-                                <!-- Right products grid using premium carousel and unified template -->
-                                <div class="col-lg-8 col-12 z-1 offer-products-panel">
-                                    <div class="aiz-carousel sm-gutters-16 offer-inner-carousel arrow-none{{ $offerProductCarouselClass }}"
-                                        data-items="3" data-xl-items="3" data-lg-items="3" data-md-items="3"
-                                        data-sm-items="2" data-xs-items="2" data-arrows="false"
-                                        data-dots="{{ $offerProductCount > 3 ? 'true' : 'false' }}"
-                                        data-infinite="false" data-autoplay="false">
-                                        @foreach ($offer->products as $product)
-                                            <div class="carousel-box p-1">
-                                                @include(
-                                                    'frontend.' .
-                                                        get_setting('homepage_select') .
-                                                        '.partials.product_box_1',
-                                                    ['product' => $product]
-                                                )
-                                            </div>
-                                        @endforeach
-                                    </div>
+                                <span class="timer-divider">:</span>
+                                <div class="timer-card">
+                                    <span class="seconds timer-num">00</span>
+                                    <span class="timer-txt">{{ translate('Secs') }}</span>
                                 </div>
-
                             </div>
-                        @endif
+                            @endif
+
+                            <div>
+                                @if ($offer->products->count() > 0)
+                                <a href="{{ route('product', $offer->products->first()->slug) }}" class="habitat-cta-btn offer-shop-deal-btn">
+                                    <span>{{ translate('Shop Deal') }}</span>
+                                    <i class="las la-arrow-right fs-16"></i>
+                                </a>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Spotlight Padded Card with Multi-Image Grid -->
+                        <div class="col-lg-7 col-md-6 col-12 habitat-right-column-wrap">
+                            <div class="habitat-spotlight-card">
+                                @if ($offer->products->count() > 0)
+                                @php
+                                $has_multiple = $offer->products->count() > 1;
+                                @endphp
+                                <div class="aiz-carousel habitat-products-slider"
+                                    data-items="1"
+                                    data-arrows="{{ $has_multiple ? 'true' : 'false' }}"
+                                    data-dots="{{ $has_multiple ? 'true' : 'false' }}"
+                                    data-autoplay="false"
+                                    data-infinite="true">
+                                    @foreach ($offer->products as $product)
+                                    @php
+                                    $product_url = route('product', $product->slug);
+                                    $active_offer = get_product_active_offer($product);
+                                    $badge_txt = !empty($offer->badge_text) ? $offer->badge_text : ($active_offer->badge_text ?? translate('SPECIAL OFFER'));
+                                    if (is_numeric($badge_txt) || (str_ends_with($badge_txt, '%') && !str_contains(strtolower($badge_txt), 'off'))) {
+                                    $badge_txt .= ' OFF';
+                                    }
+                                    $old_offer_price = home_offer_old_price($product);
+                                    $disc_price = home_discounted_base_price($product);
+
+                                    // Collect all images (thumbnail + gallery photos)
+                                    $all_images = [];
+                                    if (!empty($product->photos)) {
+                                    $raw_photos = array_filter(explode(',', $product->photos));
+                                    foreach ($raw_photos as $rp) {
+                                    if (!empty($rp) && !in_array($rp, $all_images)) {
+                                    $all_images[] = $rp;
+                                    }
+                                    }
+                                    }
+                                    if (!empty($product->thumbnail) && !in_array($product->thumbnail, $all_images)) {
+                                    array_unshift($all_images, $product->thumbnail);
+                                    }
+                                    if (empty($all_images) && !empty($product->thumbnail_img)) {
+                                    $all_images[] = $product->thumbnail_img;
+                                    }
+                                    $has_gallery_grid = count($all_images) > 1;
+                                    @endphp
+                                    <div class="carousel-box position-relative" data-product-url="{{ $product_url }}">
+
+                                        <!-- Image Grid Container (Main Photo + Gallery Grid) -->
+                                        <div class="habitat-grid-container">
+                                            <!-- Main Spotlight Image Tile -->
+                                            <div class="habitat-main-tile {{ !$has_gallery_grid ? 'full-width-tile' : '' }}">
+                                                <a href="{{ $product_url }}" class="d-block w-100 h-100">
+                                                    <img src="{{ get_image($all_images[0] ?? $product->thumbnail) }}"
+                                                        id="habitat-main-img-{{ $product->id }}"
+                                                        alt="{{ $product->getTranslation('name') }}"
+                                                        class="habitat-spotlight-img"
+                                                        onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
+                                                </a>
+
+                                                <!-- Top Left Offer Badge -->
+                                                <span class="habitat-img-badge">
+                                                    {{ translate($badge_txt) }}
+                                                </span>
+
+                                                <!-- Top Right Wishlist Button -->
+                                                <button type="button" class="habitat-img-wishlist" onclick="addToWishList({{ $product->id }})" title="{{ translate('Add to wishlist') }}" aria-label="{{ translate('Add to wishlist') }}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round">
+                                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+
+                                            <!-- Gallery Side Grid (Only if product has multiple images) -->
+                                            @if ($has_gallery_grid)
+                                            @php
+                                            $total_imgs = count($all_images);
+                                            $side_imgs = array_slice($all_images, 1, 3);
+                                            $more_count = $total_imgs > 4 ? ($total_imgs - 4) : 0;
+                                            @endphp
+                                            <div class="habitat-gallery-side-grid">
+                                                @foreach ($side_imgs as $g_index => $g_img)
+                                                @php
+                                                $g_url = get_image($g_img);
+                                                $is_last_thumb = ($g_index === 2 && $more_count > 0);
+                                                @endphp
+                                                <div class="habitat-gallery-thumb-tile {{ $g_index === 0 ? 'active' : '' }}"
+                                                    @if ($is_last_thumb)
+                                                    onclick="window.location.href='{{ $product_url }}'"
+                                                    @else
+                                                    onclick="switchHabitatOfferImg(this, '{{ $g_url }}', '{{ $product->id }}')"
+                                                    @endif>
+                                                    <img src="{{ $g_url }}"
+                                                        alt="Gallery photo {{ $g_index + 2 }}"
+                                                        onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
+
+                                                    @if ($is_last_thumb)
+                                                    <div class="habitat-more-overlay" title="{{ translate('View all images') }}">
+                                                        <span class="more-num">+{{ $more_count }}</span>
+                                                        <span class="more-txt">{{ translate('View All') }}</span>
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                                @endforeach
+                                            </div>
+                                            @endif
+                                        </div>
+
+                                        <!-- Bottom Product Info & Add to Basket Bar -->
+                                        <div class="habitat-spotlight-info-bar">
+                                            <div class="habitat-product-info">
+                                                <a href="{{ $product_url }}" class="habitat-product-name" title="{{ $product->getTranslation('name') }}">
+                                                    {{ $product->getTranslation('name') }}
+                                                </a>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="habitat-price-current">{{ $disc_price }}</span>
+                                                    @if ($old_offer_price)
+                                                    <span class="habitat-price-old">{{ $old_offer_price }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <a href="{{ $product_url }}" class="habitat-add-btn">
+                                                <span>{{ translate('Add to Basket') }}</span>
+                                                <i class="las la-shopping-cart fs-14"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+
                     </div>
-                @endforeach
+                </div>
             </div>
+            @endforeach
         </div>
-    </section>
+    </div>
+</section>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const timers = document.querySelectorAll('.premium-countdown-timer');
-            timers.forEach(function(timer) {
-                const endDateStr = timer.getAttribute('data-end-date');
-                if (!endDateStr) return;
-                const endDate = new Date(endDateStr).getTime();
+<script type="text/javascript">
+    // Global image switcher function for multi-image grid
+    function switchHabitatOfferImg(thumbElem, imgUrl, productId) {
+        if (typeof $ === 'undefined') return;
+        var $mainImg = $('#habitat-main-img-' + productId);
+        if ($mainImg.length) {
+            $mainImg.css('opacity', '0.4');
+            setTimeout(function() {
+                $mainImg.attr('src', imgUrl);
+                $mainImg.css('opacity', '1');
+            }, 120);
+        }
+        $(thumbElem).siblings().removeClass('active');
+        $(thumbElem).addClass('active');
+    }
 
-                const daysVal = timer.querySelector('.days');
-                const hoursVal = timer.querySelector('.hours');
-                const minsVal = timer.querySelector('.minutes');
-                const secsVal = timer.querySelector('.seconds');
+    document.addEventListener("DOMContentLoaded", function() {
+        // Countdown timer logic
+        const timers = document.querySelectorAll('.habitat-timer-wrap');
+        timers.forEach(function(timer) {
+            const endDateStr = timer.getAttribute('data-end-date');
+            if (!endDateStr) return;
+            const endDate = new Date(endDateStr).getTime();
 
-                function updateTimer() {
-                    const now = new Date().getTime();
-                    const difference = endDate - now;
+            const daysVal = timer.querySelector('.days');
+            const hoursVal = timer.querySelector('.hours');
+            const minsVal = timer.querySelector('.minutes');
+            const secsVal = timer.querySelector('.seconds');
 
-                    if (difference <= 0) {
-                        if (daysVal) daysVal.innerText = '00';
-                        if (hoursVal) hoursVal.innerText = '00';
-                        if (minsVal) minsVal.innerText = '00';
-                        if (secsVal) secsVal.innerText = '00';
-                        return;
-                    }
+            function updateTimer() {
+                const now = new Date().getTime();
+                const difference = endDate - now;
 
-                    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-                    if (daysVal) daysVal.innerText = String(days).padStart(2, '0');
-                    if (hoursVal) hoursVal.innerText = String(hours).padStart(2, '0');
-                    if (minsVal) minsVal.innerText = String(minutes).padStart(2, '0');
-                    if (secsVal) secsVal.innerText = String(seconds).padStart(2, '0');
+                if (difference <= 0) {
+                    if (daysVal) daysVal.innerText = '00';
+                    if (hoursVal) hoursVal.innerText = '00';
+                    if (minsVal) minsVal.innerText = '00';
+                    if (secsVal) secsVal.innerText = '00';
+                    return;
                 }
 
-                updateTimer();
-                setInterval(updateTimer, 1000);
-            });
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                if (daysVal) daysVal.innerText = String(days).padStart(2, '0');
+                if (hoursVal) hoursVal.innerText = String(hours).padStart(2, '0');
+                if (minsVal) minsVal.innerText = String(minutes).padStart(2, '0');
+                if (secsVal) secsVal.innerText = String(seconds).padStart(2, '0');
+            }
+
+            updateTimer();
+            setInterval(updateTimer, 1000);
         });
-    </script>
-    <script type="text/javascript">
-        function initOfferCarousel() {
-            if (typeof $ !== 'undefined' && $.fn.slick) {
-                $('.offer-carousel').each(function() {
-                    var $this = $(this);
-                    if ($this.hasClass('slick-initialized')) {
-                        $this.slick('unslick');
-                    }
-                    $this.slick({
-                        slidesToShow: 1,
-                        autoplay: false,
-                        dots: false,
-                        arrows: true,
-                        infinite: true,
-                        prevArrow: '<button type="button" class="slick-prev"><i class="las la-angle-left"></i></button>',
-                        nextArrow: '<button type="button" class="slick-next"><i class="las la-angle-right"></i></button>',
-                        responsive: [{
-                                breakpoint: 992,
-                                settings: {
-                                    arrows: true,
-                                    dots: false
-                                }
-                            },
-                            {
-                                breakpoint: 768,
-                                settings: {
-                                    arrows: true,
-                                    dots: false
-                                }
-                            },
-                            {
-                                breakpoint: 576,
-                                settings: {
-                                    arrows: true,
-                                    dots: false
-                                }
+
+        // Dynamic "Shop Deal" Button URL Update on Slide Change
+        if (typeof $ !== 'undefined') {
+            function bindOfferSlideEvents() {
+                $('.habitat-products-slider').each(function() {
+                    const $slider = $(this);
+                    $slider.off('afterChange.offerDealLink').on('afterChange.offerDealLink', function(event, slick, currentSlide) {
+                        const $slides = $(slick.$slides);
+                        if ($slides.length > 0) {
+                            const $active = $($slides[currentSlide]);
+                            const pUrl = $active.find('[data-product-url]').data('product-url') || $active.data('product-url');
+                            if (pUrl) {
+                                $slider.closest('.habitat-offer-card').find('.offer-shop-deal-btn').attr('href', pUrl);
                             }
-                        ]
+                        }
                     });
                 });
-
-                // Prevent nested carousel touch events from bubbling up and triggering outer slider drag/swipes,
-                // which blocks dot clicking and inner carousel swiping on mobile. We delegate on the static container
-                // .offer-products-panel to intercept the events before they bubble up to the outer carousel.
-                $('.offer-products-panel').on(
-                    'mousedown touchstart touchmove touchend mouseup pointerdown pointermove pointerup',
-                    '.offer-inner-carousel',
-                    function(e) {
-                        e.stopPropagation();
-                    });
-            } else {
-                setTimeout(initOfferCarousel, 50);
             }
+
+            bindOfferSlideEvents();
+            setTimeout(bindOfferSlideEvents, 500);
+            setTimeout(bindOfferSlideEvents, 1500);
         }
-        initOfferCarousel();
-    </script>
+    });
+</script>
 @endif

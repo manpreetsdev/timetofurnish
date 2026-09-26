@@ -182,262 +182,225 @@
 
 @section('content')
 <style>
-    /* ── Breadcrumb row: always single line on all screen sizes ── */
+    /* ── Responsive Breadcrumbs Row ── */
     .responsive-breadcrumb-row {
-        flex-wrap: nowrap !important;
+        gap: 0.5rem;
+        position: relative;
         align-items: center !important;
     }
-    .responsive-breadcrumb-row nav {
+    
+    .responsive-breadcrumb-nav {
         min-width: 0;
-        flex: 1 1 0%;
-        overflow: hidden;
+        flex: 1 1 auto;
     }
-    /* Breadcrumb list stays on one line */
+
     .responsive-breadcrumb-row .breadcrumb {
         flex-wrap: nowrap !important;
-        overflow: hidden;
+        white-space: nowrap !important;
         margin-bottom: 0;
         padding-bottom: 0;
+        background: transparent;
+        line-height: 1.2;
     }
-    /* Each item shrinks but never hides Home/Category */
+
     .responsive-breadcrumb-row .breadcrumb-item {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        flex-shrink: 1;
-    }
-    .responsive-breadcrumb-row .breadcrumb-item:first-child,
-    .responsive-breadcrumb-row .breadcrumb-item:nth-child(2) {
-        flex-shrink: 0; /* Home & Category never shrink */
-    }
-
-    /* Category item style */
-    .breadcrumb-category-item {
-        flex-shrink: 0;
+        font-size: 13px;
+        color: #6c757d;
+        display: inline-flex;
+        align-items: center;
         white-space: nowrap;
     }
-
-    /* Product name styling */
-    .breadcrumb-product-item {
-        min-width: 0;
-        overflow: hidden;
-        flex-shrink: 1;
+    .responsive-breadcrumb-row .breadcrumb-item a {
+        color: #4a4a4a;
+        text-decoration: none;
+        transition: color 0.15s ease;
     }
-    .breadcrumb-product-name {
-        display: inline-block;
-        vertical-align: bottom;
-        white-space: nowrap;
-        max-width: none;
+    .responsive-breadcrumb-row .breadcrumb-item a:hover {
+        color: #685c4e;
     }
-    .breadcrumb-product-name.expanded {
-        white-space: normal;
-        overflow: visible;
-        max-width: none;
+    .responsive-breadcrumb-row .breadcrumb-item.active {
+        color: #1b1b28;
+        font-weight: 600;
     }
 
-    /* Sleek Mobile Breadcrumb Tooltip */
-    .breadcrumb-tooltip {
-        display: none;
-        position: absolute;
-        top: 110%;
-        left: 0;
-        z-index: 1070;
-        background: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.05);
-        padding: 12px 16px;
-        width: 100%;
-        max-width: 320px;
-        border: 1px solid #eaeaea;
-        animation: fadeIn 0.20s ease-out;
-    }
-    .breadcrumb-tooltip.active {
-        display: block !important;
-    }
-    .breadcrumb-tooltip-item {
-        font-size: 0.85rem;
-        color: #212529;
-        line-height: 1.4;
-    }
-    .breadcrumb-tooltip-label {
-        font-weight: 700;
-        color: #888;
-        display: block;
-        font-size: 0.72rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 2px;
-    }
-    .breadcrumb-tooltip-value {
-        color: #212529;
-        word-break: break-word;
-        font-weight: 500;
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-4px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Seller button: never grows, never wraps */
-    #viewSellerInfoMenuWrapper {
-        flex-shrink: 0;
-    }
-    #viewSellerInfoBtn {
-        white-space: nowrap;
-    }
-
-    /* Desktop view: ensure everything shows fully */
-    @media (min-width: 768px) {
-        .responsive-breadcrumb-row .breadcrumb-item {
-            overflow: visible;
-            text-overflow: clip;
-        }
-        .breadcrumb-category-item {
-            max-width: none;
-            overflow: visible;
-            text-overflow: clip;
-        }
-        .breadcrumb-product-item {
-            overflow: visible;
-            text-overflow: clip;
-        }
-        .breadcrumb-product-name {
-            max-width: none;
-            overflow: visible;
-            text-overflow: clip;
-            white-space: normal;
-        }
-    }
-
-    /* Mobile view specific rules */
-    @media (max-width: 767.98px) {
-        .breadcrumb-category-item {
-            max-width: 100px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .breadcrumb-category-item:hover {
-            opacity: 0.7;
-        }
-        .breadcrumb-product-name {
-            max-width: 140px;
-            overflow: hidden;
-            text-overflow: ellipsis; /* Native ellipsis, single set of three dots */
-            cursor: pointer; /* Indication that it can be clicked/tapped */
-            transition: opacity 0.2s;
-        }
-        .breadcrumb-product-name:hover {
-            opacity: 0.7;
-        }
-    }
-
-    @media (max-width: 400px) {
-        #viewSellerInfoBtn {
-            padding-left: 0.7rem !important;
-            padding-right: 0.7rem !important;
-            font-size: 0.95rem;
-        }
-        .breadcrumb-category-item {
-            max-width: 80px;
-        }
-        .breadcrumb-product-name {
-            max-width: 80px;
-        }
-    }
-</style>
-
-<style>
+    /* Seller Info Button Trigger */
     #viewSellerInfoBtn {
         background: #685c4e;
         color: #ffffff !important;
         border: 1px solid #685c4e;
-        border-radius: 6px;
+        border-radius: 8px;
         font-weight: 600;
         font-size: 13px;
-        box-shadow: 0 2px 6px rgba(26, 39, 68, 0.15);
+        box-shadow: 0 3px 8px rgba(104, 92, 78, 0.25);
         transition: all .2s ease-in-out;
         padding: 7px 14px !important;
-        margin: 0 !important;
-        line-height: 1.2 !important;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        flex-shrink: 0;
+        margin-left: 8px;
     }
     #viewSellerInfoBtn:hover {
-        background: #685c4e;
-        border-color: #685c4e;
+        background: #54493d;
+        border-color: #54493d;
         color: #ffffff !important;
-        box-shadow: 0 4px 12px rgba(181, 122, 69, 0.25);
+        box-shadow: 0 4px 12px rgba(104, 92, 78, 0.35);
+    }
+    #viewSellerInfoBtn i {
+        font-size: 16px;
+    }
+
+    /* Mobile specific tweaks */
+    @media (max-width: 767.98px) {
+        .responsive-breadcrumb-row .breadcrumb-item {
+            font-size: 13px;
+        }
+        #viewSellerInfoBtn {
+            padding: 6px 12px !important;
+            font-size: 12.5px;
+        }
+    }
+
+    /* ── Seller Info Drawer (Mobile) & Popover (Desktop) ── */
+    @media (max-width: 767.98px) {
+        .seller-info-popover {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            top: auto !important;
+            width: 100% !important;
+            z-index: 1085 !important;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            display: block !important;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .seller-info-popover.active {
+            transform: translateY(0) !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+        }
+        .seller-info-popover-content {
+            background: #ffffff;
+            border-radius: 20px 20px 0 0 !important;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2) !important;
+            padding: 1rem 1.25rem 1.5rem 1.25rem !important;
+            max-width: 100% !important;
+            min-width: 100% !important;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .drawer-drag-handle {
+            width: 42px;
+            height: 4.5px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin: 0 auto 12px auto;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .seller-info-popover {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            z-index: 1085;
+            display: none;
+        }
+        .seller-info-popover.active {
+            display: block !important;
+        }
+        .seller-info-popover-content {
+            background: #ffffff;
+            width: 370px;
+            border-radius: 14px;
+            box-shadow: 0 14px 34px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.06);
+            padding: 1.25rem;
+            border: 1px solid #eaeaea;
+        }
+        .drawer-drag-handle {
+            display: none;
+        }
+    }
+
+    .seller-info-popover-backdrop {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 1080;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        transition: opacity 0.25s ease;
+        opacity: 0;
+    }
+    .seller-info-popover-backdrop.active {
+        display: block;
+        opacity: 1;
+    }
+    body.seller-info-popover-open {
+        overflow: hidden !important;
     }
 </style>
+
    <section class="pt-0 mb-4">
     <div class="container">
         <div class="py-0 bg-white">
 
             <div class="row">
-                <div class="pt-5 pb-5 col-12 d-flex flex-wrap justify-content-between flex-column image_gallery_section_shadow">
-                    <div class="d-flex flex-row align-items-center w-100 responsive-breadcrumb-row" style="gap: 0.75rem; position: relative;">
-                        <nav aria-label="breadcrumb" class="flex-grow-1 min-width-0" style="overflow:hidden;">
+                <div class="pt-4 pb-4 col-12 d-flex flex-wrap justify-content-between flex-column image_gallery_section_shadow">
+                    <div class="d-flex flex-row align-items-center justify-content-between w-100 responsive-breadcrumb-row">
+                        <!-- Clean Breadcrumbs Navigation -->
+                        <nav aria-label="breadcrumb" class="responsive-breadcrumb-nav">
                             @php
                                 $breadcrumbCategory = $detailedProduct->main_category;
                                 $productFullName    = $detailedProduct->getTranslation('name');
                             @endphp
-                            <ol class="breadcrumb bg-white pl-0 p-0 m-0 justify-content-start mb-0" style="flex-wrap:nowrap;overflow:hidden;">
-                                <li class="breadcrumb-item" style="flex-shrink:0;white-space:nowrap;">
-                                    <a class="text-dark-50" href="{{ route('home') }}">
+                            <ol class="breadcrumb bg-white pl-0 p-0 m-0 align-items-center">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('home') }}">
                                         <i class="las la-home"></i> {{ translate('Home') }}
                                     </a>
                                 </li>
                                 @if($breadcrumbCategory)
-                                <li class="breadcrumb-item breadcrumb-category-item" id="breadcrumbCategoryItem">
-                                    <a class="text-dark-50" href="{{ route('products.category', $breadcrumbCategory->slug) }}" title="{{ $breadcrumbCategory->getTranslation('name') }}">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('products.category', $breadcrumbCategory->slug) }}" title="{{ $breadcrumbCategory->getTranslation('name') }}">
                                         {{ $breadcrumbCategory->getTranslation('name') }}
                                     </a>
                                 </li>
                                 @endif
-                                <li class="breadcrumb-item active text-primary fw-700 breadcrumb-product-item" aria-current="page">
-                                    <span class="breadcrumb-product-name" id="breadcrumbProductName" title="{{ $productFullName }}">{{ $productFullName }}</span>
+                                <li class="breadcrumb-item active d-none d-md-inline-block" aria-current="page">
+                                    <span>{{ $productFullName }}</span>
                                 </li>
                             </ol>
                         </nav>
 
-                        <!-- Sleek Breadcrumb Tooltip Popover for mobile view -->
-                        <div id="breadcrumbTooltip" class="breadcrumb-tooltip shadow">
-                            <div class="breadcrumb-tooltip-item">
-                                <span class="breadcrumb-tooltip-label">{{ translate('Category') }}</span>
-                                <span class="breadcrumb-tooltip-value">
-                                    @if($breadcrumbCategory)
-                                        <a href="{{ route('products.category', $breadcrumbCategory->slug) }}" class="text-primary font-weight-bold" style="text-decoration: underline;">
-                                            {{ $breadcrumbCategory->getTranslation('name') }}
-                                        </a>
-                                    @else
-                                        -
-                                    @endif
-                                </span>
-                            </div>
-                            <div class="breadcrumb-tooltip-item mt-3">
-                                <span class="breadcrumb-tooltip-label">{{ translate('Product') }}</span>
-                                <span class="breadcrumb-tooltip-value">{{ $productFullName }}</span>
-                            </div>
-                        </div>
-                        <div class="position-relative" id="viewSellerInfoMenuWrapper" style="display:inline-block;">
+                        <!-- Clear Seller Info Drawer Trigger Button -->
+                        <div class="position-relative ml-2" id="viewSellerInfoMenuWrapper">
                             <button type="button"
-                                class="btn shadow-sm px-4 py-2 d-flex align-items-center ms-0 ms-md-3"
+                                class="btn"
                                 id="viewSellerInfoBtn"
                                 title="{{ translate('View seller information') }}">
-                                <span style="font-size:20px;">
-                                    <i class="las la-info-circle"></i>
-                                </span>
-                                <!-- Mobile: Show "Seller Info" next to icon (larger button text) -->
-                                <span class="d-inline-block d-sm-none ml-1 mobile_info_btn_text">{{ translate('Seller') }}</span>
-                                <!-- Desktop: Show standard text -->
-                                <span class="d-none d-sm-inline-block ml-1 desktop_info_btn_text">{{ translate('View Seller Info') }}</span>
+                                <i class="las la-store"></i>
+                                <span>{{ translate('Seller Info') }}</span>
+                                <i class="las la-angle-right d-none d-sm-inline-block ml-1" style="font-size: 11px;"></i>
                             </button>
-                            <!-- Popover Seller Info Panel (hidden by default, toggled by JS, shown near button) -->
-                            <div id="sellerInfoPopover" class="seller-info-popover shadow" style="display:none;">
+
+                            <!-- Popover / Bottom Sheet Drawer -->
+                            <div id="sellerInfoPopover" class="seller-info-popover">
                                 <div class="seller-info-popover-content">
-                                    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
-                                        <h5 class="mb-0" style="font-weight:600;" id="sellerInfoPopoverLabel">Seller Information</h5>
-                                        <i class="las la-times" style="font-size: 22px; cursor: pointer;" id="sellerInfoPopoverClose"></i>
+                                    <div class="drawer-drag-handle"></div>
+                                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                                        <h5 class="mb-0 fw-700 fs-16 text-dark" id="sellerInfoPopoverLabel">
+                                            <i class="las la-store mr-1 text-primary"></i> {{ translate('Seller Information') }}
+                                        </h5>
+                                        <button type="button" class="btn btn-icon btn-sm text-secondary p-0" id="sellerInfoPopoverClose" aria-label="Close" style="background: none; border: none;">
+                                            <i class="las la-times fs-22"></i>
+                                        </button>
                                     </div>
                                     <div>
                                         @include('frontend.product_details.seller_info')
@@ -450,173 +413,55 @@
                 </div>
             </div>
 
-            <style>
-                /* Seller Info Popover Styles */
-                .seller-info-popover {
-                    position: absolute;
-                    top: 110%;
-                    right: 0;
-                    z-index: 1081;
-                    background: transparent;
-                    pointer-events: none;
-                }
-                .seller-info-popover.active {
-                    display: block !important;
-                    pointer-events: auto;
-                }
-                .seller-info-popover-content {
-                    background: #fff;
-                    max-width: 430px;
-                    min-width: 300px;
-                    border-radius: 14px;
-                    box-shadow: 0 14px 34px rgba(60,60,60,0.15), 0 1.5px 8px #eaeaea;
-                    padding: 2.2rem 1.3rem 1.2rem 1.3rem;
-                    min-height: 180px;
-                }
-
-                @media (max-width: 575px) {
-                    .seller-info-popover-content {
-                        width: 92vw;
-                        max-width: 97vw;
-                        min-width: 0;
-                        left: 50%;
-                        transform: translateX(0%) !important;
-                        padding-left: 15px;
-                        padding-right: 15px;
-                    }
-                }
-                .seller-info-popover-backdrop {
-                    display: none;
-                    position: fixed;
-                    left: 0; right: 0; top: 0; bottom: 0;
-                    z-index: 1080;
-                    background: rgba(33,33,41,0.12);
-                    transition: opacity .25s;
-                    opacity: 0;
-                }
-                .seller-info-popover-backdrop.active {
-                    display: block;
-                    opacity: 1;
-                    pointer-events: auto;
-                }
-                body.seller-info-popover-open {
-                    overflow: hidden;
-                }
-            </style>
-
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
-
-                    /* ── Breadcrumb product name expand/collapse tooltip ── */
-                    (function() {
-                        var tooltip = document.getElementById('breadcrumbTooltip');
-                        var categoryBtn = document.getElementById('breadcrumbCategoryItem');
-                        var productBtn = document.getElementById('breadcrumbProductName');
-                        var wrapper = document.querySelector('.responsive-breadcrumb-row');
-
-                        if (!tooltip || !wrapper) return;
-
-                        function toggleTooltip(e) {
-                            if (window.innerWidth >= 768) return; // Only active on mobile
-                            
-                            e.preventDefault();
-                            e.stopPropagation();
-                            tooltip.classList.toggle('active');
-                        }
-
-                        if (categoryBtn) {
-                            categoryBtn.addEventListener('click', toggleTooltip);
-                        }
-                        if (productBtn) {
-                            productBtn.addEventListener('click', toggleTooltip);
-                        }
-
-                        // Close tooltip on click outside
-                        document.addEventListener('click', function(e) {
-                            if (tooltip.classList.contains('active')) {
-                                if (!tooltip.contains(e.target) && !wrapper.contains(e.target)) {
-                                    tooltip.classList.remove('active');
-                                }
-                            }
-                        });
-
-                        // Close tooltip on resize to desktop
-                        window.addEventListener('resize', function() {
-                            if (window.innerWidth >= 768) {
-                                tooltip.classList.remove('active');
-                            }
-                        });
-                    })();
-
                     const btn = document.getElementById('viewSellerInfoBtn');
                     const popover = document.getElementById('sellerInfoPopover');
                     const popoverClose = document.getElementById('sellerInfoPopoverClose');
                     const backdrop = document.getElementById('sellerInfoPopoverBackdrop');
-                    const wrapper = document.getElementById('viewSellerInfoMenuWrapper');
 
                     function openPopover() {
+                        if (!popover || !backdrop) return;
                         popover.classList.add('active');
-                        popover.style.display = 'block';
                         backdrop.classList.add('active');
                         document.body.classList.add('seller-info-popover-open');
                     }
 
                     function closePopover() {
+                        if (!popover || !backdrop) return;
                         popover.classList.remove('active');
-                        popover.style.display = 'none';
                         backdrop.classList.remove('active');
                         document.body.classList.remove('seller-info-popover-open');
                     }
 
-                    if (btn && popover && popoverClose && backdrop) {
+                    if (btn && popover && backdrop) {
                         btn.addEventListener('click', function(e) {
                             e.stopPropagation();
-                            // Position popover under button, prefer right-aligned
-                            setTimeout(function() {
+                            if (popover.classList.contains('active')) {
+                                closePopover();
+                            } else {
                                 openPopover();
-                                // Responsive position
-                                if(window.innerWidth < 576) {
-                                    const popoverContent = popover.querySelector('.seller-info-popover-content');
-                                    popoverContent.style.left = '50%';
-                                    popoverContent.style.transform = 'translateX(-50%)';
-                                } else {
-                                    const rect = btn.getBoundingClientRect();
-                                    const popoverEl = popover;
-                                    // Reset popover styling
-                                    popoverEl.style.left = '';
-                                    popoverEl.style.right = '0';
-                                    popoverEl.style.top = '';
-                                    // Handle viewport overflow (right)
-                                    const popoverRect = popoverEl.getBoundingClientRect();
-                                    let overflowRight = (rect.right + (popoverRect.width || 360)) - window.innerWidth;
-                                    if (overflowRight > 0) {
-                                        popoverEl.style.right = '0';
-                                    } else {
-                                        popoverEl.style.right = '0';
-                                    }
-                                    // Align with button bottom
-                                    popoverEl.style.top = (btn.offsetHeight + 8) + "px";
-                                }
-                            }, 10);
+                            }
                         });
-                        popoverClose.addEventListener('click', closePopover);
+
+                        if (popoverClose) {
+                            popoverClose.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                closePopover();
+                            });
+                        }
+
                         backdrop.addEventListener('click', closePopover);
 
-                        // ESC closes popover
                         document.addEventListener('keydown', function(e) {
-                            if (popover.classList.contains('active') && e.key === "Escape") {
+                            if (e.key === "Escape" && popover.classList.contains('active')) {
                                 closePopover();
                             }
                         });
 
-                        // Click outside closes popover
                         document.addEventListener('mousedown', function(e) {
-                            if (popover.classList.contains('active')) {
-                                // Check click outside popover content and button
-                                if (
-                                    !popover.contains(e.target) &&
-                                    !btn.contains(e.target)
-                                ) {
+                            if (popover.classList.contains('active') && window.innerWidth >= 768) {
+                                if (!popover.contains(e.target) && !btn.contains(e.target)) {
                                     closePopover();
                                 }
                             }

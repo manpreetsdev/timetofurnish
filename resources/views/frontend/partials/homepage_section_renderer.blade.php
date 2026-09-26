@@ -532,9 +532,9 @@ $wrapper_class = 'container';
 
 		@media (max-width: 767px) {
 
- 		.aiz-carousel.dots-inside-bottom .slick-dots li.slick-active button ,.aiz-carousel.dots-inside-bottom .slick-dots li button{
+ 		/* .aiz-carousel.dots-inside-bottom .slick-dots li.slick-active button ,.aiz-carousel.dots-inside-bottom .slick-dots li button{
     background: #b2a5a5 !important;
-}
+} */
 
 }
 	</style>

@@ -46,41 +46,105 @@ class PageController extends Controller
     /**
      * Handle Delivery Partner submission.
      */
-    public function submitDeliveryPartner(Request $request)
-    {
-        $request->validate([
-            'company_name'      => 'required|string|max:255',
-            'email'             => 'required|email|max:255',
-            'contact_number'    => 'required|string|max:30',
-            'area_coverage'     => 'required|string',
-            'services_provided' => 'required|string',
+   public function submitDeliveryPartner(Request $request)
+{
+    $request->validate([
+        'company_name'      => 'required|string|max:255',
+        'email'             => 'required|email|max:255',
+        'contact_number'    => 'required|string|max:30',
+        'area_coverage'     => 'required|string',
+        'services_provided' => 'required|string',
+    ]);
+
+    $mailData = [
+        'company_name'      => $request->company_name,
+        'email'             => $request->email,
+        'contact_number'    => $request->contact_number,
+        'area_coverage'     => $request->area_coverage,
+        'services_provided' => $request->services_provided,
+    ];
+
+    try {
+
+        $recipient   = env('CONTACT_ADMIN_EMAIL', 'askus@timetofurnish.com');
+        $fromAddress = env('MAIL_FROM_ADDRESS', 'timetofurnish@gmail.com');
+        $fromName    = env('MAIL_FROM_NAME', 'Time to Furnish');
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADMIN EMAIL
+        |--------------------------------------------------------------------------
+        */
+
+        Mail::send(
+            'emails.delivery-partner',
+            [
+                'data' => $mailData,
+                'type' => 'admin',
+            ],
+            function ($message) use (
+                $recipient,
+                $fromAddress,
+                $fromName,
+                $mailData
+            ) {
+                $message->from($fromAddress, $fromName)
+                    ->to($recipient)
+                    ->replyTo(
+                        $mailData['email'],
+                        $mailData['company_name']
+                    )
+                    ->subject(
+                        'New Delivery Partner Request - ' .
+                        $mailData['company_name']
+                    );
+            }
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | CUSTOMER / DELIVERY PARTNER EMAIL
+        |--------------------------------------------------------------------------
+        */
+
+        Mail::send(
+            'emails.delivery-partner',
+            [
+                'data' => $mailData,
+                'type' => 'customer',
+            ],
+            function ($message) use (
+                $mailData,
+                $fromAddress,
+                $fromName
+            ) {
+                $message->from($fromAddress, $fromName)
+                    ->to($mailData['email'])
+                    ->subject(
+                        'Thank You for Your Delivery Partner Request - Time To Furnish'
+                    );
+            }
+        );
+
+        return back()->with(
+            'success',
+            translate('Thanks for applying! We have received your details.')
+        );
+
+    } catch (\Throwable $e) {
+
+        \Log::error('Delivery partner email error', [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
         ]);
 
-        $mailData = [
-            'company_name'      => $request->company_name,
-            'email'             => $request->email,
-            'contact_number'    => $request->contact_number,
-            'area_coverage'     => $request->area_coverage,
-            'services_provided' => $request->services_provided,
-        ];
-
-        try {
-            $recipient   = env('CONTACT_ADMIN_EMAIL', 'askus@timetofurnish.com');
-            $fromAddress = env('MAIL_FROM_ADDRESS', 'timetofurnish@gmail.com');
-            $fromName    = env('MAIL_FROM_NAME', 'Time to Furnish');
-
-            Mail::send('emails.delivery-partner', $mailData, function ($message) use ($recipient, $fromAddress, $fromName) {
-                $message->from($fromAddress, $fromName)
-                        ->to($recipient)
-                        ->subject('New Delivery Partner Request');
-            });
-
-            return back()->with('success', translate('Thanks for applying! We have received your details.'));
-        } catch (\Exception $e) {
-            \Log::error('Delivery partner email error: ' . $e->getMessage());
-            return back()->with('error', translate('Email failed to send: ') . $e->getMessage());
-        }
+        return back()->with(
+            'error',
+            translate('Email failed to send: ') . $e->getMessage()
+        );
     }
+}
 
     public function DeliveryPartner()
     {
@@ -115,7 +179,7 @@ class PageController extends Controller
             // Primary target Admin email
             $adminEmail = env('CONTACT_ADMIN_EMAIL', 'askus@timetofurnish.com');
             if (empty($adminEmail)) {
-                $adminEmail = 'askus@timetofurnish.com';
+                $adminEmail = 'arorashivani053@gmail.com';
             }
 
             $fromAddress = env('MAIL_FROM_ADDRESS', 'timetofurnish@gmail.com');

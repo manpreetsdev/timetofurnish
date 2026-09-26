@@ -17,24 +17,26 @@
                 alt="{{ $product->getTranslation('name') }}" title="{{ $product->getTranslation('name') }}"
                 onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
         </a>
-        <!-- Discount percentage tag -->
+        <!-- Discount / Offer percentage tag -->
         @php
             $active_offer = get_product_active_offer($product);
         @endphp
         @if ($active_offer)
             @php
-                $badge_txt = $active_offer->badge_text;
+                $badge_txt = !empty($active_offer->badge_text) ? $active_offer->badge_text : ($active_offer->name ?? translate('SALE'));
                 if (is_numeric($badge_txt) || (str_ends_with($badge_txt, '%') && !str_contains(strtolower($badge_txt), 'off'))) {
                     $badge_txt .= ' OFF';
                 }
             @endphp
-            <span class="absolute-top-left text-white px-2 py-1 fs-10 fw-700 ml-1 mt-1"
-                style="background-color: var(--primary, #685b4e); border-radius: 2px; text-transform: uppercase; z-index: 1;">
-                {{ $badge_txt }}
+            <span class="badge-brown-pill"
+                style="position: absolute; top: 10px; left: 10px; background-color: #5f4d3e !important; color: #ffffff !important; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10 !important; box-shadow: 0 4px 12px rgba(95, 77, 62, 0.25); line-height: 1.2;">
+                {{ translate($badge_txt) }}
             </span>
         @elseif (discount_in_percentage($product) > 0)
-            <span class="absolute-top-left bg-primary ml-1 mt-1 fs-11 fw-700 text-white w-35px text-center"
-                style="padding-top:2px;padding-bottom:2px;">-{{ discount_in_percentage($product) }}%</span>
+            <span class="badge-brown-pill"
+                style="position: absolute; top: 10px; left: 10px; background-color: #5f4d3e !important; color: #ffffff !important; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10 !important; box-shadow: 0 4px 12px rgba(95, 77, 62, 0.25); line-height: 1.2;">
+                -{{ discount_in_percentage($product) }}%
+            </span>
         @endif
         <!-- Wholesale tag -->
         @if ($product->wholesale_product)
