@@ -348,7 +348,9 @@ class LoginController extends Controller
                         $upload->delete();
                     }
                 } else {
-                    unlink(public_path() . '/' . $upload->file_name);
+                    if (file_exists(public_path() . '/' . $upload->file_name)) {
+                        unlink(public_path() . '/' . $upload->file_name);
+                    }
                     $upload->delete();
                 }
             }
