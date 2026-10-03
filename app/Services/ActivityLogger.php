@@ -29,20 +29,30 @@ class ActivityLogger
 
         $now = now();
         $user = Auth::user();
+        $userId = null;
+        if ($user) {
+            if (DB::table('users')->where('id', $user->id)->exists()) {
+                $userId = $user->id;
+            }
+        }
 
-        DB::table((new ActivityLog())->getTable())->insert([
-            'user_id' => $user ? $user->id : null,
-            'action' => $action,
-            'subject_type' => $subject instanceof Model ? get_class($subject) : ($properties['subject_type'] ?? null),
-            'subject_id' => $subject instanceof Model ? $subject->getKey() : ($properties['subject_id'] ?? null),
-            'description' => $description ?: $this->buildDescription($action, $subject),
-            'properties' => !empty($properties) ? json_encode($properties, JSON_UNESCAPED_SLASHES) : null,
-            'url' => request() ? request()->fullUrl() : null,
-            'ip_address' => request() ? request()->ip() : null,
-            'user_agent' => request() ? Str::limit((string) request()->userAgent(), 2000, '') : null,
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
+        try {
+            DB::table((new ActivityLog())->getTable())->insert([
+                'user_id' => $userId,
+                'action' => $action,
+                'subject_type' => $subject instanceof Model ? get_class($subject) : ($properties['subject_type'] ?? null),
+                'subject_id' => $subject instanceof Model ? $subject->getKey() : ($properties['subject_id'] ?? null),
+                'description' => $description ?: $this->buildDescription($action, $subject),
+                'properties' => !empty($properties) ? json_encode($properties, JSON_UNESCAPED_SLASHES) : null,
+                'url' => request() ? request()->fullUrl() : null,
+                'ip_address' => request() ? request()->ip() : null,
+                'user_agent' => request() ? Str::limit((string) request()->userAgent(), 2000, '') : null,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+        } catch (\Throwable $e) {
+            logger()->error('ActivityLogger failed: ' . $e->getMessage());
+        }
     }
 
     public function logModelEvent(string $action, Model $model): void
