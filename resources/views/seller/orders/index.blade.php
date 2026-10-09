@@ -482,6 +482,11 @@
                                             <i class="las la-download"></i>
                                         </a>
                                         @endif
+                                        <a href="{{ route('seller.orders.delivery_note', [$order->id, 'format' => 'html']) }}"
+                                            class="order-action-btn" target="_blank"
+                                            title="{{ translate('Delivery Note') }}">
+                                            <i class="las la-truck"></i>
+                                        </a>
                                         @if ($order->delivery_status == 'pending' && $order->payment_status == 'unpaid')
                                         <a href="javascript:void(0)" class="order-action-btn confirm-delete" data-href="{{route('purchase_history.destroy', $order->id)}}" title="{{ translate('Cancel') }}">
                                             <!--<svg xmlns="http://www.w3.org/2000/svg" width="9.202" height="12" viewBox="0 0 9.202 12">-->

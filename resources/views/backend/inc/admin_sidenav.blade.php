@@ -249,6 +249,12 @@
             fill: #685b4e !important;
         }
 
+        /* Line (stroke-only) icons must never be filled, even on hover/active */
+        .adminsidebar .aiz-side-nav-wrap .aiz-side-nav-item .aiz-side-nav-link .aiz-side-nav-icon svg.ttf-line-icon,
+        .adminsidebar .aiz-side-nav-wrap .aiz-side-nav-item .aiz-side-nav-link .aiz-side-nav-icon svg.ttf-line-icon path {
+            fill: none !important;
+        }
+
         /* Text Element */
         .adminsidebar .aiz-side-nav-text {
             flex-grow: 1 !important;
@@ -752,8 +758,10 @@
                     <li class="aiz-side-nav-item">
                         <a href="#" class="aiz-side-nav-link">
                             <div class="aiz-side-nav-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 15.997 16">
-                                    <path d="M4.857,12.571H3.714A1.714,1.714,0,0,0,2,14.285V20.57a1.714,1.714,0,0,0,1.714,1.714H4.857A1.714,1.714,0,0,0,6.571,20.57V14.285a1.714,1.714,0,0,0-1.714-1.714Zm.571,8a.571.571,0,0,1-.571.571H3.714a.571.571,0,0,1-.571-.571V14.285a.571.571,0,0,1,.571-.571H4.857a.571.571,0,0,1,.571.571Zm5.142-6.284H9.427A1.714,1.714,0,0,0,7.713,16V20.57a1.714,1.714,0,0,0,1.714,1.714H10.57a1.714,1.714,0,0,0,1.714-1.714V16A1.714,1.714,0,0,0,10.57,14.285Zm.571,6.284a.571.571,0,0,1-.571.571H9.427a.571.571,0,0,1-.571-.571V16a.571.571,0,0,1,.571-.571H10.57a.571.571,0,0,1,.571.571ZM16.283,12H15.14a1.714,1.714,0,0,0-1.714,1.714V20.57a1.714,1.714,0,0,0,1.714,1.714h1.143A1.714,1.714,0,0,0,18,20.57V13.714A1.714,1.714,0,0,0,16.283,12Zm.571,8.57a.571.571,0,0,1-.571.571H15.14a.571.571,0,0,1-.571-.571V13.714a.571.571,0,0,1,.571-.571h1.143a.571.571,0,0,1,.571.571Z" transform="translate(0 -4.289)" fill="#575b6a"/>
+                                <svg class="ttf-line-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                                    <path d="M3 6h18"/>
+                                    <path d="M16 10a4 4 0 0 1-8 0"/>
                                 </svg>
                             </div>
                             <span class="aiz-side-nav-text">{{ translate('Sales') }}</span>

@@ -5102,6 +5102,10 @@ li.slick-active {
     .home-slider .aiz-carousel.dots-inside-bottom:not(.slick-initialized) img {
         max-height: none;
     }
+
+    .aiz-carousel.dots-inside-bottom .slick-dots {
+        bottom: 1px !important;
+    }
 }
 
 /* =====================================================================
@@ -5115,7 +5119,7 @@ li.slick-active {
 }
 
 .aiz-carousel.dots-inside-bottom .slick-dots {
-    bottom: 15px !important;
+    bottom: 25px !important;
     top: auto !important;
     position: absolute !important;
     left: 50% !important;

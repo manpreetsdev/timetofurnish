@@ -108,6 +108,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Seller', 'prefix' => 'seller'
     Route::controller(InvoiceController::class)->group(function () {
         Route::get('/invoice/{order_id}', 'invoice_download')->name('invoice.download');
     });
+    Route::get('/orders/{id}/delivery-note', [\App\Http\Controllers\DeliveryNoteController::class, 'seller'])->name('orders.delivery_note');
     // Route::get('invoice/{order_id}',[InvoiceController::class, 'invoice_download'])->name('invoice.download');
     //Review
     Route::controller(ReviewController::class)->group(function () {

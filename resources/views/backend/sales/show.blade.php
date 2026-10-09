@@ -445,12 +445,14 @@
                         </tr>
                     </tbody>
                 </table>
-                 @if ($order->payment_status == 'paid')
                 <div class="no-print text-right">
+                    <a href="{{ route('orders.delivery_note', [$order->id, 'format' => 'html']) }}" target="_blank" class="btn btn-soft-primary btn-sm"
+                        title="{{ translate('Delivery Note') }}"><i class="las la-truck"></i> {{ translate('Delivery Note') }}</a>
+                    @if ($order->payment_status == 'paid')
                     <a href="{{ route('invoice.download', $order->id) }}" type="button" class="btn btn-icon btn-light"><i
                             class="las la-print"></i></a>
+                    @endif
                 </div>
-                @endif
             </div>
 
         </div>
