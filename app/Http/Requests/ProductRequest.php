@@ -49,12 +49,25 @@ class ProductRequest extends FormRequest
     {
         $rules = [];
 
-        $rules['name'] = 'required|string|max:255|regex:/^[A-Za-z0-9\s\-(),+&*]+$/';
-
-
-
+        $rules['name'] = 'required|string|max:255';
         $rules['category_ids']  = 'required';
-        $rules['category_id']   = ['required', Rule::in($this->category_ids)];
+        $rules['category_id']   = ['required', Rule::in($this->category_ids ?? [])];
+
+        if ($this->input('digital') == 1 || $this->digital == '1' || $this->boolean('digital')) {
+            $rules['unit_price'] = [
+                'nullable',
+                'numeric',
+                'min:0',
+                'max:99999',
+            ];
+            $rules['discount'] = ['nullable', 'numeric', 'min:0'];
+            if ($this->filled('discount') && $this->filled('unit_price') && (float) $this->input('unit_price') > 0) {
+                $rules['discount'][] = 'lt:unit_price';
+            }
+            $rules['description'] = 'nullable';
+            return $rules;
+        }
+
         $rules['unit'] = 'sometimes|required|integer|min:1|max:10';
 
         $rules['min_qty']      = 'sometimes|required|numeric|max:99999';
@@ -65,10 +78,6 @@ class ProductRequest extends FormRequest
             'max:99999',
         ];
         $rules['weight'] = 'required';
-
-
-
-        // $rules['discount'] = 'nullable|numeric|gt:0';
 
         $rules['discount'] = ['nullable', 'numeric', 'min:0'];
         if ($this->filled('discount') && $this->filled('unit_price') && (float) $this->input('unit_price') > 0) {
@@ -100,8 +109,6 @@ class ProductRequest extends FormRequest
                 ];
             }
         }
-
-
 
         return $rules;
     }

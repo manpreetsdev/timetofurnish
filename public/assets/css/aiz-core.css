@@ -14448,69 +14448,69 @@ Time To Furnish - Admin Sidebar (Brand Match)
 
 /* Hover */
 .aiz-side-nav-wrap .aiz-side-nav-link:hover {
-    background: #F0E8DF !important;
-    color: #1A1A1A !important;
+    background: #F0E0CE !important;
+    color: #965D35 !important;
     border-radius: 10px !important;
-    width: calc(100% - 20px) !important;
-
     box-sizing: border-box !important;
 }
 
 .aiz-side-nav-wrap .aiz-side-nav-item.mm-active>.aiz-side-nav-link,
 .aiz-side-nav-wrap .aiz-side-nav-link.active {
     border-radius: 10px !important;
-    width: calc(100% - 20px) !important;
-
 }
 
 /* Active */
 .aiz-side-nav-wrap .aiz-side-nav-link.active,
 .aiz-side-nav-wrap .aiz-side-nav-item.mm-active>.aiz-side-nav-link,
 .aiz-sidebar .aiz-side-nav-link.active {
-    background: #F5E6D8 !important;
-    color: #9B5A2E !important;
+    background: linear-gradient(180deg, #ECDAC8 0%, #E5D0BD 100%) !important;
+    color: #8F562F !important;
     font-weight: 600 !important;
 }
 
 /* Icons */
 .aiz-side-nav-wrap .aiz-side-nav-icon svg path,
-.aiz-side-nav-wrap .aiz-side-nav-icon svg rect,
-.aiz-side-nav-wrap .aiz-side-nav-icon svg g {
-    fill: #6B5E54 !important;
+.aiz-side-nav-wrap .aiz-side-nav-icon svg circle,
+.aiz-side-nav-wrap .aiz-side-nav-icon svg polygon,
+.aiz-side-nav-wrap .aiz-side-nav-icon svg polyline,
+.aiz-side-nav-wrap .aiz-side-nav-icon svg line {
+    fill: #7C5434 !important;
     transition: fill 0.2s ease;
 }
 
+.aiz-side-nav-wrap .aiz-side-nav-icon svg rect[width="16"][height="16"],
+.aiz-side-nav-wrap .aiz-side-nav-icon svg rect[width="100%"] {
+    fill: transparent !important;
+}
+
 .aiz-side-nav-wrap .aiz-side-nav-link:hover .aiz-side-nav-icon svg path {
-    fill: #3D3429 !important;
+    fill: #8F562F !important;
 }
 
 .aiz-side-nav-wrap .aiz-side-nav-link.active .aiz-side-nav-icon svg path,
 .aiz-side-nav-wrap .aiz-side-nav-item.mm-active .aiz-side-nav-icon svg path {
-    fill: #9B5A2E !important;
+    fill: #8F562F !important;
 }
 
 /* Submenu */
 .aiz-side-nav-wrap .aiz-side-nav-list.level-2 .aiz-side-nav-link {
-    color: #6B5E54 !important;
-    font-size: 13px !important;
-    padding-left: 32px !important;
+    color: #7A5A3E !important;
+    font-size: 12.5px !important;
 }
 
 .aiz-side-nav-wrap .aiz-side-nav-list.level-2 .aiz-side-nav-link:hover {
-    background: #F0E8DF !important;
-    color: #3D3429 !important;
+    background: #F0E0CE !important;
+    color: #965D35 !important;
 }
 
 .aiz-side-nav-wrap .aiz-side-nav-list.level-2 .aiz-side-nav-link.active {
-    color: #9B5A2E !important;
-    background: transparent !important;
+    color: #8F562F !important;
     font-weight: 600 !important;
 }
 
 /* Dropdown arrow */
 .aiz-side-nav-wrap .aiz-side-nav-arrow {
-    opacity: 0.4;
-    margin-right: 10px;
+    opacity: 0.8;
 }
 
 /* Clear Cache button */
@@ -14520,8 +14520,8 @@ Time To Furnish - Admin Sidebar (Brand Match)
 .aiz-topbar .btn-primary-outline,
 header .btn-outline-primary,
 .aiz-navbar .btn-outline-primary {
-    color: #9B5A2E !important;
-    border-color: #9B5A2E !important;
+    color: #8F562F !important;
+    border-color: #D6C2AE !important;
     background: transparent !important;
 }
 
@@ -14530,35 +14530,36 @@ header .btn-outline-primary,
 .aiz-topbar a.btn[class*="primary"]:hover,
 header .btn-outline-primary:hover,
 .aiz-navbar .btn-outline-primary:hover {
-    color: #FFFFFF !important;
-    background: #9B5A2E !important;
-    border-color: #9B5A2E !important;
+    color: #8F562F !important;
+    background: #F0E0CE !important;
+    border-color: #DCBFA1 !important;
 }
 
 /* Clear Cache icon */
 .aiz-topbar .btn-outline-primary svg path,
 .aiz-topbar .btn-soft-primary svg path,
 .aiz-topbar a.btn svg path {
-    fill: #9B5A2E !important;
+    fill: #8F562F !important;
 }
 
 .aiz-topbar .btn-outline-primary:hover svg path,
 .aiz-topbar .btn-soft-primary:hover svg path {
-    fill: #FFFFFF !important;
+    fill: #8F562F !important;
 }
 
 /* Sidebar background fix */
 .adminsidebar,
 .adminsidebar .aiz-sidebar-wrap,
 .adminsidebar .aiz-sidebar,
-.adminsidebar .aiz-side-nav-wrap {
-    background: #FAF9F6 !important;
+.adminsidebar .aiz-side-nav-wrap,
+.aiz-side-nav-logo-wrap,
+.sidebar-logo {
+    background: #FAF6F1 !important;
 }
 
 /* Remove old dark gradient */
 .adminsidebar .aiz-sidebar.left {
-    background: #FAF9F6 !important;
-    background-image: none !important;
+    background: linear-gradient(180deg, #FAF6F1 0%, #F3EADF 100%) !important;
 }
 
 /* Bottom spacing */

@@ -239,7 +239,7 @@
                             @php
                                 $old_categories = $product->categories()->pluck('category_id')->toArray();
                             @endphp
-                            <ul class="hummingbird-treeview-converter list-unstyled" data-checkbox-name="category_ids[]" data-radio-name="category_id">
+                            <ul id="treeview" class="hummingbird-treeview-converter list-unstyled" data-checkbox-name="category_ids[]" data-radio-name="category_id">
                                 @foreach ($categories as $category)
                                 <li id="{{ $category->id }}">{{ $category->getTranslation('name') }}</li>
                                     @foreach ($category->childrenCategories as $childCategory)

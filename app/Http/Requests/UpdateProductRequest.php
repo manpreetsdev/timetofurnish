@@ -49,11 +49,24 @@ class UpdateProductRequest extends FormRequest
     public function rules()
     {
         $rules = [];
-      $rules['name'] = 'required|string|max:255|regex:/^[A-Za-z0-9\s\-(),+&*]+$/';
-
-
+        $rules['name'] = 'required|string|max:255';
         $rules['category_ids']  = 'required';
-        $rules['category_id']   = ['required', Rule::in($this->category_ids)];
+        $rules['category_id']   = ['required', Rule::in($this->category_ids ?? [])];
+
+        if ($this->input('digital') == 1 || $this->digital == '1' || $this->boolean('digital') || ($this->product && $this->product->digital == 1)) {
+            $rules['unit_price'] = [
+                'nullable',
+                'numeric',
+                'min:0',
+                'max:99999',
+            ];
+            $rules['discount'] = ['nullable', 'numeric', 'min:0'];
+            if ($this->filled('discount') && $this->filled('unit_price') && (float) $this->input('unit_price') > 0) {
+                $rules['discount'][] = 'lt:unit_price';
+            }
+            $rules['description'] = 'nullable';
+            return $rules;
+        }
 
         $rules['min_qty']      = 'sometimes|required|numeric|max:99999';
         $rules['unit_price'] = [
@@ -85,29 +98,24 @@ class UpdateProductRequest extends FormRequest
 
         $rules = $this->addSellerVariantStockRules($rules);
 
+        foreach ($this->all() as $key => $value) {
 
+            if (str_starts_with($key, 'sku_')) {
 
-    foreach ($this->all() as $key => $value) {
+                // sku_red-large → red-large
+                $variant = str_replace('sku_', '', $key);
 
-        if (str_starts_with($key, 'sku_')) {
+                // find existing stock for this variant
+                $stock = $this->product->stocks
+                            ->where('variant', $variant)
+                            ->first();
 
-            // sku_red-large → red-large
-            $variant = str_replace('sku_', '', $key);
-
-            // find existing stock for this variant
-            $stock = $this->product->stocks
-                        ->where('variant', $variant)
-                        ->first();
-
-            $rules[$key] = [
-                'nullable',
-                'max:255',
-            ];
+                $rules[$key] = [
+                    'nullable',
+                    'max:255',
+                ];
+            }
         }
-    }
-
-
-
 
         return $rules;
     }

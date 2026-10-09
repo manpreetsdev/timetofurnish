@@ -82,7 +82,7 @@
             <button type="button" class="btn btn-outline-beige btn-sm font-weight-bold" id="reset-attributes-btn">
                 {{ translate('Reset') }}
             </button>
-            <a href="{{ route('seller.attributes.index') }}" target="_blank" class="btn btn-solid-beige btn-sm font-weight-bold">
+            <a href="{{ ($attributesIndexUrl ?? route('seller.attributes.index')) }}" target="_blank" class="btn btn-solid-beige btn-sm font-weight-bold">
                 + {{ translate('Create Custom Attribute') }}
             </a>
         </div>
@@ -105,7 +105,7 @@
                                 <i class="las la-cog"></i> 
                                 <span>
                                     {{ translate('To view, add, or edit your own attributes and options, visit your') }} 
-                                    <a href="{{ route('seller.attributes.index') }}" target="_blank" class="font-weight-bold" style="color: #b57a45; text-decoration: underline;">
+                                    <a href="{{ ($attributesIndexUrl ?? route('seller.attributes.index')) }}" target="_blank" class="font-weight-bold" style="color: #b57a45; text-decoration: underline;">
                                         {{ translate('Custom Attributes Page') }} <i class="las la-external-link-alt" style="font-size: 10px;"></i>
                                     </a>
                                 </span>
@@ -183,7 +183,7 @@
                             <small class="seller-select-help text-muted">
                                 {{ translate('Search attributes. If there is no match, add it from the dropdown.') }}
                             </small>
-                            <a href="{{ route('seller.attributes.index') }}" target="_blank" class="btn btn-link btn-sm p-0 font-weight-bold text-primary d-inline-flex align-items-center" style="font-size: 13px; color: #b57a45 !important;">
+                            <a href="{{ ($attributesIndexUrl ?? route('seller.attributes.index')) }}" target="_blank" class="btn btn-link btn-sm p-0 font-weight-bold text-primary d-inline-flex align-items-center" style="font-size: 13px; color: #b57a45 !important;">
                                 <i class="las la-plus-circle mr-1" style="font-size: 16px;"></i>{{ translate('Create Custom Attributes') }}
                             </a>
                         </div>
@@ -535,8 +535,11 @@
     }
 
     function update_selected_values_order_ui(selectElem) {
-        var select = $(selectElem);
-        var attrIdMatch = select.attr('name').match(/(-?\d+)/);
+        // bootstrap-select copies .attribute_choice onto its wrapper div, so resolve the real <select>
+        var select = $(selectElem).is('select') ? $(selectElem) : $(selectElem).find('select').first();
+        var name = select.attr('name');
+        if (!name) return;
+        var attrIdMatch = name.match(/(-?\d+)/);
         if (!attrIdMatch) return;
         var attrId = attrIdMatch[0];
         var container = $('#selected-values-editor-' + attrId);
@@ -577,8 +580,11 @@
     }
 
     function sort_select_options_by_custom_order(selectElem) {
-        var select = $(selectElem);
-        var attrIdMatch = select.attr('name').match(/(-?\d+)/);
+        // bootstrap-select copies .attribute_choice onto its wrapper div, so resolve the real <select>
+        var select = $(selectElem).is('select') ? $(selectElem) : $(selectElem).find('select').first();
+        var name = select.attr('name');
+        if (!name) return;
+        var attrIdMatch = name.match(/(-?\d+)/);
         if (!attrIdMatch) return;
         var attrId = attrIdMatch[0];
         var container = $('#selected-values-editor-' + attrId);
@@ -1105,6 +1111,35 @@
         z-index: 9999 !important;
     }
 
+    /* custom-style.css makes menus a wrapping flex column; long option lists wrapped
+       into a second column beside the search box. Keep one column and scroll the list. */
+    .productvariation .bootstrap-select > .dropdown-menu {
+        flex-wrap: nowrap !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .productvariation .bootstrap-select > .dropdown-menu > .bs-searchbox,
+    .productvariation .bootstrap-select > .dropdown-menu > .bs-actionsbox,
+    .productvariation .bootstrap-select > .dropdown-menu > .injected-add-custom-option-wrap {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+    }
+
+    .productvariation .bootstrap-select > .dropdown-menu > .inner {
+        flex: 1 1 auto !important;
+        width: 100% !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .productvariation .bootstrap-select .dropdown-menu li a .text {
+        white-space: normal !important;
+        word-break: break-word;
+    }
+
     .productvariation .bootstrap-select .dropdown-menu .bs-searchbox {
         padding: 6px 6px 10px !important;
         border-bottom: 1px solid #f6f5f2 !important;
@@ -1213,6 +1248,24 @@
         
         .seller-attribute-title-cell {
             padding-top: 0;
+        }
+
+        #choice_form .productvariation .bootstrap-select {
+            width: 100% !important;
+            min-width: 0 !important;
+        }
+
+        #choice_form .productvariation .bootstrap-select .dropdown-toggle .filter-option,
+        #choice_form .productvariation .bootstrap-select .dropdown-toggle .filter-option-inner,
+        #choice_form .productvariation .bootstrap-select .dropdown-toggle .filter-option-inner-inner {
+            flex-wrap: wrap !important;
+            white-space: normal !important;
+            min-width: 0 !important;
+            overflow: hidden !important;
+        }
+
+        #choice_form .productvariation .bootstrap-select .dropdown-toggle {
+            height: auto !important;
         }
     }
 </style>

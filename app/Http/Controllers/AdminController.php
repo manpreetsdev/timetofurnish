@@ -20,36 +20,72 @@ class AdminController extends Controller
      */
     public function admin_dashboard(Request $request)
     {
-        
         CoreComponentRepository::initializeCache();
         $root_categories = Category::where('level', 0)->get();
 
-        $cached_graph_data = Cache::remember('cached_graph_data', 86400, function () use ($root_categories) {
-            $num_of_sale_data = null;
-            $qty_data = null;
-            foreach ($root_categories as $key => $category) {
-                $category_ids = \App\Utility\CategoryUtility::children_ids($category->id);
-                $category_ids[] = $category->id;
+        // Live Dynamic Statistics
+        $total_customers = \App\Models\User::where('user_type', 'customer')->count();
+        $total_orders = \App\Models\Order::count();
+        $total_categories = Category::count();
+        $total_brands = \App\Models\Brand::count();
+        $total_products = Product::count();
+        $total_sales_amount = \App\Models\Order::where('payment_status', 'paid')->sum('grand_total');
 
-                $products = Product::with('stocks')->whereIn('category_id', $category_ids)->get();
-                $qty = 0;
-                $sale = 0;
-                foreach ($products as $key => $product) {
-                    $sale += $product->num_of_sale;
-                    foreach ($product->stocks as $key => $stock) {
-                        $qty += $stock->qty;
-                    }
+        // Product Breakdown Stats
+        $published_products = Product::where('published', 1)->count();
+        $seller_products = Product::where('published', 1)->where('added_by', 'seller')->count();
+        $admin_products = Product::where('published', 1)->where('added_by', 'admin')->count();
+
+        // Seller Breakdown Stats
+        $total_sellers = \App\Models\Shop::count();
+        $approved_sellers = \App\Models\Shop::where('verification_status', 1)->count();
+        $pending_sellers = \App\Models\Shop::where('verification_status', 0)->count();
+
+        // Dynamic Category Performance Arrays
+        $category_names = [];
+        $category_sales = [];
+        $category_stocks = [];
+
+        foreach ($root_categories as $category) {
+            $category_ids = \App\Utility\CategoryUtility::children_ids($category->id);
+            $category_ids[] = $category->id;
+
+            $products = Product::with('stocks')->whereIn('category_id', $category_ids)->get();
+            $qty = 0;
+            $sale = 0;
+            foreach ($products as $product) {
+                $sale += $product->num_of_sale;
+                foreach ($product->stocks as $stock) {
+                    $qty += $stock->qty;
                 }
-                $qty_data .= $qty . ',';
-                $num_of_sale_data .= $sale . ',';
             }
-            $item['num_of_sale_data'] = $num_of_sale_data;
-            $item['qty_data'] = $qty_data;
+            $category_names[] = $category->getTranslation('name');
+            $category_sales[] = $sale;
+            $category_stocks[] = $qty;
+        }
 
-            return $item;
-        });
+        // Recent Orders
+        $recent_orders = \App\Models\Order::orderBy('id', 'desc')->limit(6)->get();
 
-        return view('backend.dashboard', compact('root_categories', 'cached_graph_data'));
+        return view('backend.dashboard', compact(
+            'root_categories',
+            'total_customers',
+            'total_orders',
+            'total_categories',
+            'total_brands',
+            'total_products',
+            'total_sales_amount',
+            'published_products',
+            'seller_products',
+            'admin_products',
+            'total_sellers',
+            'approved_sellers',
+            'pending_sellers',
+            'category_names',
+            'category_sales',
+            'category_stocks',
+            'recent_orders'
+        ));
     }
 
     function clearCache(Request $request)
