@@ -473,6 +473,53 @@
             }
         }, true);
 
+        function blockHasActiveOptions(block) {
+            return optionToggles(block).some(function (toggle) {
+                return toggle.checked && !toggle.disabled;
+            });
+        }
+
+        document.addEventListener('submit', function (event) {
+            var wrapper = addonWrapper();
+
+            if (!wrapper || !wrapper.contains(event.target) && !event.target.contains(wrapper)) {
+                return;
+            }
+
+            var invalidInput = null;
+
+            wrapper.querySelectorAll('.addon-block').forEach(function (block) {
+                var groupToggle = block.querySelector('.group-toggle');
+                var nameInput = block.querySelector('.group-name');
+                var isActive = groupToggle && groupToggle.checked && blockHasActiveOptions(block);
+
+                if (nameInput) {
+                    nameInput.classList.remove('is-invalid');
+                }
+
+                if (isActive && nameInput && nameInput.value.trim() === '') {
+                    nameInput.classList.add('is-invalid');
+                    invalidInput = invalidInput || nameInput;
+                }
+            });
+
+            if (invalidInput) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                var message = 'Please enter an addon group name before adding addon options.';
+                if (window.AIZ && AIZ.plugins && AIZ.plugins.notify) {
+                    AIZ.plugins.notify('danger', message);
+                } else {
+                    alert(message);
+                }
+
+                openBlock(closest(invalidInput, '.addon-block'));
+                invalidInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                invalidInput.focus();
+            }
+        }, true);
+
         document.addEventListener('change', function (event) {
             var target = event.target;
 

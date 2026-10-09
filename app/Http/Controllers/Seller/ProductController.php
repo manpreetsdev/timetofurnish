@@ -57,6 +57,34 @@ class ProductController extends Controller
         $this->productStockService = $productStockService;
     }
 
+    /**
+     * Hooks so the admin panel can reuse this form/controller (see Admin\ProductFormController).
+     */
+    protected function isSellerPanel(): bool
+    {
+        return true;
+    }
+
+    protected function formView(string $page): string
+    {
+        return 'seller.product.products.' . $page;
+    }
+
+    protected function productsIndexUrl(): string
+    {
+        return route('seller.products.index');
+    }
+
+    protected function canManageProduct(Product $product): bool
+    {
+        return Auth::user()->id == $product->user_id;
+    }
+
+    protected function storedMessage(): string
+    {
+        return translate('Your product has been submitted successfully. It is currently pending for approval and will be live once approved.');
+    }
+
     public function index(Request $request)
     {
         $search = null;
@@ -135,7 +163,7 @@ class ProductController extends Controller
 
     public function create(Request $request)
     {
-        if (addon_is_activated('seller_subscription')) {
+        if ($this->isSellerPanel() && addon_is_activated('seller_subscription')) {
             if (!seller_package_validity_check()) {
                 flash(translate('Please upgrade your package.'))->warning();
                 return back();
@@ -149,7 +177,7 @@ class ProductController extends Controller
             ->get();
         $addons = [];
         return view(
-            'seller.product.products.create',
+            $this->formView('create'),
             compact(
                 'categories',
                 'addons',
@@ -162,7 +190,8 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         \Log::info('ADDONS SAVE LOG - Store Request:', ['addons' => $request->addons, 'all' => $request->all()]);
-        if (addon_is_activated('seller_subscription')) {
+        $this->validateAddonGroupNames($request);
+        if ($this->isSellerPanel() && addon_is_activated('seller_subscription')) {
             if (!seller_package_validity_check()) {
                 if ($request->expectsJson()) {
                     return response()->json([
@@ -395,7 +424,7 @@ class ProductController extends Controller
             Notification::send($users, new ShopProductNotification('physical', $product));
         }
 
-        flash(translate('Your product has been submitted successfully. It is currently pending for approval and will be live once approved.'))->success();
+        flash($this->storedMessage())->success();
 
         if (!$request->expectsJson()) {
             Artisan::call('view:clear');
@@ -404,8 +433,8 @@ class ProductController extends Controller
 
         if ($request->expectsJson()) {
             return response()->json([
-                'message' => translate('Your product has been submitted successfully. It is currently pending for approval and will be live once approved.'),
-                'redirect' => route('seller.products.index'),
+                'message' => $this->storedMessage(),
+                'redirect' => $this->productsIndexUrl(),
             ]);
         }
 
@@ -415,7 +444,7 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        if (Auth::user()->id != $product->user_id) {
+        if (!$this->canManageProduct($product)) {
             flash(translate('This product is not yours.'))->warning();
             return back();
         }
@@ -558,7 +587,7 @@ class ProductController extends Controller
         $addons = $pAddons;
 
         return view(
-            'seller.product.products.edit',
+            $this->formView('edit'),
             compact(
                 'product',
                 'categories',
@@ -575,6 +604,7 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         \Log::info('ADDONS SAVE LOG - Update Request:', ['addons' => $request->addons, 'all' => $request->all()]);
+        $this->validateAddonGroupNames($request);
         $this->syncSellerVariantAttributeUpdates($request);
         $this->productStockService->validateVariantPrices($request->only([
             'colors_active',
@@ -900,12 +930,12 @@ class ProductController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 'message' => translate('Product has been updated successfully'),
-                'redirect' => route('seller.products.index'),
+                'redirect' => $this->productsIndexUrl(),
             ]);
         }
 
         // return back();
-        return redirect()->route('seller.products.index');
+        return redirect($this->productsIndexUrl());
     }
 
     public function sku_combination(Request $request)
@@ -1209,6 +1239,19 @@ class ProductController extends Controller
                 AttributeCategory::firstOrCreate([
                     'attribute_id' => $attributeId,
                     'category_id' => $categoryId,
+                ]);
+            }
+        }
+    }
+
+    private function validateAddonGroupNames(Request $request): void
+    {
+        foreach ((array) $request->input('addons', []) as $aIndex => $addon) {
+            $hasCheckedOptions = collect($addon['options'] ?? [])->contains(fn ($option) => !empty($option['id']));
+
+            if ((!empty($addon['id']) || $hasCheckedOptions) && trim((string) ($addon['name'] ?? '')) === '') {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    "addons.$aIndex.name" => translate('Please enter an addon group name before adding addon options.'),
                 ]);
             }
         }

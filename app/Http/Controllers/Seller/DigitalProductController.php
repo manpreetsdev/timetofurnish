@@ -46,7 +46,6 @@ class DigitalProductController  extends Controller
             }
         }
         $categories = Category::where('parent_id', 0)
-            ->where('digital', 1)
             ->with('childrenCategories')
             ->get();
         return view('seller.product.digitalproducts.create', compact('categories'));
@@ -120,7 +119,9 @@ class DigitalProductController  extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $categories = Category::where('digital', 1)->get();
+        $categories = Category::where('parent_id', 0)
+            ->with('childrenCategories')
+            ->get();
         $lang = $request->lang;
         $product = Product::find($id);
         return view('seller.product.digitalproducts.edit', compact('categories', 'product', 'lang'));

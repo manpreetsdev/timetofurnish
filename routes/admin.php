@@ -124,15 +124,26 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
         Route::get('/brands/destroy/{id}', 'destroy')->name('brands.destroy');
     });
 
+    // Products - create/edit share the seller panel form (Admin\ProductFormController)
+    Route::controller(\App\Http\Controllers\Admin\ProductFormController::class)->group(function () {
+        Route::get('/products/create', 'create')->name('products.create');
+        Route::get('/products/admin/{id}/edit', 'edit')->name('products.admin.edit');
+        Route::get('/products/seller/{id}/edit', 'edit')->name('products.seller.edit');
+        Route::post('/product-form/store', 'store')->name('admin.products.store');
+        Route::post('/product-form/update/{product}', 'update')->name('admin.products.update');
+        Route::post('/product-form/sku_combination', 'sku_combination')->name('admin.products.sku_combination');
+        Route::post('/product-form/sku_combination_edit', 'sku_combination_edit')->name('admin.products.sku_combination_edit');
+        Route::post('/product-form/add-more-choice-option', 'add_more_choice_option')->name('admin.products.add-more-choice-option');
+        Route::post('/product-form/attributes/store', 'storeAttribute')->name('admin.products.attributes.store');
+        Route::post('/product-form/get-addons-by-categories', 'getAddonsByCategories')->name('admin.products.get-addons-by-categories');
+    });
+
     // Products
     Route::controller(ProductController::class)->group(function () {
         Route::get('/products/admin', 'admin_products')->name('products.admin');
         Route::get('/products/seller/{product_type}', 'seller_products')->name('products.seller');
         Route::get('/products/all', 'all_products')->name('products.all');
-        Route::get('/products/create', 'create')->name('products.create');
         Route::post('/products/store/', 'store')->name('products.store');
-        Route::get('/products/admin/{id}/edit', 'admin_product_edit')->name('products.admin.edit');
-        Route::get('/products/seller/{id}/edit', 'seller_product_edit')->name('products.seller.edit');
         Route::post('/products/update/{product}', 'update')->name('products.update');
         Route::post('/products/todays_deal', 'updateTodaysDeal')->name('products.todays_deal');
         Route::post('/products/featured', 'updateFeatured')->name('products.featured');

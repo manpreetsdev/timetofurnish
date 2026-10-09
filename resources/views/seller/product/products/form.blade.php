@@ -696,6 +696,11 @@
         padding-left: 4px !important;
     }
 
+    #choice_form .addon-block .group-name.is-invalid {
+        border: 1px solid #dc3545 !important;
+        border-radius: 6px;
+    }
+
     #choice_form .addon-block .group-name:focus {
         background: #fff !important;
         border: 1px solid rgba(197, 146, 89, 0.2) !important;
@@ -1002,15 +1007,19 @@
     </div>
 @endif
 <div id="product-form-alert" class="alert d-none" role="alert"></div>
+@php
+    // Admin panel reuses this form with its own route names (see admin/product-form routes).
+    $formRoutePrefix = $formRoutePrefix ?? 'seller.';
+@endphp
 {{-- Data container for JS --}}
 <div id="product-form-data" class="d-none" data-base-url="{{ asset('public') }}"
     data-checkout-services-route="{{ route('seller.products.checkout-services') }}"
     data-shipping-charges-route="{{ route('seller.products.shipping-charges') }}"
     data-get-attributes-route="{{ route('get-attributes-by-categories') }}"
-    data-get-addons-route="{{ route('seller.products.get-addons-by-categories') }}"
-    data-add-more-choice-route="{{ route('seller.products.add-more-choice-option') }}"
-    data-store-attribute-route="{{ route('seller.products.attributes.store') }}"
-    data-sku-combination-route="{{ isset($product) && $product->id ? route('seller.products.sku_combination_edit') : route('seller.products.sku_combination') }}"
+    data-get-addons-route="{{ route($formRoutePrefix . 'products.get-addons-by-categories') }}"
+    data-add-more-choice-route="{{ route($formRoutePrefix . 'products.add-more-choice-option') }}"
+    data-store-attribute-route="{{ route($formRoutePrefix . 'products.attributes.store') }}"
+    data-sku-combination-route="{{ isset($product) && $product->id ? route($formRoutePrefix . 'products.sku_combination_edit') : route($formRoutePrefix . 'products.sku_combination') }}"
     data-old-addons='@json(old('addons', $addons ?? []))' data-existing-addons='@json($addons ?? [])'
     data-product-id="{{ $product->id ?? '' }}" data-choice-attributes-old='@json(old('choice_attributes', isset($product) && $product->attributes != null ? json_decode($product->attributes) : []))'>
 </div>
@@ -1102,7 +1111,7 @@
     </div>
     <div class="row gutters-5 seller-form-layout">
         <div class="col-lg-8 seller-main-stack">
-            <input type="hidden" name="added_by" value="seller">
+            <input type="hidden" name="added_by" value="{{ isset($product) && $product->added_by ? $product->added_by : ($addedBy ?? 'seller') }}">
             <input type="hidden" name="old_values" value="{{ json_encode(old()) }}">
 
             @include('seller.product.products.partials.product-information-sec')

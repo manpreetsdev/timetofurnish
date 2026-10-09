@@ -19,7 +19,7 @@ class ProductService
         $collection = collect($data);
         $collection['unit_price'] = is_numeric($collection->get('unit_price')) ? $collection->get('unit_price') : 0;
 
-        $dispatch_time = $collection['dispatch_time'];
+        $dispatch_time = $collection->get('dispatch_time', null);
         $approved = 1;
         if (auth()->user()->user_type == 'seller') {
             $user_id = auth()->user()->id;
@@ -30,9 +30,21 @@ class ProductService
             $user_id = User::where('user_type', 'admin')->first()->id;
         }
         $tags = array();
-        if ($collection['tags'][0] != null) {
-            foreach (json_decode($collection['tags'][0]) as $key => $tag) {
-                array_push($tags, $tag->value);
+        if (isset($collection['tags']) && !empty($collection['tags'])) {
+            $rawTags = $collection['tags'];
+            if (is_array($rawTags) && isset($rawTags[0]) && $rawTags[0] != null) {
+                $decoded = json_decode($rawTags[0]);
+                if (is_array($decoded)) {
+                    foreach ($decoded as $key => $tag) {
+                        if (isset($tag->value)) {
+                            array_push($tags, $tag->value);
+                        }
+                    }
+                } else {
+                    $tags = $rawTags;
+                }
+            } elseif (is_string($rawTags)) {
+                $tags[] = $rawTags;
             }
         }
         $collection['tags'] = implode(',', $tags);
@@ -187,7 +199,7 @@ class ProductService
         $slug_suffix = $same_slug_count > 1 ? '-' . $same_slug_count + 1 : '';
         $slug .= $slug_suffix;
 
-        $dispatch_time = $collection['dispatch_time'];
+        $dispatch_time = $collection->get('dispatch_time', null);
 
         if(addon_is_activated('refund_request') && !isset($collection['refundable'])){
             $collection['refundable'] = 0;
@@ -209,9 +221,21 @@ class ProductService
 
 
         $tags = array();
-        if ($collection['tags'][0] != null) {
-            foreach (json_decode($collection['tags'][0]) as $key => $tag) {
-                array_push($tags, $tag->value);
+        if (isset($collection['tags']) && !empty($collection['tags'])) {
+            $rawTags = $collection['tags'];
+            if (is_array($rawTags) && isset($rawTags[0]) && $rawTags[0] != null) {
+                $decoded = json_decode($rawTags[0]);
+                if (is_array($decoded)) {
+                    foreach ($decoded as $key => $tag) {
+                        if (isset($tag->value)) {
+                            array_push($tags, $tag->value);
+                        }
+                    }
+                } else {
+                    $tags = $rawTags;
+                }
+            } elseif (is_string($rawTags)) {
+                $tags[] = $rawTags;
             }
         }
         $collection['tags'] = implode(',', $tags);
