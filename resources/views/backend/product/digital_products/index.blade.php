@@ -27,23 +27,23 @@
         </div>
     </div>
     <div class="card-body">
-        <table class="table aiz-table mb-0">
+        <x-admin.table>
             <thead>
                 <tr>
-                    <th data-breakpoints="lg">#</th>
+                    <th>#</th>
                     <th width="30%">{{translate('Name')}}</th>
                     @if($type == 'Seller')
-                        <th data-breakpoints="lg">{{translate('Added By')}}</th>
+                        <th>{{translate('Added By')}}</th>
                     @endif
-                    <th data-breakpoints="lg">{{translate('Photo')}}</th>
-                    <th data-breakpoints="lg">{{translate('Base Price')}}</th>
-                    <th data-breakpoints="lg">{{translate('Todays Deal')}}</th>
-                    <th data-breakpoints="lg">{{translate('Published')}}</th>
+                    <th>{{translate('Photo')}}</th>
+                    <th>{{translate('Base Price')}}</th>
+                    <th>{{translate('Todays Deal')}}</th>
+                    <th>{{translate('Published')}}</th>
                     @if(get_setting('product_approve_by_admin') == 1 && $type == 'Seller')
-                        <th data-breakpoints="lg">{{translate('Approved')}}</th>
+                        <th>{{translate('Approved')}}</th>
                     @endif
-                    <th data-breakpoints="lg">{{translate('Featured')}}</th>
-                    <th data-breakpoints="lg" class="text-right">{{translate('Options')}}</th>
+                    <th>{{translate('Featured')}}</th>
+                    <th class="text-right">{{translate('Options')}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -104,7 +104,7 @@
                     </tr>
                 @endforeach
             </tbody>
-        </table>
+        </x-admin.table>
         <div class="aiz-pagination">
             {{ $products->appends(request()->input())->links() }}
         </div>

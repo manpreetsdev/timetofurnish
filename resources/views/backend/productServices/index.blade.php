@@ -14,7 +14,7 @@
                     <h5 class="mb-0 h6">{{ translate('Services') }}</h5>
                 </div>
                 <div class="card-body">
-                    <table class="table aiz-table mb-0">
+                    <x-admin.table>
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -71,7 +71,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </x-admin.table>
                     {{-- Pagination could be added here if needed --}}
                 </div>
             </div>

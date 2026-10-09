@@ -18,7 +18,7 @@
                 </div>
 
                 <div class="card-body">
-                    <table class="table aiz-table mb-0">
+                    <x-admin.table>
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -53,7 +53,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </x-admin.table>
                 </div>
             </div>
 

@@ -148,8 +148,13 @@
             </div>
 
             <div class="orders-table-card">
-                <div class="orders-table-wrap">
-                <table class="table aiz-table mb-0">
+                <div class="orders-table-card-head">
+                    <div>
+                        <h2>{{ translate('Orders') }}</h2>
+                        <p>{{ translate('Showing') }} {{ $orders->firstItem() ?? 0 }}–{{ $orders->lastItem() ?? 0 }} {{ translate('of') }} {{ $orders->total() }}</p>
+                    </div>
+                </div>
+                <x-admin.table min-width="1400px" class="orders-table">
                     <thead>
                         <tr>
                             <!--<th>#</th>-->
@@ -165,22 +170,22 @@
                                     </div>
                                 </th>
                             @else
-                                <th data-breakpoints="lg">#</th>
+                                <th>#</th>
                             @endif
 
-                            <th>{{ translate('Order Code') }}</th>
-                            <th data-breakpoints="md">{{ translate('Num. of Products') }}</th>
-                            <th data-breakpoints="md">{{ translate('Customer') }}</th>
-                            <th data-breakpoints="md">{{ translate('Seller') }}</th>
-                            <th data-breakpoints="md">{{ translate('Amount') }}</th>
-                            <th data-breakpoints="md">{{ translate('Delivery Status') }}</th>
-                            <th data-breakpoints="md">{{ translate('Payment method') }}</th>
-                            <th data-breakpoints="md">{{ translate('Payment Status') }}</th>
-                            <th data-breakpoints="md" class="order-invoices-heading">{{ translate('Invoices') }}</th>
+                            <th>{{ translate('Order') }}</th>
+                            <th>{{ translate('Customer') }}</th>
+                            <th>{{ translate('Seller') }}</th>
+                            <th class="text-center">{{ translate('Items') }}</th>
+                            <th class="text-right">{{ translate('Amount') }}</th>
+                            <th>{{ translate('Payment') }}</th>
+                            <th>{{ translate('Delivery') }}</th>
+                            <th class="order-invoices-heading">{{ translate('Invoices') }}</th>
                             @if (addon_is_activated('refund_request'))
                                 <th>{{ translate('Refund') }}</th>
                             @endif
-                            <th class="text-right order-options-heading" width="15%">{{ translate('Options') }}</th>
+                            <th class="text-center">{{ translate('Delivery Note') }}</th>
+                            <th class="text-right order-options-heading">{{ translate('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -216,9 +221,6 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="order-count-pill">{{ count($order->orderDetails) }}</span>
-                                </td>
-                                <td>
                                     @if ($order->user != null)
                                         <div class="order-party-name">{{ $order->user->name }}</div>
                                     @else
@@ -233,8 +235,21 @@
                                         <div class="order-party-name">{{ translate('Inhouse Order') }}</div>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="text-center">
+                                    <span class="order-count-pill">{{ count($order->orderDetails) }}</span>
+                                </td>
+                                <td class="text-right">
                                     <strong class="order-amount">{{ single_price($order->grand_total) }}</strong>
+                                </td>
+                                <td>
+                                    @if ($order->payment_status == 'paid')
+                                        <span class="order-status-pill status-success">{{ translate('Paid') }}</span>
+                                    @else
+                                        <span class="order-status-pill status-danger">{{ translate('Unpaid') }}</span>
+                                    @endif
+                                    <div class="order-payment-method">
+                                        {{ translate(ucfirst(str_replace('_', ' ', $order->payment_type))) }}
+                                    </div>
                                 </td>
                                 <td>
                                     @php
@@ -250,18 +265,6 @@
                                     <span class="order-status-pill {{ $deliveryBadgeClass }}">
                                         {{ translate(ucfirst(str_replace('_', ' ', $order->delivery_status))) }}
                                     </span>
-                                </td>
-                                <td>
-                                    <span class="order-payment-method">
-                                        {{ translate(ucfirst(str_replace('_', ' ', $order->payment_type))) }}
-                                    </span>
-                                </td>
-                                <td>
-                                    @if ($order->payment_status == 'paid')
-                                        <span class="order-status-pill status-success">{{ translate('Paid') }}</span>
-                                    @else
-                                        <span class="order-status-pill status-danger">{{ translate('Unpaid') }}</span>
-                                    @endif
                                 </td>
                                 <td class="order-invoice-actions">
                                     <div class="invoice-copy-list">
@@ -300,6 +303,13 @@
                                         @endif
                                     </td>
                                 @endif
+                                <td class="text-center">
+                                    <a class="order-delivery-note-btn" target="_blank"
+                                        href="{{ route('orders.delivery_note', [$order->id, 'format' => 'html']) }}">
+                                        <i class="las la-truck"></i>
+                                        {{ translate('Delivery Note') }}
+                                    </a>
+                                </td>
                                 <td class="text-right order-row-actions-cell">
                                     <div class="order-row-actions">
                                     @if (addon_is_activated('pos_system') && $order->order_from == 'pos')
@@ -356,8 +366,7 @@
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
-                </div>
+                </x-admin.table>
 
                 <div class="aiz-pagination">
                     {{ $orders->appends(request()->input())->links() }}
@@ -376,7 +385,7 @@
 @endsection
 <style>
     .orders-admin-screen {
-        color: #172033;
+        color: #39322a;
     }
 
     .orders-admin-hero,
@@ -384,9 +393,9 @@
     .orders-filter-panel,
     .orders-table-card {
         background: #fff;
-        border: 1px solid #e7ebf0;
+        border: 1px solid #e8e5e1;
         border-radius: 10px;
-        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+        box-shadow: 0 10px 28px rgba(104, 91, 78, 0.06);
     }
 
     .orders-admin-hero {
@@ -400,7 +409,7 @@
 
     .orders-eyebrow {
         display: block;
-        color: #6b7280;
+        color: #8c7e70;
         font-size: 11px;
         font-weight: 800;
         letter-spacing: 0;
@@ -409,7 +418,7 @@
 
     .orders-hero-main h1 {
         margin: 3px 0 5px;
-        color: #111827;
+        color: #39322a;
         font-size: 26px;
         font-weight: 800;
         line-height: 1.15;
@@ -418,7 +427,7 @@
     .orders-hero-main p {
         max-width: 620px;
         margin: 0;
-        color: #6b7280;
+        color: #8c7e70;
         font-size: 13px;
         line-height: 1.45;
     }
@@ -431,9 +440,12 @@
         gap: 10px;
     }
 
-    .orders-filter-trigger,
-    .orders-export-btn,
-    .orders-bulk-btn {
+    .orders-admin-screen .orders-filter-trigger,
+    .orders-admin-screen .orders-export-btn,
+    .orders-admin-screen .orders-bulk-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         min-height: 40px;
         border-radius: 7px;
         font-size: 13px;
@@ -442,8 +454,8 @@
         white-space: nowrap;
     }
 
-    .orders-filter-trigger {
-        background: #111827;
+    .orders-admin-screen .orders-filter-trigger {
+        background: #685b4e;
         color: #fff;
     }
 
@@ -461,19 +473,26 @@
         margin-left: 6px;
         border-radius: 999px;
         background: #fff;
-        color: #111827;
+        color: #685b4e;
         font-size: 11px;
     }
 
-    .orders-export-btn {
-        background: #e8f7ee;
-        color: #137333;
+    .orders-admin-screen .orders-export-btn {
+        background: #f3efe9;
+        border: 1px solid #dcd4c9;
+        color: #685b4e;
     }
 
-    .orders-bulk-btn {
-        background: #f8fafc;
-        border: 1px solid #dfe3e8;
-        color: #334155;
+    .orders-export-btn:hover,
+    .orders-bulk-btn:hover {
+        background: #ece5db;
+        color: #685b4e;
+    }
+
+    .orders-admin-screen .orders-bulk-btn {
+        background: #faf8f5;
+        border: 1px solid #e8e5e1;
+        color: #4a4239;
     }
 
     .orders-summary-grid {
@@ -489,7 +508,7 @@
 
     .orders-summary-card span {
         display: block;
-        color: #6b7280;
+        color: #8c7e70;
         font-size: 11px;
         font-weight: 800;
         letter-spacing: 0;
@@ -499,7 +518,7 @@
     .orders-summary-card strong {
         display: block;
         margin-top: 6px;
-        color: #111827;
+        color: #39322a;
         font-size: 21px;
         font-weight: 800;
         line-height: 1.2;
@@ -512,10 +531,10 @@
         gap: 8px;
         margin-bottom: 14px;
         padding: 12px 14px;
-        border: 1px solid #dbeafe;
+        border: 1px solid #e8e3dd;
         border-radius: 8px;
-        background: #eff6ff;
-        color: #1e3a8a;
+        background: #faf8f5;
+        color: #685b4e;
         font-size: 12px;
     }
 
@@ -527,7 +546,7 @@
         padding: 5px 8px;
         border-radius: 999px;
         background: #fff;
-        color: #1d4ed8;
+        color: #685b4e;
         font-size: 11px;
         font-weight: 700;
     }
@@ -553,14 +572,14 @@
 
     .orders-filter-panel-header h2 {
         margin: 0 0 4px;
-        color: #111827;
+        color: #39322a;
         font-size: 16px;
         font-weight: 800;
     }
 
     .orders-filter-panel-header p {
         margin: 0;
-        color: #6b7280;
+        color: #8c7e70;
         font-size: 12px;
     }
 
@@ -585,7 +604,7 @@
     .order-filter-control label {
         display: block;
         margin-bottom: 6px;
-        color: #334155;
+        color: #4a4239;
         font-size: 12px;
         font-weight: 800;
     }
@@ -595,7 +614,7 @@
     .order-filter-control .bootstrap-select > .dropdown-toggle {
         width: 100% !important;
         min-height: 42px;
-        border-color: #d4dae3;
+        border-color: #d9d4cc;
         border-radius: 7px;
         box-shadow: none;
         font-size: 13px;
@@ -618,43 +637,44 @@
         padding: 18px;
     }
 
-    .orders-table-wrap {
-        width: 100%;
-        overflow-x: auto;
-        border: 1px solid #e7ebf0;
-        border-radius: 9px;
+    .orders-table-card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
     }
 
-    .orders-admin-screen .aiz-table {
-        color: #1f2937;
+    .orders-table-card-head h2 {
+        margin: 0;
+        color: #39322a;
+        font-size: 16px;
+        font-weight: 700;
     }
 
-    .orders-admin-screen .aiz-table thead th {
-        background: #f8fafc;
-        border-bottom: 1px solid #e5eaf0;
-        color: #64748b;
-        font-size: 11px !important;
-        font-weight: 800;
-        letter-spacing: 0;
-        padding: 14px 13px;
-        text-transform: uppercase;
-        white-space: nowrap;
+    .orders-table-card-head p {
+        margin: 2px 0 0;
+        color: #8c7e70;
+        font-size: 12px;
     }
 
-    .orders-admin-screen .aiz-table tbody td {
-        border-top: 1px solid #eef2f6;
-        font-size: 12px !important;
-        padding: 15px 13px;
-        vertical-align: middle;
+    .orders-table .order-payment-method {
+        display: block;
+        margin-top: 5px;
     }
 
-    .orders-admin-screen .aiz-table tbody tr:hover {
-        background: #fbfcfe;
+    .orders-table th:first-child,
+    .orders-table td:first-child {
+        width: 44px;
     }
+
+
+
+
+
 
     .order-code-cell strong {
         display: block;
-        color: #12213a;
+        color: #39322a;
         font-size: 13px;
         font-weight: 800;
         white-space: nowrap;
@@ -663,7 +683,7 @@
     .order-code-cell span,
     .order-party-meta,
     .order-payment-method {
-        color: #7a8190;
+        color: #8c7e70;
         font-size: 11px;
     }
 
@@ -678,8 +698,8 @@
         min-width: 30px;
         height: 30px;
         border-radius: 999px;
-        background: #f1f5f9;
-        color: #334155;
+        background: #f3efe9;
+        color: #4a4239;
         font-size: 12px;
         font-weight: 800;
     }
@@ -687,14 +707,14 @@
     .order-party-name {
         max-width: 170px;
         overflow: hidden;
-        color: #1f2937;
+        color: #39322a;
         font-weight: 700;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     .order-amount {
-        color: #111827;
+        color: #39322a;
         font-size: 13px;
         font-weight: 800;
         white-space: nowrap;
@@ -733,32 +753,33 @@
     }
 
     .status-muted {
-        background: #f1f5f9;
-        color: #475569;
+        background: #f3efe9;
+        color: #685b4e;
     }
 
     .order-invoices-heading,
     .order-options-heading {
-        color: #475569 !important;
+        color: #685b4e !important;
     }
 
     .order-invoice-actions {
-        min-width: 260px;
+        min-width: 210px;
     }
 
     .invoice-copy-list {
-        display: grid;
-        gap: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
     }
 
     .invoice-copy-row {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
-        min-height: 34px;
-        padding: 6px 8px;
-        border: 1px solid #e7ebf0;
+        gap: 10px;
+        min-height: 0;
+        padding: 3px 4px 3px 8px;
+        border: 1px solid #e8e5e1;
         border-radius: 7px;
         background: #fff;
     }
@@ -768,7 +789,7 @@
         align-items: center;
         gap: 7px;
         min-width: 0;
-        color: #111827;
+        color: #39322a;
         font-size: 11px;
         font-weight: 800;
     }
@@ -804,28 +825,56 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 26px;
-        height: 26px;
-        border-radius: 6px;
-        color: #64748b;
+        width: 22px;
+        height: 22px;
+        border-radius: 5px;
+        color: #8c7e70;
         font-size: 14px;
         text-decoration: none;
     }
 
     .invoice-copy-actions a:hover {
-        background: #f8fafc;
+        background: #faf8f5;
         color: var(--invoice-color);
     }
 
+    .order-delivery-note-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 32px;
+        padding: 0 12px;
+        border: 1px solid #dcd4c9;
+        border-radius: 8px;
+        background: #f3efe9;
+        color: #685b4e;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+        text-decoration: none;
+        transition: all 0.18s ease;
+    }
+
+    .order-delivery-note-btn i {
+        font-size: 15px;
+    }
+
+    .order-delivery-note-btn:hover {
+        background: #685b4e;
+        border-color: #685b4e;
+        color: #fff;
+        text-decoration: none;
+    }
+
     .order-row-actions-cell {
-        min-width: 138px;
+        min-width: 170px;
     }
 
     .order-row-actions {
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: 6px;
     }
 
@@ -835,26 +884,25 @@
         justify-content: center;
         width: 30px;
         height: 30px;
-        border: 1px solid #e7ebf0;
+        border: 1px solid #e8e5e1;
         border-radius: 7px;
         background: #fff;
-        color: #64748b;
+        color: #8c7e70;
         font-size: 15px;
         text-decoration: none;
         transition: all 0.18s ease;
     }
 
     .order-action-btn:hover {
+        background: #f3efe9;
+        border-color: #dcd4c9;
         transform: translateY(-1px);
         text-decoration: none;
     }
 
-    .action-view {
-        color: #f97316;
-    }
-
+    .action-view,
     .action-download {
-        color: #0ea5e9;
+        color: #685b4e;
     }
 
     .action-delete,

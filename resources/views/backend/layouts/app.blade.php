@@ -31,6 +31,7 @@
         <link rel="stylesheet" href="{{ static_asset('assets/css/bootstrap-rtl.min.css') }}">
     @endif
     <link rel="stylesheet" href="{{ static_asset('assets/css/aiz-core.css?v=') }}{{ rand(1000,9999) }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/ttf-admin-table.css?v=') }}{{ filemtime(public_path('assets/css/ttf-admin-table.css')) }}">
 
     <style>
         :root {
@@ -120,6 +121,7 @@
 
     <script src="{{ static_asset('assets/js/vendors.js') }}"></script>
     <script src="{{ static_asset('assets/js/aiz-core.js?v=') }}{{ rand(1000,9999) }}"></script>
+    <script src="{{ static_asset('assets/js/ttf-admin-table.js?v=') }}{{ filemtime(public_path('assets/js/ttf-admin-table.js')) }}"></script>
 
     @yield('script')
 

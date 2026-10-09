@@ -29,16 +29,16 @@
         </div>
     </div>
     <div class="card-body">
-        <table class="table aiz-table mb-0">
+        <x-admin.table>
             <thead>
                 <tr>
-                    <th data-breakpoints="lg">#</th>
+                    <th>#</th>
                     <th>{{translate('Product')}}</th>
-                    <th data-breakpoints="lg">{{translate('Product Owner')}}</th>
-                    <th data-breakpoints="lg">{{translate('Customer')}}</th>
+                    <th>{{translate('Product Owner')}}</th>
+                    <th>{{translate('Customer')}}</th>
                     <th>{{translate('Rating')}}</th>
-                    <th data-breakpoints="lg">{{translate('Comment')}}</th>
-                    <th data-breakpoints="lg">{{translate('Published')}}</th>
+                    <th>{{translate('Comment')}}</th>
+                    <th>{{translate('Published')}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,7 +68,7 @@
                     @endif
                 @endforeach
             </tbody>
-        </table>
+        </x-admin.table>
         <div class="aiz-pagination">
             {{ $reviews->appends(request()->input())->links() }}
         </div>

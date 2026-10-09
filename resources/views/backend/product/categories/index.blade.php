@@ -33,19 +33,19 @@
         </form>
     </div>
     <div class="card-body">
-        <table class="table aiz-table mb-0">
+        <x-admin.table>
             <thead>
                 <tr>
-                    <th data-breakpoints="lg">#</th>
+                    <th>#</th>
                     <th>{{translate('Name')}}</th>
-                    <th data-breakpoints="lg">{{ translate('Parent Category') }}</th>
-                    <th data-breakpoints="lg">{{ translate('Order Level') }}</th>
-                    <th data-breakpoints="lg">{{ translate('Level') }}</th>
-                    <th data-breakpoints="lg">{{translate('Banner')}}</th>
-                    <th data-breakpoints="lg">{{translate('Icon')}}</th>
-                    <th data-breakpoints="lg">{{translate('Cover Image')}}</th>
-                    <th data-breakpoints="lg">{{translate('Featured')}}</th>
-                    <th data-breakpoints="lg">{{translate('Commission')}}</th>
+                    <th>{{ translate('Parent Category') }}</th>
+                    <th>{{ translate('Order Level') }}</th>
+                    <th>{{ translate('Level') }}</th>
+                    <th>{{translate('Banner')}}</th>
+                    <th>{{translate('Icon')}}</th>
+                    <th>{{translate('Cover Image')}}</th>
+                    <th>{{translate('Featured')}}</th>
+                    <th>{{translate('Commission')}}</th>
                     <th width="10%" class="text-right">{{translate('Options')}}</th>
                 </tr>
             </thead>
@@ -116,7 +116,7 @@
                     </tr>
                 @endforeach
             </tbody>
-        </table>
+        </x-admin.table>
         <div class="aiz-pagination">
             {{ $categories->appends(request()->input())->links() }}
         </div>

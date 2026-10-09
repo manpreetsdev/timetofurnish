@@ -1,0 +1,255 @@
+/*
+ * Time To Furnish – global admin table (<x-admin.table>)
+ * Uses the same palette as the admin sidebar / dashboard.
+ */
+:root {
+    --ttf-brand: #685b4e;
+    --ttf-brand-soft: #f3efe9;
+    --ttf-brand-softer: #faf8f5;
+    --ttf-border: #e8e5e1;
+    --ttf-border-strong: #dcd4c9;
+    --ttf-text: #39322a;
+    --ttf-muted: #8c7e70;
+}
+
+.ttf-table {
+    position: relative;
+    background: #fff;
+    border: 1px solid var(--ttf-border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Edge fades show there is more content to either side */
+.ttf-table::before,
+.ttf-table::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 28px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 3;
+}
+
+.ttf-table::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(104, 91, 78, 0.12), transparent);
+}
+
+.ttf-table::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(104, 91, 78, 0.12), transparent);
+}
+
+.ttf-table.can-scroll-left::before,
+.ttf-table.can-scroll-right::after {
+    opacity: 1;
+}
+
+.ttf-table__scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #d9d4cc transparent;
+}
+
+.ttf-table.is-scrollable .ttf-table__scroll {
+    cursor: grab;
+}
+
+.ttf-table.is-dragging .ttf-table__scroll {
+    cursor: grabbing;
+    user-select: none;
+}
+
+.ttf-table.is-dragging .ttf-table__scroll * {
+    cursor: grabbing !important;
+}
+
+.ttf-table__scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.ttf-table__scroll::-webkit-scrollbar-track {
+    background: var(--ttf-brand-softer);
+}
+
+.ttf-table__scroll::-webkit-scrollbar-thumb {
+    background: #d9d4cc;
+    border-radius: 8px;
+}
+
+.ttf-table__scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--ttf-brand);
+}
+
+.ttf-table__table {
+    width: 100%;
+    margin: 0;
+    color: var(--ttf-text);
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.ttf-table__table thead th {
+    background: var(--ttf-brand-softer);
+    border-top: 0 !important;
+    border-bottom: 1px solid var(--ttf-border) !important;
+    color: var(--ttf-brand);
+    font-size: 11px !important;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    padding: 13px 14px !important;
+    text-transform: uppercase;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.ttf-table__table tbody td {
+    border-top: 0 !important;
+    border-bottom: 1px solid #f0ece7 !important;
+    font-size: 12.5px !important;
+    padding: 14px !important;
+    vertical-align: middle !important;
+    background: #fff;
+    transition: background-color 0.15s ease;
+}
+
+/* Keep columns at their natural width; the wrapper scrolls instead of squashing */
+.ttf-table__table tbody td {
+    white-space: nowrap;
+}
+
+/* Opt back into wrapping for long text (product names, descriptions, …) */
+.ttf-table__table .ttf-wrap,
+.ttf-table__table .text-truncate-2,
+.ttf-table__table .text-truncate,
+.ttf-table__table p {
+    white-space: normal;
+}
+
+.ttf-table__table tbody tr:last-child td {
+    border-bottom: 0 !important;
+}
+
+.ttf-table__table tbody tr:hover td {
+    background: var(--ttf-brand-softer);
+}
+
+.ttf-table--compact .ttf-table__table tbody td {
+    padding: 9px 12px !important;
+}
+
+/* Common cell content */
+.ttf-table__table img.size-60px,
+.ttf-table__table .size-50px img,
+.ttf-table__table td img {
+    border-radius: 8px;
+}
+
+.ttf-table__table .aiz-checkbox-inline,
+.ttf-table__table .form-group {
+    margin-bottom: 0;
+}
+
+.ttf-table__table a:not([class]) {
+    color: var(--ttf-text);
+}
+
+.ttf-table__table a:not([class]):hover {
+    color: var(--ttf-brand);
+}
+
+/* Theme the action buttons used across admin list screens */
+.ttf-table__table .btn-icon.btn-circle,
+.ttf-table__table .btn-soft-primary,
+.ttf-table__table .btn-soft-info,
+.ttf-table__table .btn-soft-success,
+.ttf-table__table .btn-soft-danger,
+.ttf-table__table .btn-soft-warning {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px !important;
+    border: 1px solid var(--ttf-border) !important;
+    background: #fff !important;
+    color: var(--ttf-brand) !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none !important;
+}
+
+.ttf-table__table .btn-icon.btn-circle:hover,
+.ttf-table__table .btn-soft-primary:hover,
+.ttf-table__table .btn-soft-info:hover,
+.ttf-table__table .btn-soft-success:hover,
+.ttf-table__table .btn-soft-warning:hover {
+    background: var(--ttf-brand-soft) !important;
+    border-color: var(--ttf-border-strong) !important;
+}
+
+.ttf-table__table .btn-soft-danger {
+    color: #c2410c !important;
+}
+
+.ttf-table__table .btn-soft-danger:hover {
+    background: #fdf1ec !important;
+    border-color: #f5cdbd !important;
+}
+
+.ttf-table__table .badge-inline {
+    border-radius: 999px;
+    font-weight: 600;
+    padding: 4px 9px;
+}
+
+/* Hint row – only shown when the table overflows */
+.ttf-table__hint {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-top: 1px solid var(--ttf-border);
+    background: var(--ttf-brand-softer);
+    color: var(--ttf-muted);
+    font-size: 11px;
+}
+
+.ttf-table__hint i {
+    font-size: 14px;
+    color: var(--ttf-brand);
+}
+
+.ttf-table.is-scrollable .ttf-table__hint {
+    display: flex;
+}
+
+/* Pagination under a table, themed */
+.ttf-table + .aiz-pagination,
+.ttf-table ~ .aiz-pagination {
+    margin-top: 16px;
+}
+
+.aiz-pagination .page-item.active .page-link {
+    background: var(--ttf-brand);
+    border-color: var(--ttf-brand);
+    color: #fff;
+}
+
+.aiz-pagination .page-link {
+    color: var(--ttf-brand);
+    border-radius: 8px !important;
+    margin: 0 2px;
+    border-color: var(--ttf-border);
+}
+
+.aiz-pagination .page-link:hover {
+    background: var(--ttf-brand-soft);
+    color: var(--ttf-brand);
+}
