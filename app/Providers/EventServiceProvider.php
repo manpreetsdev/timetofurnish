@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Login;
-use Illuminate\Auth\Events\Logout;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -67,12 +66,6 @@ class EventServiceProvider extends ServiceProvider
         $logger->log('login', $event->user, [
             'guard' => $event->guard,
         ], 'User logged in');
-    });
-
-    Event::listen(Logout::class, function (Logout $event) use ($logger) {
-        $logger->log('logout', $event->user, [
-            'guard' => $event->guard,
-        ], 'User logged out');
     });
   }
 }
