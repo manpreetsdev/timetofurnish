@@ -8,6 +8,39 @@
     </div>
 </div>
 
+@if (auth()->user()->user_type === 'admin')
+    <div class="card mb-3">
+        <div class="card-body d-flex flex-wrap align-items-center justify-content-between" style="gap: 12px;">
+            <div>
+                <h6 class="fw-600 mb-1">{{ translate('Log storage') }}</h6>
+                <p class="mb-0 text-muted fs-13">
+                    {{ translate('Total logs') }}: <strong>{{ number_format($totalLogs) }}</strong>
+                    &nbsp;|&nbsp;
+                    {{ translate('Older than 1 month') }}: <strong>{{ number_format($oldLogs) }}</strong>
+                    <br>
+                    {{ translate('Only the last 1 month of logs is kept. Older logs are deleted automatically every day.') }}
+                </p>
+            </div>
+            <div class="d-flex flex-wrap" style="gap: 8px;">
+                <form action="{{ route('event-viewer.prune') }}" method="POST"
+                    onsubmit="return confirm('{{ translate('Delete all activity logs older than 1 month?') }}');">
+                    @csrf
+                    <button type="submit" class="btn btn-soft-primary btn-sm">
+                        <i class="las la-broom"></i> {{ translate('Delete logs older than 1 month') }}
+                    </button>
+                </form>
+                <form action="{{ route('event-viewer.clear') }}" method="POST"
+                    onsubmit="return confirm('{{ translate('This will permanently delete ALL activity logs. This cannot be undone. Continue?') }}');">
+                    @csrf
+                    <button type="submit" class="btn btn-soft-danger btn-sm">
+                        <i class="las la-trash"></i> {{ translate('Clear all logs') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+@endif
+
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -19,7 +52,7 @@
                     <div class="col-12 col-lg-2 mb-2 mb-lg-0">
                         <select class="form-control form-control-sm aiz-selectpicker" name="action" data-live-search="true">
                             <option value="">{{ translate('All Actions') }}</option>
-                            @foreach (['created', 'updated', 'deleted', 'restored', 'permissions_updated', 'login', 'logout'] as $action)
+                            @foreach (['created', 'updated', 'deleted', 'restored', 'permissions_updated', 'signup', 'login', 'logout'] as $action)
                                 <option value="{{ $action }}" @selected(request('action') === $action)>{{ translate(ucwords(str_replace('_', ' ', $action))) }}</option>
                             @endforeach
                         </select>

@@ -678,6 +678,11 @@
     </div>
     @endif
 
+    <!-- home page promo popup -->
+    @if (get_setting('home_popup_enabled') == 'on' && Route::currentRouteName() == 'home')
+        @include('frontend.partials.home_promo_popup')
+    @endif
+
     <!-- website popup -->
     @if (get_setting('show_website_popup') == 'on')
     <div class="modal website-popup removable-session d-none" data-key="website-popup" data-value="removed">
