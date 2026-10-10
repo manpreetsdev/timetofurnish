@@ -181,7 +181,38 @@ class ReportController extends Controller
         $users = User::whereIn('id', ActivityLog::query()->whereNotNull('user_id')->distinct()->pluck('user_id'))->orderBy('name')->get();
         $subjectTypes = ActivityLog::query()->whereNotNull('subject_type')->distinct()->orderBy('subject_type')->pluck('subject_type');
 
-        return view('backend.reports.event_viewer', compact('logs', 'users', 'subjectTypes'));
+        $totalLogs = ActivityLog::count();
+        $oldLogs = ActivityLog::where('created_at', '<', ActivityLog::retentionCutoff())->count();
+
+        return view('backend.reports.event_viewer', compact('logs', 'users', 'subjectTypes', 'totalLogs', 'oldLogs'));
+    }
+
+    // Delete activity logs older than the retention period (1 month)
+    public function event_viewer_prune()
+    {
+        $this->authorizeActivityLogCleanup();
+
+        $deleted = ActivityLog::pruneOld();
+
+        flash($deleted . ' ' . translate('old activity logs deleted'))->success();
+        return back();
+    }
+
+    // Delete every activity log
+    public function event_viewer_clear()
+    {
+        $this->authorizeActivityLogCleanup();
+
+        ActivityLog::query()->delete();
+
+        flash(translate('All activity logs have been cleared'))->success();
+        return back();
+    }
+
+    // Clearing the audit trail is limited to the main admin account (not staff)
+    protected function authorizeActivityLogCleanup(): void
+    {
+        abort_unless(auth()->check() && auth()->user()->user_type === 'admin', 403);
     }
 
     protected function parseDateRange(?string $dateRange): array

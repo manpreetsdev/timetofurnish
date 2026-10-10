@@ -22,6 +22,28 @@ class ActivityLog extends Model
         'properties' => 'array',
     ];
 
+    // Only this many months of logs are kept; anything older is pruned
+    public const RETENTION_MONTHS = 1;
+
+    public static function retentionCutoff()
+    {
+        return now()->subMonths(self::RETENTION_MONTHS);
+    }
+
+    // Deletes logs older than the retention period, in chunks to avoid long table locks
+    public static function pruneOld(): int
+    {
+        $cutoff = static::retentionCutoff();
+        $deleted = 0;
+
+        do {
+            $count = static::query()->where('created_at', '<', $cutoff)->limit(5000)->delete();
+            $deleted += $count;
+        } while ($count > 0);
+
+        return $deleted;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

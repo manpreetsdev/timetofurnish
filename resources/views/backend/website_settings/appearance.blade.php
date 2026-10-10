@@ -249,6 +249,94 @@
     				</form>
     			</div>
     		</div>
+            <div class="card" id="home-promo-popup">
+    			<div class="card-header">
+    				<h6 class="fw-600 mb-0">{{ translate('Home Page Promo Popup') }}</h6>
+    			</div>
+    			<div class="card-body">
+    				<form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
+    					@csrf
+    					<div class="form-group row">
+                            <label class="col-md-3 col-from-label">{{ translate('Show popup on home page?') }}</label>
+                            <div class="col-md-8">
+                                <label class="aiz-switch aiz-switch-success mb-0">
+                                    <input type="hidden" name="types[]" value="home_popup_enabled">
+                                    <input type="checkbox" name="home_popup_enabled" @if (get_setting('home_popup_enabled') == 'on') checked @endif>
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+    					<div class="form-group row">
+    						<label class="col-md-3 col-from-label">{{ translate('Popup Image') }}</label>
+                            <div class="col-md-8">
+        						<div class="input-group" data-toggle="aizuploader" data-type="image">
+        							<div class="input-group-prepend">
+        								<div class="input-group-text bg-soft-secondary">{{ translate('Browse') }}</div>
+        							</div>
+        							<div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                    <input type="hidden" name="types[]" value="home_popup_image">
+        							<input type="hidden" name="home_popup_image" value="{{ get_setting('home_popup_image') }}" class="selected-files">
+        						</div>
+        						<div class="file-preview box"></div>
+        						<small class="text-muted">{{ translate('Shown on its own when no title/text is set. Recommended around 1800x800px (landscape).') }}</small>
+                            </div>
+    					</div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-from-label">{{ translate('Show after (seconds)') }}</label>
+                            <div class="col-md-8">
+                                <input type="hidden" name="types[]" value="home_popup_delay">
+                                <input type="number" min="0" step="1" name="home_popup_delay" class="form-control" value="{{ get_setting('home_popup_delay') ?? 10 }}">
+                                <small class="text-muted">{{ translate('How long a visitor stays on the home page before the popup appears.') }}</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-from-label">{{ translate('Show how often') }}</label>
+                            <div class="col-md-8">
+                                <input type="hidden" name="types[]" value="home_popup_frequency">
+                                @php $homePopupFrequency = get_setting('home_popup_frequency') ?: 'session'; @endphp
+                                <select name="home_popup_frequency" class="form-control aiz-selectpicker">
+                                    <option value="session" @if ($homePopupFrequency == 'session') selected @endif>{{ translate('Once per visit (browser session)') }}</option>
+                                    <option value="once" @if ($homePopupFrequency == 'once') selected @endif>{{ translate('Only once per visitor') }}</option>
+                                    <option value="always" @if ($homePopupFrequency == 'always') selected @endif>{{ translate('Every time the home page opens') }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-from-label">{{ translate('Button text') }}</label>
+                            <div class="col-md-8">
+                                <input type="hidden" name="types[]" value="home_popup_button_text">
+                                <input type="text" name="home_popup_button_text" class="form-control" placeholder="{{ translate('Explore') }}" value="{{ get_setting('home_popup_button_text') }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-from-label">{{ translate('Button / image link') }}</label>
+                            <div class="col-md-8">
+                                <input type="hidden" name="types[]" value="home_popup_button_link">
+                                <input type="text" name="home_popup_button_link" class="form-control" placeholder="https://" value="{{ get_setting('home_popup_button_link') }}">
+                                <small class="text-muted">{{ translate('Where the button (and the image) takes the visitor. Leave both button fields empty to hide the button.') }}</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-from-label">{{ translate('Title') }} <small class="text-muted">({{ translate('optional') }})</small></label>
+                            <div class="col-md-8">
+                                <input type="hidden" name="types[]" value="home_popup_title">
+                                <input type="text" name="home_popup_title" class="form-control" value="{{ get_setting('home_popup_title') }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-from-label">{{ translate('Text') }} <small class="text-muted">({{ translate('optional') }})</small></label>
+                            <div class="col-md-8">
+                                <input type="hidden" name="types[]" value="home_popup_text">
+                                <textarea name="home_popup_text" rows="3" class="form-control">{{ get_setting('home_popup_text') }}</textarea>
+                                <small class="text-muted">{{ translate('Leave title and text empty to show the image only. Fill them in to show the image on the left and the text with the button on the right.') }}</small>
+                            </div>
+                        </div>
+    					<div class="text-right">
+    						<button type="submit" class="btn btn-primary">{{ translate('Update') }}</button>
+    					</div>
+    				</form>
+    			</div>
+    		</div>
             <div class="card">
     			<div class="card-header">
     				<h6 class="fw-600 mb-0">{{ translate('Website Popup') }}</h6>

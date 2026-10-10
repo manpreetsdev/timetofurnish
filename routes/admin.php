@@ -443,6 +443,8 @@ Route::resource('sellers', SellerController::class);
         Route::get('/commission-log', 'commission_history')->name('commission-log.index');
         Route::get('/wallet-history', 'wallet_transaction_history')->name('wallet-history.index');
         Route::get('/event-viewer', 'event_viewer')->name('event-viewer.index');
+        Route::post('/event-viewer/prune', 'event_viewer_prune')->name('event-viewer.prune');
+        Route::post('/event-viewer/clear', 'event_viewer_clear')->name('event-viewer.clear');
     });
 
     //Blog Section
