@@ -412,6 +412,26 @@ Route::resource('sellers', SellerController::class);
         Route::get('/orders/{id}/invoice/{copyType}/view', 'invoice_copy_view')->name('orders.invoice.copy.view');
         Route::get('/orders/{id}/invoice/{copyType}/download', 'invoice_copy_download')->name('orders.invoice.copy.download');
         Route::get('/orders/{id}/delivery-note', [DeliveryNoteController::class, 'admin'])->name('orders.delivery_note');
+
+        // Service emails & email history
+        Route::controller(\App\Http\Controllers\OrderEmailController::class)->group(function () {
+            Route::get('/service-email-templates', 'templates')->name('order-emails.templates');
+            Route::post('/service-email-templates', 'saveTemplate')->name('order-emails.templates.store');
+            Route::get('/service-email-templates/create', 'templateForm')->name('order-emails.templates.create');
+            Route::get('/service-email-templates/{id}/edit', 'templateForm')->name('order-emails.templates.edit');
+            Route::post('/service-email-templates/preview', 'previewTemplate')->name('order-emails.templates.preview.form');
+            Route::get('/service-email-templates/{id}/preview', 'previewTemplate')->name('order-emails.templates.preview');
+            Route::post('/service-email-templates/{id}/update', 'saveTemplate')->name('order-emails.templates.update');
+            Route::post('/service-email-templates/{id}/delete', 'destroyTemplate')->name('order-emails.templates.destroy');
+            Route::post('/service-email-senders', 'saveSenders')->name('order-emails.senders');
+            Route::post('/service-email-templates-generate', 'generateTemplates')->name('order-emails.templates.generate');
+            Route::get('/service-email-templates-export', 'exportTemplates')->name('order-emails.templates.export');
+            Route::post('/service-email-templates-import', 'importTemplates')->name('order-emails.templates.import');
+            Route::get('/orders/{id}/service-email', 'compose')->name('order-emails.compose');
+            Route::post('/orders/{id}/service-email', 'send')->name('order-emails.send');
+            Route::get('/email-history', 'history')->name('order-emails.history');
+            Route::get('/email-history/{id}', 'showLog')->name('order-emails.show');
+        });
         Route::get('/inhouse-orders/{id}/show', 'show')->name('inhouse_orders.show');
         Route::get('/seller_orders/{id}/show', 'show')->name('seller_orders.show');
         Route::get('/orders_by_pickup_point/{id}/show', 'show')->name('pick_up_point.order_show');

@@ -154,7 +154,7 @@
                         <p>{{ translate('Showing') }} {{ $orders->firstItem() ?? 0 }}–{{ $orders->lastItem() ?? 0 }} {{ translate('of') }} {{ $orders->total() }}</p>
                     </div>
                 </div>
-                <x-admin.table min-width="1400px" class="orders-table">
+                <x-admin.table min-width="1540px" class="orders-table">
                     <thead>
                         <tr>
                             <!--<th>#</th>-->
@@ -185,6 +185,7 @@
                                 <th>{{ translate('Refund') }}</th>
                             @endif
                             <th class="text-center">{{ translate('Delivery Note') }}</th>
+                            <th class="text-center">{{ translate('Service Email') }}</th>
                             <th class="text-right order-options-heading">{{ translate('Actions') }}</th>
                         </tr>
                     </thead>
@@ -309,6 +310,29 @@
                                         <i class="las la-truck"></i>
                                         {{ translate('Delivery Note') }}
                                     </a>
+                                </td>
+                                <td class="text-center">
+                                    @php
+                                        $orderInfo = json_decode((string) $order->additional_info, true);
+                                        $orderServiceCount = is_array($orderInfo) ? count($orderInfo['services'] ?? []) : 0;
+                                    @endphp
+                                    @if ($order->payment_status == 'paid')
+                                        <a class="order-delivery-note-btn" href="{{ route('order-emails.compose', $order->id) }}">
+                                            <i class="las la-envelope"></i>
+                                            {{ translate('Send Email') }}
+                                        </a>
+                                        @if ($orderServiceCount > 0)
+                                            <div class="order-party-meta mt-1">{{ $orderServiceCount }} {{ translate('service(s)') }}</div>
+                                        @endif
+                                    @else
+                                        <span class="order-party-meta" title="{{ translate('Only available for paid orders') }}">{{ translate('Paid orders only') }}</span>
+                                    @endif
+                                    <div class="mt-1">
+                                        <a class="order-history-link" href="{{ route('order-emails.history', ['order_id' => $order->id]) }}"
+                                            title="{{ translate('Emails sent to this customer') }}">
+                                            <i class="las la-history"></i> {{ translate('History') }}
+                                        </a>
+                                    </div>
                                 </td>
                                 <td class="text-right order-row-actions-cell">
                                     <div class="order-row-actions">
@@ -853,6 +877,20 @@
         white-space: nowrap;
         text-decoration: none;
         transition: all 0.18s ease;
+    }
+
+    .order-history-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: #685b4e;
+        font-size: 11.5px;
+        font-weight: 600;
+        text-decoration: underline;
+    }
+
+    .order-history-link:hover {
+        color: #39322a;
     }
 
     .order-delivery-note-btn i {
