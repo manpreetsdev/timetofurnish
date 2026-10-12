@@ -62,6 +62,42 @@ class EventServiceProvider extends ServiceProvider
         }
     });
 
+    // Keep a light record (no body) of every automatic email the site sends
+    Event::listen(\Illuminate\Mail\Events\MessageSent::class, function ($event) {
+        try {
+            $message = $event->message;
+
+            if ($message->getHeaders()->has(\App\Services\OrderEmailService::LOGGED_HEADER)) {
+                return;
+            }
+
+            $subject = (string) $message->getSubject();
+            $from = $message->getFrom()[0] ?? null;
+
+            // Link the email to an order when its code appears in the subject or body
+            $orderId = null;
+            $haystack = $subject . ' ' . mb_substr(strip_tags((string) $message->getHtmlBody()), 0, 20000);
+            if (preg_match_all('/\b[A-Z]{2,6}-\d{3,}-\d+-\d+\b|\b\d{8}-\d{6,}\b/', $haystack, $matches)) {
+                $orderId = \App\Models\Order::whereIn('code', array_unique($matches[0]))->value('id');
+            }
+
+            foreach ($message->getTo() as $to) {
+                \App\Models\OrderEmailLog::create([
+                    'order_id' => $orderId,
+                    'type' => 'system',
+                    'to_email' => $to->getAddress(),
+                    'from_email' => $from ? $from->getAddress() : null,
+                    'from_name' => $from ? $from->getName() : null,
+                    'subject' => mb_substr($subject, 0, 190),
+                    'status' => 'sent',
+                    'sent_by' => auth()->id(),
+                ]);
+            }
+        } catch (\Throwable $e) {
+            logger()->error('Email history logging failed: ' . $e->getMessage());
+        }
+    });
+
     Event::listen(Login::class, function (Login $event) use ($logger) {
         $logger->log('login', $event->user, [
             'guard' => $event->guard,

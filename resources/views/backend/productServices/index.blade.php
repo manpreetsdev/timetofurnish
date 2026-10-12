@@ -1,90 +1,123 @@
 @extends('backend.layouts.app')
 
 @section('content')
-    <div class="aiz-titlebar text-left mt-2 mb-3">
-        <div class="align-items-center">
-            <h1 class="h3">{{ translate('All Services') }}</h1>
+    @php
+        // Templates are shared by services with the same name
+        $serviceTemplateCounts = \App\Models\ServiceEmailTemplate::with('service')->get()
+            ->filter(fn ($template) => $template->service)
+            ->groupBy(fn ($template) => \App\Services\OrderEmailService::normaliseName($template->service->name))
+            ->map->count();
+    @endphp
+
+    <div class="svc-hero">
+        <div>
+            <span class="svc-eyebrow">{{ translate('Products') }}</span>
+            <h1>{{ translate('Product Services') }}</h1>
+            <p>{{ translate('Extra services customers can add at checkout, such as room-of-choice delivery or assembly. Each service can have its own customer email.') }}</p>
+        </div>
+        <div class="svc-hero-actions">
+            <a href="{{ route('order-emails.templates') }}" class="btn svc-btn"><i class="las la-envelope"></i> {{ translate('Service email templates') }}</a>
+            @if (isset($service))
+                <a href="{{ route('services.index') }}" class="btn svc-btn svc-btn-primary"><i class="las la-plus"></i> {{ translate('Add new service') }}</a>
+            @endif
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-7">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0 h6">{{ translate('Services') }}</h5>
+    <div class="row gutters-10">
+        <div class="col-lg-8">
+            <div class="svc-card">
+                <div class="svc-card-head">
+                    <h2>{{ translate('Services') }} <span>({{ $services->count() }})</span></h2>
                 </div>
-                <div class="card-body">
-                    <x-admin.table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>{{ translate('Name') }}</th>
-                                <th>{{ translate('Type') }}</th>
-                                <th>{{ translate('Price') }}</th>
-                                <th>{{ translate('Categories') }}</th>
-                                <th>{{ translate('Status') }}</th>
-                                <th class="text-right">{{ translate('Options') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($services as $key => $serv)
-                                <tr>
-                                    <td>{{ $key + 1 }}</td>
-                                    <td>{{ $serv->name }}</td>
-                                    <td>{{ ucfirst($serv->type) }}</td>
-                                    <td>{{ single_price($serv->price) }}</td>
-                                    <td class="admin-table-categories">
-                                        <div class="admin-category-badges">
-                                            @foreach ($serv->categories as $catIndex => $cat)
-                                                <span class="badge badge-inline badge-md bg-soft-dark admin-category-badge {{ $catIndex >= 8 ? 'd-none extra-category-badge' : '' }}">{{ $cat->getTranslation('name') }}</span>
-                                            @endforeach
-                                        </div>
-                                        @if ($serv->categories->count() > 8)
-                                            <button type="button" class="btn btn-link btn-xs p-0 admin-badges-read-more">
-                                                {{ translate('Read more') }}
-                                            </button>
+                <x-admin.table min-width="700px">
+                    <thead>
+                        <tr>
+                            <th>{{ translate('Service') }}</th>
+                            <th class="text-right">{{ translate('Price') }}</th>
+                            <th>{{ translate('Categories') }}</th>
+                            <th class="text-center">{{ translate('Customer email') }}</th>
+                            <th class="text-center">{{ translate('Status') }}</th>
+                            <th class="text-right">{{ translate('Options') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($services as $key => $serv)
+                            @php
+                                $templateCount = $serviceTemplateCounts[\App\Services\OrderEmailService::normaliseName($serv->name)] ?? 0;
+                            @endphp
+                            <tr @if (isset($service) && $service->id === $serv->id) class="svc-row-editing" @endif>
+                                <td class="ttf-wrap" style="min-width: 180px; max-width: 240px;">
+                                    <strong class="svc-name">{{ $serv->name }}</strong>
+                                    @if ($serv->description)
+                                        <div class="svc-desc">{{ \Illuminate\Support\Str::limit($serv->description, 90) }}</div>
+                                    @endif
+                                </td>
+                                <td class="text-right">
+                                    <strong>{{ $serv->type === 'percent' ? rtrim(rtrim(number_format($serv->price, 2), '0'), '.') . '%' : single_price($serv->price) }}</strong>
+                                    <div class="svc-desc">{{ ucfirst($serv->type) }}</div>
+                                </td>
+                                <td class="admin-table-categories ttf-wrap">
+                                    <div class="admin-category-badges">
+                                        @foreach ($serv->categories as $catIndex => $cat)
+                                            <span class="svc-badge {{ $catIndex >= 4 ? 'd-none extra-category-badge' : '' }}">{{ $cat->getTranslation('name') }}</span>
+                                        @endforeach
+                                    </div>
+                                    @if ($serv->categories->count() > 4)
+                                        <button type="button" class="btn btn-link btn-xs p-0 admin-badges-read-more">
+                                            +{{ $serv->categories->count() - 4 }} {{ translate('more') }}
+                                        </button>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ $templateCount ? route('order-emails.templates', ['service' => $serv->id]) : route('order-emails.templates.create', ['service' => $serv->id]) }}"
+                                        class="svc-email-btn {{ $templateCount ? 'has-templates' : '' }}"
+                                        title="{{ $templateCount ? translate('View the email templates for this service') : translate('Create an email template for this service') }}">
+                                        <i class="las la-envelope"></i>
+                                        @if ($templateCount)
+                                            {{ $templateCount }} {{ $templateCount > 1 ? translate('templates') : translate('template') }}
+                                        @else
+                                            {{ translate('Add email') }}
                                         @endif
-                                    </td>
-                                    <td>
-                                        <label class="aiz-switch aiz-switch-success mb-0">
-                                            <input type="checkbox"
-                                                onchange="update_service_status(this, {{ $serv->id }})"
-                                                {{ $serv->status ? 'checked' : '' }}>
-                                            <span class="slider round"></span>
-                                        </label>
-                                    </td>
-                                    <td class="text-right">
-                                        <a class="btn btn-soft-primary btn-icon btn-circle btn-sm"
-                                            href="{{ route('services.edit', $serv->id) }}"
-                                            title="{{ translate('Edit') }}">
-                                            <i class="las la-edit"></i>
-                                        </a>
-                                        <form action="{{ route('services.destroy', $serv->id) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-soft-danger btn-icon btn-circle btn-sm" onclick="return confirm('{{ translate('Are you sure you want to delete this service?') }}');" title="{{ translate('Delete') }}">
-                                                <i class="las la-trash"></i>
-                                            </button>
-                                        </form>
-
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </x-admin.table>
-                    {{-- Pagination could be added here if needed --}}
-                </div>
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <label class="aiz-switch aiz-switch-success mb-0">
+                                        <input type="checkbox"
+                                            onchange="update_service_status(this, {{ $serv->id }})"
+                                            {{ $serv->status ? 'checked' : '' }}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td class="text-right">
+                                    <a class="btn btn-soft-primary btn-icon btn-circle btn-sm"
+                                        href="{{ route('services.edit', $serv->id) }}"
+                                        title="{{ translate('Edit') }}">
+                                        <i class="las la-edit"></i>
+                                    </a>
+                                    <form action="{{ route('services.destroy', $serv->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-soft-danger btn-icon btn-circle btn-sm" onclick="return confirm('{{ translate('Are you sure you want to delete this service?') }}');" title="{{ translate('Delete') }}">
+                                            <i class="las la-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </x-admin.table>
             </div>
         </div>
 
-        <div class="col-md-5">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0 h6">
-                        {{ isset($service) ? translate('Edit Service') : translate('Add New Service') }}
-                    </h5>
+        <div class="col-lg-4">
+            <div class="svc-card svc-form">
+                <div class="svc-card-head">
+                    <h2>{{ isset($service) ? translate('Edit service') : translate('Add new service') }}</h2>
+                    @if (isset($service))
+                        <a href="{{ route('services.index') }}" class="btn svc-btn btn-sm">{{ translate('Cancel') }}</a>
+                    @endif
                 </div>
-                <div class="card-body">
+                <div>
                     <form
                         action="{{ isset($service) ? route('services.update', $service->id) : route('services.store') }}"
                         method="POST">
@@ -171,8 +204,8 @@
                             <span class="ml-2">{{ translate('Enable Service') }}</span>
                         </div>
 
-                        <div class="form-group mb-3 text-right">
-                            <button type="submit" class="btn btn-primary">{{ translate('Save') }}</button>
+                        <div class="form-group mb-0 text-right">
+                            <button type="submit" class="btn svc-btn svc-btn-primary px-4">{{ isset($service) ? translate('Update service') : translate('Save service') }}</button>
                         </div>
                     </form>
                 </div>
@@ -261,7 +294,7 @@
                         });
                         event.target.textContent = isExpanded
                             ? '{{ translate('Show less') }}'
-                            : '{{ translate('Read more') }}';
+                            : '+' + cell.querySelectorAll('.extra-category-badge').length + ' {{ translate('more') }}';
                     }
                 }
 
@@ -295,6 +328,54 @@
         })();
     </script>
     <style>
+        .svc-hero, .svc-card {
+            background: #fff;
+            border: 1px solid #e8e5e1;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(104, 91, 78, 0.05);
+        }
+        .svc-hero {
+            display: flex; align-items: center; justify-content: space-between; gap: 20px;
+            padding: 22px 24px; margin: 8px 0 14px;
+        }
+        .svc-eyebrow { display: block; color: #8c7e70; font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; }
+        .svc-hero h1 { margin: 3px 0 5px; font-size: 24px; font-weight: 700; color: #39322a; }
+        .svc-hero p { margin: 0; max-width: 600px; color: #8c7e70; font-size: 13px; line-height: 1.5; }
+        .svc-hero-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+        .svc-btn {
+            display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 14px;
+            border: 1px solid #dcd4c9; border-radius: 8px; background: #f3efe9; color: #685b4e;
+            font-size: 13px; font-weight: 600; white-space: nowrap;
+        }
+        .svc-btn.btn-sm { min-height: 30px; padding: 0 10px; font-size: 12px; }
+        .svc-btn:hover { background: #ece5db; color: #685b4e; }
+        .svc-btn-primary { background: #685b4e; border-color: #685b4e; color: #fff; }
+        .svc-btn-primary:hover { background: #4f453b; color: #fff; }
+        .svc-card { padding: 18px; margin-bottom: 14px; }
+        .svc-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+        .svc-card-head h2 { margin: 0; font-size: 16px; font-weight: 700; color: #39322a; }
+        .svc-card-head h2 span { color: #8c7e70; font-weight: 500; }
+        .svc-name { color: #39322a; font-size: 13px; }
+        .svc-desc { margin-top: 2px; color: #8c7e70; font-size: 11.5px; line-height: 1.4; }
+        .svc-badge {
+            display: inline-block; margin: 0 4px 5px 0; padding: 3px 8px; border-radius: 999px;
+            background: #f3efe9; color: #685b4e; font-size: 11px; font-weight: 600; line-height: 1.35;
+        }
+        .svc-email-btn {
+            display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 11px;
+            border: 1px dashed #cfc5b8; border-radius: 8px; background: #fff; color: #8c7e70 !important;
+            font-size: 12px; font-weight: 600; white-space: nowrap; text-decoration: none !important;
+            transition: all .15s ease;
+        }
+        .svc-email-btn.has-templates { border-style: solid; border-color: #bfe3cc; background: #e8f7ee; color: #137333 !important; }
+        .svc-email-btn:hover { border-color: #685b4e; background: #f3efe9; color: #685b4e !important; }
+        .svc-row-editing td { background: #fffaf0 !important; }
+        .svc-form label b { font-size: 12.5px; color: #4a4239; }
+        .svc-form .form-control { border-radius: 8px; }
+        @media (max-width: 991.98px) {
+            .svc-hero { flex-direction: column; align-items: flex-start; }
+        }
+
         .admin-category-picker {
             max-height: 260px;
             overflow: hidden;
@@ -314,11 +395,16 @@
         }
 
         .admin-table-categories {
-            max-width: 380px;
+            max-width: 190px;
+        }
+
+        .svc-card .ttf-table__table thead th,
+        .svc-card .ttf-table__table tbody td {
+            padding-left: 10px !important;
+            padding-right: 10px !important;
         }
 
         .admin-category-badges {
-            max-height: 76px;
             overflow: hidden;
         }
 

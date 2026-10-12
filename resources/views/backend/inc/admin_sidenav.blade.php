@@ -798,6 +798,16 @@
                                     </a>
                                 </li>
                             @endcan
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('order-emails.templates') }}" class="aiz-side-nav-link {{ areActiveRoutes(['order-emails.templates']) }}">
+                                    <span class="aiz-side-nav-text">{{ translate('Service Emails') }}</span>
+                                </a>
+                            </li>
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('order-emails.history') }}" class="aiz-side-nav-link {{ areActiveRoutes(['order-emails.history', 'order-emails.show', 'order-emails.compose']) }}">
+                                    <span class="aiz-side-nav-text">{{ translate('Email History') }}</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endcanany
