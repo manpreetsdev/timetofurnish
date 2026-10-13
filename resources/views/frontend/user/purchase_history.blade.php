@@ -67,6 +67,14 @@
                                         </a>
                                     @endif
                                     <!-- Details -->
+                                    @php
+                                        $omRepliable = $omRepliable ?? \App\Models\OrderMessage::where('customer_id', auth()->id())->where('sender_type', 'admin')->distinct()->pluck('order_id')->all();
+                                    @endphp
+                                    @if (in_array($order->id, $omRepliable))
+                                        <a href="{{ route('order-messages.show', $order->id) }}" class="btn btn-soft-primary btn-icon btn-circle btn-sm mt-2 mt-sm-0" title="{{ translate('Messages & uploads') }}">
+                                            <i class="las la-comments"></i>
+                                        </a>
+                                    @endif
                                     <a href="{{route('purchase_history.details', encrypt($order->id))}}" class="btn btn-soft-info btn-icon btn-circle btn-sm hov-svg-white mt-2 mt-sm-0" title="{{ translate('Order Details') }}">
                                         <!--<svg xmlns="http://www.w3.org/2000/svg" width="12" height="10" viewBox="0 0 12 10">-->
                                         <!--    <g id="Group_24807" data-name="Group 24807" transform="translate(-1339 -422)">-->

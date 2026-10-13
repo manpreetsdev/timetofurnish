@@ -116,6 +116,70 @@
         initAll();
     }
 
+    // ---- Row menus (three dots) ----------------------------------------
+    var openMenu = null;
+
+    function closeMenu() {
+        if (!openMenu) {
+            return;
+        }
+        openMenu.panel.hidden = true;
+        openMenu.toggle.classList.remove('is-open');
+        // put the panel back next to its button
+        openMenu.toggle.parentNode.insertBefore(openMenu.panel, openMenu.toggle.nextSibling);
+        openMenu = null;
+    }
+
+    function showMenu(toggle) {
+        var panel = toggle.nextElementSibling;
+        if (!panel || !panel.classList.contains('ttf-menu')) {
+            return;
+        }
+
+        // Move to <body> so no scroll container can clip it
+        document.body.appendChild(panel);
+        panel.hidden = false;
+        toggle.classList.add('is-open');
+        openMenu = { toggle: toggle, panel: panel };
+
+        var rect = toggle.getBoundingClientRect();
+        var width = panel.offsetWidth;
+        var height = panel.offsetHeight;
+        var left = Math.min(Math.max(8, rect.right - width), window.innerWidth - width - 8);
+        var top = rect.bottom + 6;
+        if (top + height > window.innerHeight - 8) {
+            top = Math.max(8, rect.top - height - 6);
+        }
+        panel.style.left = left + 'px';
+        panel.style.top = top + 'px';
+    }
+
+    document.addEventListener('click', function (event) {
+        var toggle = event.target.closest('[data-ttf-menu]');
+
+        if (toggle) {
+            event.preventDefault();
+            var wasOpen = openMenu && openMenu.toggle === toggle;
+            closeMenu();
+            if (!wasOpen) {
+                showMenu(toggle);
+            }
+            return;
+        }
+
+        if (openMenu && !openMenu.panel.contains(event.target)) {
+            closeMenu();
+        }
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeMenu();
+        }
+    });
+    window.addEventListener('scroll', closeMenu, true);
+    window.addEventListener('resize', closeMenu);
+
     // Allow pages that inject tables via AJAX to re-run the initialiser
     window.TTFAdminTable = { init: initAll };
 })();

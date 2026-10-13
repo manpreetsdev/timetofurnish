@@ -798,6 +798,17 @@
                                     </a>
                                 </li>
                             @endcan
+                            @php
+                                $omAdminUnread = \App\Models\OrderMessage::where('sender_type', 'customer')->whereNull('read_by_admin_at')->count();
+                            @endphp
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('admin.order-messages.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['admin.order-messages.index', 'admin.order-messages.show']) }}">
+                                    <span class="aiz-side-nav-text">{{ translate('Customer Messages') }}</span>
+                                    @if ($omAdminUnread > 0)
+                                        <span class="badge badge-danger">{{ $omAdminUnread }}</span>
+                                    @endif
+                                </a>
+                            </li>
                             <li class="aiz-side-nav-item">
                                 <a href="{{ route('order-emails.templates') }}" class="aiz-side-nav-link {{ areActiveRoutes(['order-emails.templates']) }}">
                                     <span class="aiz-side-nav-text">{{ translate('Service Emails') }}</span>
