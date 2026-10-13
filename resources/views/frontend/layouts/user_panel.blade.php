@@ -1,5 +1,5 @@
 @extends('frontend.layouts.app')
-@section('meta_description', 'Manage your Time to Furnish account, view your orders, update your profile, and access your account settings بسهولة.')
+@section('meta_description', 'Manage your Time to Furnish account, view your orders, update your profile, and access your account settings.')
 @section('meta_robots', 'noindex, nofollow')
 @section('content')
 <section class="py-5">
