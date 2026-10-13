@@ -1,7 +1,9 @@
 @extends('frontend.layouts.app')
 
 @section('meta_title'){{ $metaTitle }}@stop
-@section('meta_description'){{ $metaDescription }}@stop
+@section('meta_description')
+ You are not currently logged in to Time to Furnish. Sign in to your account to manage orders, explore furniture, track purchases, and access your buyer or seller dashboard.
+@stop
 @section('meta_robots', 'noindex, follow')
 
 @section('content')
