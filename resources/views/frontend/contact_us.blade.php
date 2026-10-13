@@ -2,7 +2,10 @@
 
 @php
 $seoTitle = seo_title($page->meta_title ?? null, translate('Contact Us') . ' | ' . get_setting('website_name'));
-$seoDescription = seo_description($page->meta_description ?? null, translate('Get in touch with us for support, inquiries, and feedback.'));
+$seoDescription = seo_description(
+    $page->meta_description ?? null,
+    translate('Contact Time to Furnish for assistance with furniture products, custom orders, delivery, and shipping inquiries. Our team is here to answer your questions and help you find the right furniture solutions for your home or office.')
+);
 $banner = [
         'title' => 'Contact Us',
         'breadcrumb_label' => 'Contact Us',

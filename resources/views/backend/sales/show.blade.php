@@ -446,6 +446,8 @@
                     </tbody>
                 </table>
                 <div class="no-print text-right">
+                    <a href="{{ route('admin.order-messages.show', $order->id) }}" class="btn btn-soft-primary btn-sm"
+                        title="{{ translate('Messages and customer uploads') }}"><i class="las la-comments"></i> {{ translate('Messages & Uploads') }}</a>
                     <a href="{{ route('order-emails.compose', $order->id) }}" class="btn btn-soft-primary btn-sm"
                         title="{{ translate('Service email & email history') }}"><i class="las la-envelope"></i> {{ translate('Emails & History') }}</a>
                     <a href="{{ route('orders.delivery_note', [$order->id, 'format' => 'html']) }}" target="_blank" class="btn btn-soft-primary btn-sm"

@@ -64,6 +64,21 @@
                 $payment_status_viewed = get_count_by_payment_status_viewed();
                 @endphp
 
+                <!-- Order messages -->
+                @php
+                    $omNavUnread = \App\Models\OrderMessage::where('customer_id', auth()->id())->where('sender_type', 'admin')->whereNull('read_by_customer_at')->count();
+                @endphp
+                <li class="aiz-side-nav-item">
+                    <a href="{{ route('order-messages.index') }}"
+                        class="aiz-side-nav-link {{ areActiveRoutes(['order-messages.index', 'order-messages.show']) }}">
+                        <i class="las la-comments fs-18" style="width:16px;color:#b5b5bf;"></i>
+                        <span class="aiz-side-nav-text ml-3">{{ translate('Messages') }}</span>
+                        @if ($omNavUnread > 0)
+                            <span class="badge badge-inline badge-danger ml-2">{{ $omNavUnread }}</span>
+                        @endif
+                    </a>
+                </li>
+
                 <!-- Purchase History -->
                 <li class="aiz-side-nav-item">
                     <a href="{{ route('purchase_history.index') }}"

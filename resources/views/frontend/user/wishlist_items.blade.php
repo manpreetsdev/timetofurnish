@@ -1,3 +1,8 @@
+@section('meta_title') Wishlist | {{ get_setting('website_name') }} @stop
+
+@section('meta_description')
+Explore your Time to Furnish wishlist to save your favourite furniture products, compare prices, discover special offers, and easily revisit items you love for your home or office.
+@stop
 <style>
     /* =========================================
        WISHLIST MODERN CARD DESIGN

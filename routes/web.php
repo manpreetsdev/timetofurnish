@@ -621,6 +621,16 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('invoice/{order_id}', [InvoiceController::class, 'invoice_download'])->name('invoice.download');
 
+    // Order messages: customer <-> Time To Furnish, with photo / video uploads
+    Route::controller(\App\Http\Controllers\OrderMessageController::class)->group(function () {
+        Route::get('/order-messages', 'customerIndex')->name('order-messages.index');
+        Route::get('/order-messages-unread', 'customerUnread')->name('order-messages.unread');
+        Route::get('/order-messages/{order}', 'customerShow')->name('order-messages.show');
+        Route::post('/order-messages/{order}', 'customerStore')->name('order-messages.store');
+        Route::post('/order-message-upload', 'uploadChunk')->name('order-messages.upload');
+        Route::get('/order-message-file/{id}', 'file')->name('order-messages.file');
+    });
+
     // Reviews
     Route::resource('/reviews', ReviewController::class);
 

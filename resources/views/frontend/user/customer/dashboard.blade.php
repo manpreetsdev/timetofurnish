@@ -18,6 +18,8 @@ $address = Auth::user()->addresses->where('set_default', 1)->first();
 $wishlists = get_user_wishlist();
 @endphp
 
+@include('partials.order_messages._dashboard_banner')
+
 
 <!-- =========================
      DASHBOARD HEADER
