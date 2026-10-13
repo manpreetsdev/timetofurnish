@@ -43,7 +43,7 @@
                             <textarea class="form-control rounded-2" rows="3" name="question"
                                 placeholder="{{ translate('Write your question here...') }}" style="resize: none; font-size: 14px; padding: 12px; border: 1px solid #ced4da; border-radius: 6px;"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-sm px-4 py-2 rounded-2" style="background: linear-gradient(90deg, #deb887 0%, #c59259 100%); border: none; color: #212529; font-weight: 600; cursor: pointer; border-radius: 6px; transition: transform 0.2s, box-shadow 0.2s;">{{ translate('Submit Question') }}</button>
+                        <button type="submit" class="btn btn-sm px-4 py-2 rounded-2" style="background: #685b4e; border: none; color: #fff; font-weight: 600; cursor: pointer; border-radius: 4px; transition: transform 0.2s, box-shadow 0.2s;">{{ translate('Submit Question') }}</button>
                     </form>
                 </div>
 

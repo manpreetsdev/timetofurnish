@@ -253,3 +253,141 @@
     background: var(--ttf-brand-soft);
     color: var(--ttf-brand);
 }
+
+/* ------------------------------------------------------------------
+ * Row menu (three dots). Markup:
+ *   <button class="ttf-menu-toggle" data-ttf-menu>…</button>
+ *   <div class="ttf-menu" hidden> … </div>
+ * The panel is moved to <body> when opened so the table's scroll
+ * container can never clip it.
+ * ------------------------------------------------------------------ */
+.ttf-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--ttf-border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--ttf-brand);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.ttf-menu-toggle:hover,
+.ttf-menu-toggle.is-open {
+    background: var(--ttf-brand-soft);
+    border-color: var(--ttf-border-strong);
+}
+
+.ttf-menu {
+    position: fixed;
+    z-index: 1055;
+    min-width: 260px;
+    max-width: calc(100vw - 16px);
+    padding: 8px;
+    border: 1px solid var(--ttf-border);
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 16px 40px rgba(57, 50, 42, 0.18);
+    color: var(--ttf-text);
+    text-align: left;
+    white-space: normal;
+}
+
+.ttf-menu[hidden] {
+    display: none;
+}
+
+.ttf-menu__title {
+    padding: 4px 8px 8px;
+    color: var(--ttf-muted);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.ttf-menu__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+.ttf-menu__row:hover {
+    background: var(--ttf-brand-softer);
+}
+
+.ttf-menu__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.ttf-menu__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex: 0 0 7px;
+}
+
+.ttf-menu__actions {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.ttf-menu__actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--ttf-border);
+    border-radius: 7px;
+    background: #fff;
+    color: var(--ttf-brand);
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.ttf-menu__actions a:hover {
+    background: var(--ttf-brand);
+    border-color: var(--ttf-brand);
+    color: #fff;
+}
+
+.ttf-menu__divider {
+    height: 1px;
+    margin: 6px 0;
+    background: var(--ttf-border);
+}
+
+.ttf-menu__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 8px;
+    color: var(--ttf-text);
+    font-size: 12.5px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.ttf-menu__item i {
+    font-size: 16px;
+    color: var(--ttf-brand);
+}
+
+.ttf-menu__item:hover {
+    background: var(--ttf-brand-soft);
+    color: var(--ttf-brand);
+    text-decoration: none;
+}

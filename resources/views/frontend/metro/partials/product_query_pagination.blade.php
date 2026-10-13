@@ -41,10 +41,7 @@
         </div>
     </div>
 @empty
-    <div class="text-center py-4 border rounded-2" style="background-color: #fafafb;">
-        <span class="fs-24 text-secondary opacity-60"><i class="las la-comments"></i></span>
-        <p class="fs-13 text-secondary mb-0 mt-2">{{ translate('No queries have been submitted for this product yet.') }}</p>
-    </div>
+    
 @endforelse
 
 <!-- Pagination -->

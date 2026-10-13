@@ -16,6 +16,11 @@
         $pagePaid = $pageOrders->where('payment_status', 'paid')->count();
         $pagePending = $pageOrders->where('delivery_status', 'pending')->count();
         $filterPanelOpen = $activeFilters->isNotEmpty();
+
+        // Unread customer messages per order on this page
+        $orderMessageUnread = \App\Models\OrderMessage::whereIn('order_id', $pageOrders->pluck('id'))
+            ->where('sender_type', 'customer')->whereNull('read_by_admin_at')
+            ->selectRaw('order_id, COUNT(*) as c')->groupBy('order_id')->pluck('c', 'order_id');
     @endphp
 
     <div class="orders-admin-screen">
@@ -154,10 +159,9 @@
                         <p>{{ translate('Showing') }} {{ $orders->firstItem() ?? 0 }}–{{ $orders->lastItem() ?? 0 }} {{ translate('of') }} {{ $orders->total() }}</p>
                     </div>
                 </div>
-                <x-admin.table min-width="1540px" class="orders-table">
+                <x-admin.table min-width="1040px" class="orders-table">
                     <thead>
                         <tr>
-                            <!--<th>#</th>-->
                             @if (auth()->user()->can('delete_order'))
                                 <th>
                                     <div class="form-group">
@@ -172,25 +176,41 @@
                             @else
                                 <th>#</th>
                             @endif
-
                             <th>{{ translate('Order') }}</th>
                             <th>{{ translate('Customer') }}</th>
-                            <th>{{ translate('Seller') }}</th>
-                            <th class="text-center">{{ translate('Items') }}</th>
                             <th class="text-right">{{ translate('Amount') }}</th>
                             <th>{{ translate('Payment') }}</th>
                             <th>{{ translate('Delivery') }}</th>
-                            <th class="order-invoices-heading">{{ translate('Invoices') }}</th>
-                            @if (addon_is_activated('refund_request'))
-                                <th>{{ translate('Refund') }}</th>
-                            @endif
-                            <th class="text-center">{{ translate('Delivery Note') }}</th>
-                            <th class="text-center">{{ translate('Service Email') }}</th>
+                            <th>{{ translate('Contact customer') }}</th>
+                            <th class="text-center">{{ translate('Documents') }}</th>
                             <th class="text-right order-options-heading">{{ translate('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($orders as $key => $order)
+                            @php
+                                $isPaid = $order->payment_status == 'paid';
+                                $itemCount = count($order->orderDetails);
+                                $orderInfo = json_decode((string) $order->additional_info, true);
+                                $orderServiceCount = is_array($orderInfo) ? count($orderInfo['services'] ?? []) : 0;
+                                $unreadMessages = $orderMessageUnread[$order->id] ?? 0;
+                                $deliveryBadgeClass = [
+                                    'delivered' => 'status-success',
+                                    'cancelled' => 'status-danger',
+                                    'pending' => 'status-warning',
+                                    'confirmed' => 'status-info',
+                                    'picked_up' => 'status-info',
+                                    'on_the_way' => 'status-info',
+                                ][$order->delivery_status] ?? 'status-muted';
+                                $order_detail_route = route('orders.show', encrypt($order->id));
+                                if (Route::currentRouteName() == 'seller_orders.index') {
+                                    $order_detail_route = route('seller_orders.show', encrypt($order->id));
+                                } elseif (Route::currentRouteName() == 'pick_up_point.index') {
+                                    $order_detail_route = route('pick_up_point.order_show', encrypt($order->id));
+                                } elseif (Route::currentRouteName() == 'inhouse_orders.index') {
+                                    $order_detail_route = route('inhouse_orders.show', encrypt($order->id));
+                                }
+                            @endphp
                             <tr>
                                 @if (auth()->user()->can('delete_order'))
                                     <td>
@@ -207,176 +227,144 @@
                                 @else
                                     <td>{{ $key + 1 + ($orders->currentPage() - 1) * $orders->perPage() }}</td>
                                 @endif
+
+                                {{-- Order --}}
                                 <td>
                                     <div class="order-code-cell">
-                                        <strong>{{ $order->code }}</strong>
-                                        <span>{{ date('d M Y', $order->date) }}</span>
+                                        @can('view_order_details')
+                                            <a href="{{ $order_detail_route }}" class="order-code-link">{{ $order->code }}</a>
+                                        @else
+                                            <strong>{{ $order->code }}</strong>
+                                        @endcan
+                                        <span>{{ date('d M Y', $order->date) }} · {{ $itemCount }} {{ $itemCount == 1 ? translate('item') : translate('items') }}</span>
                                     </div>
                                     <div class="order-row-badges">
                                         @if ($order->viewed == 0)
-                                            <span class="badge badge-inline badge-info">{{ translate('New') }}</span>
+                                            <span class="order-mini-badge is-new">{{ translate('New') }}</span>
                                         @endif
                                         @if (addon_is_activated('pos_system') && $order->order_from == 'pos')
-                                            <span class="badge badge-inline badge-danger">{{ translate('POS') }}</span>
+                                            <span class="order-mini-badge is-pos">{{ translate('POS') }}</span>
+                                        @endif
+                                        @if ($orderServiceCount > 0)
+                                            <span class="order-mini-badge">{{ $orderServiceCount }} {{ $orderServiceCount == 1 ? translate('service') : translate('services') }}</span>
+                                        @endif
+                                        @if (addon_is_activated('refund_request') && count($order->refund_requests) > 0)
+                                            <span class="order-mini-badge is-pos">{{ count($order->refund_requests) }} {{ translate('Refund') }}</span>
                                         @endif
                                     </div>
                                 </td>
+
+                                {{-- Customer (seller underneath) --}}
                                 <td>
                                     @if ($order->user != null)
                                         <div class="order-party-name">{{ $order->user->name }}</div>
                                     @else
                                         <div class="order-party-name">{{ translate('Guest') }}</div>
-                                        <div class="order-party-meta">#{{ $order->guest_id }}</div>
                                     @endif
+                                    <div class="order-party-meta">
+                                        <i class="las la-store"></i>
+                                        {{ $order->shop ? $order->shop->name : translate('Inhouse Order') }}
+                                    </div>
                                 </td>
-                                <td>
-                                    @if ($order->shop)
-                                        <div class="order-party-name">{{ $order->shop->name }}</div>
-                                    @else
-                                        <div class="order-party-name">{{ translate('Inhouse Order') }}</div>
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    <span class="order-count-pill">{{ count($order->orderDetails) }}</span>
-                                </td>
+
                                 <td class="text-right">
                                     <strong class="order-amount">{{ single_price($order->grand_total) }}</strong>
                                 </td>
+
                                 <td>
-                                    @if ($order->payment_status == 'paid')
-                                        <span class="order-status-pill status-success">{{ translate('Paid') }}</span>
-                                    @else
-                                        <span class="order-status-pill status-danger">{{ translate('Unpaid') }}</span>
-                                    @endif
+                                    <span class="order-status-pill {{ $isPaid ? 'status-success' : 'status-danger' }}">{{ $isPaid ? translate('Paid') : translate('Unpaid') }}</span>
                                     <div class="order-payment-method">
                                         {{ translate(ucfirst(str_replace('_', ' ', $order->payment_type))) }}
                                     </div>
                                 </td>
+
                                 <td>
-                                    @php
-                                        $deliveryBadgeClass = [
-                                            'delivered' => 'status-success',
-                                            'cancelled' => 'status-danger',
-                                            'pending' => 'status-warning',
-                                            'confirmed' => 'status-info',
-                                            'picked_up' => 'status-info',
-                                            'on_the_way' => 'status-info',
-                                        ][$order->delivery_status] ?? 'status-muted';
-                                    @endphp
                                     <span class="order-status-pill {{ $deliveryBadgeClass }}">
                                         {{ translate(ucfirst(str_replace('_', ' ', $order->delivery_status))) }}
                                     </span>
                                 </td>
-                                <td class="order-invoice-actions">
-                                    <div class="invoice-copy-list">
-                                    @foreach (\App\Services\OrderInvoiceService::copyTypes() as $copyType => $copy)
-                                        @php
-                                            $invoice = $order->relationLoaded('invoices') ? $order->invoices->firstWhere('copy_type', $copyType) : null;
-                                        @endphp
-                                        <div class="invoice-copy-row" style="--invoice-color: {{ $copy['color'] }};">
-                                            <div class="invoice-copy-name">
-                                                <span class="invoice-copy-dot"></span>
-                                                <span>{{ translate($copy['label']) }}</span>
-                                                @if ($invoice)
-                                                    <i class="las la-check-circle" title="{{ translate('Generated') }}"></i>
-                                                @endif
-                                            </div>
-                                            <div class="invoice-copy-actions">
-                                                <a target="_blank" title="{{ translate('View PDF') }}"
-                                                    href="{{ route('orders.invoice.copy.view', [$order->id, $copyType]) }}">
-                                                    <i class="las la-eye"></i>
-                                                </a>
-                                                <a title="{{ translate('Download PDF') }}"
-                                                    href="{{ route('orders.invoice.copy.download', [$order->id, $copyType]) }}">
-                                                    <i class="las la-download"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                    </div>
-                                </td>
-                                @if (addon_is_activated('refund_request'))
-                                    <td>
-                                        @if (count($order->refund_requests) > 0)
-                                            {{ count($order->refund_requests) }} {{ translate('Refund') }}
+
+                                {{-- Contact customer --}}
+                                <td>
+                                    <div class="order-contact">
+                                        <a class="order-contact-btn" href="{{ route('admin.order-messages.show', $order->id) }}"
+                                            title="{{ translate('Messages and uploads for this order') }}">
+                                            <i class="las la-comments"></i> {{ translate('Message') }}
+                                            @if ($unreadMessages > 0)
+                                                <span class="order-msg-badge">{{ $unreadMessages }}</span>
+                                            @endif
+                                        </a>
+                                        @if ($isPaid)
+                                            <a class="order-contact-btn" href="{{ route('order-emails.compose', $order->id) }}"
+                                                title="{{ translate('Send a service email') }}">
+                                                <i class="las la-envelope"></i> {{ translate('Email') }}
+                                            </a>
                                         @else
-                                            {{ translate('No Refund') }}
+                                            <span class="order-contact-btn is-disabled" title="{{ translate('Service emails are only available for paid orders') }}">
+                                                <i class="las la-envelope"></i> {{ translate('Email') }}
+                                            </span>
                                         @endif
-                                    </td>
-                                @endif
-                                <td class="text-center">
-                                    <a class="order-delivery-note-btn" target="_blank"
-                                        href="{{ route('orders.delivery_note', [$order->id, 'format' => 'html']) }}">
-                                        <i class="las la-truck"></i>
-                                        {{ translate('Delivery Note') }}
-                                    </a>
-                                </td>
-                                <td class="text-center">
-                                    @php
-                                        $orderInfo = json_decode((string) $order->additional_info, true);
-                                        $orderServiceCount = is_array($orderInfo) ? count($orderInfo['services'] ?? []) : 0;
-                                    @endphp
-                                    @if ($order->payment_status == 'paid')
-                                        <a class="order-delivery-note-btn" href="{{ route('order-emails.compose', $order->id) }}">
-                                            <i class="las la-envelope"></i>
-                                            {{ translate('Send Email') }}
-                                        </a>
-                                        @if ($orderServiceCount > 0)
-                                            <div class="order-party-meta mt-1">{{ $orderServiceCount }} {{ translate('service(s)') }}</div>
-                                        @endif
-                                    @else
-                                        <span class="order-party-meta" title="{{ translate('Only available for paid orders') }}">{{ translate('Paid orders only') }}</span>
-                                    @endif
-                                    <div class="mt-1">
-                                        <a class="order-history-link" href="{{ route('order-emails.history', ['order_id' => $order->id]) }}"
+                                        <a class="order-contact-btn is-plain" href="{{ route('order-emails.history', ['order_id' => $order->id]) }}"
                                             title="{{ translate('Emails sent to this customer') }}">
-                                            <i class="las la-history"></i> {{ translate('History') }}
+                                            <i class="las la-history"></i>
                                         </a>
                                     </div>
                                 </td>
+
+                                {{-- Documents: invoices & delivery note behind a three-dots menu --}}
+                                <td class="text-center">
+                                    <button type="button" class="ttf-menu-toggle" data-ttf-menu aria-haspopup="true"
+                                        title="{{ translate('Invoices and delivery note') }}">
+                                        <i class="las la-ellipsis-v"></i>
+                                    </button>
+                                    <div class="ttf-menu" hidden>
+                                        <div class="ttf-menu__title">{{ translate('Invoices') }} · {{ $order->code }}</div>
+                                        @foreach (\App\Services\OrderInvoiceService::copyTypes() as $copyType => $copy)
+                                            @php
+                                                $invoice = $order->relationLoaded('invoices') ? $order->invoices->firstWhere('copy_type', $copyType) : null;
+                                            @endphp
+                                            <div class="ttf-menu__row">
+                                                <span class="ttf-menu__label">
+                                                    <span class="ttf-menu__dot" style="background: {{ $copy['color'] }};"></span>
+                                                    {{ translate($copy['label']) }}
+                                                    @if ($invoice)
+                                                        <i class="las la-check-circle" style="color: {{ $copy['color'] }};" title="{{ translate('Generated') }}"></i>
+                                                    @endif
+                                                </span>
+                                                <span class="ttf-menu__actions">
+                                                    <a target="_blank" href="{{ route('orders.invoice.copy.view', [$order->id, $copyType]) }}" title="{{ translate('View PDF') }}"><i class="las la-eye"></i></a>
+                                                    <a href="{{ route('orders.invoice.copy.download', [$order->id, $copyType]) }}" title="{{ translate('Download PDF') }}"><i class="las la-download"></i></a>
+                                                </span>
+                                            </div>
+                                        @endforeach
+                                        <div class="ttf-menu__divider"></div>
+                                        <a class="ttf-menu__item" target="_blank" href="{{ route('orders.delivery_note', [$order->id, 'format' => 'html']) }}">
+                                            <i class="las la-truck"></i> {{ translate('Delivery note') }}
+                                        </a>
+                                        @if (addon_is_activated('pos_system') && $order->order_from == 'pos')
+                                            <a class="ttf-menu__item" target="_blank" href="{{ route('admin.invoice.thermal_printer', $order->id) }}">
+                                                <i class="las la-print"></i> {{ translate('Thermal printer') }}
+                                            </a>
+                                        @endif
+                                    </div>
+                                </td>
+
+                                {{-- Actions --}}
                                 <td class="text-right order-row-actions-cell">
                                     <div class="order-row-actions">
-                                    @if (addon_is_activated('pos_system') && $order->order_from == 'pos')
-                                        <a class="order-action-btn action-print"
-                                            href="{{ route('admin.invoice.thermal_printer', $order->id) }}" target="_blank"
-                                            title="{{ translate('Thermal Printer') }}">
-                                            <i class="las la-print"></i>
-                                        </a>
-                                    @endif
                                     @can('view_order_details')
-                                        @php
-                                            $order_detail_route = route('orders.show', encrypt($order->id));
-                                            if (Route::currentRouteName() == 'seller_orders.index') {
-                                                $order_detail_route = route('seller_orders.show', encrypt($order->id));
-                                            } elseif (Route::currentRouteName() == 'pick_up_point.index') {
-                                                $order_detail_route = route('pick_up_point.order_show', encrypt($order->id));
-                                            }
-                                            if (Route::currentRouteName() == 'inhouse_orders.index') {
-                                                $order_detail_route = route('inhouse_orders.show', encrypt($order->id));
-                                            }
-                                        @endphp
                                         <a class="order-action-btn action-view"
-                                            href="{{ $order_detail_route }}" title="{{ translate('View') }}">
+                                            href="{{ $order_detail_route }}" title="{{ translate('View order') }}">
                                             <i class="las la-eye"></i>
                                         </a>
                                     @endcan
-                                    
-                                   @if ($order->payment_status == 'paid')
-                                    <a class="order-action-btn action-download"
-                                        href="{{ route('orders.invoice.copy.download', [$order->id, 'customer']) }}"
-                                        title="{{ translate('Download Customer Invoice') }}">
-                                        <i class="las la-download"></i>
-                                    </a>
-                                    @endif
-                                    
-                                    @if ($order->delivery_status == 'pending' && $order->payment_status == 'unpaid')
-                                        <a href="javascript:void(0)" class="order-action-btn action-cancel confirm-delete" data-href="{{route('purchase_history.destroy', $order->id)}}" title="{{ translate('Cancel') }}">
-                                            <i class="las la-times"></i>
 
+                                    @if ($order->delivery_status == 'pending' && $order->payment_status == 'unpaid')
+                                        <a href="javascript:void(0)" class="order-action-btn action-cancel confirm-delete" data-href="{{route('purchase_history.destroy', $order->id)}}" title="{{ translate('Cancel order') }}">
+                                            <i class="las la-times"></i>
                                         </a>
                                     @endif
-                                    
-                                    
+
                                     @can('delete_order')
                                         <a href="#"
                                             class="order-action-btn action-delete confirm-delete"
@@ -889,6 +877,21 @@
         text-decoration: underline;
     }
 
+    .order-msg-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 17px;
+        height: 17px;
+        padding: 0 5px;
+        border-radius: 999px;
+        background: #d9342b;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
     .order-history-link:hover {
         color: #39322a;
     }
@@ -905,7 +908,122 @@
     }
 
     .order-row-actions-cell {
-        min-width: 170px;
+        min-width: 0;
+    }
+
+    .order-code-link {
+        display: block;
+        color: #39322a !important;
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+        text-decoration: none;
+    }
+
+    .order-code-link:hover {
+        color: #685b4e !important;
+        text-decoration: underline;
+    }
+
+    .order-row-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .order-row-badges:empty {
+        display: none;
+    }
+
+    .order-mini-badge {
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #f3efe9;
+        color: #685b4e;
+        font-size: 10.5px;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    .order-mini-badge.is-new {
+        background: #e0f2fe;
+        color: #0369a1;
+    }
+
+    .order-mini-badge.is-pos {
+        background: #fdecec;
+        color: #b42318;
+    }
+
+    .order-party-meta i {
+        font-size: 12px;
+    }
+
+    .orders-table thead th,
+    .orders-table tbody td {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    .order-party-name {
+        max-width: 150px;
+    }
+
+    .order-contact {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .order-contact-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 30px;
+        padding: 0 9px;
+        border: 1px solid #dcd4c9;
+        border-radius: 8px;
+        background: #f3efe9;
+        color: #685b4e !important;
+        font-size: 11.5px;
+        font-weight: 600;
+        white-space: nowrap;
+        text-decoration: none !important;
+        transition: all 0.15s ease;
+    }
+
+    .order-contact-btn i {
+        font-size: 14px;
+    }
+
+    .order-contact-btn:hover {
+        background: #685b4e;
+        border-color: #685b4e;
+        color: #fff !important;
+    }
+
+    .order-contact-btn.is-plain {
+        background: #fff;
+        border-color: #e8e5e1;
+    }
+
+    .order-contact-btn.is-plain:hover {
+        background: #f3efe9;
+        border-color: #dcd4c9;
+        color: #685b4e !important;
+    }
+
+    .order-contact-btn.is-disabled {
+        background: #f6f5f3;
+        border-color: #eceae6;
+        color: #b9b1a7 !important;
+        cursor: not-allowed;
+    }
+
+    .order-contact-btn.is-disabled:hover {
+        background: #f6f5f3;
+        border-color: #eceae6;
+        color: #b9b1a7 !important;
     }
 
     .order-row-actions {

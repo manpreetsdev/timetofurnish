@@ -220,23 +220,25 @@
         .ttf-promo-popup__btn:hover::after {
             transform: translateX(4px);
         }
-
-        .ttf-promo-popup__close {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            z-index: 2;
-            width: 40px;
-            height: 40px;
-            border: 1px solid #e5e5e5;
-            border-radius: 50%;
-            background: #fff;
-            color: #111;
-            font-size: 18px;
-            line-height: 1;
-            cursor: pointer;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-        }
+.ttf-promo-popup__close {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 2;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 50%;
+    background: #fff;
+    color: #111;
+    font-size: 10px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+        display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
         @media (max-width: 767.98px) {
             .ttf-promo-popup__dialog.has-content {

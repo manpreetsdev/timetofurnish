@@ -413,6 +413,14 @@ Route::resource('sellers', SellerController::class);
         Route::get('/orders/{id}/invoice/{copyType}/download', 'invoice_copy_download')->name('orders.invoice.copy.download');
         Route::get('/orders/{id}/delivery-note', [DeliveryNoteController::class, 'admin'])->name('orders.delivery_note');
 
+        // Order messages (admin <-> customer chat with uploads)
+        Route::controller(\App\Http\Controllers\OrderMessageController::class)->group(function () {
+            Route::get('/order-messages', 'adminIndex')->name('admin.order-messages.index');
+            Route::get('/order-messages/lookup', 'adminLookup')->name('admin.order-messages.lookup');
+            Route::get('/orders/{id}/messages', 'adminShow')->name('admin.order-messages.show');
+            Route::post('/orders/{id}/messages', 'adminStore')->name('admin.order-messages.store');
+        });
+
         // Service emails & email history
         Route::controller(\App\Http\Controllers\OrderEmailController::class)->group(function () {
             Route::get('/service-email-templates', 'templates')->name('order-emails.templates');

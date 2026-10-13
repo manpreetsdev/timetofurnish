@@ -678,6 +678,11 @@
     </div>
     @endif
 
+    <!-- floating message bubble for customers with unread order messages -->
+    @if (Auth::check() && Auth::user()->user_type == 'customer' && Route::currentRouteName() != 'order-messages.show')
+        @include('partials.order_messages._floating')
+    @endif
+
     <!-- home page promo popup -->
     @if (get_setting('home_popup_enabled') == 'on' && Route::currentRouteName() == 'home')
         @include('frontend.partials.home_promo_popup')
