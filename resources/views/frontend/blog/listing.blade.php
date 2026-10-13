@@ -5,7 +5,7 @@
     $blog_seo_title = $current_page > 1
         ? translate('Blogs') . ' - ' . translate('Page') . ' ' . $current_page . ' | ' . get_setting('website_name')
         : translate('Blogs') . ' | ' . get_setting('website_name');
-    $blog_seo_description = seo_description(null, translate('Read the latest articles, guides and news from') . ' ' . get_setting('website_name') . '.');
+    $blog_seo_description = seo_description(null, translate('Explore the Time to Furnish blog for furniture buying tips, home decor ideas, interior design inspiration, the latest trends, and expert advice to create a stylish and comfortable living space.') . ' ' . get_setting('website_name') . '.');
     $blog_canonical_base = route('blog');
     $blog_canonical_url = $current_page > 1 ? $blog_canonical_base . '?page=' . $current_page : $blog_canonical_base;
 @endphp

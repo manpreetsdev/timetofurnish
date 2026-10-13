@@ -1,8 +1,7 @@
 @extends('frontend.layouts.app')
 
 @section('meta_title') Register | {{ get_setting('website_name') }} @stop
-@section('meta_description') Register for an account. @stop
-@section('content')
+@section('meta_description') Create your Time to Furnish account to explore stylish furniture, save your favourite products, manage your orders, and enjoy a convenient shopping experience for your home or office. @stop@section('content')
     <section class="gry-bg py-6">
         <div class="profile">
             <div class="container">
