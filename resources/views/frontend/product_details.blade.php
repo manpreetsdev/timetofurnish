@@ -628,6 +628,7 @@
                             src="{{ static_asset('assets/img/placeholder.jpg') }}"
                             alt="{{ $detailedProduct->getTranslation('name') }} product image"
                             data-src=""
+                            
                             onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
                     </div>
                 </div>

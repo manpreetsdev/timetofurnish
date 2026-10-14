@@ -684,29 +684,21 @@
         };
     </script>
 
-    <div class="mb-3 row no-gutters align-items-center">
-        <div class="col-sm-2 col-3">
-            <div class="mt-1 text-secondary fs-15 fw-600" style="color: #685b4e !important; white-space: nowrap;">
-                {{ !empty($active_offer->name) ? translate($active_offer->name) : translate('Offer Price') }}
-            </div>
-        </div>
-        <div class="col-sm-10 col-9">
-            <div class="flex-wrap d-flex align-items-center" style="gap: 10px;">
-                <!-- Fake Old Price (Strikethrough Cut) -->
-                @php $offer_old_price = home_offer_old_price($detailedProduct); @endphp
-                <del class="js-product-old-price" data-default-old-price-text="{{ $offer_old_price }}"
-                    style="text-decoration: line-through; color: #8f97ab !important; font-size: 16px; font-weight: 500; {{ $offer_old_price ? '' : 'display: none;' }}">
-                    {{ $offer_old_price }}
-                </del>
-                <!-- Actual Selling Price -->
-                <strong class="js-product-total-price"
-                    style="color: #C27325 !important; font-size: 24px; font-weight: 700; letter-spacing: -0.3px;"
-                    data-default-price-text="{{ home_discounted_price($detailedProduct) }}">
-                    {{ home_discounted_price($detailedProduct) }}
-                </strong>
-                <!-- Offer Badge -->
+    <div class="ttf-offer-box mb-3">
+        @if (!empty($active_offer->name) && ($active_offer->show_name_on_product ?? true))
+            <div class="ttf-offer-name"><i class="las la-tag"></i> {{ translate($active_offer->name) }}</div>
+        @endif
+        <div class="ttf-offer-prices">
+            <!-- Old price (strikethrough) -->
+            @php $offer_old_price = home_offer_old_price($detailedProduct); @endphp
+            <del class="js-product-old-price ttf-offer-old" data-default-old-price-text="{{ $offer_old_price }}"
+                style="{{ $offer_old_price ? '' : 'display: none;' }}">{{ $offer_old_price }}</del>
+            <!-- Selling price -->
+            <strong class="js-product-total-price ttf-offer-price"
+                data-default-price-text="{{ home_discounted_price($detailedProduct) }}">{{ home_discounted_price($detailedProduct) }}</strong>
+            @if ($active_offer->show_badge_on_product ?? true)
                 {!! format_offer_badge($active_offer) !!}
-
+            @endif
                 <!-- Club Point -->
                 @if (addon_is_activated('club_point') && $detailedProduct->earn_point > 0)
                 <div class="px-2.5 py-1 d-inline-flex align-items-center"
@@ -721,17 +713,20 @@
                     </small>
                 </div>
                 @endif
-            </div>
-
-            <!-- Custom Description / Details -->
-            @if ($active_offer->custom_text)
-            <div class="mt-1.5 text-muted fs-12 fw-500" style="color: #685b4e !important;">
-                <i class="las la-info-circle mr-1" style="color: #C27325;"></i> {{ translate($active_offer->name) }}:
-                {{ $active_offer->custom_text }}
-            </div>
-            @endif
         </div>
+        @if (($active_offer->show_description_on_product ?? true) && $active_offer->custom_text)
+            <p class="ttf-offer-desc">{{ $active_offer->custom_text }}</p>
+        @endif
     </div>
+    <style>
+        .ttf-offer-box { padding: 14px 16px; border: 1px solid #ece3d8; border-radius: 12px; background: #faf7f2; }
+        .ttf-offer-name { display: inline-flex; align-items: center; gap: 5px; margin-bottom: 6px; padding: 3px 10px; border-radius: 999px; background: #685b4e; color: #fff; font-size: 12px; font-weight: 700; }
+        .ttf-offer-prices { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+        .ttf-offer-old { color: #8f97ab; font-size: 16px; font-weight: 500; }
+        .ttf-offer-price { color: #C27325; font-size: 26px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.2; }
+        .ttf-offer-prices .badge { margin-left: 0 !important; }
+        .ttf-offer-desc { margin: 8px 0 0; color: #685b4e; font-size: 13px; line-height: 1.55; }
+    </style>
 
     @php
     $actual_base_price = $detailedProduct->unit_price;
@@ -1081,7 +1076,7 @@ $refund_sticker = get_setting('refund_sticker');
             @if ($refund_sticker != null)
             <img src="{{ uploaded_asset($refund_sticker) }}" height="36">
             @else
-            <img src="{{ static_asset('assets/img/refund-sticker.jpg') }}"alt="Refund Sticker" height="36">
+            <img src="{{ static_asset('assets/img/refund-sticker.jpg') }}" alt="Refund Sticker" height="36">
             @endif
         </a>
         <a href="{{ route('returnpolicy') }}" class="ml-3 text-blue hov-text-primary fs-14"

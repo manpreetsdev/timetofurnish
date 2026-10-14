@@ -76,6 +76,9 @@ class OfferController extends Controller
         $offer->discount_type = $request->discount_type;
         $offer->discount_value = $request->discount_type !== 'badge_only' ? $request->discount_value : null;
         $offer->custom_text = $request->custom_text;
+        $offer->show_name_on_product = $request->boolean('show_name_on_product') ? 1 : 0;
+        $offer->show_badge_on_product = $request->boolean('show_badge_on_product') ? 1 : 0;
+        $offer->show_description_on_product = $request->boolean('show_description_on_product') ? 1 : 0;
         
         $offset = (int)$request->input('timezone_offset', 0);
         $offer->starts_at = $request->starts_at ? Carbon::parse($request->starts_at)->addMinutes($offset) : null;
@@ -128,6 +131,9 @@ class OfferController extends Controller
         $offer->discount_type = $request->discount_type;
         $offer->discount_value = $request->discount_type !== 'badge_only' ? $request->discount_value : null;
         $offer->custom_text = $request->custom_text;
+        $offer->show_name_on_product = $request->boolean('show_name_on_product') ? 1 : 0;
+        $offer->show_badge_on_product = $request->boolean('show_badge_on_product') ? 1 : 0;
+        $offer->show_description_on_product = $request->boolean('show_description_on_product') ? 1 : 0;
         
         $offset = (int)$request->input('timezone_offset', 0);
         $offer->starts_at = $request->starts_at ? Carbon::parse($request->starts_at)->addMinutes($offset) : null;
