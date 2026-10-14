@@ -668,7 +668,12 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
     <style>
         @media only screen and (min-width:991px) {
             .header_nav {
-                margin-bottom: 30px !important;
+                margin-bottom: 10px !important;
+            }
+        }
+        @media only screen and (max-width:767px){
+            .header_nav {
+                margin: 10px 10px 0px !important;
             }
         }
     </style>
