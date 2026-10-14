@@ -157,6 +157,44 @@
                     <label class="form-label theme-form-label" for="custom_text">{{ translate('Offer Description Text') }}</label>
                     <textarea placeholder="{{ translate('Write some amazing details about this offer...') }}" id="custom_text" name="custom_text" class="form-control rounded-lg" rows="4">{{ isset($offer) ? $offer->custom_text : '' }}</textarea>
                 </div>
+
+                <!-- Product page display -->
+                <div class="pt-3 mt-3 border-theme-top">
+                    <label class="form-label theme-form-label mb-2">{{ translate('Show on product page') }}</label>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <span class="fw-600 fs-13 text-dark d-block">{{ translate('Offer name') }}</span>
+                            <span class="fs-11 text-muted-theme">{{ translate('The "Custom Offer Name" label above the price') }}</span>
+                        </div>
+                        <label class="aiz-switch aiz-switch-success mb-0">
+                            <input type="hidden" name="show_name_on_product" value="0">
+                            <input type="checkbox" name="show_name_on_product" value="1" @if(!isset($offer) || $offer->show_name_on_product) checked @endif>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <span class="fw-600 fs-13 text-dark d-block">{{ translate('Offer badge') }}</span>
+                            <span class="fs-11 text-muted-theme">{{ translate('e.g. "10% OFF" next to the price') }}</span>
+                        </div>
+                        <label class="aiz-switch aiz-switch-success mb-0">
+                            <input type="hidden" name="show_badge_on_product" value="0">
+                            <input type="checkbox" name="show_badge_on_product" value="1" @if(!isset($offer) || $offer->show_badge_on_product) checked @endif>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="fw-600 fs-13 text-dark d-block">{{ translate('Offer description') }}</span>
+                            <span class="fs-11 text-muted-theme">{{ translate('The text above, shown under the price') }}</span>
+                        </div>
+                        <label class="aiz-switch aiz-switch-success mb-0">
+                            <input type="hidden" name="show_description_on_product" value="0">
+                            <input type="checkbox" name="show_description_on_product" value="1" @if(!isset($offer) || $offer->show_description_on_product) checked @endif>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
 
