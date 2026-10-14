@@ -1156,7 +1156,7 @@
                                                         @php
                                                             $deliv_img = !empty($w['deliv_img']) ? uploaded_asset($w['deliv_img']) : (get_setting('foot_img_deliv') ? uploaded_asset(get_setting('foot_img_deliv')) : static_asset('assets/img/delivery_partners_logo.png'));
                                                         @endphp
-                                                        <img src="{{ $deliv_img }}" alt="" class="secure-payment-img">
+                                                        <img src="{{ $deliv_img }}" alt="Secure Payment Image" class="secure-payment-img">
                                                     </div>
                                                 @endif
                                                 @if($show_pay)

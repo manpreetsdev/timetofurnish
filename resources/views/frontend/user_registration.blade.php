@@ -158,10 +158,7 @@
                                     </div>
                                 </div>
                                 
-                                 {{--Right Side Image 
-                                <div class="col-lg-6 col-md-5 py-3 py-md-0">
-                                    <img src="{{ uploaded_asset(get_setting('register_page_image')) }}" alt="" class="img-fluid h-100 custom-login-image">
-                                </div>--}}
+                               
                                 <!-- Right Side Image -->
                                       <div class="col-lg-6 col-md-5 py-3 py-md-0">
                                               <img src="{{asset('public/assets/img/userlogin.jpg')}}" alt="User Login Image" class="img-fluid h-100 custom-login-image">
