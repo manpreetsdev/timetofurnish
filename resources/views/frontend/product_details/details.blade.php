@@ -1081,7 +1081,7 @@ $refund_sticker = get_setting('refund_sticker');
             @if ($refund_sticker != null)
             <img src="{{ uploaded_asset($refund_sticker) }}" height="36">
             @else
-            <img src="{{ static_asset('assets/img/refund-sticker.jpg') }}" height="36">
+            <img src="{{ static_asset('assets/img/refund-sticker.jpg') }}"alt="Refund Sticker" height="36">
             @endif
         </a>
         <a href="{{ route('returnpolicy') }}" class="ml-3 text-blue hov-text-primary fs-14"
