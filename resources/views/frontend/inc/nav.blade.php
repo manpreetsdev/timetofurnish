@@ -418,13 +418,13 @@ $topbar_banner_asset = uploaded_asset($topbar_banner);
                         <div class="flag-dropdown" id="flagDropdown">
 
                             <div class="flag-item d-flex align-items-center px-3 py-2 gap-2">
-                                <img src="{{ static_asset('assets/img/usa.jpg') }}" width="20" height="14">
+                                <img src="{{ static_asset('assets/img/usa.jpg') }}" alt=" width="20" height="14">
                                 <span class="ms-1">On The Way</span>
                             </div>
 
 
                             <div class="flag-item d-flex align-items-center px-3 py-2 gap-2">
-                                <img src="{{ static_asset('assets/img/flag.jpeg') }}" width="20" height="14">
+                                <img src="{{ static_asset('assets/img/flag.jpeg') }}" alt="Europe" width="20" height="14">
                                 <span class="ms-1">On The Way</span>
                             </div>
                         </div>
