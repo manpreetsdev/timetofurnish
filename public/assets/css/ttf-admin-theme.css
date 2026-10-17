@@ -1,0 +1,171 @@
+/*
+ * Time To Furnish – admin theme overrides.
+ * One palette for the whole admin (same as the sidebar), 6px corners, green "on" switches.
+ * Loaded after aiz-core.css in the admin layout.
+ */
+:root {
+    --ttf-brand: #685b4e;
+    --ttf-brand-dark: #4f453b;
+    --ttf-brand-soft: #f3efe9;
+    --ttf-brand-softer: #faf8f5;
+    --ttf-border: #e8e5e1;
+    --ttf-border-strong: #dcd4c9;
+    --ttf-text: #39322a;
+    --ttf-muted: #8c7e70;
+    --ttf-on: #2e9e5b;
+    --ttf-radius: 6px;
+}
+
+/* ---------- Corners: 6px everywhere ---------- */
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .form-control,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .custom-select,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .input-group-text,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .bootstrap-select > .dropdown-toggle,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .dropdown-menu,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .card,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .alert,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .page-link,
+.modal-content,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .set-card, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .set-hero, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .set-stat, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .set-btn,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .svc-card, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .svc-hero, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .svc-btn, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .svc-email-btn,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .orders-admin-hero, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .orders-summary-card, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .orders-filter-panel,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .orders-table-card, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .orders-filter-trigger, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .orders-export-btn,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .orders-bulk-btn, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .order-action-btn, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .order-contact-btn,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .order-delivery-note-btn, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .invoice-copy-row,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .omr-row, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .omi-empty, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .om-composer, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .om-thread,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .om-bubble, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .om-btn, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .omf-item,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .ttfp-toggle, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .ttfp-panel, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .ttfp-option {
+    border-radius: var(--ttf-radius) !important;
+}
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-circle { border-radius: var(--ttf-radius) !important; }
+
+/* ---------- Buttons: theme colour only ---------- */
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-primary,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-info,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-success,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-danger,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-warning,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-dark,
+.modal .btn-primary,
+.modal .btn-danger,
+.modal .btn-info,
+.modal .btn-success {
+    background-color: var(--ttf-brand) !important;
+    border-color: var(--ttf-brand) !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-primary:hover, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-info:hover, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-success:hover,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-danger:hover, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-warning:hover, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-dark:hover,
+.modal .btn-primary:hover, .modal .btn-danger:hover, .modal .btn-info:hover, .modal .btn-success:hover {
+    background-color: var(--ttf-brand-dark) !important;
+    border-color: var(--ttf-brand-dark) !important;
+}
+
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-primary,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-info,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-success,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-danger,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-warning,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-secondary,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-outline-primary,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-outline-info,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-outline-success,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-outline-danger,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-light,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-secondary,
+.modal .btn-soft-secondary,
+.modal .btn-light,
+.modal .btn-secondary {
+    background-color: var(--ttf-brand-soft) !important;
+    border: 1px solid var(--ttf-border-strong) !important;
+    color: var(--ttf-brand) !important;
+    box-shadow: none !important;
+}
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-primary:hover, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-info:hover, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-success:hover,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-danger:hover, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-warning:hover, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-secondary:hover,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-outline-primary:hover, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-outline-info:hover, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-outline-success:hover,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-outline-danger:hover, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-light:hover, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-secondary:hover,
+.modal .btn-soft-secondary:hover, .modal .btn-light:hover, .modal .btn-secondary:hover {
+    background-color: var(--ttf-brand) !important;
+    border-color: var(--ttf-brand) !important;
+    color: #fff !important;
+}
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-primary i, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-danger i,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-info i, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .btn-soft-success i { color: inherit !important; }
+
+/* Icon-only action buttons in rows (view / edit / delete / cancel) */
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .order-action-btn,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .action-view, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .action-download, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .action-print,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .action-delete, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .action-cancel {
+    background: #fff !important;
+    border: 1px solid var(--ttf-border) !important;
+    color: var(--ttf-brand) !important;
+}
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .order-action-btn:hover {
+    background: var(--ttf-brand) !important;
+    border-color: var(--ttf-brand) !important;
+    color: #fff !important;
+}
+
+/* Links that were blue */
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) a:not(.btn):not(.dropdown-item):not(.page-link):not([class*="badge"]) { color: inherit; }
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .text-primary, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .text-info { color: var(--ttf-brand) !important; }
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .bg-primary, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .bg-info { background-color: var(--ttf-brand) !important; }
+
+/* Info / primary / dark badges (e.g. "Digital Product") in the theme colour.
+   Paid / unpaid style status badges keep their meaning colours. */
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .badge-info, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .badge-primary, :is(.aiz-main-content, .ttf-drawer, .ttf-menu) .badge-dark,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .badge-secondary {
+    background-color: var(--ttf-brand-soft) !important;
+    color: var(--ttf-brand) !important;
+    border: 1px solid var(--ttf-border-strong);
+}
+
+/* ---------- Switches: green when on, everywhere ---------- */
+.aiz-switch input:checked ~ span:before,
+.aiz-switch input:checked + span:before,
+.aiz-switch input:checked ~ .slider:before {
+    background-color: var(--ttf-on) !important;
+    border-color: var(--ttf-on) !important;
+}
+.aiz-switch input:checked ~ span:after,
+.aiz-switch input:checked + span:after,
+.aiz-switch input:checked ~ .slider:after,
+.aiz-switch[class*="aiz-switch-"] input:checked ~ span:after {
+    background-color: #fff !important;
+}
+
+/* ---------- Form focus in the theme colour ---------- */
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .form-control:focus,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .bootstrap-select > .dropdown-toggle:focus {
+    border-color: var(--ttf-brand) !important;
+    box-shadow: 0 0 0 3px rgba(104, 91, 78, .12) !important;
+}
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .aiz-checkbox input:checked ~ .aiz-square-check,
+:is(.aiz-main-content, .ttf-drawer, .ttf-menu) .aiz-checkbox input:checked ~ .aiz-rounded-check {
+    background-color: var(--ttf-brand) !important;
+    border-color: var(--ttf-brand) !important;
+}
+
+/* ---------- Pagination ---------- */
+.aiz-pagination .pagination { flex-wrap: wrap; gap: 6px; margin: 0; justify-content: center; }
+.aiz-pagination .page-item .page-link {
+    min-width: 36px; height: 36px; margin: 0 !important; padding: 0 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--ttf-border) !important; background: #fff; color: var(--ttf-brand) !important;
+    font-size: 13px; font-weight: 600; box-shadow: none !important;
+}
+.aiz-pagination .page-item.active .page-link { background: var(--ttf-brand) !important; border-color: var(--ttf-brand) !important; color: #fff !important; }
+.aiz-pagination .page-item.disabled .page-link { color: #c4bbb1 !important; background: var(--ttf-brand-softer); }
+.aiz-pagination .page-item:not(.active):not(.disabled) .page-link:hover { background: var(--ttf-brand-soft); }
+
+@media (max-width: 767.98px) {
+    /* Phones: one tidy row – previous, the current page with its neighbours, next */
+    .aiz-pagination .pagination { flex-wrap: nowrap; gap: 4px; }
+    .aiz-pagination .page-item .page-link { min-width: 34px; height: 34px; padding: 0 8px; font-size: 12.5px; }
+    .aiz-pagination .page-item:not(:first-child):not(:last-child):not(.active) { display: none; }
+    .aiz-pagination .page-item.active + .page-item:not(:last-child),
+    .aiz-pagination .page-item:has(+ .page-item.active):not(:first-child) { display: block; }
+}

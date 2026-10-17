@@ -74,7 +74,7 @@
     <div class="card-header border-bottom-0 pb-2 pt-3 seller-variation-header d-flex align-items-center justify-content-between flex-wrap gap-2">
         <div class="d-flex align-items-center">
             <h5 class="mb-0 h6 font-weight-bold d-flex align-items-center">
-                <span class="prefix-number" style="color: #b57a45; font-size: 20px; font-weight: 700; margin-right: 6px;">01</span>
+                <span class="prefix-number" style="color: var(--ttf-form-accent, #b57a45); font-size: 20px; font-weight: 700; margin-right: 6px;">01</span>
                 <span style="font-size: 14px; font-weight: 700; color: #2c3138; letter-spacing: 0.5px;">{{ translate('ATTRIBUTE SELECTION') }}</span>
             </h5>
         </div>
@@ -105,7 +105,7 @@
                                 <i class="las la-cog"></i> 
                                 <span>
                                     {{ translate('To view, add, or edit your own attributes and options, visit your') }} 
-                                    <a href="{{ ($attributesIndexUrl ?? route('seller.attributes.index')) }}" target="_blank" class="font-weight-bold" style="color: #b57a45; text-decoration: underline;">
+                                    <a href="{{ ($attributesIndexUrl ?? route('seller.attributes.index')) }}" target="_blank" class="font-weight-bold" style="color: var(--ttf-form-accent, #b57a45); text-decoration: underline;">
                                         {{ translate('Custom Attributes Page') }} <i class="las la-external-link-alt" style="font-size: 10px;"></i>
                                     </a>
                                 </span>
@@ -183,7 +183,7 @@
                             <small class="seller-select-help text-muted">
                                 {{ translate('Search attributes. If there is no match, add it from the dropdown.') }}
                             </small>
-                            <a href="{{ ($attributesIndexUrl ?? route('seller.attributes.index')) }}" target="_blank" class="btn btn-link btn-sm p-0 font-weight-bold text-primary d-inline-flex align-items-center" style="font-size: 13px; color: #b57a45 !important;">
+                            <a href="{{ ($attributesIndexUrl ?? route('seller.attributes.index')) }}" target="_blank" class="btn btn-link btn-sm p-0 font-weight-bold text-primary d-inline-flex align-items-center" style="font-size: 13px; color: var(--ttf-form-accent, #b57a45) !important;">
                                 <i class="las la-plus-circle mr-1" style="font-size: 16px;"></i>{{ translate('Create Custom Attributes') }}
                             </a>
                         </div>
@@ -978,7 +978,7 @@
     }
     .attribute-badge.badge-custom {
         background: #fdf6ee !important;
-        color: #c59259 !important;
+        color: var(--ttf-form-accent, #c59259) !important;
         border: 1px solid rgba(197, 146, 89, 0.22) !important;
     }
     .attribute-badge.badge-global {

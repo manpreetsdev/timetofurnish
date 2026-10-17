@@ -103,7 +103,10 @@
                             <h2>{{ translate('Filter orders') }}</h2>
                             <p>{{ translate('Use status, payment, date and order code filters together.') }}</p>
                         </div>
-                        <a href="{{ url()->current() }}" class="orders-clear-link">{{ translate('Reset') }}</a>
+                        <div class="d-flex align-items-center" style="gap: 12px;">
+                            <a href="{{ url()->current() }}" class="orders-clear-link">{{ translate('Reset') }}</a>
+                            <button type="button" class="orders-filter-close" data-toggle="collapse" data-target="#ordersFilterPanel" aria-label="{{ translate('Close') }}">&times;</button>
+                        </div>
                     </div>
 
                     <div class="orders-filter-grid">
@@ -595,8 +598,25 @@
         font-size: 12px;
     }
 
+    .orders-filter-close {
+        display: none;
+        width: 32px;
+        height: 32px;
+        border: 1px solid #e8e5e1;
+        border-radius: 50%;
+        background: #fff;
+        color: #685b4e;
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    @media (max-width: 767.98px) {
+        .orders-filter-close { display: inline-flex; align-items: center; justify-content: center; }
+    }
+
     .orders-clear-link {
-        color: #b42318;
+        color: #685b4e;
+        text-decoration: underline;
         font-size: 12px;
         font-weight: 800;
         white-space: nowrap;
@@ -1100,6 +1120,65 @@
 
         .order-invoice-actions {
             min-width: 250px;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        /* Filters open as a bottom drawer instead of pushing the page down */
+        #ordersFilterPanel.show,
+        #ordersFilterPanel.collapsing {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1059;
+            height: auto !important;
+            max-height: 85vh;
+            overflow-y: auto;
+            transition: none;
+        }
+
+        #ordersFilterPanel .orders-filter-panel {
+            margin: 0;
+            border: 0;
+            border-radius: 18px 18px 0 0;
+            box-shadow: 0 -12px 40px rgba(57, 50, 42, .25);
+        }
+
+        #ordersFilterPanel.show::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: rgba(57, 50, 42, .45);
+        }
+
+        .orders-filter-grid {
+            grid-template-columns: 1fr !important;
+        }
+
+        .orders-filter-actions .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .orders-admin-screen .orders-hero-actions {
+            flex-wrap: nowrap;
+        }
+
+        .orders-admin-screen .orders-hero-actions .btn,
+        .orders-admin-screen .orders-hero-actions .dropdown {
+            width: auto !important;
+            flex: 1 1 0;
+        }
+
+        .orders-admin-screen .orders-hero-actions .btn {
+            justify-content: center;
+            padding: 0 10px;
+        }
+
+        .orders-summary-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         }
     }
 
