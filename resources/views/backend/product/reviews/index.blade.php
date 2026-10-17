@@ -9,25 +9,20 @@
 </div>
 
 <div class="card">
-    <div class="card-header">
-        <div class="row flex-grow-1">
-            <div class="col">
-                <h5 class="mb-0 h6">{{translate('Product Reviews')}}</h5>
-                
+    <form id="sort_by_rating" action="{{ route('reviews.index') }}" method="GET">
+        <x-admin.filter-bar>
+            <x-slot name="bulk">
+                <strong style="font-size: 15px; color: #39322a;">{{ translate('Product Reviews') }}</strong>
+            </x-slot>
+            <div class="ttf-filter-field" data-label="{{ translate('Rating') }}">
+                <select class="form-control aiz-selectpicker" name="rating" id="rating" onchange="filter_by_rating()">
+                    <option value="">{{ translate('Any rating order') }}</option>
+                    <option value="rating,desc" @selected(request('rating') == 'rating,desc')>{{ translate('Rating (High > Low)') }}</option>
+                    <option value="rating,asc" @selected(request('rating') == 'rating,asc')>{{ translate('Rating (Low > High)') }}</option>
+                </select>
             </div>
-            <div class="col-md-6 col-xl-4 ml-auto mr-0">
-                <form class="" id="sort_by_rating" action="{{ route('reviews.index') }}" method="GET">
-                    <div class="" style="min-width: 200px;">
-                        <select class="form-control aiz-selectpicker" name="rating" id="rating" onchange="filter_by_rating()">
-                            <option value="">{{translate('Filter by Rating')}}</option>
-                            <option value="rating,desc">{{translate('Rating (High > Low)')}}</option>
-                            <option value="rating,asc">{{translate('Rating (Low > High)')}}</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+        </x-admin.filter-bar>
+    </form>
     <div class="card-body">
         <x-admin.table>
             <thead>

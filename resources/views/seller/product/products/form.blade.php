@@ -772,7 +772,7 @@
     }
 
     #choice_form .addon-option-row .form-control:focus {
-        border-color: #c59259 !important;
+        border-color: var(--seller-primary) !important;
         box-shadow: 0 0 0 3px rgba(197, 146, 89, 0.18) !important;
     }
 

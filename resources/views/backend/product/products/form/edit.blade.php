@@ -9,4 +9,5 @@
     'addedBy' => 'admin',
     'attributesIndexUrl' => route('attributes.index'),
 ])
+@include('backend.product.products.form._admin_theme')
 @endsection

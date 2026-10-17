@@ -32,6 +32,7 @@
     @endif
     <link rel="stylesheet" href="{{ static_asset('assets/css/aiz-core.css?v=') }}{{ rand(1000,9999) }}">
     <link rel="stylesheet" href="{{ static_asset('assets/css/ttf-admin-table.css?v=') }}{{ filemtime(public_path('assets/css/ttf-admin-table.css')) }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/ttf-admin-theme.css?v=') }}{{ filemtime(public_path('assets/css/ttf-admin-theme.css')) }}">
 
     <style>
         :root {
